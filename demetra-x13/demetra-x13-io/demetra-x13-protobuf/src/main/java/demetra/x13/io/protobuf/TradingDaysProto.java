@@ -117,7 +117,7 @@ public class TradingDaysProto {
                 return TradingDaysSpec.stockTradingDays(w, tdc);
             }
         }
-        if (td == TradingDaysType.None) {
+        if (td == TradingDaysType.NONE) {
             return TradingDaysSpec.none();
         } else {
             if (test) {

@@ -345,27 +345,27 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     private static ITradingDaysVariable defaultTradingDays(TradingDaysSpec td) {
-        if (td.getTradingDaysType() == TradingDaysType.None) {
+        if (td.getTradingDaysType() == TradingDaysType.NONE) {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
         if (td.isAutomatic()) {
-            tdType = TradingDaysType.WorkingDays;
+            tdType = TradingDaysType.TD7;
         }
-        DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
+        DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
     }
 
     private static ITradingDaysVariable holidays(TradingDaysSpec td, ModellingContext context) {
-        if (td.getTradingDaysType() == TradingDaysType.None) {
+        if (td.getTradingDaysType() == TradingDaysType.NONE) {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
         if (td.isAutomatic()) {
-            tdType = TradingDaysType.WorkingDays;
+            tdType = TradingDaysType.TD7;
         }
-        DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
+        DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), true);
         return new HolidaysCorrectedTradingDays(gtd, corrector);

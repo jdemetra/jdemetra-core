@@ -220,10 +220,10 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
                 .test(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays,
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.TD2,
                 LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T);
 
-        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays,
+        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TD7,
                 LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T);
 
         TradingDaysSpec dc = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest,

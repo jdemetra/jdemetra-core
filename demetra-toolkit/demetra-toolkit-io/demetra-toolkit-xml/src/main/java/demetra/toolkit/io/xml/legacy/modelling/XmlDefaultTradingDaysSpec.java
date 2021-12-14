@@ -16,6 +16,7 @@
  */
 package demetra.toolkit.io.xml.legacy.modelling;
 
+import demetra.DemetraException;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -63,7 +64,7 @@ public class XmlDefaultTradingDaysSpec {
     protected String calendar;
     @XmlElement(name = "TdOption", required = true)
     @XmlSchemaType(name = "NMTOKEN")
-    protected TradingDaysType tdOption;
+    protected String tdOption;
     @XmlElement(name = "LpOption")
     @XmlSchemaType(name = "NMTOKEN")
     protected LengthOfPeriodType lpOption;
@@ -95,7 +96,7 @@ public class XmlDefaultTradingDaysSpec {
      *
      */
     public TradingDaysType getTdOption() {
-        return tdOption;
+        return tdOf(tdOption);
     }
 
     /**
@@ -105,7 +106,7 @@ public class XmlDefaultTradingDaysSpec {
      *
      */
     public void setTdOption(TradingDaysType value) {
-        this.tdOption = value;
+        this.tdOption = tdToString(value);
     }
 
     /**
@@ -129,6 +130,30 @@ public class XmlDefaultTradingDaysSpec {
             this.lpOption = null;
         } else {
             this.lpOption = value;
+        }
+    }
+
+    private TradingDaysType tdOf(String str){
+        if (str == null)
+            return TradingDaysType.NONE;
+        switch (str){
+            case "TradingDays":
+                return TradingDaysType.TD7;
+            case "WorkingDays":
+                return TradingDaysType.TD2;
+            default: 
+                return TradingDaysType.NONE;
+        }
+    }
+
+    private String tdToString(TradingDaysType type){
+        if (type == null) return "None";
+        switch (type){
+            case TD7: return "TradingDays";
+             case TD2 : return "WorkingDays";
+             case NONE: return "None";
+             default:
+                 throw new DemetraException("Illegal conversion");
         }
     }
 

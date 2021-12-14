@@ -96,7 +96,7 @@ public class RegArimaSpecMappingTest {
     @Test
     public void testHoliday() {
         RegArimaSpec spec =RegArimaSpec.RG5;
-        TradingDaysSpec td = TradingDaysSpec.holidays("test", TradingDaysType.TradingDays, LengthOfPeriodType.None, RegressionTestSpec.Remove, true);
+        TradingDaysSpec td = TradingDaysSpec.holidays("test", TradingDaysType.TD7, LengthOfPeriodType.None, RegressionTestSpec.Remove, true);
         spec=spec.toBuilder()
                 .regression(spec.getRegression().toBuilder()
                 .tradingDays(td)

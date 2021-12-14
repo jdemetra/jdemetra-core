@@ -191,17 +191,17 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             lp = tdspec.getLengthOfPeriodType();
             clp = v.getCoefficient(0);
         }
-        TradingDaysType td = TradingDaysType.None;
+        TradingDaysType td = TradingDaysType.NONE;
         Parameter[] ctd = null;
         if (ftd.isPresent()) {
             Variable v = ftd.get();
             if (tdspec.isAutomatic()) {
                 switch (v.getCore().dim()) {
                     case 1:
-                        td = TradingDaysType.WorkingDays;
+                        td = TradingDaysType.TD2;
                         break;
                     case 6:
-                        td = TradingDaysType.TradingDays;
+                        td = TradingDaysType.TD7;
                         break;
                 }
             } else {

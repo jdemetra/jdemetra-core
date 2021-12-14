@@ -221,6 +221,29 @@ public class X11Utility {
         return sum / (n - lag);
     }
 
+    public static double[][] calcVariations(DoubleSeq s, int nlags, boolean mul, boolean[] valid) {
+        double[] mean = new double[nlags];
+        double[] std = new double[nlags];
+        int iend=s.length();
+         for (int l = 1; l <= nlags; ++l) {
+            double sum = 0, sum2 = 0;
+            for (int i = l; i < iend; ++i) {
+                if (valid == null || valid[i - l]) {
+                    double x1 = s.get(i), x0 = s.get(i - l);
+                    double d = x1 - x0;
+                    if (mul) {
+                        d *= 100 / x0;
+                    }
+                    sum += d;
+                    sum2 += d * d;
+                }
+            }
+            int n = (iend - l);
+            mean[l - 1] = sum / n;
+            std[l - 1] = Math.sqrt((sum2 - sum * sum / n) / n);
+        }
+        return new double[][]{mean, std};
+    }
     /**
      * average duration of run for MStatistics
      *

@@ -126,6 +126,10 @@ public final class Mstatistics {
             }
         }
     }
+    
+    public int period(){
+        return Oc.getAnnualFrequency();
+    }
 
     public boolean[] validObservations() {
         return valid;

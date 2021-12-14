@@ -183,7 +183,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
             lp = tdspec.getLengthOfPeriodType();
             clp = v.getCoefficient(0);
         }
-        TradingDaysType td = TradingDaysType.None;
+        TradingDaysType td = TradingDaysType.NONE;
         Parameter[] ctd = null;
         if (ftd.isPresent()) {
             Variable v = ftd.get();

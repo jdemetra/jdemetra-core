@@ -49,6 +49,18 @@ public class DayClustering {
         }
         return new DayClustering(groups);
     }
+    
+    public static DayClustering of(TradingDaysType type) {
+        switch (type){
+            case TD7: return TD7;
+            case TD2: return TD2;
+            case TD3: return TD3;
+            case TD3c: return TD3c;
+            case TD4: return TD4;
+            default: return null;
+        }
+     }
+
 
     private static boolean checkGroups(int[] groups) {
         int n = 0;

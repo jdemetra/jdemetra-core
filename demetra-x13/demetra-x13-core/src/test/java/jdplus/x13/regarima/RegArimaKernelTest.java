@@ -355,7 +355,7 @@ public class RegArimaKernelTest {
         context.getCalendars().set("france", france);
 
         RegressionSpec regSpec = spec.getRegression();
-        TradingDaysSpec tdSpec = TradingDaysSpec.holidays("france", TradingDaysType.TradingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
+        TradingDaysSpec tdSpec = TradingDaysSpec.holidays("france", TradingDaysType.TD7, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .tradingDays(tdSpec)

@@ -129,9 +129,9 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec>, ProcSpecif
                 .easterSpec(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.TD2, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
 
-        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
+        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TD2, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
 
         RegressionSpec rwd = RegressionSpec.builder()
                 .easter(easter)

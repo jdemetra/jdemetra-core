@@ -653,6 +653,14 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         return backTransform(s, true);
     }
 
+    public TsData getRegressionEffect(TsDomain domain, Predicate<Variable> test) {
+        if (domain == null) {
+            domain = description.getSeries().getDomain();
+        }
+        TsData s = regressionEffect(domain, v -> test.test(v));
+        return backTransform(s, true);
+    }
+
     /**
      * The forecast domain is relative to the series domain, not to the
      * estimation domain

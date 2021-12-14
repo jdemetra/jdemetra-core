@@ -31,11 +31,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
 public class TradingDaysSpec {
 
-    private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
+    private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.NONE,
             LengthOfPeriodType.None, RegressionTestType.None, 0, AutoMethod.Unused, 0, null, null);
 
     public static TradingDaysSpec stockTradingDays(int w, RegressionTestType type) {
-        return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
+        return new TradingDaysSpec(null, null, TradingDaysType.TD7,
                 LengthOfPeriodType.None, type, w, AutoMethod.Unused, 0, null, null);
     }
 
@@ -43,7 +43,7 @@ public class TradingDaysSpec {
         if (tdcoeff.length != 6) {
             throw new IllegalArgumentException();
         }
-        return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
+        return new TradingDaysSpec(null, null, TradingDaysType.TD7,
                 LengthOfPeriodType.None, RegressionTestType.None, w, AutoMethod.Unused, 0, tdcoeff, null);
     }
 
@@ -52,7 +52,7 @@ public class TradingDaysSpec {
     }
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestType type) {
-        return new TradingDaysSpec(null, vars, TradingDaysType.None,
+        return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
                 LengthOfPeriodType.None, type, 0, AutoMethod.Unused, 0, null, null);
     }
 
@@ -60,7 +60,7 @@ public class TradingDaysSpec {
         if (coeff.length != vars.length) {
             throw new IllegalArgumentException();
         }
-        return new TradingDaysSpec(null, vars, TradingDaysType.None,
+        return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
                 LengthOfPeriodType.None, RegressionTestType.None, 0, AutoMethod.Unused, 0, coeff, null);
     }
 
@@ -68,7 +68,7 @@ public class TradingDaysSpec {
         if (automaticMethod == AutoMethod.Unused) {
             throw new IllegalArgumentException();
         }
-        return new TradingDaysSpec(holidays, null, TradingDaysType.TradingDays,
+        return new TradingDaysSpec(holidays, null, TradingDaysType.TD7,
                 LengthOfPeriodType.LeapYear, RegressionTestType.None, 0, automaticMethod, probabilityForFTest, null, null);
     }
 
@@ -76,12 +76,12 @@ public class TradingDaysSpec {
         if (automaticMethod == AutoMethod.Unused) {
             throw new IllegalArgumentException();
         }
-        return new TradingDaysSpec(null, null, TradingDaysType.TradingDays,
+        return new TradingDaysSpec(null, null, TradingDaysType.TD7,
                 LengthOfPeriodType.LeapYear, RegressionTestType.None, 0, automaticMethod, probabilityForFTest, null, null);
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, RegressionTestType regtype) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
@@ -89,7 +89,7 @@ public class TradingDaysSpec {
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, Parameter[] ctd, Parameter clp) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
@@ -97,7 +97,7 @@ public class TradingDaysSpec {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestType regtype) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
@@ -105,7 +105,7 @@ public class TradingDaysSpec {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         if (lp == LengthOfPeriodType.None && Parameter.isDefined(lpcoeff)) {
@@ -138,12 +138,12 @@ public class TradingDaysSpec {
 
 
     public boolean isUsed() {
-        return isAutomatic() || tradingDaysType != TradingDaysType.None || userVariables != null || stockTradingDays != 0;
+        return isAutomatic() || tradingDaysType != TradingDaysType.NONE || userVariables != null || stockTradingDays != 0;
     }
 
     public boolean isDefined() {
         return userVariables != null || (stockTradingDays != 0 && regressionTestType == RegressionTestType.None)
-                || ((lengthOfPeriodType != LengthOfPeriodType.None || tradingDaysType != TradingDaysType.None)
+                || ((lengthOfPeriodType != LengthOfPeriodType.None || tradingDaysType != TradingDaysType.NONE)
                 && (regressionTestType == RegressionTestType.None && automaticMethod == AutoMethod.Unused));
     }
 
@@ -160,7 +160,7 @@ public class TradingDaysSpec {
     }
 
     public boolean isDefaultTradingDays() {
-        return userVariables == null && holidays == null && stockTradingDays == 0 && tradingDaysType != TradingDaysType.None;
+        return userVariables == null && holidays == null && stockTradingDays == 0 && tradingDaysType != TradingDaysType.NONE;
     }
 
     public boolean isHolidays() {
@@ -172,9 +172,9 @@ public class TradingDaysSpec {
             return true;
         }
         if (regressionTestType.isUsed()) {
-            return tradingDaysType != TradingDaysType.None && lengthOfPeriodType != LengthOfPeriodType.None;
+            return tradingDaysType != TradingDaysType.NONE && lengthOfPeriodType != LengthOfPeriodType.None;
         }
-        if (tradingDaysType == TradingDaysType.None) {
+        if (tradingDaysType == TradingDaysType.NONE) {
             return lengthOfPeriodType == LengthOfPeriodType.None;
         }
         return true;

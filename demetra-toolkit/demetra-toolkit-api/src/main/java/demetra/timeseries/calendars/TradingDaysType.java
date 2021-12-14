@@ -24,30 +24,30 @@ import nbbrd.design.Development;
  */
 @Development(status=Development.Status.Release)
 public enum TradingDaysType {
-    // / <summary>
-    // / No regression variable
-    // / </summary>
-
     /**
-     *
+     * No regression variable
      */
-    None(0),
-    // / <summary>
-    // / X13: tdnolpyear
-    // / Tramo: TD6
-    // / </summary>
+    NONE(0),
     /**
-     *
+     * 7 variables (6 in contrasts)
      */
-    TradingDays(6),
-    // / <summary>
-    // / X13: td1nolpyear
-    // / Tramo: TD1
-    // / </summary>
+    TD7(7),
     /**
-     *
+     * Mon-Thu, Fri, Sat, Sun
      */
-    WorkingDays(1);
+    TD4(4),
+    /**
+     * Mon-Thu, Fri-Sat, Sun
+     */
+    TD3c(3),
+    /**
+     * Mon-Fri, Sat, Sun
+     */
+    TD3(3),
+    /**
+     * Mon-Fri, Sat-Sun
+     */
+    TD2(2);
     //
     final int variablesCount;
 

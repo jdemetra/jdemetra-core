@@ -396,21 +396,21 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     public static ITradingDaysVariable defaultTradingDays(TradingDaysSpec td) {
-        if (td.getTradingDaysType() == TradingDaysType.None) {
+        if (td.getTradingDaysType() == TradingDaysType.NONE) {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
-        DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
+        DayClustering dc =DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         return new GenericTradingDaysVariable(gtd);
     }
 
     public static ITradingDaysVariable holidays(TradingDaysSpec td, ModellingContext context) {
-        if (td.getTradingDaysType() == TradingDaysType.None) {
+        if (td.getTradingDaysType() == TradingDaysType.NONE) {
             return null;
         }
         TradingDaysType tdType = td.getTradingDaysType();
-        DayClustering dc = tdType == (TradingDaysType.TradingDays) ? DayClustering.TD7 : DayClustering.TD2;
+        DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), true);
         return new HolidaysCorrectedTradingDays(gtd, corrector);

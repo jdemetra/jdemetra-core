@@ -51,7 +51,7 @@ public class SaRegarimaExtractor extends InformationMapping<RegSarimaModel> {
     }
 
     private static TsData reg(RegSarimaModel source, ComponentType type, TsDomain domain) {
-        return source.deterministicEffect(domain, v -> ModellingUtility.isUser(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        return source.getRegressionEffect(domain, v -> ModellingUtility.isUser(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
     }
 
     public SaRegarimaExtractor() {
