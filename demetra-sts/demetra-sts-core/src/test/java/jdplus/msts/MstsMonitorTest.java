@@ -63,10 +63,10 @@ public class MstsMonitorTest {
         generatePi(mapping);
         generateCycle(mapping);
         monitor.process(D, mapping, null);
-        System.out.println(monitor.getLikelihood().logLikelihood());
-        System.out.println(monitor.fullParameters());
+//        System.out.println(monitor.getLikelihood().logLikelihood());
+//        System.out.println(monitor.fullParameters());
         StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true, true);
-        System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
+//        System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
     //@Test
@@ -102,10 +102,10 @@ public class MstsMonitorTest {
                 .build();
         System.out.println("X");
         monitor.process(D, mapping, null);
-        System.out.println(monitor.getLikelihood().logLikelihood());
-        System.out.println(monitor.fullParameters());
+//        System.out.println(monitor.getLikelihood().logLikelihood());
+//        System.out.println(monitor.fullParameters());
         StateStorage ss = DkToolkit.smooth(monitor.getSsf(), new SsfMatrix(monitor.getData()), true, true);
-        System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
+//        System.out.println(ss.getComponent(monitor.getSsf().componentsPosition()[4]));
     }
 
     //@Test

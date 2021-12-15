@@ -27,20 +27,20 @@ public class FractionalAirlineProcessorTest {
     public void testWeeklyDecomp() {
         DoubleSeq y = DoubleSeq.of(WeeklyData.US_CLAIMS2).log();
         FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(y.toArray(), 52, false, true, 10, 53);
-        System.out.println(rslt.component("t").getData());
-        System.out.println(rslt.component("s").getData());
-        System.out.println(rslt.component("i").getData());
-        System.out.println(rslt.component("t").getStde());
-        System.out.println(rslt.component("s").getStde());
-        System.out.println(rslt.component("i").getStde());
+//        System.out.println(rslt.component("t").getData());
+//        System.out.println(rslt.component("s").getData());
+//        System.out.println(rslt.component("i").getData());
+//        System.out.println(rslt.component("t").getStde());
+//        System.out.println(rslt.component("s").getStde());
+//        System.out.println(rslt.component("i").getStde());
         assertTrue(null != rslt.getData("sa", double[].class));
     }
 
     @Test
     public void testWeeklyEstimation() {
         FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25 / 7}, -1, new String[]{"ao", "wo"}, 5, 1e-12, true);
-        System.out.println(rslt.getLikelihood());
-        System.out.println();
+//        System.out.println(rslt.getLikelihood());
+//        System.out.println();
     }
 
     @Test

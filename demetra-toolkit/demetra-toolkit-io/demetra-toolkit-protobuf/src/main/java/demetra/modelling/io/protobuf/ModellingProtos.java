@@ -258,17 +258,41 @@ public final class ModellingProtos {
      */
     TD_NONE(0),
     /**
-     * <code>TD_WEEK = 1;</code>
+     * <pre>
+     *mon-fri + sat-sun
+     * </pre>
+     *
+     * <code>TD2 = 1;</code>
      */
-    TD_WEEK(1),
+    TD2(1),
     /**
-     * <code>TD_3 = 2;</code>
+     * <pre>
+     *mon-fri + sat + sun
+     * </pre>
+     *
+     * <code>TD3 = 2;</code>
      */
-    TD_3(2),
+    TD3(2),
     /**
-     * <code>TD_FULL = 3;</code>
+     * <pre>
+     *mon-thu + fri-sat + sun
+     * </pre>
+     *
+     * <code>TD3C = 3;</code>
      */
-    TD_FULL(3),
+    TD3C(3),
+    /**
+     * <pre>
+     *mon-thu + fri + sat + sun
+     * </pre>
+     *
+     * <code>TD4 = 4;</code>
+     */
+    TD4(4),
+    /**
+     * <code>TD7 = 5;</code>
+     */
+    TD7(5),
     UNRECOGNIZED(-1),
     ;
 
@@ -277,17 +301,41 @@ public final class ModellingProtos {
      */
     public static final int TD_NONE_VALUE = 0;
     /**
-     * <code>TD_WEEK = 1;</code>
+     * <pre>
+     *mon-fri + sat-sun
+     * </pre>
+     *
+     * <code>TD2 = 1;</code>
      */
-    public static final int TD_WEEK_VALUE = 1;
+    public static final int TD2_VALUE = 1;
     /**
-     * <code>TD_3 = 2;</code>
+     * <pre>
+     *mon-fri + sat + sun
+     * </pre>
+     *
+     * <code>TD3 = 2;</code>
      */
-    public static final int TD_3_VALUE = 2;
+    public static final int TD3_VALUE = 2;
     /**
-     * <code>TD_FULL = 3;</code>
+     * <pre>
+     *mon-thu + fri-sat + sun
+     * </pre>
+     *
+     * <code>TD3C = 3;</code>
      */
-    public static final int TD_FULL_VALUE = 3;
+    public static final int TD3C_VALUE = 3;
+    /**
+     * <pre>
+     *mon-thu + fri + sat + sun
+     * </pre>
+     *
+     * <code>TD4 = 4;</code>
+     */
+    public static final int TD4_VALUE = 4;
+    /**
+     * <code>TD7 = 5;</code>
+     */
+    public static final int TD7_VALUE = 5;
 
 
     public final int getNumber() {
@@ -315,9 +363,11 @@ public final class ModellingProtos {
     public static TradingDays forNumber(int value) {
       switch (value) {
         case 0: return TD_NONE;
-        case 1: return TD_WEEK;
-        case 2: return TD_3;
-        case 3: return TD_FULL;
+        case 1: return TD2;
+        case 2: return TD3;
+        case 3: return TD3C;
+        case 4: return TD4;
+        case 5: return TD7;
         default: return null;
       }
     }
@@ -18873,15 +18923,15 @@ public final class ModellingProtos {
       "eights\030\001 \003(\001\022\014\n\004gain\030\002 \003(\001*7\n\016Transforma" +
       "tion\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG\020\001\022\013\n\007FN_AUT" +
       "O\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_NONE\020\000\022\017\n\013LP" +
-      "_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPERIOD\020\002*>\n\013Tr" +
-      "adingDays\022\013\n\007TD_NONE\020\000\022\013\n\007TD_WEEK\020\001\022\010\n\004T" +
-      "D_3\020\002\022\013\n\007TD_FULL\020\003*\264\001\n\014VariableType\022\023\n\017V" +
-      "AR_UNSPECIFIED\020\000\022\014\n\010VAR_MEAN\020\001\022\n\n\006VAR_TD" +
-      "\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EASTER\020\014\022\n\n\006VAR_AO" +
-      "\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006VAR_SO\020\027\022\017" +
-      "\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n\010VAR_RAMP\020" +
-      "(B0\n\035demetra.modelling.io.protobufB\017Mode" +
-      "llingProtosP\000b\006proto3"
+      "_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPERIOD\020\002*H\n\013Tr" +
+      "adingDays\022\013\n\007TD_NONE\020\000\022\007\n\003TD2\020\001\022\007\n\003TD3\020\002" +
+      "\022\010\n\004TD3C\020\003\022\007\n\003TD4\020\004\022\007\n\003TD7\020\005*\264\001\n\014Variabl" +
+      "eType\022\023\n\017VAR_UNSPECIFIED\020\000\022\014\n\010VAR_MEAN\020\001" +
+      "\022\n\n\006VAR_TD\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EASTER\020\014" +
+      "\022\n\n\006VAR_AO\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006" +
+      "VAR_SO\020\027\022\017\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n" +
+      "\010VAR_RAMP\020(B0\n\035demetra.modelling.io.prot" +
+      "obufB\017ModellingProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

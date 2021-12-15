@@ -34,10 +34,10 @@ public class DFAFilterTest {
                 .density(SpectralDensity.WhiteNoise.asFunction())
                 .build();
         DFAFilter.Results rslt = ff.make(0.33, 0.33, 0.33);
-        System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
+//        System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
         DoubleUnaryOperator sd = x -> 1;
         MSEDecomposition.of(sd, sf.frequencyResponseFunction(), rslt.getFilter().frequencyResponseFunction(), Math.PI/12);
         MSEDecomposition d = MSEDecomposition.of(sd, sf.frequencyResponseFunction(), rslt.getFilter().frequencyResponseFunction(), Math.PI/12);
-        System.out.println(DoubleSeq.of(d.getAccuracy(), d.getSmoothness(), d.getTimeliness(), d.getResidual(), d.getTotal()));
+ //       System.out.println(DoubleSeq.of(d.getAccuracy(), d.getSmoothness(), d.getTimeliness(), d.getResidual(), d.getTotal()));
         }
 }

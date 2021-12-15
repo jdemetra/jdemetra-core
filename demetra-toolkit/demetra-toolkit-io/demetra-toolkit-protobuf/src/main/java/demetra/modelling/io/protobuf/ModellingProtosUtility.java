@@ -66,9 +66,15 @@ public class ModellingProtosUtility {
     public ModellingProtos.TradingDays convert(TradingDaysType td) {
         switch (td) {
             case TD7:
-                return ModellingProtos.TradingDays.TD_FULL;
+                return ModellingProtos.TradingDays.TD7;
+            case TD4:
+                return ModellingProtos.TradingDays.TD4;
+            case TD3c:
+                return ModellingProtos.TradingDays.TD3C;
+            case TD3:
+                return ModellingProtos.TradingDays.TD3;
             case TD2:
-                return ModellingProtos.TradingDays.TD_WEEK;
+                return ModellingProtos.TradingDays.TD2;
             default:
                 return ModellingProtos.TradingDays.TD_NONE;
         }
@@ -76,9 +82,15 @@ public class ModellingProtosUtility {
 
     public TradingDaysType convert(ModellingProtos.TradingDays td) {
         switch (td) {
-            case TD_FULL:
+            case TD7:
                 return TradingDaysType.TD7;
-            case TD_WEEK:
+            case TD4:
+                return TradingDaysType.TD4;
+            case TD3:
+                return TradingDaysType.TD3;
+            case TD3C:
+                return TradingDaysType.TD3c;
+            case TD2:
                 return TradingDaysType.TD2;
             default:
                 return TradingDaysType.NONE;

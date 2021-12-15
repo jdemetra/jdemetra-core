@@ -91,11 +91,20 @@ public class RegSarimaModelExtractors {
 //        MAPPING.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
 
 // All determinsitic effects
-            set(ModellingDictionary.DET, TsData.class, source -> source.getDeterministicEffect(null));
+            set(ModellingDictionary.DET, TsData.class, (RegSarimaModel source) -> {
+                TsData det=source.deterministicEffect(null, v-> ! (v.getCore() instanceof TrendConstant));
+                return source.backTransform(det, true);
+            });
             setArray(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
-                    (source, i) -> source.getDeterministicEffect(source.forecastDomain(i)));
+                    (source, i) -> {
+                TsData det=source.deterministicEffect(source.forecastDomain(i), v-> ! (v.getCore() instanceof TrendConstant));
+                return source.backTransform(det, true);
+            });
             setArray(ModellingDictionary.DET + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
-                    (source, i) -> source.getDeterministicEffect(source.backcastDomain(i)));
+                    (source, i) -> {
+                TsData det=source.deterministicEffect(source.backcastDomain(i), v-> ! (v.getCore() instanceof TrendConstant));
+                return source.backTransform(det, true);
+            });
 
 // All calendar effects
             set(ModellingDictionary.CAL, TsData.class, source -> source.getCalendarEffect(null));

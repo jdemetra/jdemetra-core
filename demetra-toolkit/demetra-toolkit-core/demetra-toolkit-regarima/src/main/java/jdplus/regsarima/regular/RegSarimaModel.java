@@ -334,7 +334,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
     }
 
     /**
-     * Gets the effect of all the estimated regression variables
+     * Gets the effect of all the estimated regression variables (= with unknown coefficients)
+     * The result corresponds to the transformed series (log + lp-adjust)
      *
      * @param domain
      * @param test
@@ -373,7 +374,8 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
     }
 
     /**
-     * Gets the effect of all pre-specified variables (including coefficient)
+     * Gets the effect of all pre-specified variables (= with fixed coefficients)
+     * The result corresponds to the transformed series (log + lp-adjust)
      *
      * @param domain
      * @param test
@@ -408,7 +410,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
 
     /**
      * Gets the effect of all the variables (pre-specified or estimated)
-     *
+     * The result corresponds to the transformed series (log + lp-adjust)
      * @param domain
      * @param test
      * @return
@@ -530,9 +532,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData getTradingDaysEffect(TsDomain domain) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
         TsData s = deterministicEffect(domain, v -> ModellingUtility.isDaysRelated(v));
         return backTransform(s, true);
     }
@@ -544,9 +543,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData getEasterEffect(TsDomain domain) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
         TsData s = deterministicEffect(domain, v -> ModellingUtility.isEaster(v));
         return backTransform(s, false);
     }
@@ -558,9 +554,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData getMovingHolidayEffect(TsDomain domain) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
         TsData s = deterministicEffect(domain, v -> ModellingUtility.isMovingHoliday(v));
         return backTransform(s, false);
     }
@@ -584,9 +577,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData getOutliersEffect(TsDomain domain) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
         TsData s = deterministicEffect(domain, v -> ModellingUtility.isOutlier(v));
         return backTransform(s, false);
     }
@@ -599,9 +589,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData getOutliersEffect(TsDomain domain, boolean ami) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
         TsData s = deterministicEffect(domain, v -> ModellingUtility.isOutlier(v, ami));
         return backTransform(s, false);
     }
@@ -613,48 +600,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
      * @return
      */
     public TsData getCalendarEffect(TsDomain domain) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
         TsData s = deterministicEffect(domain, v -> ModellingUtility.isCalendar(v));
-        return backTransform(s, true);
-    }
-
-    /**
-     * Gets all the deterministic effects, except mean correction
-     *
-     * @param domain If the domain is null, the series domain is used
-     * @return
-     */
-    public TsData getDeterministicEffect(TsDomain domain) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
-        TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
-        return backTransform(s, false);
-    }
-
-    public TsData getDeterministicEffect(TsDomain domain, Predicate<Variable> test) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
-        TsData s = deterministicEffect(domain, v -> test.test(v));
-        return backTransform(s, false);
-    }
-
-    public TsData getPreadjustmentEffect(TsDomain domain, Predicate<Variable> test) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
-        TsData s = preadjustmentEffect(domain, v -> test.test(v));
-        return backTransform(s, true);
-    }
-
-    public TsData getRegressionEffect(TsDomain domain, Predicate<Variable> test) {
-        if (domain == null) {
-            domain = description.getSeries().getDomain();
-        }
-        TsData s = regressionEffect(domain, v -> test.test(v));
         return backTransform(s, true);
     }
 

@@ -121,8 +121,8 @@ public class WaveSpecificSurveyErrorsTest {
         
         FastMatrix Q = FastMatrix.square(dim);
         init.Pf0(Q);
-        System.out.println();
-        System.out.println(Q);
+//        System.out.println();
+//        System.out.println(Q);
     }
 
     private void xt(double[][] ar, int lag) {

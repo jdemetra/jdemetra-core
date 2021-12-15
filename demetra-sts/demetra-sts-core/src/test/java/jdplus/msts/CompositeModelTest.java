@@ -71,12 +71,12 @@ public class CompositeModelTest {
 //        for (int i = 1; i < h1.length; ++i) {
 //            cmp = DoublesMath.add(cmp, states.getComponent(pos[1] + 2 * i));
 //        }
-        System.out.println(cmp);
+//        System.out.println(cmp);
         cmp = states.getComponent(pos[2]);
         for (int i = 1; i < h2.length; ++i) {
             cmp = DoublesMath.add(cmp, states.getComponent(pos[2] + 2 * i));
         }
-        System.out.println(cmp);
+//        System.out.println(cmp);
 //
 //        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
 //        System.out.println(rslt.getLikelihood().logLikelihood());
