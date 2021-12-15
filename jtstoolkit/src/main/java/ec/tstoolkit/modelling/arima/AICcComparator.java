@@ -76,7 +76,7 @@ public class AICcComparator implements IModelComparator {
         }
         double aiccRef = reference.getStatistics().AICC;
         double aicc = alternative.getStatistics().AICC;
-        return aiccRef > aicc - aicDiff_ ? 0 : -1;
+        return aiccRef + aicDiff_> aicc ? 0 : -1;
     }
     
 }
