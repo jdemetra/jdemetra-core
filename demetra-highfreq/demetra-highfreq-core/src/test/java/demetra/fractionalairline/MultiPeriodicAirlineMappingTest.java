@@ -84,12 +84,12 @@ public class MultiPeriodicAirlineMappingTest {
                 .build();
         RegArimaEstimation<ArimaModel> estimation = processor.process(regarima, mapping);
         assertTrue(estimation != null);
-        System.out.println(estimation.getMax().getParameters());
+//        System.out.println(estimation.getMax().getParameters());
         UcarimaModel ucm = ucm(estimation.getModel().arima(), true);
         ucm=ucm.simplify();
         assertTrue(ucm.isValid());
-        System.out.println(ucm);
-        System.out.println(y);
+//        System.out.println(ucm);
+//        System.out.println(y);
         CompositeSsf ssf = SsfUcarima.of(ucm);
         DataBlockStorage ds = DkToolkit.fastSmooth(ssf, new SsfData(y));
         int[] cmp = ssf.componentsPosition();

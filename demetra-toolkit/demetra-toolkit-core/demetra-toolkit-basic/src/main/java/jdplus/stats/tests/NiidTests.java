@@ -16,15 +16,15 @@
  */
 package jdplus.stats.tests;
 
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
+import demetra.data.DoubleSeq;
 import demetra.dstats.DStatException;
 import demetra.stats.AutoCovariances;
-import jdplus.stats.DescriptiveStatistics;
 import demetra.stats.StatException;
-import java.util.function.IntToDoubleFunction;
-import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
+import java.util.function.IntToDoubleFunction;
+import jdplus.stats.DescriptiveStatistics;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 
 /**
  *
@@ -74,8 +74,9 @@ public class NiidTests {
 
         public Builder period(final int period) {
             this.period = period;
-            if (period == 1)
-                seasonal=false;
+            if (period == 1) {
+                seasonal = false;
+            }
             return this;
         }
 
@@ -162,9 +163,29 @@ public class NiidTests {
         this.data2 = DoubleSeq.of(d2);
         this.stat2 = DescriptiveStatistics.of(data2);
     }
-    
-    public DoubleSeq data(){
+
+    public DoubleSeq data() {
         return data;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public int getK() {
+        return k;
+    }
+
+    public int getKs() {
+        return ks;
+    }
+
+    public int getHyperParametersCount() {
+        return hyperParameters;
+    }
+
+    public boolean isSeasonal() {
+        return seasonal;
     }
 
     /**
@@ -227,6 +248,19 @@ public class NiidTests {
         return boxPierce;
     }
 
+    public StatisticalTest boxPierce(int lk) {
+
+        try {
+            return new BoxPierce(autoCorrelations(), stat.getObservationsCount())
+                    .autoCorrelationsCount(lk)
+                    .lag(1)
+                    .hyperParametersCount(hyperParameters)
+                    .build();
+        } catch (StatException | DStatException ex) {
+            return null;
+        }
+    }
+
     /**
      *
      * @return
@@ -245,6 +279,18 @@ public class NiidTests {
             }
         }
         return boxPierceOnSquares;
+    }
+
+    public StatisticalTest boxPierceOnSquare(int lk) {
+        try {
+            return new BoxPierce(autoCorrelationsOnSquares(), stat.getObservationsCount())
+                    .autoCorrelationsCount(lk)
+                    .lag(1)
+                    .hyperParametersCount(hyperParameters)
+                    .build();
+        } catch (StatException | DStatException ex) {
+            return null;
+        }
     }
 
     /**
@@ -267,6 +313,18 @@ public class NiidTests {
         return ljungBox;
     }
 
+    public StatisticalTest ljungBox(int lk) {
+        try {
+            return new LjungBox(autoCorrelations(), stat.getObservationsCount())
+                    .autoCorrelationsCount(lk)
+                    .lag(1)
+                    .hyperParametersCount(hyperParameters)
+                    .build();
+        } catch (StatException | DStatException ex) {
+            return null;
+        }
+    }
+
     /**
      *
      * @return
@@ -285,6 +343,18 @@ public class NiidTests {
             }
         }
         return ljungBoxOnSquares;
+    }
+
+    public StatisticalTest ljungBoxOnSquare(int lk) {
+        try {
+            return new LjungBox(autoCorrelationsOnSquares(), stat.getObservationsCount())
+                    .autoCorrelationsCount(lk)
+                    .lag(1)
+                    .hyperParametersCount(hyperParameters)
+                    .build();
+        } catch (StatException | DStatException ex) {
+            return null;
+        }
     }
 
     /**
@@ -440,10 +510,22 @@ public class NiidTests {
         return seasonalBoxPierce;
     }
 
-    /**
-     *
-     * @return
-     */
+    public StatisticalTest seasonalBoxPierce(int lk) {
+        if (!seasonal) {
+            return null;
+        }
+        try {
+            return new BoxPierce(autoCorrelations(), stat.getObservationsCount())
+                    .hyperParametersCount(hyperParameters)
+                    .lag(period)
+                    .autoCorrelationsCount(lk)
+                    .usePositiveAutoCorrelations()
+                    .build();
+        } catch (StatException | DStatException ex) {
+            return null;
+        }
+    }
+
     public StatisticalTest seasonalLjungBox() {
         if (!seasonal) {
             return null;
@@ -462,6 +544,25 @@ public class NiidTests {
             }
         }
         return seasonalLjungBox;
+    }
+   /**
+     *
+     * @return
+     */
+    public StatisticalTest seasonalLjungBox(int lk) {
+        if (!seasonal) {
+            return null;
+        }
+        try {
+            return new LjungBox(autoCorrelations(), stat.getObservationsCount())
+                    .hyperParametersCount(hyperParameters)
+                    .lag(period)
+                    .autoCorrelationsCount(lk)
+                    .usePositiveAutoCorrelations()
+                    .build();
+        } catch (StatException | DStatException ex) {
+            return null;
+        }
     }
 
 }

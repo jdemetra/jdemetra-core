@@ -232,7 +232,8 @@ public class TramoKernelTest {
         assertTrue(n >= .9 * all.length);
     }
 
-    public static void testInseeFullc() {
+    @Test
+    public void testInseeFullc() {
         TsData[] all = Data.insee();
         TramoSpec spec = TramoSpec.TRfull;
         ModellingContext context = new ModellingContext();
@@ -598,7 +599,7 @@ public class TramoKernelTest {
 
     public static void main(String[] arg) {
 //        testInseeFull();
-        testInseeFullc();
+//        testInseeFullc();
         stressTestProd();
     }
 }

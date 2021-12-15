@@ -18,6 +18,7 @@
         <module>demetra-sa-core</module>
         <module>demetra-sa-r</module>
         <module>demetra-sa-io</module>
+        <module>demetra-sa-workspace</module>
     </modules>
     
     <properties>

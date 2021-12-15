@@ -37,7 +37,7 @@ import demetra.data.Doubles;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.univariate.Ssf;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
@@ -56,7 +56,7 @@ public class TimeVaryingRegression {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         TsDomain domain;
         FastMatrix variables;

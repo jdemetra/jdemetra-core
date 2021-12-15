@@ -25,5 +25,4 @@ package demetra.information;
 public interface InformationSetSerializer<T> {
     InformationSet write(T object, boolean verbose);
     T read(InformationSet info);
-    
 }

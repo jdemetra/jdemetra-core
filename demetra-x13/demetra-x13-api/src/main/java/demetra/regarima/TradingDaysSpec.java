@@ -42,16 +42,16 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     private Parameter[] tdCoefficients;
     private Parameter lpCoefficient;
 
-    private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.None,
+    private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.NONE,
             LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, null, null);
 
     public static TradingDaysSpec stockTradingDays(int w, RegressionTestSpec test) {
-        return new TradingDaysSpec(null, null, TradingDaysType.None,
+        return new TradingDaysSpec(null, null, TradingDaysType.NONE,
                 LengthOfPeriodType.None, test, false, w, null, null);
     }
 
     public static TradingDaysSpec stockTradingDays(int w, @NonNull Parameter[] tdc) {
-        return new TradingDaysSpec(null, null, TradingDaysType.None,
+        return new TradingDaysSpec(null, null, TradingDaysType.NONE,
                 LengthOfPeriodType.None, RegressionTestSpec.None, false, w, tdc, null);
     }
 
@@ -60,17 +60,17 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestSpec test) {
-        return new TradingDaysSpec(null, vars, TradingDaysType.None,
+        return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
                 LengthOfPeriodType.None, test, false, 0, null, null);
     }
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, @NonNull Parameter[] tdcoeff) {
-        return new TradingDaysSpec(null, vars, TradingDaysType.None,
+        return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
                 LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, tdcoeff, null);
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
@@ -78,7 +78,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
@@ -86,7 +86,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
@@ -94,7 +94,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
-        if (type == TradingDaysType.None) {
+        if (type == TradingDaysType.NONE) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
@@ -107,7 +107,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public boolean isUsed() {
-        return tradingDaysType != TradingDaysType.None || userVariables != null || stockTradingDays != 0;
+        return tradingDaysType != TradingDaysType.NONE || userVariables != null || stockTradingDays != 0;
     }
 
     boolean isDefined() {
@@ -123,7 +123,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public boolean isDefaultTradingDays() {
-        return userVariables == null && holidays == null && stockTradingDays == 0 && tradingDaysType != TradingDaysType.None;
+        return userVariables == null && holidays == null && stockTradingDays == 0 && tradingDaysType != TradingDaysType.NONE;
     }
 
     public boolean isHolidays() {
@@ -136,9 +136,9 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             return true;
         }
         if (regressionTestType != RegressionTestSpec.None) {
-            return tradingDaysType != TradingDaysType.None && lengthOfPeriodType != LengthOfPeriodType.None;
+            return tradingDaysType != TradingDaysType.NONE && lengthOfPeriodType != LengthOfPeriodType.None;
         }
-        if (tradingDaysType == TradingDaysType.None) {
+        if (tradingDaysType == TradingDaysType.NONE) {
             return lengthOfPeriodType == LengthOfPeriodType.None;
         }
         return true;
@@ -153,4 +153,8 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         return this;
     }
 
+    public boolean hasFixedCoefficients(){
+        return (lpCoefficient != null && lpCoefficient.isFixed())
+                || Parameter.hasFixedParameters(tdCoefficients);
+    }
 }

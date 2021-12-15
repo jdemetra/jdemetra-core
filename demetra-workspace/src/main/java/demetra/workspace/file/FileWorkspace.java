@@ -18,6 +18,7 @@ package demetra.workspace.file;
 
 import internal.workspace.file.FileWorkspaceImpl;
 import demetra.workspace.Workspace;
+import demetra.workspace.WorkspaceFamily;
 import demetra.workspace.WorkspaceItem;
 import internal.workspace.file.spi.FamilyHandlerLoader;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 2.2.0
  */
 public interface FileWorkspace extends Workspace {
+
 
     @NonNull
     FileFormat getFileFormat() throws IOException;

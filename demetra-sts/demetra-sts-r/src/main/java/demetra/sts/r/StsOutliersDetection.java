@@ -37,7 +37,7 @@ import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
 import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmKernel;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import jdplus.ssf.akf.AkfToolkit;
 import demetra.math.matrices.Matrix;
 
@@ -50,7 +50,7 @@ public class StsOutliersDetection {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         public byte[] buffer() {
             int nx = x == null ? 0 : x.getColumnsCount();

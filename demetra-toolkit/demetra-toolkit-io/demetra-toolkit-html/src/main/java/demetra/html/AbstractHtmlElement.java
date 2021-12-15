@@ -38,6 +38,7 @@ public abstract class AbstractHtmlElement implements HtmlElement {
     protected static final DecimalFormat df2 = new DecimalFormat("0.00");
     protected static final DecimalFormat df3 = new DecimalFormat("0.000");
     protected static final DecimalFormat df4 = new DecimalFormat("0.0000");
+    protected static final DecimalFormat df6 = new DecimalFormat("0.000000");
     protected static final DecimalFormat dg2 = new DecimalFormat("0.##");
     protected static final DecimalFormat dg6 = new DecimalFormat("0.######");
     protected static final DecimalFormat de6 = new DecimalFormat("0.######E0#");

@@ -46,7 +46,7 @@ public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystem
 
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {
-        return "td";
+        return "Trading days";
     }
 
     @Override
@@ -54,17 +54,17 @@ public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystem
         return description(clustering, idx);
     }
 
-    static final String[] WD = new String[]{"week", "week-end"};
-    static final String[] TD = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+    static final String[] TD2 = new String[]{"week", "week-end"};
+    static final String[] TD7 = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
     static final String[] TD3 = new String[]{"week", "saturday", "sunday"};
     static final String[] TD3c = new String[]{"mon-thu", "fri-sat", "sunday"};
     static final String[] TD4 = new String[]{"mon-thu", "friday", "saturday", "sunday"};
 
-    static String description(DayClustering dc, int idx) {
+    public static String description(DayClustering dc, int idx) {
         if (dc.equals(DayClustering.TD2)) {
-            return WD[idx];
+            return TD2[idx];
         } else if (dc.equals(DayClustering.TD7)) {
-            return TD[idx];
+            return TD7[idx];
         } else if (dc.equals(DayClustering.TD3)) {
             return TD3[idx];
         } else if (dc.equals(DayClustering.TD3c)) {

@@ -31,6 +31,6 @@ public class LengthOfPeriod implements ILengthOfPeriodVariable, ISystemVariable 
     
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return type == LengthOfPeriodType.LeapYear ? "leap year" : "length of period";
+        return type == LengthOfPeriodType.LeapYear ? "Leap year" : "Length of period";
     }
 }

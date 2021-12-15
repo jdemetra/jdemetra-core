@@ -46,6 +46,22 @@ public class TsContextVariable implements ITsVariable {
         lastLag = lag;
     }
 
+    public TsContextVariable withId(String nid) {
+        if (id.equals(nid)) {
+            return this;
+        } else {
+            return new TsContextVariable(nid, firstLag, lastLag);
+        }
+    }
+
+    public TsContextVariable withLags(int firstlag, int lastlag) {
+        if (firstlag == firstLag && lastlag == lastLag) {
+            return this;
+        } else {
+            return new TsContextVariable(id, firstlag, lastlag);
+        }
+    }
+
     /**
      * first &le last !!
      *
@@ -80,7 +96,7 @@ public class TsContextVariable implements ITsVariable {
     @Override
     public <D extends TimeSeriesDomain<?>> String description(int idx, D context) {
         if (isLag()) {
-             StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             int lag = firstLag + idx;
             builder.append(id);
             if (lag < 0) {
@@ -90,7 +106,7 @@ public class TsContextVariable implements ITsVariable {
             }
             return builder.toString();
         } else {
-           return id;
+            return id;
         }
     }
 

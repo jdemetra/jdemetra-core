@@ -148,4 +148,54 @@ public final class TramoSeatsSpec implements Validatable<TramoSeatsSpec>, SaSpec
         }
     }
     //</editor-fold>
+    
+    @Override
+    public String display() {
+        if (this == RSA0) {
+            return "RSA0";
+        }
+        if (this == RSA1) {
+            return "RSA1";
+        }
+        if (this == RSA2) {
+            return "RSA2";
+        }
+        if (this == RSA3) {
+            return "RSA3";
+        }
+        if (this == RSA4) {
+            return "RSA4";
+        }
+        if (this == RSA5) {
+            return "RSA5";
+        }
+        if (this == RSAfull) {
+            return "RSAfull";
+        }
+        if (equals(RSA0)) {
+            return "RSA0";
+        }
+        if (equals(RSA1)) {
+            return "RSA1";
+        }
+        if (equals(RSA2)) {
+            return "RSA2";
+        }
+        if (equals(RSA3)) {
+            return "RSA3";
+        }
+        if (equals(RSA4)) {
+            return "RSA4";
+        }
+        if (equals(RSA5)) {
+            return "RSA5";
+        }
+        if (equals(RSAfull)) {
+            return "RSAfull";
+        }
+        return SMETHOD;
+    }
+
+    private static final String SMETHOD = "TS";
+    
 }

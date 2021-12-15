@@ -81,9 +81,9 @@ public class HtmlRegArima extends AbstractHtmlElement {
     private <T extends ITsVariable> int countVariables(Class<T> tclass, boolean fixed) {
         Variable[] variables = model.getDescription().getVariables();
         if (fixed) {
-            return Arrays.stream(variables).filter(var -> tclass.isInstance(var)).mapToInt(var -> var.fixedCoefficientsCount()).sum();
+            return Arrays.stream(variables).filter(var -> tclass.isInstance(var.getCore())).mapToInt(var -> var.fixedCoefficientsCount()).sum();
         } else {
-            return Arrays.stream(variables).filter(var -> tclass.isInstance(var)).mapToInt(var -> var.freeCoefficientsCount()).sum();
+            return Arrays.stream(variables).filter(var -> tclass.isInstance(var.getCore())).mapToInt(var -> var.freeCoefficientsCount()).sum();
         }
     }
 
@@ -120,7 +120,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
             stream.write("Series has been corrected for leap year").newLine();
         }
         int ntd = countVariables(ITradingDaysVariable.class, false);
-        int nftd = countVariables(ITradingDaysVariable.class, false);
+        int nftd = countVariables(ITradingDaysVariable.class, true);
         if (ntd == 0 && nftd == 0) {
             stream.write("No trading days effects").newLine();
         } else {
@@ -442,7 +442,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsDomain context, Predicate<Variable> predicate) throws IOException {
-        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> !var.isPreadjustment() && var.getCore() instanceof IUserVariable)
+        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var->predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty() && header != null) {
@@ -452,7 +452,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private <V extends ITsVariable> void writeFullRegressionItems(HtmlStream stream, TsDomain context, Predicate<Variable> predicate) throws IOException {
-        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> !var.isPreadjustment() && var.getCore() instanceof IUserVariable)
+        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty()) {
@@ -524,7 +524,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
         if (size > 1 && regs.size() == var.dim() && var instanceof ITradingDaysVariable) {
             GeneralLinearModel.Estimation estimation = model.getEstimation();
             int startpos = regs.get(0).getPosition();
-            double b = -estimation.getCoefficients().extract(startpos, size).sum();
+            DoubleSeq coef = estimation.getCoefficients().extract(startpos, size);
+            double b = -coef.sum();
             FastMatrix bvar = FastMatrix.of(estimation.getCoefficientsCovariance().extract(startpos, size, startpos, size));
             double v = bvar.sum();
             double tval = b / Math.sqrt(v);
@@ -542,8 +543,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
 
             try {
                 SymmetricMatrix.lcholesky(bvar);
-                DataBlock r = DataBlock.make(size);
-                r.set(1);
+                DataBlock r = DataBlock.of(coef);
                 LowerTriangularMatrix.solveLx(bvar, r);
                 double f = r.ssq() / size;
                 F fdist = new F(size, estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
@@ -603,7 +603,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
         stream.newLine();
         stream.write(HtmlTag.HEADER3, "Scores at the solution");
-        stream.write(DoubleSeq.format(score, dg6));
+        stream.write(DoubleSeq.format(score, df6));
     }
 
 }

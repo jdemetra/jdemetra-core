@@ -33,7 +33,7 @@ import jdplus.math.linearfilters.BackFilter;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaToolkit;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.tramo.TramoSeasonalityDetector;
 
@@ -83,7 +83,7 @@ public class SeatsModel {
                     .meanCorrection(mean)
                     .build();
             ConcentratedLikelihoodWithMissing ll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(regarima);
-            var = ll.ssq() / (ll.dim()-orders.getParametersCount());
+            var = ll.ssq() / (ll.dim() - orders.getParametersCount());
         }
         seatsModel.innovationVariance = var;
         return seatsModel;
@@ -179,9 +179,10 @@ public class SeatsModel {
     }
 
     /**
-     * Gets the compact form of the model.
-     * The returned UCARIMA model is modified as follows:
-     * - the mean correction is replaced by unit roots in the auto-regressive
+     * Gets the compact form of the model.The returned UCARIMA model is modified
+     * as follows:
+     * - if need be, the mean correction is replaced by unit roots in the
+     * auto-regressive
      * and
      * moving average parts.
      * - the transitory component and the noise are added up
@@ -189,15 +190,16 @@ public class SeatsModel {
      * The components in the compact form can be retrieved by means of the
      * componentsType method
      *
+     * @param mean Pu the mean correction in the model (for estimation only)
      * @return
      */
-    public UcarimaModel compactUcarimaModel() {
+    public UcarimaModel compactUcarimaModel(boolean mean) {
         if (ucarimaModel == null) {
             return null;
         }
         // correction for mean...
         UcarimaModel ucm = ucarimaModel;
-        if (meanCorrection) {
+        if (mean && meanCorrection) {
             UcarimaModel.Builder tmp = UcarimaModel.builder();
             ArimaModel tm = ucm.getComponent(0);
             if (tm.isNull()) {

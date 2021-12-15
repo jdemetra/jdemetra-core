@@ -16,7 +16,7 @@ import java.util.function.IntToDoubleFunction;
 import jdplus.dfa.MSEDecomposition;
 import jdplus.filters.FSTFilter;
 import jdplus.math.linearfilters.FiniteFilter;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
@@ -27,7 +27,7 @@ public class FiltersToolkit {
 
     @lombok.Value
     @lombok.Builder
-    public static class FiniteFilters implements Explorable {
+    public static class FiniteFilters implements GenericExplorable {
 
         private SymmetricFilter filter;
         private IFiniteFilter[] afilters;

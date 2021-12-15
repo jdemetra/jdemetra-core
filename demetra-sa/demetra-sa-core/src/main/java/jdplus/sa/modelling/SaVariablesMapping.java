@@ -113,10 +113,10 @@ public class SaVariablesMapping {
                 if (var.getDeltaSeasonal() > 0 && var.getDelta() > 0) {
                     return ComponentType.Undefined;
                 }
-                Range<LocalDateTime>[] sequences = var.getSequences();
+                List<Range<LocalDateTime>> sequences = var.getSequences();
                 int maxseq = 0;
-                for (int i = 0; i < sequences.length; ++i) {
-                    int len = (int) sequences[i].start().until(sequences[i].end(), ChronoUnit.DAYS) / 365;
+                for (Range<LocalDateTime> seq : sequences) {
+                    int len = (int) seq.start().until(seq.end(), ChronoUnit.DAYS) / 365;
                     if (len > maxseq) {
                         maxseq = len;
                     }

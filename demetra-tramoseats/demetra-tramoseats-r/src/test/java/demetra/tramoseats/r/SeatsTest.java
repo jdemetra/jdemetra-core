@@ -21,6 +21,7 @@ import demetra.arima.UcarimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
+import java.util.Map;
 import jdplus.seats.SeatsResults;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,9 +38,8 @@ public class SeatsTest {
     @Test
     public void testProd() {
         SeatsResults rslts = Seats.process(Data.TS_PROD, true, new int[]{3, 1, 1}, new int[]{0, 1, 1}, false, -1, -2);
-//        System.out.println(rslts.getCore().getInitialComponents());
-//        Map<String, Class> dictionary = rslts.getDictionary();
-//        dictionary.keySet().forEach(s->System.out.println(s));
+        Map<String, Class> dictionary = rslts.getDictionary();
+        dictionary.keySet().forEach(s->System.out.println(s));
         TsData data = rslts.getData("t_lin_f", TsData.class);
         assertTrue(data.length() == 24);
     }

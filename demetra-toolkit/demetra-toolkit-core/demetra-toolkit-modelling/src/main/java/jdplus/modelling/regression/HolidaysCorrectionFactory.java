@@ -40,6 +40,10 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         if (cur == null) {
             return null;
         }
+        return corrector(cur, mgr, meanCorrection);
+    }
+    
+    public static HolidaysCorrector corrector(CalendarDefinition cur, CalendarManager mgr, boolean meanCorrection) {
         if (cur instanceof Calendar) {
             return corrector((Calendar) cur, meanCorrection);
         } else if (cur instanceof ChainedCalendar) {

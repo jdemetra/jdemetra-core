@@ -134,9 +134,9 @@ public class MstsMappingTest {
                 .build();
         boolean ok = lm.minimize(fn.evaluate(mapping.getDefaultParameters()));
         SsfFunctionPoint rslt = (SsfFunctionPoint) lm.getResult();
-        System.out.println(rslt.getLikelihood().logLikelihood());
-        System.out.println(rslt.getLikelihood().ser());
-        System.out.println(rslt.getParameters());
+//        System.out.println(rslt.getLikelihood().logLikelihood());
+//        System.out.println(rslt.getLikelihood().ser());
+//        System.out.println(rslt.getParameters());
 
 //        LbfgsMinimizer bfgs = new LbfgsMinimizer();
 //        bfgs.setMaxIter(1000);
@@ -147,12 +147,12 @@ public class MstsMappingTest {
 //        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(M2uAdapter.of(mssf), udata, true);
         DefaultSmoothingResults srslts = AkfToolkit.smooth(M2uAdapter.of(mssf), udata, true, false, true);
         int[] pos = mssf.componentsPosition();
-        for (int k = 0; k < pos.length; ++k) {
-            System.out.println(srslts.getComponent(pos[k]).extract(0, D.getRowsCount(), D.getColumnsCount()));
-        }
-        for (int k = 0; k < pos.length; ++k) {
-            System.out.println(srslts.getComponentVariance(pos[k]).extract(0, D.getRowsCount(), D.getColumnsCount()));
-        }
+//        for (int k = 0; k < pos.length; ++k) {
+//            System.out.println(srslts.getComponent(pos[k]).extract(0, D.getRowsCount(), D.getColumnsCount()));
+//        }
+//        for (int k = 0; k < pos.length; ++k) {
+//            System.out.println(srslts.getComponentVariance(pos[k]).extract(0, D.getRowsCount(), D.getColumnsCount()));
+//        }
     }
 }
 

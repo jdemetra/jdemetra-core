@@ -16,21 +16,21 @@
  */
 package jdplus.x13.regarima;
 
-import jdplus.data.DataBlock;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
+import demetra.arima.SarimaOrders;
+import demetra.data.DoubleSeq;
 import demetra.math.Complex;
+import demetra.regarima.RegArimaException;
+import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
+import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import demetra.arima.SarimaOrders;
-import demetra.regarima.RegArimaException;
-import demetra.data.DoubleSeq;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.HannanRissanen;
 import jdplus.sarima.estimation.SarimaMapping;
-import jdplus.regarima.IRegArimaComputer;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 
 /**
  *
@@ -185,6 +185,10 @@ public class DifferencingModule {
         spec = null;
         x = null;
         useml = false;
+        iter=0;
+        rmax=0;
+        rsmax=0;
+        c_=0;
     }
 
     private int cond1(int icon) // current condition status

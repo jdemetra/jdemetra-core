@@ -89,6 +89,10 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     public static EasterSpec none(){
         return DEFAULT_UNUSED;
     }
+    
+    public boolean hasFixedCoefficient(){
+        return coefficient != null && coefficient.isFixed();
+    }
 
     public static class Builder implements Validatable.Builder<EasterSpec> {
     }

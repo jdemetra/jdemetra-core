@@ -20,14 +20,14 @@ import demetra.x11.X11Results;
 import demetra.x13.X13Finals;
 import demetra.x13.X13Preadjustment;
 import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class X13Results implements Explorable {
+public class X13Results implements GenericExplorable {
 
     private RegSarimaModel preprocessing;
     private X13Preadjustment preadjustment;

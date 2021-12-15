@@ -109,7 +109,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = residualsLastTest;
                     if (test == null) {
-                        test = td(irr, options.getFlast(), 0);
+                        test = td(residuals, options.getFlast(), 0);
                         residualsLastTest = test;
                     }
                 }
@@ -121,7 +121,7 @@ public class ResidualTradingDaysTests {
                 synchronized (this) {
                     test = residualsTest;
                     if (test == null) {
-                        test = td(irr, 0, 0);
+                        test = td(residuals, 0, 0);
                         residualsTest = test;
                     }
                 }
@@ -135,6 +135,6 @@ public class ResidualTradingDaysTests {
         if (ny > 0) {
             s = s.drop(Math.max(0, s.length() - ifreq * ny), 0);
         }
-        return TradingDaysTest.olsTest(s, lag > 0 ? lag : null);
+        return TradingDaysTest.olsTest(s, lag);
     }
 }

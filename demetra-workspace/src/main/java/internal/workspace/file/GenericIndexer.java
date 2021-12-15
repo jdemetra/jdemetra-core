@@ -55,7 +55,7 @@ final class GenericIndexer implements Indexer {
 
     @Override
     public void checkId(Index.Key key) throws IOException {
-        if (WorkspaceFamily.UTIL_CAL.equals(key.getFamily())) {
+        if (demetra.workspace.Workspace.UTIL_CAL.equals(key.getFamily())) {
             if (!key.getId().equals("Calendars")) {
                 throw new IOException("Only one calendar file is allowed");
             }
@@ -140,6 +140,6 @@ final class GenericIndexer implements Indexer {
         return index.withoutItem(SINGLE_CAL_GENERIC_KEY);
     }
 
-    private static final Index.Key SINGLE_CAL_GENERIC_KEY = new Index.Key(WorkspaceFamily.UTIL_CAL, "Calendars");
+    private static final Index.Key SINGLE_CAL_GENERIC_KEY = new Index.Key(demetra.workspace.Workspace.UTIL_CAL, "Calendars");
     private static final Index.Value SINGLE_CAL_GENERIC_VALUE = new Index.Value("Calendars", false, null);
 }

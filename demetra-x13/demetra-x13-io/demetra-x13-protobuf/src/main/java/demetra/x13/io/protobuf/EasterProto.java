@@ -17,7 +17,6 @@
 package demetra.x13.io.protobuf;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import demetra.data.Parameter;
 import demetra.regarima.EasterSpec;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 
@@ -47,7 +46,6 @@ public class EasterProto {
     public EasterSpec convert(X13Protos.RegArimaSpec.EasterSpec spec) {
 
         return EasterSpec.builder()
-                .automatic(spec.getDuration() == 0)
                 .duration(spec.getDuration())
                 .type(X13ProtosUtility.convert(spec.getType()))
                 .test(X13ProtosUtility.convert(spec.getTest()))

@@ -18,7 +18,7 @@ package jdplus.regarima;
 
 import nbbrd.design.Development;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.GlsSarimaComputer;

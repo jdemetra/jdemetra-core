@@ -23,7 +23,7 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.StateStorage;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import jdplus.modelling.ApiUtility;
@@ -41,7 +41,7 @@ import demetra.math.matrices.Matrix;
  *
  * @author Jean Palate
  */
-public class SsfUcarimaEstimation implements Explorable {
+public class SsfUcarimaEstimation implements GenericExplorable {
 
     private demetra.arima.UcarimaModel ucarima;
     private final CompositeSsf ssf;

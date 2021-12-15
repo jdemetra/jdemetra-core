@@ -32,41 +32,13 @@ import java.util.List;
 @Development(status = Development.Status.Alpha)
 @lombok.Value
 @lombok.AllArgsConstructor(access=lombok.AccessLevel.PRIVATE)
-@lombok.Builder
+@lombok.Builder(builderClassName="Builder", toBuilder=true)
 public class InterventionVariable implements IUserVariable, ISystemVariable{
-
-    @BuilderPattern(InterventionVariable.class)
-    public static class Builder {
-        
-        private double delta, deltaSeasonal;
-        private List<Range<LocalDateTime>> sequences = new ArrayList<>();
-        
-        public Builder delta(double delta) {
-            this.delta = delta;
-            return this;
-        }
-        
-        public Builder deltaSeasonal(double delta) {
-            this.deltaSeasonal = delta;
-            return this;
-        }
-        
-        public Builder add(LocalDateTime start, LocalDateTime end) {
-            this.sequences.add( Range.of(start, end));
-            return this;
-        }
-        
-        public InterventionVariable build() {
-            if (sequences.isEmpty()) {
-                throw new TsException(TsException.INVALID_DEFINITION);
-            }
-            return new InterventionVariable(delta, deltaSeasonal,
-                    sequences.toArray(new Range[sequences.size()]));
-        }
-    }
     
+   
     private double delta, deltaSeasonal;
-    private Range<LocalDateTime>[] sequences;
+    @lombok.Singular
+    private List<Range<LocalDateTime> >sequences;
     
     @Override
     public int dim()
@@ -76,5 +48,11 @@ public class InterventionVariable implements IUserVariable, ISystemVariable{
     public <D extends TimeSeriesDomain<?>> String description(D context){
         return "iv";
     }
+
+    private static final InterventionVariable EMPTY=new Builder().build();
+    public static InterventionVariable empty(){
+        return EMPTY;
+    }
+
     
 }

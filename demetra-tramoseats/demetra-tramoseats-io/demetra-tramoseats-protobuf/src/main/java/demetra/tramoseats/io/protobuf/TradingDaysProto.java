@@ -114,7 +114,7 @@ public class TradingDaysProto {
         TradingDaysSpec.AutoMethod auto = TramoSeatsProtosUtility.convert(spec.getAuto());
         if (auto != TradingDaysSpec.AutoMethod.Unused) {
             return TradingDaysSpec.automatic(auto, spec.getPtest());
-        } else if (td == TradingDaysType.None) {
+        } else if (td == TradingDaysType.NONE) {
             return TradingDaysSpec.none();
         } else {
             if (test) {

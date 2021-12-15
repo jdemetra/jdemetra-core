@@ -90,8 +90,8 @@ public class XmlDefaultTradingDaysSpec
         if (xml.defaulttd.tdOption == null && xml.defaulttd.lpOption == null) {
             return TradingDaysSpec.none();
         }
-        TradingDaysType td = xml.defaulttd.tdOption == null ? TradingDaysType.None : xml.defaulttd.tdOption;
-        LengthOfPeriodType lp = xml.defaulttd.lpOption == null ? LengthOfPeriodType.None : xml.defaulttd.lpOption;
+        TradingDaysType td = xml.defaulttd.tdOption == null ? TradingDaysType.NONE : xml.defaulttd.getTdOption();
+        LengthOfPeriodType lp = xml.defaulttd.lpOption == null ? LengthOfPeriodType.None : xml.defaulttd.getLpOption();
         RegressionTestSpec test = xml.test == null ? RegressionTestSpec.None : xml.test;
         boolean adjust = xml.defaulttd.autoAdjust == null ? false : xml.defaulttd.autoAdjust;
         if (xml.defaulttd.calendar == null) {

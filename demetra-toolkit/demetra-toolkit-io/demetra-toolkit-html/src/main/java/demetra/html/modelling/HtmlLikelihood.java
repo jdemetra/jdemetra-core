@@ -50,21 +50,21 @@ public class HtmlLikelihood extends AbstractHtmlElement implements HtmlElement {
 
         stream.write("Number of estimated parameters = ").write(
                 stats.getEstimatedParametersCount()).newLines(2);
-        stream.write("Loglikelihood = ").write(stats.getLogLikelihood()).newLine();
+        stream.write("Loglikelihood = ").write(df6.format(stats.getLogLikelihood())).newLine();
         if (stats.getTransformationAdjustment() != 0
                 && !Double.isNaN(stats.getTransformationAdjustment())) {
             stream.write("Transformation adjustment = ").write(
-                    stats.getTransformationAdjustment()).newLine();
+                    df6.format(stats.getTransformationAdjustment())).newLine();
             stream.write("Adjusted loglikelihood = ").write(
-                    stats.getAdjustedLogLikelihood()).newLines(2);
+                    df6.format(stats.getAdjustedLogLikelihood())).newLines(2);
         }
         double stde = Math.sqrt(stats.getSsqErr() / stats.getEffectiveObservationsCount());
         stream.write("Standard error of the regression (ML estimate) = ")
-                .write(stde).newLine();
-        stream.write("AIC = ").write(stats.getAIC()).newLine();
-        stream.write("AICC = ").write(stats.getAICC()).newLine();
+                .write(dg6.format(stde)).newLine();
+        stream.write("AIC = ").write(df6.format(stats.getAIC())).newLine();
+        stream.write("AICC = ").write(df6.format(stats.getAICC())).newLine();
         //stream.write("BIC = ").write(stats.BIC).newLine();
-        stream.write("BIC (corrected for length) = ").write(stats.getBICC()).newLine();
+        stream.write("BIC (corrected for length) = ").write(df6.format(stats.getBICC())).newLine();
         //stream.write("Hannan-Quinn = ").write(stats.HannanQuinn).newLines(2);
     }
 }

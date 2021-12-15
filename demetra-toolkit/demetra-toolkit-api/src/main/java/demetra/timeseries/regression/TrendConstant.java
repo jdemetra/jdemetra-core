@@ -29,7 +29,7 @@ public class TrendConstant implements ISystemVariable {
 
      @Override
     public <D extends TimeSeriesDomain<?>> String description(D context){
-        return NAME;
+        return "Constant";
     }
    
     public TrendConstant(int d, int bd){

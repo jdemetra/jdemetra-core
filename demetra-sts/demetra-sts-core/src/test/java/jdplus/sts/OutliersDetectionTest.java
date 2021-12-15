@@ -57,19 +57,19 @@ public class OutliersDetectionTest {
 
         od.process(Y, null, 1);
         int[] ao = od.getAoPositions();
-        System.out.print("AO:");
-        for (int i = 0; i < ao.length; ++i) {
-            System.out.print('\t');
-            System.out.print(ao[i] + 1);
-        }
-        System.out.println();
+//        System.out.print("AO:");
+//        for (int i = 0; i < ao.length; ++i) {
+//            System.out.print('\t');
+//            System.out.print(ao[i] + 1);
+//        }
+//        System.out.println();
         int[] ls = od.getLsPositions();
-        System.out.print("LS:");
-        for (int i = 0; i < ls.length; ++i) {
-            System.out.print('\t');
-            System.out.print(ls[i] + 1);
-        }
-        System.out.println();
+//        System.out.print("LS:");
+//        for (int i = 0; i < ls.length; ++i) {
+//            System.out.print('\t');
+//            System.out.print(ls[i] + 1);
+//        }
+//        System.out.println();
     }
 
     @Test
@@ -94,19 +94,19 @@ public class OutliersDetectionTest {
         od.process(Y.log(), td, 12);
         long t1 = System.currentTimeMillis();
         int[] ao = od.getAoPositions();
-        System.out.print("AO:");
-        for (int i = 0; i < ao.length; ++i) {
-            System.out.print('\t');
-            System.out.print(ao[i] + 1);
-        }
-        System.out.println();
+//        System.out.print("AO:");
+//        for (int i = 0; i < ao.length; ++i) {
+//            System.out.print('\t');
+//            System.out.print(ao[i] + 1);
+//        }
+//        System.out.println();
         int[] ls = od.getLsPositions();
-        System.out.print("LS:");
-        for (int i = 0; i < ls.length; ++i) {
-            System.out.print('\t');
-            System.out.print(ls[i] + 1);
-        }
-        System.out.println();
+//        System.out.print("LS:");
+//        for (int i = 0; i < ls.length; ++i) {
+//            System.out.print('\t');
+//            System.out.print(ls[i] + 1);
+//        }
+//        System.out.println();
         System.out.println(t1 - t0);
 //        System.out.println(DoubleSeq.of(A));
     }

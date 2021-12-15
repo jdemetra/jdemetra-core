@@ -22,7 +22,10 @@ import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -45,7 +48,7 @@ public class CalendarUtility {
         for (int i = 0; i < n; ++i) {
             start[i] = domain.get(i).start().toLocalDate();
         }
-        start[n]=domain.getEndPeriod().start().toLocalDate();
+        start[n] = domain.getEndPeriod().start().toLocalDate();
         for (int i = 0; i < n; ++i) {
             // int dw0 = (start[i] - 4) % 7;
             int ni = (int) start[i].until(start[i + 1], ChronoUnit.DAYS);
@@ -157,8 +160,9 @@ public class CalendarUtility {
      * @return
      */
     public int getNumberOfDaysByMonth(int month) {
-        return MONTHDAYS[month-1];
+        return MONTHDAYS[month - 1];
     }
+
     /**
      * Gets the number of days by month (1-based indexed).
      *
@@ -170,7 +174,7 @@ public class CalendarUtility {
         if ((month == 2) && isLeap(year)) {
             return 29;
         }
-        return MONTHDAYS[month-1];
+        return MONTHDAYS[month - 1];
     }
 
     /**
@@ -178,12 +182,77 @@ public class CalendarUtility {
      */
     private final int[] MONTHDAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30,
         31, 30, 31};
-   /**
+    /**
      * Cumulative number of days (if no leap year). CumulatedMonthDays[2] =
      * number of days from 1/1 to 28/2.
      */
     private final int[] CUMULATEDMONTHDAYS = {0, 31, 59, 90, 120, 151,
         181, 212, 243, 273, 304, 334, 365};
     
+    private static final String[] SMALLMONTH = {"jan", "feb", "mar", "apr", "may", "jun",
+        "jul", "aug", "sep", "oct", "nov", "dec"};
 
+    public String formatPeriod(int freq, int pos) {
+        if (freq == 12) {
+            return Month.of(pos+1).toString();
+        } else if (freq <=1) {
+            return "";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            switch (freq) {
+                case 4:
+                    builder.append('Q');
+                    break;
+                case 2:
+                    builder.append('H');
+                    break;
+                default:
+                    builder.append('P');
+                    break;
+
+            }
+            builder.append(pos + 1);
+            return builder.toString();
+        }
+    }
+
+   /**
+     * Gets a short description (independent of the year) of the period
+     * corresponding to a frequency and a 0-based position. 
+     * For example: "jan" for the first monthly period of the year. 
+     * "Q1" for the first quarter...
+     * 
+     * @param freq
+     *            The given frequency
+     * @param pos
+     *            The 0-based position of the period
+     * @return The short description
+     * @see #formatPeriod(TSFrequency, int).
+     */
+    public static String formatShortPeriod(int freq, int pos) {
+        if (freq == 12) {
+            return SMALLMONTH[pos];
+        } else {
+            return formatPeriod(freq, pos);
+        }
+    }
+
+    public LocalDate toLocalDate(Date date) {
+        if (date == null)
+            return null;
+        java.util.Calendar cal = CALENDAR_THREAD_LOCAL.get();
+        cal.setTime(date);
+        return LocalDate.of(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH)+1,
+                cal.get(java.util.Calendar.DAY_OF_MONTH));
+    }
+
+    public Date toDate(LocalDate date) {
+        if (date == null)
+            return null;
+        java.util.Calendar cal = CALENDAR_THREAD_LOCAL.get();
+        cal.set(date.getYear(), date.getMonthValue()-1, date.getDayOfMonth());
+        return cal.getTime();
+    }
+
+    private static final ThreadLocal<GregorianCalendar> CALENDAR_THREAD_LOCAL = ThreadLocal.withInitial(GregorianCalendar::new);
 }

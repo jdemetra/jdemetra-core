@@ -180,6 +180,7 @@ public class CsvInformationFormatter {
             }
             // request with wild cards
             if (InformationSet.hasWildCards(sid)) {
+                try{
                 Map<String, Object> sel = record.searchAll(sid, Object.class);
                 if (!sel.isEmpty()) {
                     List<String> ids = new ArrayList<>();
@@ -202,11 +203,22 @@ public class CsvInformationFormatter {
                     results = EMPTY;
                     items = SEMPTY;
                 }
+                }catch(Exception ex){
+                    results = EMPTY;
+                    items = SEMPTY;
+                    
+                }
             } else {
+                try{
                 results = new Object[]{record.getData(sid, Object.class)};
                 items = new String[]{shortId(sid, shortname)};
                 if (length == 0 && results[0] != null) {
                     updateLength();
+                }
+               }catch(Exception ex){
+                    results = EMPTY;
+                    items = SEMPTY;
+                    
                 }
             }
         }

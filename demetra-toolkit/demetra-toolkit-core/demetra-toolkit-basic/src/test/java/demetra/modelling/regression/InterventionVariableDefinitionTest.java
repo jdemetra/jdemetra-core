@@ -16,6 +16,7 @@
  */
 package demetra.modelling.regression;
 
+import demetra.data.Range;
 import demetra.timeseries.regression.InterventionVariable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -34,7 +35,7 @@ public class InterventionVariableDefinitionTest {
     @Test
     public void testBuilder() {
         InterventionVariable var = InterventionVariable.builder()
-                .add(LocalDateTime.now(), LocalDateTime.now().plus(1, ChronoUnit.WEEKS))
+                .sequence(Range.of(LocalDateTime.now(), LocalDateTime.now().plus(1, ChronoUnit.WEEKS)))
                 .build();
     }
     

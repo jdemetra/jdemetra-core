@@ -220,10 +220,10 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
                 .test(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays,
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.TD2,
                 LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T);
 
-        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays,
+        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TD7,
                 LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T);
 
         TradingDaysSpec dc = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest,
@@ -331,7 +331,9 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         }
     }
     //</editor-fold>
-        public String display() {
+
+    @Override
+    public String display() {
         if (this == TR0) {
             return "TR0";
         }
@@ -349,6 +351,9 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         }
         if (this == TR5) {
             return "TR5";
+        }
+        if (this == TRfull) {
+            return "TRfull";
         }
         if (equals(TR0)) {
             return "TR0";
@@ -374,6 +379,6 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         return SMETHOD;
     }
 
-        private static final String SMETHOD = "TR";
+    private static final String SMETHOD = "TR";
 
 }

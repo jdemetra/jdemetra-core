@@ -11,7 +11,7 @@ import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.RegSarimaComputer;
@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import jdplus.math.matrices.FastMatrix;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
@@ -48,7 +48,7 @@ public class MovingRegression {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         TsDomain domain;
         FastMatrix variables;

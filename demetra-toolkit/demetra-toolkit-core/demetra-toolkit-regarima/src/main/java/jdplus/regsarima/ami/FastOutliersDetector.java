@@ -27,7 +27,7 @@ import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.sarima.estimation.HannanRissanen;

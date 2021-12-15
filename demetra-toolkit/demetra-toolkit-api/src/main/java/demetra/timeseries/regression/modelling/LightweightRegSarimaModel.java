@@ -16,9 +16,8 @@
  */
 package demetra.timeseries.regression.modelling;
 
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.modelling.implementations.SarimaSpec;
-import demetra.stats.StatisticalTest;
 import java.util.Map;
 
 /**
@@ -27,8 +26,8 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
-public class LightweightRegSarimaModel implements GeneralLinearModel<SarimaSpec>, Explorable {
-
+public class LightweightRegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericExplorable {
+    
 //    @lombok.NonNull
     private LightweightLinearModel.Description<SarimaSpec> description;
 

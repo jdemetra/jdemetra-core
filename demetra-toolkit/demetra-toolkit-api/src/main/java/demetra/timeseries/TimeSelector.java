@@ -30,10 +30,11 @@ import lombok.AccessLevel;
 @Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TimeSelector implements Cloneable {
+@lombok.Builder(builderClassName="Builder", toBuilder=true)
+public class TimeSelector {
 
-    private static final TimeSelector ALL = new TimeSelector(SelectionType.All, null, null, 0, 0),
-            NONE = new TimeSelector(SelectionType.None, null, null, 0, 0);
+    private static final TimeSelector ALL = new TimeSelector(SelectionType.All, LocalDateTime.MIN, LocalDateTime.MAX, 0, 0),
+            NONE = new TimeSelector(SelectionType.None, LocalDateTime.MIN, LocalDateTime.MAX, 0, 0);
 
     public static enum SelectionType {
         /**
@@ -69,6 +70,13 @@ public class TimeSelector implements Cloneable {
          */
         Excluding;
     }
+    
+    public static Builder builder(){
+        return new Builder()
+                .type(SelectionType.All)
+                .d0(LocalDateTime.MIN)
+                .d1(LocalDateTime.MAX);        
+    }
 
     /**
      * The type of the selector
@@ -80,12 +88,14 @@ public class TimeSelector implements Cloneable {
      * The starting day of the selector. Its interpretation depends on on the
      * type of the selector
      */
+    @lombok.NonNull
     private final LocalDateTime d0;
 
     /**
      * The ending day of the selector. Its interpretation depends on on the type
      * of the selector. May be unused
      */
+    @lombok.NonNull
     private final LocalDateTime d1;
 
     /**
@@ -135,7 +145,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector excluding(final int n0, final int n1) {
-        return new TimeSelector(SelectionType.Excluding, null, null, n0, n1);
+        return new TimeSelector(SelectionType.Excluding, LocalDateTime.MIN, LocalDateTime.MAX, n0, n1);
     }
 
     /**
@@ -145,7 +155,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector first(final int n) {
-        return new TimeSelector(SelectionType.First, null, null, n, 0);
+        return new TimeSelector(SelectionType.First, LocalDateTime.MIN, LocalDateTime.MAX, n, 0);
     }
 
     /**
@@ -156,7 +166,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector from(@NonNull final LocalDateTime d0) {
-        return new TimeSelector(SelectionType.From, d0, null, 0, 0);
+        return new TimeSelector(SelectionType.From, d0, LocalDateTime.MAX, 0, 0);
     }
 
     /**
@@ -166,7 +176,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector last(final int n) {
-        return new TimeSelector(SelectionType.Last, null, null, 0, n);
+        return new TimeSelector(SelectionType.Last, LocalDateTime.MIN, LocalDateTime.MAX, 0, n);
     }
 
     /**
@@ -186,16 +196,7 @@ public class TimeSelector implements Cloneable {
      * @return
      */
     public static TimeSelector to(final LocalDateTime d1) {
-        return new TimeSelector(SelectionType.To, null, d1, 0, 0);
-    }
-
-    @Override
-    public TimeSelector clone() {
-        try {
-            return (TimeSelector) super.clone();
-        } catch (CloneNotSupportedException ex) {
-            return null;
-        }
+        return new TimeSelector(SelectionType.To, LocalDateTime.MIN, d1, 0, 0);
     }
 
     @Override
@@ -278,7 +279,95 @@ public class TimeSelector implements Cloneable {
         }
     }
 
-    public boolean isAll() {
+   public String toDateString() {
+       StringBuilder builder=new StringBuilder();
+        switch (type) {
+            case Between:
+                if (!d0.equals(LocalDateTime.MIN))
+                    builder.append(d0.toLocalDate());
+                builder.append(" - ");
+                if (!d1.equals(LocalDateTime.MAX))
+                    builder.append(d1.toLocalDate());
+                return builder.toString();
+            case Excluding: {
+                if (n0 == 0 && n1 == 0) {
+                    return "";
+                }
+                builder.append("All but ");
+                if (n0 != 0) {
+                    builder.append("first ");
+                    if (n0 > 1) {
+                        builder.append(n0).append(" periods");
+                    } else if (n0 > 0) {
+                        builder.append("period");
+                    } else if (n0 < -1) {
+                        builder.append(-n0).append(" years");
+                    } else if (n0 < 0) {
+                        builder.append("year");
+                    }
+                    if (n1 != 0) {
+                        builder.append(" and ");
+                    }
+                }
+                if (n1 != 0) {
+                    builder.append("last ");
+                    if (n1 > 1) {
+                        builder.append(n1).append(" periods");
+                    } else if (n1 > 0) {
+                        builder.append("period");
+                    } else if (n1 < -1) {
+                        builder.append(-n1).append(" years");
+                    } else if (n1 < 0) {
+                        builder.append("year");
+                    }
+                }
+                return builder.toString();
+            }
+            case First: {
+                if (n0 > 0) {
+                    builder.append("first ");
+                    if (n0 > 1) {
+                        builder.append(n0).append(" periods");
+                    } else {
+                        builder.append("period");
+                    }
+                    if (n1 > 0) {
+                        builder.append(" and ");
+                    }
+                }
+                return builder.toString();
+            }
+            case Last: {
+                 if (n1 > 0) {
+                    builder.append("last ");
+                    if (n1 > 1) {
+                        builder.append(n1).append(" periods");
+                    } else {
+                        builder.append("period");
+                    }
+                }
+                return builder.toString();
+            }
+            case From:
+                builder.append("From ");
+                if (!d0.equals(LocalDateTime.MIN))
+                    builder.append(d0.toLocalDate());
+                return builder.toString();
+            case To:
+                builder.append("Until ");
+                if (!d1.equals(LocalDateTime.MAX))
+                    builder.append(d1.toLocalDate());
+                 return builder.toString();
+           case All:
+                return "All";
+            case None:
+                return "None";
+            default:
+                return "";
+        }
+    }
+
+   public boolean isAll() {
         return type == SelectionType.All;
     }
 

@@ -15,6 +15,7 @@ import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -78,12 +79,14 @@ public class TramoSeatsKernel {
                 .decomposition(srslts)
                 .finals(finals)
                 .diagnostics(diagnostics)
+                .log(log)
                 .build();
     }
 
     private static SeatsModelSpec of(RegSarimaModel model) {
         TsData series = model.interpolatedSeries(false);
-        TsData det = model.getDeterministicEffect(series.getDomain());
+        TsData det = model.deterministicEffect(null, v->! (v.getCore() instanceof TrendConstant));
+        det=model.backTransform(det, true);
         TsData yreg = RegArimaDecomposer.deterministicEffect(model, series.getDomain(), ComponentType.Series, false);
         if (model.getDescription().isLogTransformation()) {
             series = TsData.divide(series, TsData.divide(det, yreg));

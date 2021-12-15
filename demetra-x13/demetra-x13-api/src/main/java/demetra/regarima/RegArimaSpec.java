@@ -129,9 +129,9 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec>, ProcSpecif
                 .easterSpec(true)
                 .build();
 
-        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.WorkingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
+        TradingDaysSpec wd = TradingDaysSpec.td(TradingDaysType.TD2, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
 
-        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TradingDays, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
+        TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TD7, LengthOfPeriodType.LeapYear, RegressionTestSpec.Remove, true);
 
         RegressionSpec rwd = RegressionSpec.builder()
                 .easter(easter)
@@ -212,4 +212,49 @@ public final class RegArimaSpec implements Validatable<RegArimaSpec>, ProcSpecif
         }
     }
     //</editor-fold>
+    
+    @Override
+    public String display() {
+        if (this == RG0) {
+            return "RG0";
+        }
+        if (this == RG1) {
+            return "RG1";
+        }
+        if (this == RG2) {
+            return "RG2";
+        }
+        if (this == RG3) {
+            return "RG3";
+        }
+        if (this == RG4) {
+            return "RG4";
+        }
+        if (this == RG5) {
+            return "RG5";
+        }
+        if (equals(RG0)) {
+            return "RG0";
+        }
+        if (equals(RG1)) {
+            return "RG1";
+        }
+        if (equals(RG2)) {
+            return "RG2";
+        }
+        if (equals(RG3)) {
+            return "RG3";
+        }
+        if (equals(RG4)) {
+            return "RG4";
+        }
+        if (equals(RG5)) {
+            return "RG5";
+        }
+        return SMETHOD;
+    }
+
+    private static final String SMETHOD = "RG";
+
+     
 }

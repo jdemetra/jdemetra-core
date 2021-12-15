@@ -31,6 +31,7 @@ import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import jdplus.arima.IArimaModel;
 
 /**
@@ -64,10 +65,16 @@ public class ModellingProtosUtility {
 
     public ModellingProtos.TradingDays convert(TradingDaysType td) {
         switch (td) {
-            case TradingDays:
-                return ModellingProtos.TradingDays.TD_FULL;
-            case WorkingDays:
-                return ModellingProtos.TradingDays.TD_WEEK;
+            case TD7:
+                return ModellingProtos.TradingDays.TD7;
+            case TD4:
+                return ModellingProtos.TradingDays.TD4;
+            case TD3c:
+                return ModellingProtos.TradingDays.TD3C;
+            case TD3:
+                return ModellingProtos.TradingDays.TD3;
+            case TD2:
+                return ModellingProtos.TradingDays.TD2;
             default:
                 return ModellingProtos.TradingDays.TD_NONE;
         }
@@ -75,12 +82,18 @@ public class ModellingProtosUtility {
 
     public TradingDaysType convert(ModellingProtos.TradingDays td) {
         switch (td) {
-            case TD_FULL:
-                return TradingDaysType.TradingDays;
-            case TD_WEEK:
-                return TradingDaysType.WorkingDays;
+            case TD7:
+                return TradingDaysType.TD7;
+            case TD4:
+                return TradingDaysType.TD4;
+            case TD3:
+                return TradingDaysType.TD3;
+            case TD3C:
+                return TradingDaysType.TD3c;
+            case TD2:
+                return TradingDaysType.TD2;
             default:
-                return TradingDaysType.None;
+                return TradingDaysType.NONE;
         }
     }
 
@@ -156,10 +169,9 @@ public class ModellingProtosUtility {
                 .setCoefficient(ToolkitProtosUtility.convert(var.getCoefficient(0)))
                 .putAllMetadata(var.getAttributes());
 
-        Range<LocalDateTime>[] sequences = v.getSequences();
-        for (int i = 0; i < sequences.length; ++i) {
-            Range<LocalDateTime> seq = sequences[i];
-            builder.addSequences(ModellingProtos.InterventionVariable.Sequence.newBuilder()
+        List<Range<LocalDateTime>> seqs = v.getSequences();
+        for (Range<LocalDateTime> seq :seqs) {
+             builder.addSequences(ModellingProtos.InterventionVariable.Sequence.newBuilder()
                     .setStart(ToolkitProtosUtility.convert(seq.start().toLocalDate()))
                     .setEnd(ToolkitProtosUtility.convert(seq.end().toLocalDate()))
                     .build());
@@ -176,7 +188,7 @@ public class ModellingProtosUtility {
             ModellingProtos.InterventionVariable.Sequence seq = v.getSequences(i);
             LocalDate start = ToolkitProtosUtility.convert(seq.getStart());
             LocalDate end = ToolkitProtosUtility.convert(seq.getEnd());
-            builder.add(start.atStartOfDay(), end.atStartOfDay());
+            builder.sequence(Range.of(start.atStartOfDay(), end.atStartOfDay()));
         }
         Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
         return Variable.<InterventionVariable>builder()

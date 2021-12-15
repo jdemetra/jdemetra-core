@@ -23,6 +23,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.tramo.RegressionTestType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.tramo.TradingDaysSpec;
+import demetra.tramoseats.TramoSeatsException;
 import java.util.Map;
 
 /**
@@ -63,7 +64,7 @@ class TradingDaysSpecMapping {
         InformationSet cinfo = regInfo.subSet(RegressionSpecMapping.CALENDAR);
         InformationSet tdInfo = cinfo.subSet(CalendarSpecMapping.TD);
 
-        writeProperties(tdInfo, spec, verbose);
+        writeProperties(tdInfo, spec, verbose, false);
 
         Parameter lcoef = spec.getLpCoefficient();
         RegressionSpecMapping.set(regInfo, lpName(), lcoef);
@@ -77,7 +78,7 @@ class TradingDaysSpecMapping {
         }
         InformationSet tdInfo = new InformationSet();
 
-        writeProperties(tdInfo, spec, verbose);
+        writeProperties(tdInfo, spec, verbose, true);
 
         Parameter lcoef = spec.getLpCoefficient();
         Parameter[] tcoef = spec.getTdCoefficients();
@@ -90,7 +91,7 @@ class TradingDaysSpecMapping {
         return tdInfo;
     }
 
-    void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose) {
+    void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose, boolean v3) {
 
         if (verbose || spec.isAutomatic()) {
             tdInfo.set(MAUTO, spec.getAutomaticMethod().name());
@@ -98,8 +99,11 @@ class TradingDaysSpecMapping {
         if (verbose || spec.getProbabilityForFTest() != TradingDaysSpec.DEF_PFTD) {
             tdInfo.set(PFTD, spec.getProbabilityForFTest());
         }
-        if (verbose || spec.getTradingDaysType() != TradingDaysType.None) {
+        if (verbose || spec.getTradingDaysType() != TradingDaysType.NONE) {
+            if (v3)
             tdInfo.set(TDOPTION, spec.getTradingDaysType().name());
+            else 
+            tdInfo.set(TDOPTION, tdToString(spec.getTradingDaysType()));
         }
         if (verbose || spec.getLengthOfPeriodType() != LengthOfPeriodType.None) {
             tdInfo.set(LPOPTION, spec.getLengthOfPeriodType().name());
@@ -130,7 +134,7 @@ class TradingDaysSpecMapping {
         Parameter lcoef = RegressionSpecMapping.coefficientOf(regInfo, lpName());
         Parameter[] tdcoef = RegressionSpecMapping.coefficientsOf(regInfo, tdName());
 
-        return readProperties(tdInfo, lcoef, tdcoef);
+        return readProperties(tdInfo, lcoef, tdcoef, false);
     }
 
     TradingDaysSpec read(InformationSet tdInfo) {
@@ -140,10 +144,31 @@ class TradingDaysSpecMapping {
         Parameter lcoef = tdInfo.get(LPCOEF, Parameter.class);
         Parameter[] tdcoef = tdInfo.get(TDCOEF, Parameter[].class);
 
-        return readProperties(tdInfo, lcoef, tdcoef);
+        return readProperties(tdInfo, lcoef, tdcoef, true);
+    }
+    
+    private TradingDaysType tdOf(String str){
+        switch (str){
+            case "TradingDays":
+                return TradingDaysType.TD7;
+            case "WorkingDays":
+                return TradingDaysType.TD2;
+            default: 
+                return TradingDaysType.NONE;
+        }
     }
 
-    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef) {
+    private String tdToString(TradingDaysType type){
+        switch (type){
+            case TD7: return "TradingDays";
+             case TD2 : return "WorkingDays";
+             case NONE: return "None";
+             default:
+                 throw new TramoSeatsException("Illegal conversion");
+        }
+    }
+
+    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef, boolean v3) {
         Boolean auto = tdInfo.get(AUTO, Boolean.class);
         String mauto = tdInfo.get(MAUTO, String.class);
         Double pftd = tdInfo.get(PFTD, Double.class);
@@ -156,7 +181,7 @@ class TradingDaysSpecMapping {
         Boolean test = tdInfo.get(TEST, Boolean.class);
         String testtype = tdInfo.get(TESTTYPE, String.class);
 
-        TradingDaysType tdo = td == null ? TradingDaysType.None : TradingDaysType.valueOf(td);
+        TradingDaysType tdo = td == null ? TradingDaysType.NONE : (v3 ? TradingDaysType.valueOf(td) : tdOf(td));
         LengthOfPeriodType lpo = lp == null ? LengthOfPeriodType.None : LengthOfPeriodType.LeapYear;
         if (lpt != null) {
             lpo = LengthOfPeriodType.valueOf(lpt);
@@ -188,7 +213,7 @@ class TradingDaysSpecMapping {
             } else {
                 return TradingDaysSpec.stockTradingDays(w, reg);
             }
-        } else if (tdo == TradingDaysType.None && lpo == LengthOfPeriodType.None) {
+        } else if (tdo == TradingDaysType.NONE && lpo == LengthOfPeriodType.None) {
             return TradingDaysSpec.none();
         } else if (holidays != null) {
             if (tdcoef != null || lcoef != null) {

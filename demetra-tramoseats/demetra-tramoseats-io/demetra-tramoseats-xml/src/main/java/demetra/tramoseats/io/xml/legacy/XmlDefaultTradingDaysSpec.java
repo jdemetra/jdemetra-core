@@ -20,6 +20,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.tramo.RegressionTestType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.tramo.TradingDaysSpec;
+import demetra.tramoseats.TramoSeatsException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -80,6 +81,8 @@ public class XmlDefaultTradingDaysSpec
     public void setTest(RegressionTestType value) {
         this.test = value;
     }
+    
+    
 
     public static boolean marshal(TradingDaysSpec v, XmlDefaultTradingDaysSpec xml) {
         xml.setCalendar(v.getHolidays());
@@ -90,18 +93,22 @@ public class XmlDefaultTradingDaysSpec
         }
         return true;
     }
+    
+    
 
     public static TradingDaysSpec unmarshal(XmlDefaultTradingDaysSpec xml) {
         if (xml.tdOption == null && xml.lpOption == null) {
             return TradingDaysSpec.none();
         }
-        TradingDaysType td = xml.tdOption == null ? TradingDaysType.None : xml.tdOption;
-        LengthOfPeriodType lp = xml.lpOption == null ? LengthOfPeriodType.None : xml.lpOption;
-        RegressionTestType test = xml.test == null ? RegressionTestType.None : xml.test;
+        TradingDaysType td = xml.tdOption == null ? TradingDaysType.NONE : xml.getTdOption();
+        LengthOfPeriodType lp = xml.lpOption == null ? LengthOfPeriodType.None : xml.getLpOption();
+        RegressionTestType test = xml.test == null ? RegressionTestType.None : xml.getTest();
         if (xml.calendar == null) {
             return TradingDaysSpec.td(td, lp, test);
         } else {
             return TradingDaysSpec.holidays(xml.calendar, td, lp, test);
         }
     }
+    
+    
 }

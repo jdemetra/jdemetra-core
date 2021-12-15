@@ -20,6 +20,7 @@ import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.sa.SaDictionary;
 import demetra.sa.StationaryVarianceDecomposition;
+import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.x13.Mstatistics;
 import jdplus.x13.X13Diagnostics;
 import nbbrd.design.Development;
@@ -36,7 +37,10 @@ public class X13DiagnosticsExtractor extends InformationMapping<X13Diagnostics> 
     public static final String MSTATISTICS = "m-statistics";
 
     public X13DiagnosticsExtractor() {
+        delegate("diagnostics", GenericSaTests.class, source -> source.getGenericDiagnostics());
+        
         delegate(SaDictionary.VARIANCE, StationaryVarianceDecomposition.class, source -> source.getVarianceDecomposition());
+        
         delegate(MSTATISTICS, Mstatistics.class, source -> source.getMstatistics());
     }
 

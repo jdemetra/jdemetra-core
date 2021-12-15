@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import demetra.ssf.SsfInitialization;
 import jdplus.ssf.multivariate.MultivariateSsf;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.math.matrices.Matrix;
 
 /**
@@ -36,7 +36,7 @@ import demetra.math.matrices.Matrix;
 @lombok.experimental.UtilityClass
 public class CompositeModels {
 
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         private final CompositeModelEstimation estimation;
 

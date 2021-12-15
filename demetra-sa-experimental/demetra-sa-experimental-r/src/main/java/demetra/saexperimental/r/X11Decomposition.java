@@ -34,7 +34,7 @@ import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.rkhs.RKHSFilterFactory;
 import jdplus.rkhs.RKHSFilterSpec;
 import jdplus.x11plus.X11SeasonalFiltersFactory;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.math.matrices.Matrix;
 
 /**
@@ -69,7 +69,7 @@ public class X11Decomposition {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         boolean multiplicative;
         DoubleSeq y;

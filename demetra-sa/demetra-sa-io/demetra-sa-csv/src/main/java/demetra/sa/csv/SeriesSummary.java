@@ -41,15 +41,19 @@ public class SeriesSummary {
 
     private void fillDictionary(String[] items, Explorable results) {
         for (String item : items) {
-            item = item.toLowerCase();
-            if (results != null) {
-                if (InformationSet.hasWildCards(item)) {
-                    Map<String, TsData> all = results.searchAll(item, TsData.class);
-                    all.keySet().forEach(s->series.put(s, results.getData(s, TsData.class)));
+            try {
+                item = item.toLowerCase();
+                if (results != null) {
+                    if (InformationSet.hasWildCards(item)) {
+                        Map<String, TsData> all = results.searchAll(item, TsData.class);
+                        all.keySet().forEach(s -> series.put(s, results.getData(s, TsData.class)));
+                    } else {
+                        series.put(item, results.getData(item, TsData.class));
+                    }
                 } else {
-                    series.put(item, results.getData(item, TsData.class));
+                    series.put(item, null);
                 }
-            } else {
+            } catch (Exception err) {
                 series.put(item, null);
             }
 

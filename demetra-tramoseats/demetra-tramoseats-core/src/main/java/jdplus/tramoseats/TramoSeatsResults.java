@@ -19,7 +19,8 @@ package jdplus.tramoseats;
 import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
 import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
+import demetra.processing.ProcessingLog;
 
 /**
  *
@@ -27,11 +28,12 @@ import demetra.information.Explorable;
  */
 @lombok.Value
 @lombok.Builder
-public class TramoSeatsResults implements Explorable {
+public class TramoSeatsResults implements GenericExplorable {
 
     private RegSarimaModel preprocessing;
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
     private TramoSeatsDiagnostics diagnostics;
+    private ProcessingLog log;
 
 }

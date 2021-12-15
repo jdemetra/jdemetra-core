@@ -37,8 +37,8 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
         AddAll
     }
 
-    public static final OutlierSpec DEFAULT_UNUSED = OutlierSpec.builder().build();
-    public static final OutlierSpec DEFAULT = OutlierSpec.builder()
+    public static final OutlierSpec DEFAULT_DISABLED = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT_ENABLED = OutlierSpec.builder()
             .type(new SingleOutlierSpec("AO", 0))
             .type(new SingleOutlierSpec("LS", 0))
             .build();
@@ -89,7 +89,7 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT_UNUSED);
+        return this.equals(DEFAULT_DISABLED);
     }
 
     public static class Builder implements Validatable.Builder<OutlierSpec> {

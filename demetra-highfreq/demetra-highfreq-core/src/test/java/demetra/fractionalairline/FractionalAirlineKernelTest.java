@@ -50,9 +50,9 @@ public class FractionalAirlineKernelTest {
         FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(spec);
         assertTrue(rslt != null);
 
-        System.out.println(rslt.getCoefficients());
-        System.out.println(DoubleSeq.of(rslt.tstats()));
-        System.out.println(rslt.getLikelihood().getLogLikelihood());
+//        System.out.println(rslt.getCoefficients());
+//        System.out.println(DoubleSeq.of(rslt.tstats()));
+//        System.out.println(rslt.getLikelihood().getLogLikelihood());
 
         spec = FractionalAirlineSpec.builder()
                 .y(edf.column(0).fn(z -> Math.log(z)).toArray())
@@ -64,9 +64,9 @@ public class FractionalAirlineKernelTest {
                 .build();
         rslt = FractionalAirlineKernel.process(spec);
         assertTrue(rslt != null);
-        System.out.println(rslt.getCoefficients());
-        System.out.println(DoubleSeq.of(rslt.tstats()));
-        System.out.println(rslt.getLikelihood().getLogLikelihood());
+//        System.out.println(rslt.getCoefficients());
+//        System.out.println(DoubleSeq.of(rslt.tstats()));
+//        System.out.println(rslt.getLikelihood().getLogLikelihood());
 
         spec = FractionalAirlineSpec.builder()
                 .y(edf.column(0).fn(z -> Math.log(z)).toArray())
@@ -74,7 +74,7 @@ public class FractionalAirlineKernelTest {
                 .differencingOrder(2)
                 .build();
         rslt = FractionalAirlineKernel.process(spec);
-        System.out.println(rslt.getLikelihood().getLogLikelihood());
+//        System.out.println(rslt.getLikelihood().getLogLikelihood());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class FractionalAirlineKernelTest {
                 .precision(1e-7)
                 .build();
         rslt = FractionalAirlineKernel.process(spec);
-        System.out.println(rslt.getLikelihood().getLogLikelihood());
+//        System.out.println(rslt.getLikelihood().getLogLikelihood());
     }
 
     private static void addDefault(List<Holiday> holidays) {

@@ -150,7 +150,7 @@ public class XmlInterventionVariable
             }
 
             for (XmlSpan seq : v.sequence) {
-                builder.add(seq.getFrom().atStartOfDay(), seq.getTo().atStartOfDay());
+                builder.sequence(Range.of(seq.getFrom().atStartOfDay(), seq.getTo().atStartOfDay()));
             }
             return builder.build();
         }
@@ -164,11 +164,11 @@ public class XmlInterventionVariable
             xml.setDeltaFilter(t.getDelta());
             xml.setDeltaSeasonalFilter(t.getDeltaSeasonal());
             List<XmlSpan> sequences = xml.getSequences();
-            Range<LocalDateTime>[] seqs = t.getSequences();
-            for (int i = 0; i < seqs.length; ++i) {
+            List<Range<LocalDateTime>> seqs = t.getSequences();
+            for (Range<LocalDateTime> seq : seqs) {
                 XmlSpan span = new XmlSpan();
-                span.setFrom(seqs[i].start().toLocalDate());
-                span.setTo(seqs[i].end().toLocalDate());
+                span.setFrom(seq.start().toLocalDate());
+                span.setTo(seq.end().toLocalDate());
                 sequences.add(span);
             }
             return xml;

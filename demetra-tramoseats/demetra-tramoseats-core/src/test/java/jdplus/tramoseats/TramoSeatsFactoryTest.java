@@ -76,7 +76,7 @@ public class TramoSeatsFactoryTest {
     }
 
     @Test
-    public void testDictionay() {
+    public void testDictionary() {
          Map<String, Class> dic = new LinkedHashMap<>();
         TramoSeatsSpecification.fillDictionary(null, dic);
         String[] arr = dic.keySet().toArray(new String[dic.size()]);

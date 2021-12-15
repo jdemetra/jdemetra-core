@@ -32,16 +32,16 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testHenderson() {
-        System.out.println(DoubleSeq.of(Data.NILE));
+//        System.out.println(DoubleSeq.of(Data.NILE));
         double[] rslt = LocalPolynomialFilters.filter(Data.NILE, 9, 3, "Henderson", "LC", .5, 0, 0);
         assertTrue(rslt != null);
-        System.out.println(DoubleSeq.of(rslt));
+//       System.out.println(DoubleSeq.of(rslt));
         rslt = LocalPolynomialFilters.filter(Data.NILE, 9, 3, "Henderson", "CC", .5, 10, Math.PI / 8);
         assertTrue(rslt != null);
-        System.out.println(DoubleSeq.of(rslt));
+//        System.out.println(DoubleSeq.of(rslt));
         rslt = LocalPolynomialFilters.filter(Data.NILE, 9, 3, "Henderson", "DAF", .5, 0,0);
         assertTrue(rslt != null);
-        System.out.println(DoubleSeq.of(rslt));
+//        System.out.println(DoubleSeq.of(rslt));
     }
 
 }

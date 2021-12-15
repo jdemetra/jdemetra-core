@@ -37,12 +37,12 @@ import demetra.math.matrices.Matrix;
 public class X11Extractor extends InformationMapping<X11Results> {
 
     public X11Extractor() {
-        
-        set(SaDictionary.T_CMP, TsData.class, source->source.getD12());
-        set(SaDictionary.SA_CMP, TsData.class, source->source.getD11());
-        set(SaDictionary.S_CMP, TsData.class, source->source.getD10());
+
+        set(SaDictionary.T_CMP, TsData.class, source -> source.getD12());
+        set(SaDictionary.SA_CMP, TsData.class, source -> source.getD11());
+        set(SaDictionary.S_CMP, TsData.class, source -> source.getD10());
 //        set(SaDictionary.S_CMP+ SeriesInfo.F_SUFFIX, TsData.class, source->source.getD10a());
-        set(SaDictionary.I_CMP, TsData.class, source->source.getD13());
+        set(SaDictionary.I_CMP, TsData.class, source -> source.getD13());
 
         set("b1", TsData.class, source -> source.getB1());
         set("b2", TsData.class, source -> source.getB2());

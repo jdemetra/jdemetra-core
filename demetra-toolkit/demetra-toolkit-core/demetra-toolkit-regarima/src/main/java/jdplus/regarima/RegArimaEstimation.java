@@ -16,7 +16,7 @@
  */
 package jdplus.regarima;
 
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;

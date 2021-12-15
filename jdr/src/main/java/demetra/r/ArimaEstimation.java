@@ -32,7 +32,7 @@ import java.util.Map;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.sarima.SarimaModel;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 import demetra.math.matrices.Matrix;
 
 /**
@@ -96,7 +96,7 @@ public class ArimaEstimation {
     }
 
     @lombok.Value
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         RegArimaModel<SarimaModel> regarima;
         ConcentratedLikelihoodWithMissing concentratedLogLikelihood;

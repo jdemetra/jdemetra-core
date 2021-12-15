@@ -24,7 +24,6 @@ import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
-import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.*;
 import demetra.util.Validatable;
@@ -102,4 +101,14 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     }
 
+    public boolean hasFixedCoefficients(){
+        if (! isUsed())
+            return false;
+        return (mean != null && mean.isFixed()) || tradingDays.hasFixedCoefficients()
+                || easter.hasFixedCoefficient()
+                || outliers.stream().anyMatch(var->! var.isFree())
+                || ramps.stream().anyMatch(var->! var.isFree())
+                || interventionVariables.stream().anyMatch(var->! var.isFree())
+                || userDefinedVariables.stream().anyMatch(var->! var.isFree());
+    }
 }

@@ -26,7 +26,7 @@ import demetra.data.DoubleSeq;
 import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.univariate.Ssf;
-import demetra.information.Explorable;
+import demetra.information.GenericExplorable;
 
 /**
  *
@@ -37,7 +37,7 @@ public class ArimaForecasts {
 
     @lombok.Value
     @lombok.Builder
-    public static class Results implements Explorable {
+    public static class Results implements GenericExplorable {
 
         RegArimaModel<SarimaModel> regarima;
         DoubleSeq forecasts;

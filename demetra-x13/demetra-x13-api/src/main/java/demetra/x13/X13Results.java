@@ -17,6 +17,7 @@
 package demetra.x13;
 
 import demetra.arima.SarimaModel;
+import demetra.information.GenericExplorable;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.x11.X11Results;
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder
-public class X13Results {
+public class X13Results implements GenericExplorable{
     private GeneralLinearModel<SarimaModel> preprocessing;
     private X13Preadjustment preadjustment;
     private X11Results decomposition;

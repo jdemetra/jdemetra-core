@@ -27,7 +27,7 @@ import demetra.data.DoubleSeq;
 public class DefaultLikelihoodEvaluation {
     
     public static ToDoubleFunction<Likelihood> ml(){
-        return likelihood->likelihood.logLikelihood();
+        return likelihood->-likelihood.logLikelihood();
     }
 
     public static ToDoubleFunction<Likelihood> deviance(){

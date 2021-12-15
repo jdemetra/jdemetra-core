@@ -18,11 +18,11 @@ package demetra.information;
 
 import nbbrd.design.Development;
 import demetra.util.WildCards;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * New implementation for JD3
@@ -60,6 +60,18 @@ public interface BasicInformationExtractor<S> {
                 }
                 return builder.toString();
         }
+    }
+    
+    public static String[] prefix(@NonNull String[] str, @NonNull String prefix){
+        if (prefix.isEmpty())
+            return str;
+        String[] rslt=new String[str.length];
+        for (int i=0; i<rslt.length; ++i){
+            StringBuilder builder=new StringBuilder();
+            builder.append(prefix).append(SEP).append(str[i]);
+            rslt[i]=builder.toString();
+        }
+        return rslt;
     }
 
     void fillDictionary(String prefix, Map<String, Class> dic, boolean compact);

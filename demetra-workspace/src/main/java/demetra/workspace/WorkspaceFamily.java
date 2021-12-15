@@ -16,8 +16,15 @@
  */
 package demetra.workspace;
 
+import demetra.information.InformationSetSerializer;
+import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import demetra.util.Id;
+import demetra.workspace.file.FileFormat;
+import demetra.workspace.file.spi.FamilyHandler;
+import demetra.workspace.file.util.InformationSetSupport;
+import demetra.workspace.file.util.XmlConverterSupport;
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import nbbrd.design.Immutable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -120,17 +127,14 @@ public final class WorkspaceFamily implements Id {
         return data.clone();
     }
 
-    public static final WorkspaceFamily SA_MULTI = parse("Seasonal adjustment@multi-documents");
-    public static final WorkspaceFamily SA_DOC_X13 = parse("Seasonal adjustment@documents@x13");
-    public static final WorkspaceFamily SA_DOC_TRAMOSEATS = parse("Seasonal adjustment@documents@tramoseats");
-    public static final WorkspaceFamily SA_SPEC_X13 = parse("Seasonal adjustment@specifications@x13");
-    public static final WorkspaceFamily SA_SPEC_TRAMOSEATS = parse("Seasonal adjustment@specifications@tramoseats");
+    public static FamilyHandler informationSet(WorkspaceFamily family, InformationSetSerializer factory, String repository) {
+        return InformationSetSupport.of(factory, repository).asHandler(family, FileFormat.GENERIC);
+    }
 
-    public static final WorkspaceFamily MOD_DOC_REGARIMA = parse("Modelling@documents@regarima");
-    public static final WorkspaceFamily MOD_DOC_TRAMO = parse("Modelling@documents@tramo");
-    public static final WorkspaceFamily MOD_SPEC_REGARIMA = parse("Modelling@specifications@regarima");
-    public static final WorkspaceFamily MOD_SPEC_TRAMO = parse("Modelling@specifications@tramo");
+    public static FamilyHandler xmlConverter(WorkspaceFamily family, Supplier<? extends IXmlConverter> factory, String repository) {
+        return XmlConverterSupport.of(factory, repository).asHandler(family, FileFormat.GENERIC);
+    }
 
-    public static final WorkspaceFamily UTIL_CAL = parse("Utilities@Calendars");
-    public static final WorkspaceFamily UTIL_VAR = parse("Utilities@Variables");
+
+
 }

@@ -22,6 +22,7 @@ import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
+import demetra.x13.X13Exception;
 import java.util.Map;
 
 /**
@@ -60,7 +61,7 @@ class TradingDaysSpecMapping {
             return;
         }
         InformationSet tdInfo = regInfo.subSet(RegressionSpecMapping.TD);
-        writeProperties(tdInfo, spec, verbose);
+        writeProperties(tdInfo, spec, verbose, false);
 
         Parameter lcoef = spec.getLpCoefficient();
         RegressionSpecMapping.set(regInfo, lpName(), lcoef);
@@ -74,7 +75,7 @@ class TradingDaysSpecMapping {
         }
         InformationSet tdInfo = new InformationSet();
 
-        writeProperties(tdInfo, spec, verbose);
+        writeProperties(tdInfo, spec, verbose, true);
 
         Parameter lcoef = spec.getLpCoefficient();
         Parameter[] tcoef = spec.getTdCoefficients();
@@ -87,9 +88,12 @@ class TradingDaysSpecMapping {
         return tdInfo;
     }
 
-    void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose) {
-        if (verbose || spec.getTradingDaysType() != TradingDaysType.None) {
-            tdInfo.add(TDOPTION, spec.getTradingDaysType().name());
+    void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose, boolean v3) {
+        if (verbose || spec.getTradingDaysType() != TradingDaysType.NONE) {
+            if (v3)
+                tdInfo.add(TDOPTION, spec.getTradingDaysType().name());
+            else
+                tdInfo.add(TDOPTION, tdToString(spec.getTradingDaysType()));
         }
         if (verbose || spec.getLengthOfPeriodType() != LengthOfPeriodType.None) {
             tdInfo.add(LPOPTION, spec.getLengthOfPeriodType().name());
@@ -119,7 +123,7 @@ class TradingDaysSpecMapping {
         Parameter lcoef = RegressionSpecMapping.coefficientOf(regInfo, lpName());
         Parameter[] tdcoef = RegressionSpecMapping.coefficientsOf(regInfo, tdName());
 
-        return readProperties(tdInfo, lcoef, tdcoef);
+        return readProperties(tdInfo, lcoef, tdcoef, false);
     }
 
     TradingDaysSpec read(InformationSet tdInfo) {
@@ -129,15 +133,18 @@ class TradingDaysSpecMapping {
         Parameter lcoef = tdInfo.get(LPCOEF, Parameter.class);
         Parameter[] tdcoef = tdInfo.get(TDCOEF, Parameter[].class);
 
-        return readProperties(tdInfo, lcoef, tdcoef);
+        return readProperties(tdInfo, lcoef, tdcoef, true);
     }
 
-    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef) {
-        TradingDaysType tdtype = TradingDaysType.None;
+    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef, boolean v3) {
+        TradingDaysType tdtype = TradingDaysType.NONE;
         LengthOfPeriodType lptype = LengthOfPeriodType.None;
         String td = tdInfo.get(TDOPTION, String.class);
         if (td != null) {
+            if (v3)
             tdtype = TradingDaysType.valueOf(td);
+            else
+                tdtype= tdOf(td);
         }
         String lp = tdInfo.get(LPOPTION, String.class);
         if (lp != null) {
@@ -170,7 +177,7 @@ class TradingDaysSpecMapping {
             } else {
                 return TradingDaysSpec.stockTradingDays(w, rtest);
             }
-        } else if (tdtype == TradingDaysType.None && lptype == LengthOfPeriodType.None) {
+        } else if (tdtype == TradingDaysType.NONE && lptype == LengthOfPeriodType.None) {
             return TradingDaysSpec.none();
         } else if (holidays != null) {
             if (tdcoef != null || lcoef != null) {
@@ -186,4 +193,27 @@ class TradingDaysSpecMapping {
             }
         }
     }
+    
+        private TradingDaysType tdOf(String str){
+        switch (str){
+            case "TradingDays":
+                return TradingDaysType.TD7;
+            case "WorkingDays":
+                return TradingDaysType.TD2;
+            default: 
+                return TradingDaysType.NONE;
+        }
+    }
+
+    private String tdToString(TradingDaysType type){
+        switch (type){
+            case TD7: return "TradingDays";
+             case TD2 : return "WorkingDays";
+             case NONE: return "None";
+             default:
+                 throw new X13Exception("Illegal conversion");
+        }
+    }
+
+
 }

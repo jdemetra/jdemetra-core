@@ -17,6 +17,7 @@
 package demetra.timeseries.regression.modelling;
 
 import demetra.data.DoubleSeq;
+import demetra.information.Explorable;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
@@ -24,19 +25,16 @@ import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
-import demetra.stats.StatisticalTest;
 import java.util.List;
 import java.util.Map;
 import demetra.math.matrices.Matrix;
-import java.util.Arrays;
-import java.util.function.Predicate;
 
 /**
  *
  * @author PALATEJ
  * @param <M>
  */
-public interface GeneralLinearModel<M> {
+public interface GeneralLinearModel<M> extends Explorable{
 
     Description<M> getDescription();
 

@@ -22,7 +22,7 @@ import nbbrd.design.BuilderPattern;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.internal.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.regarima.outlier.FastOutlierDetector;
 import jdplus.regarima.outlier.CriticalValueComputer;
