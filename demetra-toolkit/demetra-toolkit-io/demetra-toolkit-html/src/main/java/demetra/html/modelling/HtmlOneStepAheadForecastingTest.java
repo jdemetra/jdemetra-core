@@ -36,17 +36,17 @@ import jdplus.regarima.tests.OneStepAheadForecastingTest;
  */
 public class HtmlOneStepAheadForecastingTest extends AbstractHtmlElement implements HtmlElement {
 
-    private final OneStepAheadForecastingTest test_;
-    private double badthreshold_ = OutOfSampleDiagnosticsConfiguration.BAD;
-    private double goodthreshold_ = OutOfSampleDiagnosticsConfiguration.UNC;
+    private final OneStepAheadForecastingTest test;
+    private final double badthreshold_ = OutOfSampleDiagnosticsConfiguration.BAD;
+    private final double goodthreshold_ = OutOfSampleDiagnosticsConfiguration.UNC;
 
     public HtmlOneStepAheadForecastingTest(OneStepAheadForecastingTest test) {
-        test_ = test;
+        this.test = test;
     }
 
     private void writeHeader(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER1, "Out of sample test").newLine();
-        int nin = test_.getInSampleLength(), nout = test_.getOutOfSampleLength();
+        int nin = test.getInSampleLength(), nout = test.getOutOfSampleLength();
         stream.write(HtmlTag.EMPHASIZED_TEXT, "Model re-estimated on Linearized series for first ").write(nin);
         stream.write(HtmlTag.EMPHASIZED_TEXT, " observations and ").write(nout);
         stream.write(HtmlTag.EMPHASIZED_TEXT, " One-Period-Ahead Forecasts computed with model fixed.").newLines(2);
@@ -54,12 +54,12 @@ public class HtmlOneStepAheadForecastingTest extends AbstractHtmlElement impleme
 
     private void writeMeanTest(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER2, "Mean").newLine();
-        int nout = test_.getOutOfSampleLength();
-        StatisticalTest tin = test_.inSampleMeanTest(), tout = test_.outOfSampleMeanTest();
+        int nout = test.getOutOfSampleLength();
+        StatisticalTest tin = test.inSampleMeanTest(), tout = test.outOfSampleMeanTest();
 
         stream.write(HtmlTag.EMPHASIZED_TEXT, "Comparison between forecast errors (last ").write(nout).write(" observations)");
         stream.write(HtmlTag.EMPHASIZED_TEXT, " and residuals (in-sample)").newLine();
-        stream.write(HtmlTag.EMPHASIZED_TEXT, "In sample standard eror of the residuals is ").write(HtmlTag.EMPHASIZED_TEXT, df4.format(Math.sqrt(test_.getInSampleMeanSquaredError()))).newLines(2);
+        stream.write(HtmlTag.EMPHASIZED_TEXT, "In sample standard eror of the residuals is ").write(HtmlTag.EMPHASIZED_TEXT, df4.format(Math.sqrt(test.getInSampleMeanSquaredError()))).newLines(2);
         stream.open(new HtmlTable().withWidth(300));
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableHeader(""));
@@ -68,12 +68,12 @@ public class HtmlOneStepAheadForecastingTest extends AbstractHtmlElement impleme
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("In sample").withWidth(100));
-        stream.write(new HtmlTableCell(df4.format(tin.getValue())).withWidth(100));
+        stream.write(new HtmlTableCell(df4.format(test.getInSampleMean())).withWidth(100));
         stream.write(new HtmlTableCell(df4.format(tin.getPvalue())).withWidth(100).withClass(getPvalueClass(tin.getPvalue())));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("Out of sample").withWidth(100));
-        stream.write(new HtmlTableCell(df4.format(tout.getValue())).withWidth(100));
+        stream.write(new HtmlTableCell(df4.format(test.getOutOfSampleMean())).withWidth(100));
         stream.write(new HtmlTableCell(df4.format(tout.getPvalue())).withWidth(100).withClass(getPvalueClass(tout.getPvalue())));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE).newLine();
@@ -87,8 +87,8 @@ public class HtmlOneStepAheadForecastingTest extends AbstractHtmlElement impleme
 
     private void writeMSETest(HtmlStream stream) throws IOException {
         stream.write(HtmlTag.HEADER2, "MSE").newLine();
-        int nout = test_.getOutOfSampleLength();
-        StatisticalTest test = test_.sameVarianceTest();
+        int nout = test.getOutOfSampleLength();
+        StatisticalTest test = this.test.sameVarianceTest();
         stream.write(HtmlTag.EMPHASIZED_TEXT, "Comparison between mean squared of forecast errors (last ").write(nout).write(" observations)");
         stream.write(HtmlTag.EMPHASIZED_TEXT, " and mean squared of residuals (in-sample)").newLine();
         stream.write(HtmlTag.EMPHASIZED_TEXT, "The test is strongly sensitive to the possible non-normality of the residuals.").newLines(2);
@@ -99,11 +99,11 @@ public class HtmlOneStepAheadForecastingTest extends AbstractHtmlElement impleme
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("In sample").withWidth(100));
-        stream.write(new HtmlTableCell(df4.format(test_.getInSampleMeanSquaredError())).withWidth(100));
+        stream.write(new HtmlTableCell(df4.format(this.test.getInSampleMeanSquaredError())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.open(HtmlTag.TABLEROW);
         stream.write(new HtmlTableCell("Out of sample").withWidth(100));
-        stream.write(new HtmlTableCell(df4.format(test_.getOutOfSampleMeanSquaredError())).withWidth(100));
+        stream.write(new HtmlTableCell(df4.format(this.test.getOutOfSampleMeanSquaredError())).withWidth(100));
         stream.close(HtmlTag.TABLEROW);
         stream.close(HtmlTag.TABLE).newLine();
 

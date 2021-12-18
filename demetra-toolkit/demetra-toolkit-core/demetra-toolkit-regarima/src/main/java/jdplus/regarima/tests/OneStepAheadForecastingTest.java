@@ -35,13 +35,12 @@ import jdplus.stats.tests.TestsUtility;
  *
  * @author Jean Palate
  */
-@lombok.Getter
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class OneStepAheadForecastingTest {
 
     // results
     private final DoubleSeq residuals;
-    private final double meanIn, meanOut, mseIn, mseOut;
+    private final double meanIn, meanOut, varIn, varOut;
     private final int outSampleSize, inSampleSize;
     private final boolean mean;
 
@@ -62,11 +61,11 @@ public class OneStepAheadForecastingTest {
             boolean mean = regarima.isMean();
             int inSampleSize = mean ? in.length() - 1 : in.length();
             double meanIn = in.sum() / in.length();
-            double mseIn = in.ssq() / inSampleSize;
+            double varIn = in.ssq() / inSampleSize;
             double meanOut = out.sum() / nback;
-            double mseOut = out.ssq() / nback;
+            double varOut = out.ssq() / nback;
 
-            return new OneStepAheadForecastingTest(residuals, meanIn, meanOut, mseIn, mseOut, nback, inSampleSize, mean);
+            return new OneStepAheadForecastingTest(residuals, meanIn, meanOut, varIn, varOut, nback, inSampleSize, mean);
         } catch (Exception err) {
             return null;
         }
@@ -83,7 +82,7 @@ public class OneStepAheadForecastingTest {
     public StatisticalTest outOfSampleMeanTest() {
         return new SampleMean(meanOut, outSampleSize)
                 .populationMean(0)
-                .estimatedPopulationVariance(mseIn, inSampleSize)
+                .estimatedPopulationVariance(varIn, inSampleSize)
                 .normalDistribution(true)
                 .build();
     }
@@ -101,11 +100,11 @@ public class OneStepAheadForecastingTest {
     }
 
     public double getInSampleMeanSquaredError() {
-        return mseIn;
+        return Math.sqrt(varIn);
     }
 
     public double getOutOfSampleMeanSquaredError() {
-        return mseOut;
+        return Math.sqrt(varOut);
     }
 
     public DoubleSeq getOutOfSampleResiduals() {
@@ -115,7 +114,7 @@ public class OneStepAheadForecastingTest {
 
     public StatisticalTest sameVarianceTest() {
         F f = new F(outSampleSize, inSampleSize);
-        return TestsUtility.testOf(mseOut / mseIn, f, TestType.Upper);
+        return TestsUtility.testOf(varOut / varIn, f, TestType.Upper);
     }
 
     public StatisticalTest inSampleMeanTest() {
@@ -123,7 +122,7 @@ public class OneStepAheadForecastingTest {
         int nsample = n - outSampleSize;
         return new SampleMean(meanIn, nsample)
                 .populationMean(0)
-                .estimatedPopulationVariance(mseIn, inSampleSize)
+                .estimatedPopulationVariance(varIn, inSampleSize)
                 .normalDistribution(true)
                 .build();
     }
