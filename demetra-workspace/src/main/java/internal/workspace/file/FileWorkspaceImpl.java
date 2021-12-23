@@ -17,11 +17,12 @@
 package internal.workspace.file;
 
 import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.WorkspaceItem;
+import demetra.workspace.WorkspaceItemDescriptor;
 import demetra.workspace.file.FileFormat;
 import demetra.workspace.file.FileWorkspace;
 import demetra.workspace.file.spi.FamilyHandler;
 import demetra.util.Paths;
+import demetra.workspace.WorkspaceItemDescriptor.Key;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -130,35 +131,30 @@ public final class FileWorkspaceImpl implements FileWorkspace {
     }
 
     @Override
-    public Collection<WorkspaceItem> getItems() throws IOException {
-        Collection<WorkspaceItem> result = new ArrayList<>();
-        WorkspaceItem.Builder b = WorkspaceItem.builder();
-        indexer.loadIndex().getItems().forEach((k, v) -> result.add(toItem(b, k, v)));
+    public Collection<WorkspaceItemDescriptor> getItems() throws IOException {
+        Collection<WorkspaceItemDescriptor> result = new ArrayList<>();
+        indexer.loadIndex().getItems().forEach((k, v) -> result.add(new WorkspaceItemDescriptor(k, v)));
         return result;
     }
 
     @Override
-    public Object load(WorkspaceItem item) throws IOException {
-        Index.Key key = toKey(item);
-
+    public Object load(Key key) throws IOException {
         return handlers.loadValue(key.getFamily(), rootFolder, key.getId());
     }
 
     @Override
-    public void store(WorkspaceItem item, Object value) throws IOException {
+    public void store(WorkspaceItemDescriptor item, Object value) throws IOException {
         Objects.requireNonNull(value, "value");
 
-        Index.Key key = toKey(item);
+        Key key = item.getKey();
         indexer.checkId(key);
 
         handlers.storeValue(key.getFamily(), rootFolder, key.getId(), value);
-        indexer.storeIndex(indexer.loadIndex().withItem(key, toValue(item)));
+        indexer.storeIndex(indexer.loadIndex().withItem(key, item.getAttributes()));
     }
 
     @Override
-    public void delete(WorkspaceItem item) throws IOException {
-        Index.Key key = toKey(item);
-
+    public void delete(Key key) throws IOException {
         handlers.deleteValue(key.getFamily(), rootFolder, key.getId());
         indexer.storeIndex(indexer.loadIndex().withoutItem(key));
     }
@@ -184,28 +180,10 @@ public final class FileWorkspaceImpl implements FileWorkspace {
     }
 
     @Override
-    public Path getFile(WorkspaceItem item) throws IOException {
-        Index.Key key = toKey(item);
+    public Path getFile(WorkspaceItemDescriptor item) throws IOException {
+        Key key = item.getKey();
 
         return handlers.resolveFile(key.getFamily(), rootFolder, key.getId());
-    }
-
-    static WorkspaceItem toItem(WorkspaceItem.Builder b, Index.Key k, Index.Value v) {
-        return b
-                .family(k.getFamily())
-                .id(k.getId())
-                .label(v.getLabel())
-                .readOnly(v.isReadOnly())
-                .comments(v.getComments())
-                .build();
-    }
-
-    static Index.Key toKey(WorkspaceItem item) {
-        return new Index.Key(item.getFamily(), item.getId());
-    }
-
-    static Index.Value toValue(WorkspaceItem item) {
-        return new Index.Value(item.getLabel(), item.isReadOnly(), item.getComments());
     }
 
     static Path getRootFolder(Path indexFile) throws IOException {

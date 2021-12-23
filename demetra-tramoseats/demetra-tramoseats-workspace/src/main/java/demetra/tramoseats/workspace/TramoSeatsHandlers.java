@@ -19,17 +19,14 @@ package demetra.tramoseats.workspace;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.modelling.io.information.TsDocumentMapping;
-import demetra.processing.ProcSpecification;
-import demetra.tramo.TramoDocument;
-import demetra.tramoseats.TramoSeatsDocument;
-import demetra.tramoseats.TramoSeatsResults;
-import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.information.TramoSeatsSpecMapping;
 import demetra.tramoseats.io.information.TramoSpecMapping;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
 import demetra.workspace.file.spi.FamilyHandler;
+import jdplus.tramo.TramoDocument;
+import jdplus.tramoseats.TramoSeatsDocument;
 import nbbrd.service.ServiceProvider;
 
 /**

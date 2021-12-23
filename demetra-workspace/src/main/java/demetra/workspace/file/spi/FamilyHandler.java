@@ -32,8 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 2.2.0
  */
 @ServiceDefinition(
-        quantifier = Quantifier.MULTIPLE,
-        loaderName = "internal.workspace.file.spi.FamilyHandlerLoader"
+        quantifier = Quantifier.MULTIPLE
 )
 public interface FamilyHandler {
 

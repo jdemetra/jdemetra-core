@@ -16,7 +16,8 @@
  */
 package internal.workspace.file;
 
-import demetra.workspace.WorkspaceFamily;
+import demetra.workspace.WorkspaceItemDescriptor.Key;
+import demetra.workspace.WorkspaceItemDescriptor.Attributes;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -34,10 +35,10 @@ class Index {
 
     @lombok.NonNull
     @lombok.Singular
-    Map<Key, Value> items;
+    Map<Key, Attributes> items;
 
     @NonNull
-    public Index withItem(@NonNull Key key, @NonNull Value value) {
+    public Index withItem(@NonNull Key key, @NonNull Attributes value) {
         return toBuilder().item(key, value).build();
     }
 
@@ -52,23 +53,5 @@ class Index {
         return result.build();
     }
 
-    @lombok.Value
-    public static class Key {
 
-        @lombok.NonNull
-        WorkspaceFamily family;
-
-        @lombok.NonNull
-        String id;
-    }
-
-    @lombok.Value
-    public static class Value {
-
-        String label;
-        
-        boolean readOnly;
-
-        String comments;
-    }
 }

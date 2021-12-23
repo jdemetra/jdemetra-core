@@ -17,14 +17,13 @@
 package demetra.workspace.file;
 
 import internal.workspace.file.FileWorkspaceImpl;
-import demetra.workspace.Workspace;
-import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.WorkspaceItem;
-import internal.workspace.file.spi.FamilyHandlerLoader;
+import demetra.workspace.WorkspaceItemDescriptor;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import demetra.workspace.WorkspaceDescriptor;
+import demetra.workspace.file.spi.FamilyHandlerLoader;
 
 /**
  * Defines a kind of workspace that uses files as storage.
@@ -32,8 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @since 2.2.0
  */
-public interface FileWorkspace extends Workspace {
-
+public interface FileWorkspace extends WorkspaceDescriptor {
 
     @NonNull
     FileFormat getFileFormat() throws IOException;
@@ -45,7 +43,7 @@ public interface FileWorkspace extends Workspace {
     Path getRootFolder() throws IOException;
 
     @NonNull
-    Path getFile(@NonNull WorkspaceItem item) throws IOException;
+    Path getFile(@NonNull WorkspaceItemDescriptor item) throws IOException;
 
     @NonNull
     static FileWorkspace create(@NonNull Path file, @NonNull FileFormat format) throws IOException {

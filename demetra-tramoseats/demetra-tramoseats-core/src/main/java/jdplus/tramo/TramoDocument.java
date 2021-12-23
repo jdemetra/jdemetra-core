@@ -14,38 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramoseats;
+package jdplus.tramo;
 
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDocument;
 import demetra.timeseries.regression.ModellingContext;
-import java.util.Collections;
-import java.util.List;
+import demetra.tramo.TramoSpec;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.tramo.TramoKernel;
 
 /**
  *
  * @author PALATEJ
  */
-public class TramoSeatsDocument extends TsDocument<TramoSeatsSpec, TramoSeatsResults>{
-    
-    public static List<String> additionalItems=Collections.emptyList();
+public class TramoDocument extends TsDocument<TramoSpec, RegSarimaModel> {
 
     private final ModellingContext context;
-    
-    public TramoSeatsDocument(){
-        super(TramoSeatsSpec.RSAfull);
-        context=ModellingContext.getActiveContext();
+
+    public TramoDocument() {
+        super(TramoSpec.TRfull);
+        context = ModellingContext.getActiveContext();
     }
-    
-   public TramoSeatsDocument(ModellingContext context){
-        super(TramoSeatsSpec.RSAfull);
-        this.context=context;
+
+    public TramoDocument(ModellingContext context) {
+        super(TramoSpec.TRfull);
+        this.context = context;
     }
-    
 
     @Override
-    protected TramoSeatsResults internalProcess(TramoSeatsSpec spec, TsData data) {
-        return TramoSeats.process(data, spec, context, additionalItems);
+    protected RegSarimaModel internalProcess(TramoSpec spec, TsData data) {
+        return TramoKernel.of(spec, context).process(data, ProcessingLog.dummy());
     }
-    
+
 }

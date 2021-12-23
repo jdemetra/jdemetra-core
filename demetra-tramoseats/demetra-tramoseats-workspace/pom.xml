@@ -20,7 +20,7 @@
         <!-- compile and runtime -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-tramoseats-api</artifactId>
+            <artifactId>demetra-tramoseats-core</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>

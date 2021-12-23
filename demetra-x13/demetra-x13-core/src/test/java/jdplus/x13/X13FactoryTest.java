@@ -73,7 +73,7 @@ public class X13FactoryTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
+        item.process(null, false);
         assertTrue(item.getQuality() == ProcQuality.Good);
     }
 }

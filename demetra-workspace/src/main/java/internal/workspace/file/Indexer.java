@@ -16,6 +16,7 @@
  */
 package internal.workspace.file;
 
+import demetra.workspace.WorkspaceItemDescriptor.Key;
 import java.io.Closeable;
 import java.io.IOException;
 import nbbrd.io.Resource;
@@ -27,7 +28,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 interface Indexer extends Closeable {
 
-    void checkId(Index.@NonNull Key id) throws IOException;
+    void checkId(@NonNull Key id) throws IOException;
 
     @NonNull
     Index loadIndex() throws IOException;
@@ -42,7 +43,7 @@ interface Indexer extends Closeable {
             private boolean storeRequired;
 
             @Override
-            public void checkId(Index.Key id) throws IOException {
+            public void checkId(Key id) throws IOException {
                 delegate.checkId(id);
             }
 

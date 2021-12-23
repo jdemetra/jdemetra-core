@@ -1,13 +1,13 @@
 /*
- * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ * Copyright 2020 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
- * http://ec.europa.eu/idabc/eupl
- * 
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
  */
 package demetra.workspace;
 
+import demetra.workspace.WorkspaceItemDescriptor.Key;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
@@ -27,10 +28,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @since 2.2.0
  */
-public interface Workspace extends Closeable {
+public interface WorkspaceDescriptor extends Closeable {
 
-    public final WorkspaceFamily UTIL_CAL = demetra.workspace.WorkspaceFamily.parse("Utilities@Calendars");
-    public final WorkspaceFamily UTIL_VAR = demetra.workspace.WorkspaceFamily.parse("Utilities@Variables");
     /**
      * Gets the workspace name.
      *
@@ -64,18 +63,18 @@ public interface Workspace extends Closeable {
      * @throws IOException if the operation failed
      */
     @NonNull
-    Collection<WorkspaceItem> getItems() throws IOException;
+    Collection<WorkspaceItemDescriptor> getItems() throws IOException;
 
     /**
      * Loads the data of a workspace item. Note that the type of the returned
      * object is linked to the item family.
      *
-     * @param item a non-null item
+     * @param key a non-null item
      * @return a non-null data
      * @throws IOException if the operation failed
      */
     @NonNull
-    Object load(@NonNull WorkspaceItem item) throws IOException;
+    Object load(@NonNull Key key) throws IOException;
 
     /**
      * Stores the metadata and data of a workspace item. The item is replaced if
@@ -86,15 +85,15 @@ public interface Workspace extends Closeable {
      * @param value a non-null data
      * @throws IOException if the operation failed
      */
-    void store(@NonNull WorkspaceItem item, @NonNull Object value) throws IOException;
+    void store(@NonNull WorkspaceItemDescriptor item, @NonNull Object value) throws IOException;
 
     /**
      * Removes a workspace item if it exists, do nothing otherwise.
      *
-     * @param item a non-null item
+     * @param key a non-null item
      * @throws IOException if the operation failed
      */
-    void delete(@NonNull WorkspaceItem item) throws IOException;
+    void delete(@NonNull Key key) throws IOException;
 
     /**
      * Copies the content of this workspace to another one.
@@ -102,13 +101,15 @@ public interface Workspace extends Closeable {
      * @param target a non-null workspace
      * @throws IOException if the operation failed
      */
-    default void copyTo(@NonNull Workspace target) throws IOException {
+    default void copyTo(@NonNull WorkspaceDescriptor target) throws IOException {
         target.setName(getName());
         Collection<WorkspaceFamily> families = target.getSupportedFamilies();
-        for (WorkspaceItem o : getItems()) {
-            if (families.contains(o.getFamily())) {
-                target.store(o, load(o));
+        for (WorkspaceItemDescriptor o : getItems()) {
+            Key key = o.getKey();
+            if (families.contains(key.getFamily())) {
+                target.store(o, load(key));
             }
         }
     }
+
 }

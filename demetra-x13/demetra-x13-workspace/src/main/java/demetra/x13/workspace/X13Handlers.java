@@ -20,13 +20,13 @@ import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.workspace.file.spi.FamilyHandler;
 import demetra.modelling.io.information.TsDocumentMapping;
-import demetra.regarima.RegArimaDocument;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
-import demetra.x13.X13Document;
 import demetra.x13.io.information.RegArimaSpecMapping;
 import demetra.x13.io.information.X13SpecMapping;
+import jdplus.x13.X13Document;
+import jdplus.x13.regarima.RegArimaDocument;
 import nbbrd.service.ServiceProvider;
 
 /**
