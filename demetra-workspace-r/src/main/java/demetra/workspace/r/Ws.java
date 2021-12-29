@@ -25,7 +25,11 @@ public class Ws {
     private final ModellingContext context;
     private final List<MultiProcessing> multiProcessing = new ArrayList<>();
 
-    private Ws(final ModellingContext context) {
+    public Ws() {
+        this.context = new ModellingContext();
+    }
+
+    public Ws(final ModellingContext context) {
         this.context = context;
     }
 
