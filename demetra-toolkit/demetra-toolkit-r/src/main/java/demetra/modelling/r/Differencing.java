@@ -11,7 +11,6 @@ import demetra.modelling.StationaryTransformation;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import jdplus.data.DataBlock;
 import jdplus.modelling.FastDifferencingModule;
-import jdplus.modelling.RangeMeanTest;
 
 /**
  *

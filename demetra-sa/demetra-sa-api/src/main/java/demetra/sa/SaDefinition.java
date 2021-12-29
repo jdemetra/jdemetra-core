@@ -42,16 +42,10 @@ public class SaDefinition {
     /**
      * Way the current estimation specification has been achieved
      */
-    @lombok.Builder.Default
     @lombok.EqualsAndHashCode.Exclude
-    EstimationPolicyType policy=EstimationPolicyType.None;
+    EstimationPolicyType policy;
 
-    /**
-     * Specification corresponding to the results of the current estimation (fully identified model)
-     */
-    @lombok.EqualsAndHashCode.Exclude
-    SaSpecification pointSpec;
-    
+   
     /**
      * Time series
      */
@@ -60,6 +54,11 @@ public class SaDefinition {
 
     public SaSpecification activeSpecification() {
         return estimationSpec == null ? domainSpec : estimationSpec;
+    }
+    
+    public static Builder builder(){
+        return new Builder()
+                .policy(EstimationPolicyType.None);
     }
 
 }

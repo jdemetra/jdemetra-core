@@ -87,6 +87,14 @@ public class Ws {
         multiProcessing.stream().filter(p -> p.getName().equals(name)).forEach(q -> q.compute(context));
     }
 
+    public void processAll() {
+        multiProcessing.stream().forEach(p -> p.process(context));
+    }
+
+    public void process(String name) {
+        multiProcessing.stream().filter(p -> p.getName().equals(name)).forEach(q -> q.process(context));
+    }
+
 //    public boolean save(String fileName) {
 //        File file = new File(fileName);
 //        try {

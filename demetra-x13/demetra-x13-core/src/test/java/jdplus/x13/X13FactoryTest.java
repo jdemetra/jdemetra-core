@@ -21,13 +21,12 @@ import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SaDefinition;
-import demetra.sa.SaEstimation;
 import demetra.sa.SaItem;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsMoniker;
 import demetra.x13.X13Spec;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -74,6 +73,6 @@ public class X13FactoryTest {
                 .definition(sadef)
                 .build();
         item.process(null, false);
-        assertTrue(item.getQuality() == ProcQuality.Good);
+        assertTrue(item.getEstimation().getQuality() == ProcQuality.Good);
     }
 }

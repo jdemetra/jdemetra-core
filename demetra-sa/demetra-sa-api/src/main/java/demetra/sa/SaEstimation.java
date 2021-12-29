@@ -16,11 +16,12 @@
  */
 package demetra.sa;
 
+import demetra.information.Explorable;
 import demetra.processing.ProcDiagnostic;
+import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import java.util.ArrayList;
 import java.util.List;
-import demetra.information.Explorable;
 
 /**
  *
@@ -29,30 +30,49 @@ import demetra.information.Explorable;
 @lombok.Getter
 @lombok.experimental.FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 @lombok.AllArgsConstructor
-@lombok.Builder( toBuilder=true)
+@lombok.Builder(toBuilder = true)
 public class SaEstimation {
-    
+
     /**
      * Results of the estimation
      */
     Explorable results;
-    
+
     /**
      * ProcessingLog. Could be null
      */
     ProcessingLog log;
-   
+
     @lombok.Singular
-    List<ProcDiagnostic>  diagnostics;
+    List<ProcDiagnostic> diagnostics;
     
+    @lombok.With
+    ProcQuality quality;
+
+    /**
+     * Specification corresponding to the results of the current estimation (fully identified model)
+     */
+    SaSpecification pointSpec;
+
     /**
      * Warnings on the current estimation
-     * @return 
+     *
+     * @return
      */
-    public List<String> warnings(){
-        List<String> warnings=new ArrayList<>();
-        for (ProcDiagnostic diag : diagnostics)
+    public List<String> warnings() {
+        List<String> warnings = new ArrayList<>();
+        for (ProcDiagnostic diag : diagnostics) {
             warnings.addAll(diag.getWarnings());
+        }
         return warnings;
+    }
+
+    SaEstimation flush() {
+        if (results == null)
+            return this;
+        return builder()
+                .pointSpec(pointSpec)
+                .quality(quality)
+                .build();
     }
 }

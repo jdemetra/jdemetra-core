@@ -10,6 +10,7 @@ import demetra.information.InformationSet;
 import demetra.processing.ProcQuality;
 import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDefinition;
+import demetra.sa.SaEstimation;
 import demetra.sa.SaItem;
 import demetra.sa.SaSpecification;
 import demetra.timeseries.Ts;
@@ -65,25 +66,25 @@ public class SaItemMapping {
                 dbuilder = dbuilder.estimationSpec(espec);
             }
         }
-        InformationSet pinfo = info.getSubSet(POINT_SPEC);
-        if (pinfo != null) {
-            SaSpecification pspec = SaSpecificationMapping.of(pinfo);
-            if (pspec != null) {
-                dbuilder = dbuilder.pointSpec(pspec);
-            }
-        }
 
         builder.definition(dbuilder.build());
         Integer p = info.get(PRIORITY, Integer.class);
         if (p != null) {
             builder.priority(p);
         }
+        InformationSet pinfo = info.getSubSet(POINT_SPEC);
         String q = info.get(QUALITY, String.class);
-        if (q != null) {
-            ProcQuality quality = ProcQuality.valueOf(q);
-            builder.quality(quality);
-        } else {
-            builder.quality(ProcQuality.Undefined);
+        if (pinfo != null || q != null) {
+            SaEstimation.Builder ebuilder = SaEstimation.builder();
+            SaSpecification pspec = SaSpecificationMapping.of(pinfo);
+            if (pspec != null) {
+                ebuilder = ebuilder.pointSpec(pspec);
+            }
+            if (q != null) {
+                ProcQuality quality = ProcQuality.valueOf(q);
+                ebuilder.quality(quality);
+            }
+            builder.estimation(ebuilder.build());
         }
         InformationSet md = info.getSubSet(METADATA);
         if (md != null) {
@@ -107,6 +108,7 @@ public class SaItemMapping {
             info.set(NAME, item.getName());
         }
         SaDefinition def = item.getDefinition();
+        SaEstimation estimation = item.getEstimation();
 
         Ts ts = def.getTs();
         info.set(TS, ts.freeze());
@@ -120,14 +122,8 @@ public class SaItemMapping {
         if (def.getEstimationSpec() != null) {
             info.set(ESTIMATION_SPEC, SaSpecificationMapping.toInformationSet(def.getEstimationSpec(), verbose));
         }
-        if (def.getPointSpec() != null) {
-            info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(def.getPointSpec(), verbose));
-        }
         if (item.getPriority() > 0 || verbose) {
             info.set(PRIORITY, item.getPriority());
-        }
-        if (item.getQuality() != ProcQuality.Undefined || verbose) {
-            info.set(QUALITY, item.getQuality().name());
         }
         if (def.getPolicy() != EstimationPolicyType.None) {
             info.set(POLICY, def.getPolicy().name());
@@ -136,6 +132,10 @@ public class SaItemMapping {
         if (!meta.isEmpty()) {
             InformationSet md = info.subSet(METADATA);
             meta.forEach((k, v) -> md.set(k, v));
+        }
+        if (estimation != null) {
+            info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), verbose));
+            info.set(QUALITY, estimation.getQuality().name());
         }
         return info;
     }
