@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.modelling.implementations.SarimaSpec;
@@ -23,7 +24,6 @@ import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TramoSpec;
-import java.util.Map;
 
 /**
  *
@@ -42,6 +42,12 @@ public class TramoSpecMapping {
         public TramoSpec read(InformationSet info) {
             return TramoSpecMapping.read(info);
         }
+
+        @Override
+        public boolean match(DemetraVersion version) {
+            return version == DemetraVersion.JD3;
+        }
+
     };
 
     public static final InformationSetSerializer<TramoSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSpec>() {
@@ -53,6 +59,11 @@ public class TramoSpecMapping {
         @Override
         public TramoSpec read(InformationSet info) {
             return TramoSpecMapping.readLegacy(info);
+        }
+
+        @Override
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD2;
         }
     };
 

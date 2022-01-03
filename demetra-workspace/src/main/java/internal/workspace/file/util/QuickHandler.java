@@ -17,7 +17,6 @@
 package internal.workspace.file.util;
 
 import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.file.FileFormat;
 import demetra.workspace.file.spi.FamilyHandler;
 import demetra.workspace.file.util.FileSupport;
 import java.util.Objects;
@@ -29,14 +28,12 @@ import java.util.Objects;
 public final class QuickHandler implements FamilyHandler {
 
     private final WorkspaceFamily family;
-    private final FileFormat format;
 
     @lombok.experimental.Delegate
     private final FileSupport fileSupport;
 
-    public QuickHandler(WorkspaceFamily family, FileFormat format, FileSupport fileSupport) {
+    public QuickHandler(WorkspaceFamily family, FileSupport fileSupport) {
         this.family = Objects.requireNonNull(family, "family");
-        this.format = Objects.requireNonNull(format, "format");
         this.fileSupport = Objects.requireNonNull(fileSupport, "fileSupport");
     }
 
@@ -45,8 +42,4 @@ public final class QuickHandler implements FamilyHandler {
         return family;
     }
 
-    @Override
-    public FileFormat getFormat() {
-        return format;
-    }
 }

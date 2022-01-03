@@ -4,6 +4,7 @@
  */
 package demetra.workspace.r;
 
+import demetra.DemetraVersion;
 import demetra.sa.SaItems;
 import demetra.sa.workspace.SaHandlers;
 import demetra.timeseries.regression.ModellingContext;
@@ -40,7 +41,7 @@ public class Ws {
     public static Ws open(String fileName) throws IOException {
 //        try {
         File file = new File(fileName);
-        FileWorkspace fws = FileWorkspace.open(file.toPath());
+        FileWorkspace fws = FileWorkspace.open(file.toPath(), DemetraVersion.JD3);
         ModellingContext context = WorkspaceUtility.context(fws, false);
         Ws ws = new Ws(context);
 

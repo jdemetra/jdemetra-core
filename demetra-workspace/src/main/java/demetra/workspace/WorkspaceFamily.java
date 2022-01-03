@@ -19,7 +19,6 @@ package demetra.workspace;
 import demetra.information.InformationSetSerializer;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import demetra.util.Id;
-import demetra.workspace.file.FileFormat;
 import demetra.workspace.file.spi.FamilyHandler;
 import demetra.workspace.file.util.InformationSetSupport;
 import demetra.workspace.file.util.XmlConverterSupport;
@@ -130,11 +129,11 @@ public final class WorkspaceFamily implements Id {
     }
 
     public static FamilyHandler informationSet(WorkspaceFamily family, InformationSetSerializer factory, String repository) {
-        return InformationSetSupport.of(factory, repository).asHandler(family, FileFormat.GENERIC);
+        return InformationSetSupport.of(factory, repository).asHandler(family);
     }
 
     public static FamilyHandler xmlConverter(WorkspaceFamily family, Supplier<? extends IXmlConverter> factory, String repository) {
-        return XmlConverterSupport.of(factory, repository).asHandler(family, FileFormat.GENERIC);
+        return XmlConverterSupport.of(factory, repository).asHandler(family);
     }
 
 

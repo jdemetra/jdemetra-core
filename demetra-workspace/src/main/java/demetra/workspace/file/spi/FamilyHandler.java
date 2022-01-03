@@ -16,8 +16,8 @@
  */
 package demetra.workspace.file.spi;
 
+import demetra.DemetraVersion;
 import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.file.FileFormat;
 import java.io.IOException;
 import java.nio.file.Path;
 import nbbrd.service.Quantifier;
@@ -39,8 +39,7 @@ public interface FamilyHandler {
     @NonNull
     WorkspaceFamily getFamily();
 
-    @NonNull
-    FileFormat getFormat();
+    boolean match(DemetraVersion version);
 
     @NonNull
     Path resolveFile(@NonNull Path root, @NonNull String fileName);

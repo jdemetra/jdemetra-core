@@ -16,13 +16,11 @@ package demetra.sa.workspace;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-
-
-import demetra.workspace.file.spi.FamilyHandler;
 import demetra.sa.io.information.SaItemsMapping;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
+import demetra.workspace.file.spi.FamilyHandler;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -33,13 +31,18 @@ import nbbrd.service.ServiceProvider;
 public final class SaHandlers {
 
     public final WorkspaceFamily SA_MULTI = parse("Seasonal adjustment@multi-documents");
-    
+
     @ServiceProvider(FamilyHandler.class)
     public static final class SaMulti implements FamilyHandler {
 
         @lombok.experimental.Delegate
-        private final FamilyHandler delegate = informationSet(SA_MULTI, SaItemsMapping.SERIALIZER, "SAProcessing");
+        private final FamilyHandler delegate = informationSet(SA_MULTI, SaItemsMapping.SERIALIZER_V3, "SAProcessing");
     }
 
+    @ServiceProvider(FamilyHandler.class)
+    public static final class SaMultiLegacy implements FamilyHandler {
 
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(SA_MULTI, SaItemsMapping.SERIALIZER_LEGACY, "SAProcessing");
+    }
 }

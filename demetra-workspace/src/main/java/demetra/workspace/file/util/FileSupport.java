@@ -16,8 +16,8 @@
  */
 package demetra.workspace.file.util;
 
+import demetra.DemetraVersion;
 import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.file.FileFormat;
 import demetra.workspace.file.spi.FamilyHandler;
 import internal.workspace.file.util.QuickHandler;
 import java.io.IOException;
@@ -38,9 +38,11 @@ public interface FileSupport {
     Object read(@NonNull Path root, @NonNull String fileName) throws IOException;
 
     void write(@NonNull Path root, @NonNull String fileName, @NonNull Object value) throws IOException;
+    
+    boolean match(DemetraVersion version);
 
     @NonNull
-    default FamilyHandler asHandler(@NonNull WorkspaceFamily family, @NonNull FileFormat format) {
-        return new QuickHandler(family, format, this);
+    default FamilyHandler asHandler(@NonNull WorkspaceFamily family) {
+        return new QuickHandler(family, this);
     }
 }

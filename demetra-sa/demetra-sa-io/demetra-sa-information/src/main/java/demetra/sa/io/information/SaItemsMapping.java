@@ -5,6 +5,7 @@
  */
 package demetra.sa.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
@@ -29,7 +30,7 @@ public class SaItemsMapping {
         return new NameManager(SaSpecification.class, "spec", null);
     }
 
-    public InformationSet write(SaItems mp, boolean verbose) {
+    public InformationSet write(SaItems mp, boolean verbose, DemetraVersion version) {
         InformationSet info = new InformationSet();
         Map<String, String> meta = mp.getMeta();
         if (!meta.isEmpty()) {
@@ -40,13 +41,13 @@ public class SaItemsMapping {
         NameManager<SaSpecification> dic = defaultNameManager();
         int idx = 1;
         for (SaItem item : mp.getItems()) {
-            InformationSet sinfo = SaItemMapping.write(item, dic, verbose);
+            InformationSet sinfo = SaItemMapping.write(item, dic, verbose, version);
             info.set("sa" + (idx++), sinfo);
         }
         // write the default specifications
         InformationSet defspec = info.subSet(DOMAIN_SPECS);
         for (String key : dic.getNames()) {
-            defspec.set(key, SaSpecificationMapping.toInformationSet(dic.get(key), verbose));
+            defspec.set(key, SaSpecificationMapping.toInformationSet(dic.get(key), verbose, version));
         }
         return info;
     }
@@ -88,16 +89,37 @@ public class SaItemsMapping {
         return builder.build();
     }
 
-    public static final InformationSetSerializer<SaItems> SERIALIZER = new InformationSetSerializer<SaItems>() {
+    public static final InformationSetSerializer<SaItems> SERIALIZER_V3 = new InformationSetSerializer<SaItems>() {
         @Override
         public InformationSet write(SaItems object, boolean verbose) {
-            return SaItemsMapping.write(object, verbose);
+            return SaItemsMapping.write(object, verbose, DemetraVersion.JD3);
         }
 
         @Override
         public SaItems read(InformationSet info) {
             return SaItemsMapping.read(info);
         }
+        
+        @Override 
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD3;
+        }
     };
 
+    public static final InformationSetSerializer<SaItems> SERIALIZER_LEGACY = new InformationSetSerializer<SaItems>() {
+        @Override
+        public InformationSet write(SaItems object, boolean verbose) {
+            return SaItemsMapping.write(object, verbose, DemetraVersion.JD2);
+        }
+
+        @Override
+        public SaItems read(InformationSet info) {
+            return SaItemsMapping.read(info);
+        }
+
+        @Override 
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD2;
+        }
+    };
 }

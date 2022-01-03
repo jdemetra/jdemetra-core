@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.DemetraVersion;
 import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.sa.SaDefinition;
@@ -47,8 +48,8 @@ import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
 import org.assertj.core.util.Files;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -174,7 +175,7 @@ public class TramoSeatsSpecMappingTest {
                 .build();
         item.process(null, false);
         NameManager<SaSpecification> mgr = SaItemsMapping.defaultNameManager();
-        InformationSet info = SaItemMapping.write(item, mgr, true);
+        InformationSet info = SaItemMapping.write(item, mgr, true, DemetraVersion.JD3);
 
         SaItem nitem = SaItemMapping.read(info, mgr, Collections.emptyMap());
         nitem.process(null, true);
@@ -203,7 +204,7 @@ public class TramoSeatsSpecMappingTest {
                 .item(item)
                 .build();
 
-        InformationSet info = SaItemsMapping.write(items, true);
+        InformationSet info = SaItemsMapping.write(items, true, DemetraVersion.JD3);
 
         SaItems nitems = SaItemsMapping.read(info);
         nitems.getItems().forEach(v -> v.process(null, true));
@@ -231,7 +232,7 @@ public class TramoSeatsSpecMappingTest {
                 .item(item)
                 .build();
 
-        InformationSet info = SaItemsMapping.write(items, true);
+        InformationSet info = SaItemsMapping.write(items, true, DemetraVersion.JD3);
 
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);

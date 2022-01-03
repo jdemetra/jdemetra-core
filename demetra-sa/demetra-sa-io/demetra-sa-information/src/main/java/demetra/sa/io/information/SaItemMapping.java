@@ -5,6 +5,7 @@
  */
 package demetra.sa.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.processing.ProcQuality;
@@ -102,7 +103,7 @@ public class SaItemMapping {
 
     private final String NONAME = "";
 
-    public InformationSet write(SaItem item, NameManager<SaSpecification> defaults, boolean verbose) {
+    public InformationSet write(SaItem item, NameManager<SaSpecification> defaults, boolean verbose, DemetraVersion version) {
         InformationSet info = new InformationSet();
         if (!item.getName().isEmpty()) {
             info.set(NAME, item.getName());
@@ -120,7 +121,7 @@ public class SaItemMapping {
         info.set(DOMAIN_SPEC, dname);
 
         if (def.getEstimationSpec() != null) {
-            info.set(ESTIMATION_SPEC, SaSpecificationMapping.toInformationSet(def.getEstimationSpec(), verbose));
+            info.set(ESTIMATION_SPEC, SaSpecificationMapping.toInformationSet(def.getEstimationSpec(), verbose, version));
         }
         if (item.getPriority() > 0 || verbose) {
             info.set(PRIORITY, item.getPriority());
@@ -134,7 +135,7 @@ public class SaItemMapping {
             meta.forEach((k, v) -> md.set(k, v));
         }
         if (estimation != null) {
-            info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), verbose));
+            info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), verbose, version));
             info.set(QUALITY, estimation.getQuality().name());
         }
         return info;

@@ -5,13 +5,13 @@
  */
 package demetra.sa.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.sa.SaSpecification;
 import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
-import demetra.information.Explorable;
 
 /**
  *
@@ -20,7 +20,7 @@ import demetra.information.Explorable;
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
 public interface SaSpecificationMapping{
     SaSpecification read(InformationSet info);
-    InformationSet write(SaSpecification spec, boolean verbose);
+    InformationSet write(SaSpecification spec, boolean verbose, DemetraVersion version);
     
     public static SaSpecification of(InformationSet info){
         List<SaSpecificationMapping> all = SaSpecificationMappingLoader.get();
@@ -32,10 +32,10 @@ public interface SaSpecificationMapping{
         return null;
     }
     
-    public static InformationSet toInformationSet(SaSpecification spec, boolean verbose){
+    public static InformationSet toInformationSet(SaSpecification spec, boolean verbose, DemetraVersion version){
         List<SaSpecificationMapping> all = SaSpecificationMappingLoader.get();
         for (SaSpecificationMapping mapping : all){
-            InformationSet info=mapping.write(spec, verbose);
+            InformationSet info=mapping.write(spec, verbose, version);
             if (info != null)
                 return info;
         }

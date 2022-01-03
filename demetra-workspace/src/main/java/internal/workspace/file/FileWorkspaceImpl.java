@@ -16,25 +16,24 @@
  */
 package internal.workspace.file;
 
+import demetra.DemetraVersion;
+import demetra.util.Paths;
 import demetra.workspace.WorkspaceFamily;
 import demetra.workspace.WorkspaceItemDescriptor;
-import demetra.workspace.file.FileFormat;
+import demetra.workspace.WorkspaceItemDescriptor.Key;
 import demetra.workspace.file.FileWorkspace;
 import demetra.workspace.file.spi.FamilyHandler;
-import demetra.util.Paths;
-import demetra.workspace.WorkspaceItemDescriptor.Key;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.function.Supplier;
 import nbbrd.io.Resource;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,56 +44,48 @@ import org.slf4j.LoggerFactory;
 public final class FileWorkspaceImpl implements FileWorkspace {
 
     @NonNull
-    public static Optional<FileFormat> probeFormat(@NonNull Path file) throws IOException {
-        if (GenericIndexer.isValid(file)) {
-            return Optional.of(FileFormat.GENERIC);
-        }
-        return Optional.empty();
+    public static FileWorkspaceImpl create(@NonNull Path file, @NonNull DemetraVersion version, @NonNull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+        Objects.requireNonNull(file, "file");
+        Objects.requireNonNull(version, "version");
+        Objects.requireNonNull(handlers, "handler");
+        return create(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, version, handlers);
     }
 
     @NonNull
-    public static FileWorkspaceImpl create(@NonNull Path file, @NonNull FileFormat format, @NonNull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+    public static FileWorkspaceImpl open(@NonNull Path file, @NonNull DemetraVersion version, @NonNull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
         Objects.requireNonNull(file, "file");
-        Objects.requireNonNull(format, "format");
+        Objects.requireNonNull(version, "version");
         Objects.requireNonNull(handlers, "handler");
-        return create(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, format, handlers);
+        return open(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, version, handlers);
     }
 
-    @NonNull
-    public static FileWorkspaceImpl open(@NonNull Path file, @NonNull FileFormat format, @NonNull Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
-        Objects.requireNonNull(file, "file");
-        Objects.requireNonNull(format, "format");
-        Objects.requireNonNull(handlers, "handler");
-        return open(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, format, handlers);
-    }
-
-    static FileWorkspaceImpl create(Logger logger, Path file, FileFormat format, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+    static FileWorkspaceImpl create(Logger logger, Path file, @NonNull DemetraVersion version, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
         if (Files.exists(file)) {
             throw new FileAlreadyExistsException(file.toString());
         }
 
         Path rootFolder = getRootFolder(file);
-        Indexer indexer = getIndexer(format, file, rootFolder).memoize();
+        Indexer indexer = getIndexer(version, file, rootFolder).memoize();
         indexer.storeIndex(Index.builder().name("").build());
 
-        return of(file, format, rootFolder, indexer, logger, handlers);
+        return of(file, version, rootFolder, indexer, logger, handlers);
     }
 
-    static FileWorkspaceImpl open(Logger logger, Path file, FileFormat format, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+    static FileWorkspaceImpl open(Logger logger, Path file, @NonNull DemetraVersion version, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
         if (!Files.exists(file)) {
             throw new NoSuchFileException(file.toString());
         }
 
         Path rootFolder = getRootFolder(file);
-        Indexer indexer = getIndexer(format, file, rootFolder).memoize();
+        Indexer indexer = getIndexer(version, file, rootFolder).memoize();
         indexer.loadIndex();
 
-        return of(file, format, rootFolder, indexer, logger, handlers);
+        return of(file, version, rootFolder, indexer, logger, handlers);
     }
 
-    private static FileWorkspaceImpl of(Path indexFile, FileFormat format, Path rootFolder, Indexer indexer, Logger logger, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
+    private static FileWorkspaceImpl of(Path indexFile, @NonNull DemetraVersion version, Path rootFolder, Indexer indexer, Logger logger, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {
         try {
-            return new FileWorkspaceImpl(indexFile, format, rootFolder, indexer, SafeHandler.create(logger, handlers, format));
+            return new FileWorkspaceImpl(indexFile, version, rootFolder, indexer, SafeHandler.create(logger, handlers, version));
         } catch (IOException ex) {
             Resource.ensureClosed(ex, indexer);
             throw ex;
@@ -102,14 +93,14 @@ public final class FileWorkspaceImpl implements FileWorkspace {
     }
 
     private final Path indexFile;
-    private final FileFormat fileFormat;
+    private final DemetraVersion version;
     private final Path rootFolder;
     private final Indexer indexer;
     private final SafeHandler handlers;
 
-    private FileWorkspaceImpl(Path indexFile, FileFormat fileFormat, Path rootFolder, Indexer indexer, SafeHandler handlers) {
+    private FileWorkspaceImpl(Path indexFile, DemetraVersion version, Path rootFolder, Indexer indexer, SafeHandler handlers) {
         this.indexFile = indexFile;
-        this.fileFormat = fileFormat;
+        this.version = version;
         this.rootFolder = rootFolder;
         this.indexer = indexer;
         this.handlers = handlers;
@@ -165,8 +156,8 @@ public final class FileWorkspaceImpl implements FileWorkspace {
     }
 
     @Override
-    public FileFormat getFileFormat() throws IOException {
-        return fileFormat;
+    public DemetraVersion getVersion() throws IOException {
+        return version;
     }
 
     @Override
@@ -194,9 +185,10 @@ public final class FileWorkspaceImpl implements FileWorkspace {
         return parent.resolve(Paths.changeExtension(indexFile.getFileName().toString(), null));
     }
 
-    private static Indexer getIndexer(FileFormat format, Path file, Path rootFolder) {
-        switch (format) {
-            case GENERIC:
+    private static Indexer getIndexer(DemetraVersion version, Path file, Path rootFolder) {
+        switch (version) {
+            case JD2:
+            case JD3:
                 return new GenericIndexer(file, rootFolder);
             default:
                 throw new RuntimeException();

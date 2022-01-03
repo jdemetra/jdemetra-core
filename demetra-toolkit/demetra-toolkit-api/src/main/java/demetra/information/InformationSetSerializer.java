@@ -17,6 +17,8 @@
 
 package demetra.information;
 
+import demetra.DemetraVersion;
+
 /**
  *
  * @author Jean Palate
@@ -25,4 +27,7 @@ package demetra.information;
 public interface InformationSetSerializer<T> {
     InformationSet write(T object, boolean verbose);
     T read(InformationSet info);
+    
+    boolean match(DemetraVersion version);
+   
 }

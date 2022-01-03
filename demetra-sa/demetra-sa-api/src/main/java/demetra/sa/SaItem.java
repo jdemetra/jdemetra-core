@@ -105,6 +105,11 @@ public final class SaItem {
         }
         return estimation.getQuality() != ProcQuality.Undefined;
     }
+    
+    public boolean isProcessed(){
+        SaEstimation e=estimation;
+        return e != null && e.getResults() != null;
+    }
 
     /**
      * Gets the current estimation (Processing should be controlled by
