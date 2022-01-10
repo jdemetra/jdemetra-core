@@ -16,8 +16,8 @@
  */
 package internal.workspace.file;
 
+import demetra.DemetraVersion;
 import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.file.FileFormat;
 import demetra.workspace.file.spi.FamilyHandler;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -89,10 +89,10 @@ final class SafeHandler {
         }
     }
 
-    public static SafeHandler create(Logger logger, Supplier<Iterable<FamilyHandler>> handlers, FileFormat format) throws IOException {
+    public static SafeHandler create(Logger logger, Supplier<Iterable<FamilyHandler>> handlers, DemetraVersion version) throws IOException {
         try {
             Map<WorkspaceFamily, FamilyHandler> result = new HashMap<>();
-            handlers.get().forEach(o -> pushHandler(logger, result, format, o));
+            handlers.get().forEach(o -> pushHandler(logger, result, version, o));
             return new SafeHandler(result);
         } catch (RuntimeException unexpected) {
             throw new IOException("Unexpected exception while opening workspace", unexpected);
@@ -100,19 +100,14 @@ final class SafeHandler {
     }
 
     @SuppressWarnings("null")
-    private static void pushHandler(Logger logger, Map<WorkspaceFamily, FamilyHandler> result, FileFormat requested, FamilyHandler o) {
-        FileFormat format = o.getFormat();
-        if (format != null) {
-            if (requested.equals(o.getFormat())) {
-                WorkspaceFamily family = o.getFamily();
-                if (family != null) {
-                    result.put(family, o);
-                } else {
-                    logger.info("Handler should not return null family: {}", o);
-                }
+    private static void pushHandler(Logger logger, Map<WorkspaceFamily, FamilyHandler> result, DemetraVersion requested, FamilyHandler o) {
+        if (o.match(requested)) {
+            WorkspaceFamily family = o.getFamily();
+            if (family != null) {
+                result.put(family, o);
+            } else {
+                logger.info("Handler should not return null family: {}", o);
             }
-        } else {
-            logger.info("Handler should not return null format: {}", o);
         }
     }
 }

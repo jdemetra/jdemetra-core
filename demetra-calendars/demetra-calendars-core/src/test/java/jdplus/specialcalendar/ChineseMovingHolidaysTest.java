@@ -23,7 +23,6 @@ import demetra.timeseries.regression.MovingHolidayVariable;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -42,7 +41,7 @@ public class ChineseMovingHolidaysTest {
                 HolidayPattern.Shape.LinearDown, 3).normalize());
         TsDomain domain = TsDomain.of(TsPeriod.monthly(1980, 1), 1000);
         FastMatrix matrix = Regression.matrix(domain, ny, ge);
-        System.out.println(matrix);
+//        System.out.println(matrix);
     }
     
 }

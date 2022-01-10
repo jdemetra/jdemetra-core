@@ -5,17 +5,16 @@
  */
 package rssf;
 
-import jdplus.msts.AtomicModels;
-import jdplus.msts.ModelEquation;
 import demetra.data.Data;
-import jdplus.data.DataBlock;
-import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import jdplus.arima.ssf.SsfArima;
+import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.msts.AtomicModels;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
+import jdplus.msts.ModelEquation;
 import jdplus.msts.StateItem;
 import jdplus.ssf.implementations.Noise;
 import jdplus.sts.LocalLevel;
@@ -161,10 +160,10 @@ public class AlgorithmsTest {
         CompositeModelEstimation rslt = model.estimate(M, false, false, SsfInitialization.Diffuse, Optimizer.BFGS, 1e-9, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("SAE+TD");
-        System.out.println(DataBlock.of(p));
-        System.out.println(rslt.getLikelihood().logLikelihood());
-        System.out.println(rslt.getLikelihood().sigma2());
+//        System.out.println("SAE+TD");
+//        System.out.println(DataBlock.of(p));
+//        System.out.println(rslt.getLikelihood().logLikelihood());
+//        System.out.println(rslt.getLikelihood().sigma2());
     }
 
     @Test
@@ -209,18 +208,18 @@ public class AlgorithmsTest {
         CompositeModelEstimation rslt = model.estimate(M, true, false, SsfInitialization.Augmented, Optimizer.BFGS, 1e-15, null);
 
         double[] p = rslt.getFullParameters();
-        System.out.println("SUTSE");
-        System.out.println(DataBlock.of(p));
-        System.out.println(rslt.getLikelihood().logLikelihood());
+//        System.out.println("SUTSE");
+//        System.out.println(DataBlock.of(p));
+//        System.out.println(rslt.getLikelihood().logLikelihood());
         double[] z = new double[30];
         z[0] = 1;
         z[1] = 1;
-        System.out.println(rslt.getFilteredStates().zvariance(DoubleSeq.of(z)));
-        System.out.println(rslt.getSmoothedStates().zvariance(DoubleSeq.of(z)));
-        System.out.println(rslt.getFilteredStates().getComponentVariance(3));
-        System.out.println(rslt.getSmoothedStates().getComponentVariance(3));
-        System.out.println(rslt.getFilteredStates().getComponentVariance(14));
-        System.out.println(rslt.getSmoothedStates().getComponentVariance(14));
+//        System.out.println(rslt.getFilteredStates().zvariance(DoubleSeq.of(z)));
+//        System.out.println(rslt.getSmoothedStates().zvariance(DoubleSeq.of(z)));
+//        System.out.println(rslt.getFilteredStates().getComponentVariance(3));
+//        System.out.println(rslt.getSmoothedStates().getComponentVariance(3));
+//        System.out.println(rslt.getFilteredStates().getComponentVariance(14));
+//        System.out.println(rslt.getSmoothedStates().getComponentVariance(14));
     }
 
 //    @Test

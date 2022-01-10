@@ -16,8 +16,8 @@
  */
 package demetra.workspace.file.spi;
 
+import demetra.DemetraVersion;
 import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.file.FileFormat;
 import java.io.IOException;
 import java.nio.file.Path;
 import nbbrd.service.Quantifier;
@@ -32,16 +32,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 2.2.0
  */
 @ServiceDefinition(
-        quantifier = Quantifier.MULTIPLE,
-        loaderName = "internal.workspace.file.spi.FamilyHandlerLoader"
+        quantifier = Quantifier.MULTIPLE
 )
 public interface FamilyHandler {
 
     @NonNull
     WorkspaceFamily getFamily();
 
-    @NonNull
-    FileFormat getFormat();
+    boolean match(DemetraVersion version);
 
     @NonNull
     Path resolveFile(@NonNull Path root, @NonNull String fileName);

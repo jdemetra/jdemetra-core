@@ -16,20 +16,18 @@
  */
 package demetra.tramoseats.workspace;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.modelling.io.information.TsDocumentMapping;
-import demetra.processing.ProcSpecification;
-import demetra.tramo.TramoDocument;
-import demetra.tramoseats.TramoSeatsDocument;
-import demetra.tramoseats.TramoSeatsResults;
-import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.information.TramoSeatsSpecMapping;
 import demetra.tramoseats.io.information.TramoSpecMapping;
 import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
 import demetra.workspace.file.spi.FamilyHandler;
+import jdplus.tramo.TramoDocument;
+import jdplus.tramoseats.TramoSeatsDocument;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -63,6 +61,40 @@ public class TramoSeatsHandlers {
                 TsDocumentMapping.read(info, TramoSpecMapping.SERIALIZER_V3, doc);
                 return doc;
             }
+
+            @Override
+            public boolean match(DemetraVersion version) {
+                return version == DemetraVersion.JD3;
+            }
+
+        }, "TramoDoc");
+
+    }
+
+    @ServiceProvider(FamilyHandler.class)
+    public static final class ModDocTramoLegacy implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(MOD_DOC_TRAMO,
+                new InformationSetSerializer<TramoDocument>() {
+            @Override
+            public InformationSet write(TramoDocument object, boolean verbose) {
+                return TsDocumentMapping.write(object, TramoSpecMapping.SERIALIZER_LEGACY, verbose, true);
+            }
+
+            @Override
+            public TramoDocument read(InformationSet info) {
+
+                TramoDocument doc = new TramoDocument();
+                TsDocumentMapping.read(info, TramoSpecMapping.SERIALIZER_LEGACY, doc);
+                return doc;
+            }
+
+            @Override
+            public boolean match(DemetraVersion version) {
+                return version == DemetraVersion.JD3;
+            }
+
         }, "TramoDoc");
 
     }
@@ -85,8 +117,38 @@ public class TramoSeatsHandlers {
                 TsDocumentMapping.read(info, TramoSeatsSpecMapping.SERIALIZER_V3, doc);
                 return doc;
             }
-        },
-                "TramoSeatsDoc");
+
+            @Override
+            public boolean match(DemetraVersion version) {
+                return version == DemetraVersion.JD3;
+            }
+        }, "TramoSeatsDoc");
+    }
+
+    @ServiceProvider(FamilyHandler.class)
+    public static final class SaDocTramoSeatsLegacy implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(SA_DOC_TRAMOSEATS,
+                new InformationSetSerializer<TramoSeatsDocument>() {
+            @Override
+            public InformationSet write(TramoSeatsDocument object, boolean verbose) {
+                return TsDocumentMapping.write(object, TramoSeatsSpecMapping.SERIALIZER_LEGACY, verbose, true);
+            }
+
+            @Override
+            public TramoSeatsDocument read(InformationSet info) {
+
+                TramoSeatsDocument doc = new TramoSeatsDocument();
+                TsDocumentMapping.read(info, TramoSeatsSpecMapping.SERIALIZER_LEGACY, doc);
+                return doc;
+            }
+
+            @Override
+            public boolean match(DemetraVersion version) {
+                return version == DemetraVersion.JD3;
+            }
+        }, "TramoSeatsDoc");
     }
 
     @ServiceProvider(FamilyHandler.class)
@@ -97,10 +159,23 @@ public class TramoSeatsHandlers {
     }
 
     @ServiceProvider(FamilyHandler.class)
+    public static final class SaSpecTramoseatsLegacy implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(TramoSeatsHandlers.SA_SPEC_TRAMOSEATS, TramoSeatsSpecMapping.SERIALIZER_LEGACY, "TramoSeatsSpec");
+    }
+
+    @ServiceProvider(FamilyHandler.class)
     public static final class ModSpecTramo implements FamilyHandler {
 
         @lombok.experimental.Delegate
         private final FamilyHandler delegate = informationSet(TramoSeatsHandlers.MOD_SPEC_TRAMO, TramoSpecMapping.SERIALIZER_V3, "TramoSpec");
     }
 
+    @ServiceProvider(FamilyHandler.class)
+    public static final class ModSpecTramoLegacy implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(TramoSeatsHandlers.MOD_SPEC_TRAMO, TramoSpecMapping.SERIALIZER_LEGACY, "TramoSpec");
+    }
 }

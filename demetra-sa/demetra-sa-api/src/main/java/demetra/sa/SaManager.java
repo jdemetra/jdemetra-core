@@ -16,14 +16,15 @@
  */
 package demetra.sa;
 
+import demetra.information.Explorable;
 import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcDiagnostic;
+import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.ArrayList;
 import java.util.List;
-import demetra.information.Explorable;
 
 /**
  *
@@ -31,12 +32,12 @@ import demetra.information.Explorable;
  */
 @lombok.experimental.UtilityClass
 public class SaManager {
-    
-    public List<SaProcessingFactory> processors(){
+
+    public List<SaProcessingFactory> processors() {
         return SaProcessingFactoryLoader.get();
     }
-    
-    public List<SaOutputFactory> outputFactories(){
+
+    public List<SaOutputFactory> outputFactories() {
         return SaOutputFactoryLoader.get();
     }
 
@@ -57,16 +58,27 @@ public class SaManager {
         for (SaProcessingFactory fac : all) {
             SaSpecification dspec = fac.decode(spec);
             if (dspec != null) {
-                ProcessingLog log = new DefaultProcessingLog();
+                ProcessingLog log = verbose ? new DefaultProcessingLog() : ProcessingLog.dummy();
                 SaProcessor processor = fac.processor(dspec);
                 Explorable rslt = processor.process(def.getTs().getData(), context, log);
-                List<ProcDiagnostic> tests = new ArrayList<>();
-                fac.fillDiagnostics(tests, rslt);
-                return SaEstimation.builder()
-                        .results(rslt)
-                        .log(verbose ? log : ProcessingLog.dummy())
-                        .diagnostics(tests)
-                        .build();
+                if (rslt != null) {
+                    List<ProcDiagnostic> tests = new ArrayList<>();
+                    fac.fillDiagnostics(tests, rslt);
+                    SaSpecification pspec = fac.generateSpec(spec, rslt);
+                    ProcQuality quality = ProcDiagnostic.summary(tests);
+                    return SaEstimation.builder()
+                            .results(rslt)
+                            .log(verbose ? log : ProcessingLog.dummy())
+                            .diagnostics(tests)
+                            .quality(quality)
+                            .pointSpec(pspec)
+                            .build();
+                } else {
+                    return SaEstimation.builder()
+                            .log(verbose ? log : ProcessingLog.dummy())
+                            .quality(ProcQuality.Undefined)
+                            .build();
+               }
             }
         }
         return null;
@@ -76,5 +88,5 @@ public class SaManager {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
         return all.stream().filter(p -> p.canHandle(spec)).findFirst().get();
     }
-    
+
 }

@@ -16,6 +16,7 @@
  */
 package demetra.x13.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.processing.AlgorithmDescriptor;
@@ -43,7 +44,13 @@ public class X13SpecMapping {
         public X13Spec read(InformationSet info) {
             return X13SpecMapping.read(info);
         }
-   };
+
+        @Override
+        public boolean match(DemetraVersion version) {
+            return version == DemetraVersion.JD3;
+        }
+
+    };
 
     public static final InformationSetSerializer<X13Spec> SERIALIZER_LEGACY = new InformationSetSerializer<X13Spec>() {
         @Override
@@ -55,9 +62,24 @@ public class X13SpecMapping {
         public X13Spec read(InformationSet info) {
             return X13SpecMapping.readLegacy(info);
         }
+
+        @Override
+        public boolean match(DemetraVersion version) {
+            return version == DemetraVersion.JD2;
+        }
+
     };
 
     public static final String REGARIMA = "regarima", X11 = "x11", BENCH = "benchmarking";
+
+    public InformationSet write(X13Spec spec, boolean verbose, DemetraVersion version) {
+        switch (version) {
+            case JD2:
+                return writeLegacy(spec, verbose);
+            default:
+                return write(spec, verbose);
+        }
+    }
 
     public InformationSet write(X13Spec spec, boolean verbose) {
         InformationSet specInfo = new InformationSet();
@@ -99,15 +121,17 @@ public class X13SpecMapping {
         if (info == null) {
             return null;
         }
-        AlgorithmDescriptor desc=info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
-        if (desc == null)
+        AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
+        if (desc == null) {
             return null;
-        if (desc.equals(X13Spec.DESCRIPTOR_LEGACY))
+        }
+        if (desc.equals(X13Spec.DESCRIPTOR_LEGACY)) {
             return readLegacy(info);
-        else if (desc.equals(X13Spec.DESCRIPTOR_V3))
+        } else if (desc.equals(X13Spec.DESCRIPTOR_V3)) {
             return readV3(info);
-        else
+        } else {
             return null;
+        }
     }
 
     public X13Spec readV3(InformationSet info) {
@@ -133,7 +157,7 @@ public class X13SpecMapping {
     }
 
     @ServiceProvider(SaSpecificationMapping.class)
-    public static class Serializer implements SaSpecificationMapping{
+    public static class Serializer implements SaSpecificationMapping {
 
         @Override
         public SaSpecification read(InformationSet info) {
@@ -141,11 +165,12 @@ public class X13SpecMapping {
         }
 
         @Override
-        public InformationSet write(SaSpecification spec, boolean verbose) {
-            if (spec instanceof X13Spec)
-                return X13SpecMapping.write((X13Spec) spec, verbose);
-            else
+        public InformationSet write(SaSpecification spec, boolean verbose, DemetraVersion version) {
+            if (spec instanceof X13Spec) {
+                return X13SpecMapping.write((X13Spec) spec, verbose, version);
+            } else {
                 return null;
+            }
         }
     }
 }

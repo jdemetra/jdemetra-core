@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.html.stat;
+package demetra.html.stats;
 
 import demetra.html.AbstractHtmlElement;
 import demetra.html.Bootstrap4;

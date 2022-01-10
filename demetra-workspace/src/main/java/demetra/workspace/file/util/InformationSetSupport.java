@@ -16,6 +16,7 @@
  */
 package demetra.workspace.file.util;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.toolkit.io.xml.information.XmlInformationSet;
@@ -61,6 +62,11 @@ public final class InformationSetSupport implements FileSupport {
     @Override
     public void write(Path root, String fileName, Object value) throws IOException {
         writeItem(resolveFile(root, fileName), factory, value);
+    }
+
+    @Override
+    public boolean match(DemetraVersion version) {
+        return factory.match(version);
     }
 
     static <T> T readItem(Path file, InformationSetSerializer<T> factory) throws IOException {
@@ -109,4 +115,5 @@ public final class InformationSetSupport implements FileSupport {
         Files.createDirectories(file.getParent());
         FORMATTER.formatPath(jaxbElement, file);
     }
+
 }

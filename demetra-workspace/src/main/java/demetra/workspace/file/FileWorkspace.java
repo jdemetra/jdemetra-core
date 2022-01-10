@@ -16,14 +16,13 @@
  */
 package demetra.workspace.file;
 
+import demetra.DemetraVersion;
+import demetra.workspace.WorkspaceDescriptor;
+import demetra.workspace.WorkspaceItemDescriptor;
+import demetra.workspace.file.spi.FamilyHandlerLoader;
 import internal.workspace.file.FileWorkspaceImpl;
-import demetra.workspace.Workspace;
-import demetra.workspace.WorkspaceFamily;
-import demetra.workspace.WorkspaceItem;
-import internal.workspace.file.spi.FamilyHandlerLoader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -32,11 +31,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  * @since 2.2.0
  */
-public interface FileWorkspace extends Workspace {
-
+public interface FileWorkspace extends WorkspaceDescriptor {
 
     @NonNull
-    FileFormat getFileFormat() throws IOException;
+    DemetraVersion getVersion() throws IOException;
 
     @NonNull
     Path getFile() throws IOException;
@@ -45,25 +43,26 @@ public interface FileWorkspace extends Workspace {
     Path getRootFolder() throws IOException;
 
     @NonNull
-    Path getFile(@NonNull WorkspaceItem item) throws IOException;
+    Path getFile(@NonNull WorkspaceItemDescriptor item) throws IOException;
 
     @NonNull
-    static FileWorkspace create(@NonNull Path file, @NonNull FileFormat format) throws IOException {
-        return FileWorkspaceImpl.create(file, format, new FamilyHandlerLoader()::get);
+    static FileWorkspace create(@NonNull Path file) throws IOException {
+        return FileWorkspaceImpl.create(file, DemetraVersion.JD3, new FamilyHandlerLoader()::get);
     }
 
     @NonNull
     static FileWorkspace open(@NonNull Path file) throws IOException {
-        return open(file, probeFormat(file).orElseThrow(() -> new IOException("Cannot probe workspace file format of '" + file + "'")));
+        return FileWorkspaceImpl.open(file, DemetraVersion.JD3, new FamilyHandlerLoader()::get);
     }
 
     @NonNull
-    static FileWorkspace open(@NonNull Path file, @NonNull FileFormat format) throws IOException {
-        return FileWorkspaceImpl.open(file, format, new FamilyHandlerLoader()::get);
+    static FileWorkspace create(@NonNull Path file, @NonNull DemetraVersion version) throws IOException {
+        return FileWorkspaceImpl.create(file, version, new FamilyHandlerLoader()::get);
     }
 
     @NonNull
-    static Optional<FileFormat> probeFormat(@NonNull Path file) throws IOException {
-        return FileWorkspaceImpl.probeFormat(file);
+    static FileWorkspace open(@NonNull Path file, @NonNull DemetraVersion version) throws IOException {
+        return FileWorkspaceImpl.open(file, version, new FamilyHandlerLoader()::get);
     }
+
 }

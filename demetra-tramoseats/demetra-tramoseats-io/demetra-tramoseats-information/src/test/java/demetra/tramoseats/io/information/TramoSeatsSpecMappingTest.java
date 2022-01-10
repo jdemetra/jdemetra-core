@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.DemetraVersion;
 import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.sa.SaDefinition;
@@ -47,8 +48,8 @@ import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
 import org.assertj.core.util.Files;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -172,12 +173,12 @@ public class TramoSeatsSpecMappingTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
+        item.process(null, false);
         NameManager<SaSpecification> mgr = SaItemsMapping.defaultNameManager();
-        InformationSet info = SaItemMapping.write(item, mgr, true);
+        InformationSet info = SaItemMapping.write(item, mgr, true, DemetraVersion.JD3);
 
         SaItem nitem = SaItemMapping.read(info, mgr, Collections.emptyMap());
-        nitem.process(true);
+        nitem.process(null, true);
     }
 
     @Test
@@ -197,16 +198,16 @@ public class TramoSeatsSpecMappingTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
+        item.process(null, false);
 
         SaItems items = SaItems.builder()
                 .item(item)
                 .build();
 
-        InformationSet info = SaItemsMapping.write(items, true);
+        InformationSet info = SaItemsMapping.write(items, true, DemetraVersion.JD3);
 
         SaItems nitems = SaItemsMapping.read(info);
-        nitems.getItems().forEach(v -> v.process(true));
+        nitems.getItems().forEach(v -> v.process(null, true));
     }
 
     public static void testXmlSerialization2() throws JAXBException, FileNotFoundException, IOException {
@@ -225,13 +226,13 @@ public class TramoSeatsSpecMappingTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
+        item.process(null, false);
 
         SaItems items = SaItems.builder()
                 .item(item)
                 .build();
 
-        InformationSet info = SaItemsMapping.write(items, true);
+        InformationSet info = SaItemsMapping.write(items, true, DemetraVersion.JD3);
 
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
@@ -272,11 +273,11 @@ public class TramoSeatsSpecMappingTest {
             XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
             InformationSet info = rslt.create();
             SaItems nspec = SaItemsMapping.read(info);
-            nspec.getItems().forEach(v->v.process(false));
+            nspec.getItems().forEach(v->v.process(null, false));
             System.out.println(nspec.getItems().size());
 //            nspec.getItems().forEach(v -> System.out.println(((TramoSeatsResults) v.getEstimation().getResults()).getPreprocessing().getEstimation().getStatistics().getLogLikelihood()));
             long t0=System.currentTimeMillis();
-            nspec.getItems().forEach(v->v.process(false));
+            nspec.getItems().forEach(v->v.process(null, false));
 //            System.out.println(nspec.getItems().get(0).getDefinition().getDomainSpec().equals(TramoSeatsSpec.RSA5));
             long t1=System.currentTimeMillis();
             System.out.println(t1-t0);

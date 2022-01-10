@@ -16,6 +16,7 @@
  */
 package demetra.x13.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.modelling.implementations.SarimaSpec;
@@ -42,6 +43,11 @@ public class RegArimaSpecMapping {
         public RegArimaSpec read(InformationSet info) {
             return RegArimaSpecMapping.read(info);
         }
+        
+        @Override
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD3;
+        }
     };
 
     public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_LEGACY=new InformationSetSerializer<RegArimaSpec>() {
@@ -53,6 +59,11 @@ public class RegArimaSpecMapping {
         @Override
         public RegArimaSpec read(InformationSet info) {
             return RegArimaSpecMapping.readLegacy(info);
+        }
+        
+        @Override
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD3;
         }
     };
     

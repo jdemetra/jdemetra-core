@@ -59,6 +59,7 @@
         <module>demetra-calendars</module>
         <module>demetra-workspace</module>
         <module>demetra-examples</module>
+        <module>demetra-workspace-r</module>
     </modules>
 
     <dependencyManagement>

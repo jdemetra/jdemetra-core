@@ -16,6 +16,8 @@
  */
 package internal.workspace.file;
 
+import demetra.workspace.WorkspaceItemDescriptor.Key;
+import demetra.workspace.WorkspaceItemDescriptor.Attributes;
 import demetra.workspace.WorkspaceFamily;
 import internal.workspace.file.xml.XmlGenericWorkspace;
 import internal.workspace.file.xml.XmlGenericWorkspaceItem;
@@ -54,8 +56,8 @@ final class GenericIndexer implements Indexer {
     }
 
     @Override
-    public void checkId(Index.Key key) throws IOException {
-        if (demetra.workspace.Workspace.UTIL_CAL.equals(key.getFamily())) {
+    public void checkId(Key key) throws IOException {
+        if (demetra.workspace.WorkspaceFamily.UTIL_CAL.equals(key.getFamily())) {
             if (!key.getId().equals("Calendars")) {
                 throw new IOException("Only one calendar file is allowed");
             }
@@ -84,12 +86,12 @@ final class GenericIndexer implements Indexer {
         return result.build();
     }
 
-    private static Index.Key getIndexKey(XmlGenericWorkspaceItem xml) {
-        return new Index.Key(WorkspaceFamily.parse(xml.family), xml.file);
+    private static Key getIndexKey(XmlGenericWorkspaceItem xml) {
+        return new Key(WorkspaceFamily.parse(xml.family), xml.file);
     }
 
-    private static Index.Value getIndexValue(XmlGenericWorkspaceItem xml) {
-        return new Index.Value(xml.name, xml.readOnly, xml.comments);
+    private static Attributes getIndexValue(XmlGenericWorkspaceItem xml) {
+        return new Attributes(xml.name, xml.readOnly, xml.comments);
     }
 
     private static XmlGenericWorkspace indexToXml(Index index, Path rootFolder) {
@@ -99,7 +101,7 @@ final class GenericIndexer implements Indexer {
         return result;
     }
 
-    private static XmlGenericWorkspaceItem[] indexEntriesToXml(Map<Index.Key, Index.Value> entries) {
+    private static XmlGenericWorkspaceItem[] indexEntriesToXml(Map<Key, Attributes> entries) {
         return entries.entrySet().stream()
                 .map(o -> {
                     XmlGenericWorkspaceItem xml = new XmlGenericWorkspaceItem();
@@ -140,6 +142,6 @@ final class GenericIndexer implements Indexer {
         return index.withoutItem(SINGLE_CAL_GENERIC_KEY);
     }
 
-    private static final Index.Key SINGLE_CAL_GENERIC_KEY = new Index.Key(demetra.workspace.Workspace.UTIL_CAL, "Calendars");
-    private static final Index.Value SINGLE_CAL_GENERIC_VALUE = new Index.Value("Calendars", false, null);
+    private static final Key SINGLE_CAL_GENERIC_KEY = new Key(demetra.workspace.WorkspaceFamily.UTIL_CAL, "Calendars");
+    private static final Attributes SINGLE_CAL_GENERIC_VALUE = new Attributes("Calendars", false, null);
 }

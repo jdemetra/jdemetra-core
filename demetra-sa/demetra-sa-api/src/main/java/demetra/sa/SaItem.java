@@ -16,7 +16,6 @@
  */
 package demetra.sa;
 
-import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcQuality;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
@@ -47,95 +46,91 @@ public final class SaItem {
     int priority;
 
     /**
-     * All information available after processing.
-     * SA processors must be able to generate full estimations starting from
-     * definitions
+     * All information available after processing. SA processors must be able to
+     * generate full estimations starting from definitions
      */
     @lombok.experimental.NonFinal
     @lombok.EqualsAndHashCode.Exclude
     private volatile SaEstimation estimation;
 
-    @lombok.experimental.NonFinal
-    @lombok.EqualsAndHashCode.Exclude
-    private volatile ProcQuality quality;
-
-    @lombok.experimental.NonFinal
-    @lombok.EqualsAndHashCode.Exclude
-    private volatile boolean processed;
-
     public SaItem withPriority(int priority) {
-        return new SaItem(name, definition, meta, priority, estimation, quality, processed);
+        return new SaItem(name, definition, meta, priority, estimation);
     }
 
     public SaItem withName(String name) {
-        return new SaItem(name, definition, meta, priority, estimation, quality, processed);
+        return new SaItem(name, definition, meta, priority, estimation);
     }
 
     public SaItem withInformations(Map<String, String> info) {
-        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation, quality, processed);
+        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation);
     }
 
     public void accept() {
-        if (!processed) {
-            return;
+        synchronized (this) {
+            if (estimation == null) {
+                return;
+            }
+            estimation = estimation.withQuality(ProcQuality.Accepted);
         }
-        this.quality = ProcQuality.Accepted;
     }
 
     /**
-     * Process this item. The Processing is always executed, even if the item
-     * has already been
-     * estimated. To avoid re-estimation, use getEstimation (which is not
-     * verbose by default)
+     * Process this item.The Processing is always executed, even if the item has
+     * already been estimated. To avoid re-estimation, use getEstimation (which
+     * is not verbose by default)
      *
+     * @param context Context could be null (if unused)
      * @param verbose
      * @return
      */
-    public boolean process(boolean verbose) {
+    public boolean process(ModellingContext context, boolean verbose) {
         synchronized (this) {
-            estimation = SaManager.process(definition, ModellingContext.getActiveContext(), verbose);
-            processed = true;
-            // update quality
-            quality = estimation == null ? ProcQuality.Undefined : ProcDiagnostic.summary(estimation.getDiagnostics());
+            estimation = SaManager.process(definition, context, verbose);
         }
-        return estimation != null;
+        return estimation.getQuality() != ProcQuality.Undefined;
+    }
+
+    public boolean compute(ModellingContext context, boolean verbose) {
+        synchronized (this) {
+            if (estimation == null) {
+                estimation = SaManager.process(definition, context, verbose);
+            } else {
+                SaDefinition pdef = SaDefinition.builder()
+                        .ts(definition.getTs())
+                        .domainSpec(estimation.getPointSpec())
+                        .build();
+                SaEstimation nestimation = SaManager.process(pdef, context, verbose);
+                estimation=nestimation.withQuality(estimation.getQuality());
+            }
+        }
+        return estimation.getQuality() != ProcQuality.Undefined;
+    }
+    
+    public boolean isProcessed(){
+        SaEstimation e=estimation;
+        return e != null && e.getResults() != null;
     }
 
     /**
-     * Gets the current estimation (executes it silently if not processed yet).
+     * Gets the current estimation (Processing should be controlled by
+     * isProcessed).
      *
+     * @param context
      * @return The current estimation
      */
     public SaEstimation getEstimation() {
-        SaEstimation e = estimation;
-        if (e == null) {
-            synchronized (this) {
-                e = estimation;
-                if (processed) {
-                    return e;
-                } else {
-                    e = SaManager.process(definition, ModellingContext.getActiveContext(), false);
-                    // update quality
-                    quality = e == null ? ProcQuality.Undefined : ProcDiagnostic.summary(e.getDiagnostics());
-                    estimation = e;
-                    processed = true;
-                }
-            }
-        }
-        return e;
+        return estimation;
     }
 
-    
     /**
-     * Remove the results (useful in case of memory problems), but keep
-     * the quality
+     * Remove the results (useful in case of memory problems), but keep the
+     * quality
      */
-    public void reset() {
+    public void flush() {
         SaEstimation e = estimation;
         if (e != null) {
             synchronized (this) {
-                estimation = null;
-                processed = false;
+                estimation = estimation.flush();
             }
         }
     }
@@ -144,10 +139,10 @@ public final class SaItem {
         SaEstimation e = getEstimation();
         if (e == null) {
             return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
-                    null, null, quality);
+                    null, null, ProcQuality.Undefined);
         } else {
             return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
-                    e.getResults(), e.getDiagnostics(), quality);
+                    e.getResults(), e.getDiagnostics(), e.getQuality());
         }
     }
 

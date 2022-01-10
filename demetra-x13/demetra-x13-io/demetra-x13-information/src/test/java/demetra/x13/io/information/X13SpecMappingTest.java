@@ -16,6 +16,7 @@
  */
 package demetra.x13.io.information;
 
+import demetra.DemetraVersion;
 import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.sa.SaDefinition;
@@ -36,16 +37,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import jdplus.x13.X13Results;
 import org.assertj.core.util.Files;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.information.Explorable;
 
 /**
  *
@@ -73,12 +70,12 @@ public class X13SpecMappingTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
+        item.process(null, false);
         NameManager<SaSpecification> mgr = SaItemsMapping.defaultNameManager();
-        InformationSet info = SaItemMapping.write(item, mgr, true);
+        InformationSet info = SaItemMapping.write(item, mgr, true, DemetraVersion.JD3);
         
         SaItem nitem = SaItemMapping.read(info, mgr, Collections.emptyMap());
-        nitem.process(true);
+        nitem.process(null, true);
     }
 
     @Test
@@ -98,16 +95,16 @@ public class X13SpecMappingTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
+        item.process(null, false);
         
         SaItems items = SaItems.builder()
                 .item(item)
                 .build();
         
-        InformationSet info = SaItemsMapping.write(items, true);
+        InformationSet info = SaItemsMapping.write(items, true, DemetraVersion.JD3);
         
         SaItems nitems = SaItemsMapping.read(info);
-        nitems.getItems().forEach(v->v.process(true));
+        nitems.getItems().forEach(v->v.process(null, true));
     }
 
 
@@ -121,13 +118,13 @@ public class X13SpecMappingTest {
             XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
             InformationSet info = rslt.create();
             SaItems nspec = SaItemsMapping.read(info);
-            nspec.getItems().forEach(v->v.process(false));
+            nspec.getItems().forEach(v->v.process(null, false));
             System.out.println(nspec.getItems().size());
 //            nspec.getItems().forEach(v -> System.out.println(((TramoSeatsResults) v.getEstimation().getResults()).getPreprocessing().getEstimation().getStatistics().getLogLikelihood()));
             long t0=System.currentTimeMillis();
             nspec.getItems().forEach(v->
             {
-                v.process(false);
+                v.process(null, false);
                 SaEstimation estimation = v.getEstimation();
                 X13Results results = (X13Results) estimation.getResults();
                 System.out.println(results.getPreprocessing().getEstimation().getStatistics().getLogLikelihood());

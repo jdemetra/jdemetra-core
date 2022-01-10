@@ -9,7 +9,6 @@ import demetra.data.Data;
 import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SaDefinition;
-import demetra.sa.SaEstimation;
 import demetra.sa.SaItem;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsMoniker;
@@ -17,8 +16,8 @@ import demetra.tramoseats.TramoSeatsSpec;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -71,8 +70,8 @@ public class TramoSeatsFactoryTest {
                 .name("prod")
                 .definition(sadef)
                 .build();
-        item.process(false);
-        assertTrue(item.getQuality() == ProcQuality.Good);
+        item.process(null, false);
+        assertTrue(item.getEstimation().getQuality() == ProcQuality.Good);
     }
 
     @Test

@@ -16,16 +16,17 @@
  */
 package demetra.workspace.file.util;
 
+import demetra.DemetraVersion;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import demetra.util.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
 import nbbrd.io.xml.Xml;
 import nbbrd.io.xml.bind.Jaxb;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -65,6 +66,11 @@ public final class XmlConverterSupport implements FileSupport {
     @Override
     public void write(Path root, String fileName, Object value) throws IOException {
         writeItem(resolveFile(root, fileName), value);
+    }
+
+    @Override
+    public boolean match(DemetraVersion version) {
+        return version == DemetraVersion.JD2 || version == DemetraVersion.JD3;
     }
 
     private Object readItem(Path file) throws IOException {

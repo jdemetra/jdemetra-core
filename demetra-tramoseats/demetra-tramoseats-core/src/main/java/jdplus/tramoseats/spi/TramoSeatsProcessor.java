@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import jdplus.tramoseats.TramoSeatsKernel;
-import jdplus.tramoseats.extractors.TramoSeatsExtractor;
 import nbbrd.service.ServiceProvider;
 
 /**

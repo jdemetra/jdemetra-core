@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.information;
 
+import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.processing.AlgorithmDescriptor;
@@ -43,6 +44,11 @@ public class TramoSeatsSpecMapping {
         public TramoSeatsSpec read(InformationSet info) {
             return TramoSeatsSpecMapping.read(info);
         }
+        
+        @Override
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD3;
+        }
     };
 
     public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSeatsSpec>() {
@@ -55,9 +61,21 @@ public class TramoSeatsSpecMapping {
         public TramoSeatsSpec read(InformationSet info) {
             return TramoSeatsSpecMapping.readLegacy(info);
         }
+
+        @Override
+        public boolean match(DemetraVersion version){
+            return version == DemetraVersion.JD2;
+        }
     };
 
     public static final String TRAMO = "tramo", SEATS = "seats", BENCH = "benchmarking", RSA = "method";
+
+        public InformationSet write(TramoSeatsSpec spec, boolean verbose, DemetraVersion version) {
+            switch (version){
+                case JD2: return writeLegacy(spec, verbose);
+                default: return write(spec, verbose);
+            }
+        }
 
     public InformationSet write(TramoSeatsSpec spec, boolean verbose) {
         InformationSet specInfo = new InformationSet();
@@ -143,9 +161,9 @@ public class TramoSeatsSpecMapping {
         }
 
         @Override
-        public InformationSet write(SaSpecification spec, boolean verbose) {
+        public InformationSet write(SaSpecification spec, boolean verbose, DemetraVersion version) {
             if (spec instanceof TramoSeatsSpec) {
-                return TramoSeatsSpecMapping.write((TramoSeatsSpec) spec, verbose);
+                return TramoSeatsSpecMapping.write((TramoSeatsSpec) spec, verbose, version);
             } else {
                 return null;
             }
