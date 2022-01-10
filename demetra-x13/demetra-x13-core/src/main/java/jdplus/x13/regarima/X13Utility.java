@@ -20,10 +20,7 @@ import nbbrd.design.Development;
 import jdplus.arima.estimation.ResidualsComputer;
 import jdplus.data.DataBlock;
 import jdplus.regarima.outlier.CriticalValueComputer;
-import jdplus.regsarima.GlsSarimaComputer;
 import jdplus.sarima.SarimaModel;
-import jdplus.regsarima.internal.HannanRissanenInitializer;
-import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regarima.IRegArimaComputer;
 
