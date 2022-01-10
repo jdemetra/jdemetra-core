@@ -17,6 +17,9 @@
 package demetra.sa;
 
 import demetra.processing.ProcQuality;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsFactory;
+import demetra.timeseries.TsInformationType;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
 import java.util.Map;
@@ -100,14 +103,14 @@ public final class SaItem {
                         .domainSpec(estimation.getPointSpec())
                         .build();
                 SaEstimation nestimation = SaManager.process(pdef, context, verbose);
-                estimation=nestimation.withQuality(estimation.getQuality());
+                estimation = nestimation.withQuality(estimation.getQuality());
             }
         }
         return estimation.getQuality() != ProcQuality.Undefined;
     }
-    
-    public boolean isProcessed(){
-        SaEstimation e=estimation;
+
+    public boolean isProcessed() {
+        SaEstimation e = estimation;
         return e != null && e.getResults() != null;
     }
 
@@ -143,6 +146,33 @@ public final class SaItem {
         } else {
             return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
                     e.getResults(), e.getDiagnostics(), e.getQuality());
+        }
+    }
+
+    public SaItem refresh(EstimationPolicy policy) {
+        Ts nts = definition.getTs().unfreeze(TsFactory.getDefault());
+        if (!isProcessed()) {
+            SaSpecification dspec = definition.getDomainSpec();
+            SaDefinition ndef = SaDefinition.builder()
+                    .ts(nts)
+                    .domainSpec(dspec)
+                    .estimationSpec(definition.activeSpecification())
+                    .build();
+            return new SaItem(name, ndef, meta, priority, estimation);
+        } else {
+            SaSpecification dspec = definition.getDomainSpec();
+            SaSpecification pspec = estimation.getPointSpec();
+            SaProcessingFactory fac = SaManager.factoryFor(pspec);
+            SaSpecification espec = definition.activeSpecification();
+            if (fac != null) {
+                espec = fac.generateSpec(espec, estimation.getResults());
+            }
+            SaDefinition ndef = SaDefinition.builder()
+                    .ts(nts)
+                    .domainSpec(dspec)
+                    .estimationSpec(espec)
+                    .build();
+            return new SaItem(name, ndef, meta, priority, null);
         }
     }
 

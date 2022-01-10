@@ -161,10 +161,10 @@ public class LogLevelModule implements ILogLevelModule {
             }
             if (log != null) {
                 aiccLog = log.statistics().getAICC();
-                logs.info("level", level.statistics());
+                logs.info("Log", log.statistics());
             }
             if (level == null && log == null)
-                return ProcessingResult.Changed;
+                return ProcessingResult.Failed;
             
             if (isChoosingLog()) {
                 modelling.set(logmodel, log);

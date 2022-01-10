@@ -128,7 +128,7 @@ class SeasonalityController extends ModelController {
 
         if (nspec != null) {
             ModelDescription desc = ModelDescription.copyOf(modelling.getDescription());
-            desc.setSpecification(spec);
+            desc.setSpecification(nspec);
             RegSarimaModelling ncontext = RegSarimaModelling.of(desc);
             if (estimate(ncontext, false)) {
                 transferInformation(ncontext, modelling);
