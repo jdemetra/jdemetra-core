@@ -33,7 +33,8 @@ public class InverseGammaTest {
     public void testDensity() {
         InverseGamma ig=new InverseGamma(0.5, 1);
         for (int i=0; i<300; ++i){
-            System.out.println(ig.getDensity((i+1)*.01));
+            double density = ig.getDensity((i+1)*.01);
+//            System.out.println(density);
         }
     }
     
@@ -41,7 +42,8 @@ public class InverseGammaTest {
     public void testcdf() {
         InverseGamma ig=new InverseGamma(3, .5);
         for (int i=0; i<300; ++i){
-            System.out.println(ig.getProbability(i*.01, ProbabilityType.Lower));
+            double probability = ig.getProbability(i*.01, ProbabilityType.Lower);
+//            System.out.println(probability);
         }
     }
 }

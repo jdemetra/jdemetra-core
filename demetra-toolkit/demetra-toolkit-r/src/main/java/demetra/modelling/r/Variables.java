@@ -37,6 +37,7 @@ import jdplus.modelling.regression.HolidaysCorrectionFactory;
 import jdplus.modelling.regression.Regression;
 import jdplus.modelling.regression.TrigonometricVariablesFactory;
 import demetra.math.matrices.Matrix;
+import java.time.DayOfWeek;
 
 /**
  *
@@ -60,17 +61,17 @@ public class Variables {
         }
     }
 
-    public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts) {
+    public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, int dw, boolean contrasts) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, DayOfWeek.of(dw), true);
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
             FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, false);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, DayOfWeek.of(dw), false);
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
             FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
@@ -78,17 +79,17 @@ public class Variables {
             return m.unmodifiable();
         }
     }
-    public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
+    public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, int dw, boolean contrasts, boolean meanCorrection) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, meanCorrection);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, DayOfWeek.of(dw), meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
             FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, meanCorrection);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, DayOfWeek.of(dw), meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
             FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());
@@ -97,17 +98,17 @@ public class Variables {
         }
     }
 
-    public Matrix htd(ModellingContext ctxt, String name, TsDomain domain, int[] groups, boolean contrasts, boolean meanCorrection) {
+    public Matrix htd(ModellingContext ctxt, String name, TsDomain domain, int[] groups, int dw, boolean contrasts, boolean meanCorrection) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), meanCorrection);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), DayOfWeek.of(dw), meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
             FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
             HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
             return m.unmodifiable();
         } else {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), meanCorrection);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), DayOfWeek.of(dw), meanCorrection);
             GenericTradingDays gtd = GenericTradingDays.raw(dc);
             HolidaysCorrectedTradingDays htd = new HolidaysCorrectedTradingDays(gtd, corrector);
             FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount());

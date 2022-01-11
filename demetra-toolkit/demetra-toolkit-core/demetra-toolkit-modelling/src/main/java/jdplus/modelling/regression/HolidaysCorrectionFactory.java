@@ -25,6 +25,7 @@ import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.math.matrices.Matrix;
+import java.time.DayOfWeek;
 
 /**
  *
@@ -35,21 +36,21 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
 
     public static HolidaysCorrectionFactory FACTORY = new HolidaysCorrectionFactory();
 
-    public static HolidaysCorrector corrector(String name, CalendarManager mgr, boolean meanCorrection) {
+    public static HolidaysCorrector corrector(String name, CalendarManager mgr, DayOfWeek hol, boolean meanCorrection) {
         CalendarDefinition cur = mgr.get(name);
         if (cur == null) {
             return null;
         }
-        return corrector(cur, mgr, meanCorrection);
+        return corrector(cur, mgr, hol, meanCorrection);
     }
-    
-    public static HolidaysCorrector corrector(CalendarDefinition cur, CalendarManager mgr, boolean meanCorrection) {
+
+    public static HolidaysCorrector corrector(CalendarDefinition cur, CalendarManager mgr, DayOfWeek hol, boolean meanCorrection) {
         if (cur instanceof Calendar) {
-            return corrector((Calendar) cur, meanCorrection);
+            return corrector((Calendar) cur, hol, meanCorrection);
         } else if (cur instanceof ChainedCalendar) {
             ChainedCalendar ccur = (ChainedCalendar) cur;
-            HolidaysCorrector beg = corrector(ccur.getFirst(), mgr, meanCorrection);
-            HolidaysCorrector end = corrector(ccur.getSecond(), mgr, meanCorrection);
+            HolidaysCorrector beg = corrector(ccur.getFirst(), mgr, hol, meanCorrection);
+            HolidaysCorrector end = corrector(ccur.getSecond(), mgr, hol, meanCorrection);
             if (beg == null || end == null) {
                 return null;
             }
@@ -57,13 +58,14 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         } else if (cur instanceof CompositeCalendar) {
             CompositeCalendar ccur = (CompositeCalendar) cur;
             WeightedItem<String>[] calendars = ccur.getCalendars();
-            HolidaysCorrector[] corr=new HolidaysCorrector[calendars.length];
-            double[] weights=new double[calendars.length];
-            for (int i=0; i<calendars.length; ++i){
-                corr[i]=corrector(calendars[i].getItem(), mgr, meanCorrection);
-                if (corr[i] == null)
+            HolidaysCorrector[] corr = new HolidaysCorrector[calendars.length];
+            double[] weights = new double[calendars.length];
+            for (int i = 0; i < calendars.length; ++i) {
+                corr[i] = corrector(calendars[i].getItem(), mgr, hol, meanCorrection);
+                if (corr[i] == null) {
                     return null;
-                weights[i]=calendars[i].getWeight();
+                }
+                weights[i] = calendars[i].getWeight();
             }
             return corrector(corr, weights);
         } else {
@@ -75,11 +77,13 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      * Usual corrections: the holidays are considered as Sundays
      *
      * @param calendar
+     * @param hol
      * @param meanCorrection Apply mean correction on the generated series
      * @return
      */
-    public static HolidaysCorrector corrector(final Calendar calendar, boolean meanCorrection) {
+    public static HolidaysCorrector corrector(final Calendar calendar, DayOfWeek hol, boolean meanCorrection) {
         return (TsDomain domain) -> {
+            int phol = hol.getValue() - 1;
             Matrix M = HolidaysUtility.holidays(calendar.getHolidays(), domain);
             FastMatrix Mc = FastMatrix.of(M);
             if (meanCorrection) {
@@ -102,15 +106,16 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
                     }
                 }
             }
-            // we put in the last column the sum of all the other days
+            // we put in the hpos column the sum of all the other days
             // and we change the sign of the other days
-            DataBlock cur = Mc.column(0);
-            Mc.column(6).copy(cur);
-            cur.chs();
-            for (int i = 1; i < 6; ++i) {
-                cur = Mc.column(i);
-                Mc.column(6).add(cur);
-                cur.chs();
+            DataBlock chol = Mc.column(phol);
+            chol.set(0);
+            for (int i = 0; i < 7; ++i) {
+                if (i != phol) {
+                    DataBlock cur = Mc.column(i);
+                    chol.add(cur);
+                    cur.chs();
+                }
             }
             return Mc;
         };
@@ -134,12 +139,12 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
 
     public static HolidaysCorrector corrector(final HolidaysCorrector[] correctors, double[] weights) {
         return (TsDomain domain) -> {
-            FastMatrix M=FastMatrix.of(correctors[0].holidaysCorrection(domain));
+            FastMatrix M = FastMatrix.of(correctors[0].holidaysCorrection(domain));
             M.mul(weights[0]);
-            for (int i=1; i<correctors.length; ++i){
+            for (int i = 1; i < correctors.length; ++i) {
                 FastMatrix cur = FastMatrix.of(correctors[i].holidaysCorrection(domain));
                 M.addAY(weights[i], cur);
-             }
+            }
             return M;
         };
     }
@@ -148,7 +153,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     @Override
-    public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start,FastMatrix buffer) {
+    public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start, FastMatrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
         FastMatrix days = FastMatrix.make(n, 7);
@@ -160,14 +165,14 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             GenericTradingDaysFactory.fillContrasts(var.getClustering(), days, buffer);
         } else {
-            GenericTradingDaysFactory.fillNoContrasts(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED, 
+            GenericTradingDaysFactory.fillNoContrasts(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
                     var.getType() == GenericTradingDays.Type.MEANCORRECTED ? start : null, days, buffer);
         }
         return true;
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(HolidaysCorrectedTradingDays var, D domain, FastMatrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(HolidaysCorrectedTradingDays var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

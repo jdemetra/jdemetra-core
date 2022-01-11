@@ -56,6 +56,7 @@ import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.timeseries.regression.Variable;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -412,7 +413,7 @@ class X13ModelBuilder implements IModelBuilder {
         TradingDaysType tdType = td.getTradingDaysType();
         DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
         return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 

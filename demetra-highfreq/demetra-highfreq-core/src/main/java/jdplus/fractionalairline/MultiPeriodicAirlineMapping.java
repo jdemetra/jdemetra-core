@@ -30,29 +30,38 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     private final boolean round;
     private final boolean stationary;
     private final int nur1;
+    private final boolean ar;
 
     // internal stationary mapping
-    private MultiPeriodicAirlineMapping(double[] f0, double[] f1, int[] p0, boolean round) {
+    private MultiPeriodicAirlineMapping(double[] f0, double[] f1, int[] p0, boolean round, boolean ar) {
         this.f0 = f0;
         this.f1 = f1;
         this.p0 = p0;
         this.round = round;
         this.stationary = true;
         this.nur1 = 0;
+        this.ar = ar;
     }
 
     public MultiPeriodicAirlineMapping(double[] periods) {
-        this(periods, false, 0);
+        this(periods, false, 0, false);
     }
 
-    public MultiPeriodicAirlineMapping(double[] periods, boolean round, int nur1) {
+    /**
+     *
+     * @param periods
+     * @param round
+     * @param nur1
+     * @param ar 
+     */
+    public MultiPeriodicAirlineMapping(double[] periods, boolean round, int nur1, boolean ar) {
         this.round = round;
         this.stationary = false;
         this.nur1 = nur1;
         p0 = new int[periods.length];
         f0 = new double[periods.length];
         f1 = new double[periods.length];
-        if (! round) {
+        if (!round) {
             for (int i = 0; i < periods.length; ++i) {
                 p0[i] = (int) periods[i];
                 f1[i] = periods[i] - p0[i];
@@ -64,13 +73,19 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
                 f1[i] = f0[i] = 0;
             }
         }
+        this.ar = ar;
     }
 
     private BackFilter ur1Filter() {
         if (nur1 == 0) {
             return BackFilter.ONE;
         }
-        int nd = nur1 < 0 ? (p0.length + 1) : nur1;
+        int nd;
+        if (nur1 < 0) {
+            nd = ar ? p0.length : p0.length + 1;
+        } else {
+            nd = nur1;
+        }
         BackFilter fd = BackFilter.D1;
         for (int i = 1; i < nd; ++i) {
             fd = fd.times(BackFilter.D1);
@@ -80,9 +95,17 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public ArimaModel map(DoubleSeq p) {
-        double th = p.get(0);
-        double[] ma = new double[]{1, -th};
-        BackFilter fma = BackFilter.ofInternal(ma), fs = BackFilter.ONE, fd = BackFilter.ONE;
+        double[] phi = null, theta = null;
+        if (ar) {
+            phi = new double[]{1, -p.get(0)};
+        } else {
+            theta = new double[]{1, -p.get(0)};
+        }
+
+        BackFilter fma = theta == null ? BackFilter.ONE : BackFilter.ofInternal(theta),
+                far = phi == null ? BackFilter.ONE : BackFilter.ofInternal(phi),
+                fs = BackFilter.ONE, fd = BackFilter.ONE;
+
         for (int i = 0; i < p0.length; ++i) {
             boolean frac = f1[i] != 0;
             double[] dma = new double[frac ? p0[i] + 2 : p0[i] + 1];
@@ -111,19 +134,34 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         if (!stationary) {
             fd = fd.times(ur1Filter());
         }
-        return new ArimaModel(fs, fd, fma, 1);
+        return new ArimaModel(fs.times(far), fd, fma, 1);
     }
 
     @Override
     public DoubleSeq parametersOf(ArimaModel t) {
-        BackFilter ma = t.getMa();
+        BackFilter theta = t.getMa();
+        BackFilter phi = t.getAr();
         double[] p = new double[p0.length + 1];
-        p[0] = -ma.get(1);
-        for (int i = 0; i < p0.length; ++i) {
-            if (! round) {
-                p[i + 1] = -ma.get(p0[i]) / f0[i];
-            } else {
-                p[i + 1] = -ma.get(p0[i]);
+        if (ar) {
+            double ph = -phi.get(1);
+            p[0] = ph;
+            for (int i = 0; i < p0.length; ++i) {
+                if (!round) {
+                    p[i + 1] = -theta.get(p0[i]-1) / f0[i];
+                } else {
+                    p[i + 1] = -theta.get(p0[i]-1);
+                }
+
+            }
+        } else {
+            double th = -theta.get(1);
+            p[0] = th;
+            for (int i = 0; i < p0.length; ++i) {
+                if (!round) {
+                    p[i + 1] = -theta.get(p0[i]) / f0[i];
+                } else {
+                    p[i + 1] = -theta.get(p0[i]);
+                }
             }
         }
         return DoubleSeq.of(p);
@@ -189,6 +227,6 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public IArimaMapping<ArimaModel> stationaryMapping() {
-        return stationary ? this : new MultiPeriodicAirlineMapping(f0, f1, p0, round);
+        return stationary ? this : new MultiPeriodicAirlineMapping(f0, f1, p0, round, ar);
     }
 }

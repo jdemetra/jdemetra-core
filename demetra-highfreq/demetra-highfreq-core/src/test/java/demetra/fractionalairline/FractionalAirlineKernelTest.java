@@ -85,7 +85,7 @@ public class FractionalAirlineKernelTest {
                 .precision(1e-7)
                 .build();
         FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(spec);
-        System.out.println(rslt.getLikelihood().getLogLikelihood());
+//        System.out.println(rslt.getLikelihood().getLogLikelihood());
         spec = FractionalAirlineSpec.builder()
                 .y(WeeklyData.US_CLAIMS)
                 .periodicities(new double[]{52})

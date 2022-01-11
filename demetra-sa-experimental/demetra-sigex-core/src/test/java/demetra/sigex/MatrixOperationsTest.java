@@ -29,8 +29,8 @@ public class MatrixOperationsTest {
             storage[i]=rnd.nextDouble();
         FastMatrix s=SymmetricMatrix.XXt(m);
         FastMatrix[] gcd = MatrixOperations.gcd(s, 10);
-        System.out.println(gcd[0]);
-        System.out.println(gcd[1]);
+//        System.out.println(gcd[0]);
+//        System.out.println(gcd[1]);
     }
     
 }

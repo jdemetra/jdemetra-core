@@ -43,7 +43,7 @@ public class StsEstimationTest {
 //        dictionary.keySet().forEach(s -> System.out.println(s));
 
 //        System.out.println(rslt.getData("levelvar", Double.class));
-        System.out.println(rslt.getData("t", TsData.class));
+//        System.out.println(rslt.getData("t", TsData.class));
     }
 
 }

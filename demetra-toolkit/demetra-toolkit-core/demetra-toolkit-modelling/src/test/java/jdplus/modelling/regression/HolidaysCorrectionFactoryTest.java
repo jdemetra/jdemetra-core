@@ -15,6 +15,7 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.Holiday;
 import ec.tstoolkit.timeseries.Month;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -63,7 +64,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD7_12() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD7), corrector);
         FastMatrix td6 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -81,7 +82,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD2_12() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
         FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -101,7 +102,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD7_4() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD7), corrector);
         FastMatrix td6 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -119,7 +120,7 @@ public class HolidaysCorrectionFactoryTest {
 
     @Test
     public void testTD2_4() {
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY, true);
         HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
         FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.quarterly(1980, 1), 360), var);
         ec.tstoolkit.timeseries.calendars.NationalCalendarProvider provider
@@ -140,7 +141,7 @@ public class HolidaysCorrectionFactoryTest {
     public static void stressTest() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium,true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY,true);
             HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
             FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         }

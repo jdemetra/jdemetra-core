@@ -36,12 +36,12 @@ public class TramoSeatsFactoryTest {
         assertTrue(rslt.getFinals() != null);
         TramoSeatsSpec nspec = TramoSeatsFactory.INSTANCE.generateSpec(TramoSeatsSpec.RSAfull, rslt);
         log = ProcessingLog.dummy();
-        System.out.println(nspec);
+//        System.out.println(nspec);
         ts = TramoSeatsKernel.of(nspec, null);
         TramoSeatsResults rslt2 = ts.process(Data.TS_PROD, log);
         assertTrue(rslt2.getFinals() != null);
         TramoSeatsSpec nspec2 = TramoSeatsFactory.INSTANCE.generateSpec(nspec, rslt2);
-        System.out.println(nspec2);
+//        System.out.println(nspec2);
         assertEquals(rslt.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(),
                 rslt2.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(), 1e-4);
     }
@@ -74,7 +74,7 @@ public class TramoSeatsFactoryTest {
         assertTrue(item.getEstimation().getQuality() == ProcQuality.Good);
     }
 
-    @Test
+    //@Test
     public void testDictionary() {
          Map<String, Class> dic = new LinkedHashMap<>();
         TramoSeatsSpecification.fillDictionary(null, dic);
