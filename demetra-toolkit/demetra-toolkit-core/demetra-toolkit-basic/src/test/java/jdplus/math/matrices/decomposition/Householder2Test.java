@@ -63,13 +63,13 @@ public class Householder2Test {
         QRDecomposition qr = H2.decompose(M);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
-        System.out.println("Filip");
-        System.out.println(beta);
-        for (int i = 0; i < beta.length(); ++i) {
-            System.out.print(lre(beta.get(i), DataSets.Filip.expectedBeta[i]));
-            System.out.print('\t');
-        }
-        System.out.println("");
+//        System.out.println("Filip");
+//        System.out.println(beta);
+//        for (int i = 0; i < beta.length(); ++i) {
+//            System.out.print(lre(beta.get(i), DataSets.Filip.expectedBeta[i]));
+//            System.out.print('\t');
+//        }
+//        System.out.println("");
     }
 
     @Test
@@ -88,13 +88,13 @@ public class Householder2Test {
         QRDecomposition qr = H2.decompose(M);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
-        System.out.println("Wampler4");
-        System.out.println(beta);
-        for (int i = 0; i < beta.length(); ++i) {
-            System.out.print(lre(beta.get(i), DataSets.Wampler4.expectedBeta[i]));
-            System.out.print('\t');
-        }
-        System.out.println("");
+//        System.out.println("Wampler4");
+//        System.out.println(beta);
+//        for (int i = 0; i < beta.length(); ++i) {
+//            System.out.print(lre(beta.get(i), DataSets.Wampler4.expectedBeta[i]));
+//            System.out.print('\t');
+//        }
+//        System.out.println("");
     }
 
     @Test
@@ -113,13 +113,13 @@ public class Householder2Test {
         QRDecomposition qr = H2.decompose(M);
         QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
-        System.out.println("Wampler5");
-        System.out.println(beta);
-        for (int i = 0; i < beta.length(); ++i) {
-            System.out.print(lre(beta.get(i), DataSets.Wampler5.expectedBeta[i]));
-            System.out.print('\t');
-        }
-        System.out.println("");
+//        System.out.println("Wampler5");
+//        System.out.println(beta);
+//        for (int i = 0; i < beta.length(); ++i) {
+//            System.out.print(lre(beta.get(i), DataSets.Wampler5.expectedBeta[i]));
+//            System.out.print('\t');
+//        }
+//        System.out.println("");
     }
 
     public static void main(String[] args) {

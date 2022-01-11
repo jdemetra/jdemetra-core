@@ -163,7 +163,7 @@ public class LogLevelModuleTest {
             model.setAirline(true);
             RegSarimaModelling m = RegSarimaModelling.of(model);
             ll.process(m);
-            System.out.print(ll.isChoosingLog());
+//            System.out.print(ll.isChoosingLog());
             System.out.print('\t');
 
             double[] nvals = insee[i].getValues().toArray();
@@ -174,7 +174,7 @@ public class LogLevelModuleTest {
             model.setAirline(true);
             m = RegSarimaModelling.of(model);
             ll.process(m);
-            System.out.println(ll.isChoosingLog());
+//            System.out.println(ll.isChoosingLog());
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

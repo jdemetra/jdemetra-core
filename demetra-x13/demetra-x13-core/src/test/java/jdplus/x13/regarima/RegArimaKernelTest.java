@@ -309,11 +309,11 @@ public class RegArimaKernelTest {
             if (Math.abs(del) < 1e-3) {
                 ++n;
             }
-            System.out.print(i);
-            System.out.print('\t');
-            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
-            System.out.print('\t');
-            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
+//            System.out.print(i);
+//            System.out.print('\t');
+//            System.out.print(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+//            System.out.print('\t');
+//            System.out.println(orslt.estimation.getStatistics().adjustedLogLikelihood);
         }
         System.out.println("RG5");
         System.out.println(n);
@@ -329,21 +329,21 @@ public class RegArimaKernelTest {
             TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
             RegSarimaModel rslt = processor.process(s, null);
             assertTrue(rslt != null);
-            System.out.println(rslt.getEstimation().getParameters().getValues());
+//            System.out.println(rslt.getEstimation().getParameters().getValues());
         }
         processor = RegArimaKernel.of(RegArimaSpec.RG3, null);
         for (int i = 0; i < all.length; ++i) {
             TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
             RegSarimaModel rslt = processor.process(s, null);
             assertTrue(rslt != null);
-            System.out.println(rslt.getEstimation().getParameters().getValues());
+//            System.out.println(rslt.getEstimation().getParameters().getValues());
         }
         processor = RegArimaKernel.of(RegArimaSpec.RG4, null);
         for (int i = 0; i < all.length; ++i) {
             TsData s = all[i].aggregate(TsUnit.YEAR, AggregationType.Average, true);
             RegSarimaModel rslt = processor.process(s, null);
             assertTrue(rslt != null);
-            System.out.println(rslt.getEstimation().getParameters().getValues());
+//            System.out.println(rslt.getEstimation().getParameters().getValues());
         }
     }
 
@@ -362,16 +362,15 @@ public class RegArimaKernelTest {
                         .build())
                 .build();
 
- 
         ec.tstoolkit.algorithm.ProcessingContext ocontext = new ec.tstoolkit.algorithm.ProcessingContext();
         ocontext.getGregorianCalendars().set("france", new ec.tstoolkit.timeseries.calendars.NationalCalendarProvider(ofrance));
         ec.tstoolkit.modelling.arima.x13.RegArimaSpecification ospec = ec.tstoolkit.modelling.arima.x13.RegArimaSpecification.RG5.clone();
         ospec.getRegression().getTradingDays().setHolidays("france");
         int n = 0;
         for (int i = 0; i < all.length; ++i) {
-         IPreprocessor oprocessor = ospec.build(ocontext);
-        RegArimaKernel processor = RegArimaKernel.of(spec, context);
-      ospec.getRegression().getTradingDays().setHolidays("france");
+            IPreprocessor oprocessor = ospec.build(ocontext);
+            RegArimaKernel processor = RegArimaKernel.of(spec, context);
+            ospec.getRegression().getTradingDays().setHolidays("france");
             RegSarimaModel rslt = processor.process(all[i], null);
             TsPeriod start = all[i].getStart();
             ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.valueOf(all[i].getAnnualFrequency()), start.year(), start.annualPosition(), all[i].getValues().toArray(), false);

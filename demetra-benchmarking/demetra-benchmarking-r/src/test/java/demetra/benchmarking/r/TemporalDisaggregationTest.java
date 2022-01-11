@@ -37,7 +37,7 @@ public class TemporalDisaggregationTest {
         TsData y = TsData.of(TsPeriod.yearly(1977), Doubles.of(Data.PCRA));
         TsData q = TsData.of(TsPeriod.quarterly(1977, 1), Doubles.of(Data.IND_PCR));
         TemporalDisaggregationResults rslt = TemporalDisaggregation.process(y, true, false, new TsData[]{q}, "Ar1", 0, "Sum", 0, 0, false, 0, false, "Diffuse", false);
-        System.out.println(rslt.getData("disagg", TsData.class));
+        //System.out.println(rslt.getData("disagg", TsData.class));
     }
     
     @Test

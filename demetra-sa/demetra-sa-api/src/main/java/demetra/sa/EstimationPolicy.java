@@ -25,15 +25,15 @@ import demetra.timeseries.TsDomain;
 @lombok.Value
 public class EstimationPolicy {
     
-    public static final EstimationPolicy COMPLETE=new EstimationPolicy(EstimationPolicyType.Complete, null, null);
-    public static final EstimationPolicy FIXED=new EstimationPolicy(EstimationPolicyType.Fixed, null, null);
-    public static final EstimationPolicy FIXEDAUTOREGRESSIVEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedAutoRegressiveParameters, null, null);
-    public static final EstimationPolicy FIXEDPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedParameters, null, null);
-    public static final EstimationPolicy FREEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FreeParameters, null, null);
-    public static final EstimationPolicy INTERACTIVE=new EstimationPolicy(EstimationPolicyType.Interactive, null, null);
-    public static final EstimationPolicy OUTLIERS=new EstimationPolicy(EstimationPolicyType.Outliers, null, null);
-    public static final EstimationPolicy ARIMA=new EstimationPolicy(EstimationPolicyType.Outliers_StochasticComponent, null, null);
+    public static final EstimationPolicy COMPLETE=new EstimationPolicy(EstimationPolicyType.Complete, null);
+    public static final EstimationPolicy FIXED=new EstimationPolicy(EstimationPolicyType.Fixed, null);
+    public static final EstimationPolicy FIXEDAUTOREGRESSIVEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedAutoRegressiveParameters, null);
+    public static final EstimationPolicy FIXEDPARAMETERS=new EstimationPolicy(EstimationPolicyType.FixedParameters, null);
+    public static final EstimationPolicy FREEPARAMETERS=new EstimationPolicy(EstimationPolicyType.FreeParameters, null);
+    public static final EstimationPolicy INTERACTIVE=new EstimationPolicy(EstimationPolicyType.Interactive, null);
+    public static final EstimationPolicy OUTLIERS=new EstimationPolicy(EstimationPolicyType.Outliers, null);
+    public static final EstimationPolicy ARIMA=new EstimationPolicy(EstimationPolicyType.Outliers_StochasticComponent, null);
     
     EstimationPolicyType policy;
-    TsDomain outliersSpan, frozenSpan;
+    TsDomain frozenSpan;
 }

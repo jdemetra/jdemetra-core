@@ -53,7 +53,7 @@ import jdplus.ucarima.ssf.SsfUcarima;
 public class FractionalAirlineKernel {
 
     public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), false, spec.getDifferencingOrder());
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), false, spec.getDifferencingOrder(), spec.isAr());
         double[] y = spec.getY();
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(DoubleSeq.of(y))
@@ -92,11 +92,21 @@ public class FractionalAirlineKernel {
                 .build();
         RegArimaEstimation rslt = finalProcessor.process(regarima, mapping);
         LogLikelihoodFunction.Point max = rslt.getMax();
+        DoubleSeq parameters = max.getParameters();
+        double phi;
+        DoubleSeq theta;
+        if (spec.isAr()){
+            phi=parameters.get(0);
+            theta=parameters.drop(1, 0);
+        } else{
+            phi=0;
+            theta=parameters;
+        }
 
         return FractionalAirlineEstimation.builder()
                 .y(regarima.getY().toArray())
                 .x(regarima.variables())
-                .model(new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), max.getParameters(), spec.getDifferencingOrder()))
+                .model(new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), spec.getDifferencingOrder(), phi, theta))
                 .coefficients(rslt.getConcentratedLikelihood().coefficients())
                 .coefficientsCovariance(rslt.getConcentratedLikelihood().covariance(2, true))
                 .likelihood(rslt.statistics())
@@ -141,7 +151,7 @@ public class FractionalAirlineKernel {
             ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{mt, ms, mi});
         }
         FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
-                .model(new demetra.highfreq.FractionalAirline(new double[]{period}, max.getParameters(), 2))
+                .model(new demetra.highfreq.FractionalAirline(new double[]{period}, 2, 0, max.getParameters()))
                 .likelihood(rslt.statistics())
                 .parameters(max.getParameters())
                 .parametersCovariance(max.asymptoticCovariance())
@@ -219,7 +229,7 @@ public class FractionalAirlineKernel {
         }
     }
 
-    public FractionalAirlineDecomposition decompose(DoubleSeq s, double[] periods, int ndiff, boolean cov, int nb, int nf) {
+    public FractionalAirlineDecomposition decompose(DoubleSeq s, double[] periods, int ndiff, boolean ar, boolean cov, int nb, int nf) {
 
         if (periods.length == 1) {
             return decompose(s, periods[0], false, cov, nb, nf);
@@ -238,7 +248,7 @@ public class FractionalAirlineKernel {
             }
         }
 
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(dp, false, ndiff);
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(dp, false, ndiff, ar);
 
         GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
         builder.minimizer(LevenbergMarquardtMinimizer.builder())
@@ -255,6 +265,16 @@ public class FractionalAirlineKernel {
         GlsArimaProcessor<ArimaModel> monitor = builder.build();
         RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima, mapping);
         LogLikelihoodFunction.Point<RegArimaModel<ArimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
+        DoubleSeq parameters = max.getParameters();
+        double phi;
+        DoubleSeq theta;
+        if (ar){
+            phi=parameters.get(0);
+            theta=parameters.drop(1, 0);
+        } else{
+            phi=0;
+            theta=parameters;
+        }
         UcarimaModel ucm = ucm(rslt.getModel().arima(), ip);
 
         demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
@@ -266,7 +286,7 @@ public class FractionalAirlineKernel {
         }
         ucmt = new demetra.arima.UcarimaModel(sum, all);
         FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
-                .model(new demetra.highfreq.FractionalAirline(dp, max.getParameters(), ndiff))
+                .model(new demetra.highfreq.FractionalAirline(dp, ndiff, phi, theta))
                 .likelihood(rslt.statistics())
                 .parameters(max.getParameters())
                 .parametersCovariance(max.asymptoticCovariance())

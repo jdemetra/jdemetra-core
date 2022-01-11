@@ -44,9 +44,9 @@ public class ArchTest {
             StatisticalTest lb = Arch.porteManteau(X)
                     .autoCorrelationsCount(i)
                     .build();
-            System.out.print(lm.getPvalue());
-            System.out.print('\t');
-            System.out.println(lb.getPvalue());
+//            System.out.print(lm.getPvalue());
+//            System.out.print('\t');
+//            System.out.println(lb.getPvalue());
         }
     }
 

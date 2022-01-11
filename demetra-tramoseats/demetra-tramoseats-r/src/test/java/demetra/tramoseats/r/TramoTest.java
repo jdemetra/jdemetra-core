@@ -43,13 +43,13 @@ public class TramoTest {
     public void test() {
         RegSarimaModel rslt = Tramo.process(Data.TS_PROD, "TR5");
         Map<String, Class> dictionary = rslt.getDictionary();
-        dictionary.forEach((k, v)->System.out.println(k));
+//        dictionary.forEach((k, v)->System.out.println(k));
         assertTrue(rslt.getData("span.n", Integer.class) == Data.TS_PROD.length());
 //        System.out.println(DoubleSeq.of(rslt.getData("sarima.parameters", double[].class)));
 
         SarimaModel model = rslt.getData("model", SarimaModel.class);
         String[] desc = rslt.getData("regression.description", String[].class);
-        Arrays.stream(desc).forEach(v->System.out.println(v));
+//        Arrays.stream(desc).forEach(v->System.out.println(v));
         assertTrue(desc != null);
         StatisticalTest data = rslt.getData("residuals.doornikhansen", StatisticalTest.class);
         System.out.println(data.getPvalue());

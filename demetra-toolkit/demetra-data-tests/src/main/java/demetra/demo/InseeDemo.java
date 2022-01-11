@@ -7,8 +7,6 @@ package demetra.demo;
 
 import demetra.data.Data;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDataTable;
-import java.util.Arrays;
 
 /**
  *

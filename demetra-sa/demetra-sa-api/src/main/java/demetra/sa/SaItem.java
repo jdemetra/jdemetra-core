@@ -17,6 +17,12 @@
 package demetra.sa;
 
 import demetra.processing.ProcQuality;
+import demetra.timeseries.TimeSelector;
+import demetra.timeseries.Ts;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsFactory;
+import demetra.timeseries.TsInformationType;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
 import java.util.Map;
@@ -100,14 +106,14 @@ public final class SaItem {
                         .domainSpec(estimation.getPointSpec())
                         .build();
                 SaEstimation nestimation = SaManager.process(pdef, context, verbose);
-                estimation=nestimation.withQuality(estimation.getQuality());
+                estimation = nestimation.withQuality(estimation.getQuality());
             }
         }
         return estimation.getQuality() != ProcQuality.Undefined;
     }
-    
-    public boolean isProcessed(){
-        SaEstimation e=estimation;
+
+    public boolean isProcessed() {
+        SaEstimation e = estimation;
         return e != null && e.getResults() != null;
     }
 
@@ -143,6 +149,45 @@ public final class SaItem {
         } else {
             return new SaDocument(name, definition.getTs(), definition.activeSpecification(),
                     e.getResults(), e.getDiagnostics(), e.getQuality());
+        }
+    }
+
+    public SaItem refresh(EstimationPolicy policy, TsInformationType type) {
+        TsData oldData = definition.getTs().getData();
+        Ts nts = type != TsInformationType.None ? definition.getTs().unfreeze(TsFactory.getDefault(), type) : definition.getTs();
+        if (!isProcessed()) {
+            SaSpecification dspec = definition.getDomainSpec();
+            SaDefinition ndef = SaDefinition.builder()
+                    .ts(nts)
+                    .domainSpec(dspec)
+                    .estimationSpec(definition.activeSpecification())
+                    .build();
+            return new SaItem(name, ndef, meta, priority, estimation);
+        } else {
+            SaSpecification dspec = definition.getDomainSpec();
+            SaSpecification pspec = estimation.getPointSpec();
+            SaProcessingFactory fac = SaManager.factoryFor(pspec);
+            SaSpecification espec = definition.activeSpecification();
+            if (fac != null) {
+                TsDomain frozenSpan = policy.getFrozenSpan();
+                if (frozenSpan == null) {
+                    switch (policy.getPolicy()) {
+                        case LastOutliers:
+                            frozenSpan = oldData.getDomain().select(TimeSelector.excluding(0, oldData.getAnnualFrequency()));
+                            break;
+                        case Current: {
+                            frozenSpan = oldData.getDomain();
+                        }
+                    }
+                }
+                espec = fac.refreshSpec(pspec, dspec, policy.getPolicy(), frozenSpan);
+            }
+            SaDefinition ndef = SaDefinition.builder()
+                    .ts(nts)
+                    .domainSpec(dspec)
+                    .estimationSpec(espec)
+                    .build();
+            return new SaItem(name, ndef, meta, priority, null);
         }
     }
 

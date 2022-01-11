@@ -41,7 +41,7 @@ public class RegressionVariablesTest {
 
         TsDomain domain = TsDomain.of(TsPeriod.monthly(2000, 1), 200);
         Matrix matrix = RegressionVariables.matrix(domain, vars);
-        System.out.println(matrix);
+//        System.out.println(matrix);
         DataBlock c = DataBlock.make(matrix.getColumnsCount());
         c.set(i -> i + 1);
         DoubleSeq e = RegressionVariables.linearEffect(domain, vars, c, var -> var instanceof ICalendarVariable);

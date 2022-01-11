@@ -26,7 +26,7 @@ public class IsolationForestsTest {
         Random rnd = new Random();
         int[] rslt = IsolationForests.sampleWithoutReplacement(15, 20, true, rnd);
         for (int i = 0; i < rslt.length; ++i) {
-            System.out.println(rslt[i]);
+//            System.out.println(rslt[i]);
         }
     }
 

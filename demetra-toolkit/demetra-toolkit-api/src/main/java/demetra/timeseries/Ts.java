@@ -16,6 +16,7 @@
  */
 package demetra.timeseries;
 
+import demetra.processing.ProcessingLog.InformationType;
 import internal.timeseries.util.TsDataBuilderUtil;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.StaticFactoryMethod;
@@ -99,7 +100,7 @@ public class Ts {
                 .build();
     }
 
-    public @NonNull Ts unfreeze(@NonNull TsFactory factory) {
+    public @NonNull Ts unfreeze(@NonNull TsFactory factory, TsInformationType type) {
         if (moniker.isProvided())
             return this;
         TsMoniker pmoniker = getFreezeMeta(meta);
