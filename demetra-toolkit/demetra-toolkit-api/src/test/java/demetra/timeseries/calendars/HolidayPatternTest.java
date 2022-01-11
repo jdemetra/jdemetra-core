@@ -36,11 +36,11 @@ public class HolidayPatternTest {
     public void testComplex() {
         HolidayPattern p = HolidayPattern.of(-15, Shape.LinearUp, 10, Shape.Constant, 10, Shape.LinearDown, 10);
         DoubleSeq w = DoubleSeq.of(p.getWeights());
-        System.out.println(w);
+//        System.out.println(w);
         assertTrue(w.count(q -> q == 1) == 12);
         p = HolidayPattern.of(-15, Shape.LinearUp, 10, Shape.Zero, 10, Shape.LinearDown, 10);
         w = DoubleSeq.of(p.getWeights());
-        System.out.println(w);
+//        System.out.println(w);
         assertTrue(w.count(q -> q == 1) == 2 && w.count(q -> q == 0) == 10);
     }
 

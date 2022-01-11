@@ -55,6 +55,7 @@ import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramo.TransformSpec;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -334,7 +335,7 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         } else if (tdspec.getHolidays() != null) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
             return new HolidaysCorrectedTradingDays(gtd, corrector);
         } else if (tdspec.getUserVariables() != null) {
             return null;
@@ -367,7 +368,7 @@ class TramoModelBuilder implements IModelBuilder {
         }
         DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
         return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 

@@ -67,8 +67,8 @@ public class CompositeModelTest {
         M.column(0).copyFrom(Data.PROD, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
-        System.out.println(rslt.getSmoothedStates().getComponent(19));
-        System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
+//        System.out.println(rslt.getSmoothedStates().getComponent(19));
+//        System.out.println(rslt.getSmoothedStates().getComponentVariance(1));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
@@ -88,8 +88,8 @@ public class CompositeModelTest {
         M.column(0).copyFrom(Data.ABS_RETAIL, 0);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
-        System.out.println(rslt.getSmoothedStates().getComponent(0));
-        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
+//        System.out.println(rslt.getSmoothedStates().getComponent(0));
+//        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 
@@ -118,8 +118,8 @@ public class CompositeModelTest {
         model.add(eq);
         CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
         System.out.println(DataBlock.of(rslt.getFullParameters()));
-        System.out.println(rslt.getSmoothedStates().getComponent(0));
-        System.out.println(rslt.getSmoothedStates().getComponent(2));
+//        System.out.println(rslt.getSmoothedStates().getComponent(0));
+//        System.out.println(rslt.getSmoothedStates().getComponent(2));
         System.out.println(rslt.getLikelihood().logLikelihood());
     }
 

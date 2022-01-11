@@ -160,9 +160,9 @@ public class OutliersDetectionModuleTest {
             od.process(modelling, va);
             Variable[] outs = modelling.getDescription().variables().filter(var -> ModellingUtility.isOutlier(var)).toArray(k -> new Variable[k]);
             int n=outs.length;
-            System.out.print(on);
-            System.out.print('\t');
-            System.out.println(n);
+//            System.out.print(on);
+//            System.out.print('\t');
+//            System.out.println(n);
             //assertTrue(on ==n);
         }
     }
@@ -210,9 +210,9 @@ public class OutliersDetectionModuleTest {
             od.process(modelling, 3);
             Variable[] outs = modelling.getDescription().variables().filter(var -> ModellingUtility.isOutlier(var)).toArray(k -> new Variable[k]);
             int n=outs.length;
-            System.out.print(on);
-            System.out.print('\t');
-            System.out.println(n);
+//            System.out.print(on);
+//            System.out.print('\t');
+//            System.out.println(n);
             //assertTrue(on ==n);
         }
     }

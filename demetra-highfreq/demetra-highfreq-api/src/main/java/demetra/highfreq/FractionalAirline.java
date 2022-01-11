@@ -15,7 +15,8 @@ import demetra.data.DoubleSeq;
 public class FractionalAirline {
 
     private double[] periodicities;
-    private DoubleSeq theta;
     private int ndifferencing;
+    private double phi;
+    private DoubleSeq theta;
     
 }

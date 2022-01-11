@@ -17,7 +17,10 @@
 package demetra.sa;
 
 import demetra.processing.ProcQuality;
+import demetra.timeseries.TimeSelector;
 import demetra.timeseries.Ts;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsFactory;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.regression.ModellingContext;
@@ -149,8 +152,9 @@ public final class SaItem {
         }
     }
 
-    public SaItem refresh(EstimationPolicy policy) {
-        Ts nts = definition.getTs().unfreeze(TsFactory.getDefault());
+    public SaItem refresh(EstimationPolicy policy, TsInformationType type) {
+        TsData oldData = definition.getTs().getData();
+        Ts nts = type != TsInformationType.None ? definition.getTs().unfreeze(TsFactory.getDefault(), type) : definition.getTs();
         if (!isProcessed()) {
             SaSpecification dspec = definition.getDomainSpec();
             SaDefinition ndef = SaDefinition.builder()
@@ -165,7 +169,18 @@ public final class SaItem {
             SaProcessingFactory fac = SaManager.factoryFor(pspec);
             SaSpecification espec = definition.activeSpecification();
             if (fac != null) {
-                espec = fac.generateSpec(espec, estimation.getResults());
+                TsDomain frozenSpan = policy.getFrozenSpan();
+                if (frozenSpan == null) {
+                    switch (policy.getPolicy()) {
+                        case LastOutliers:
+                            frozenSpan = oldData.getDomain().select(TimeSelector.excluding(0, oldData.getAnnualFrequency()));
+                            break;
+                        case Current: {
+                            frozenSpan = oldData.getDomain();
+                        }
+                    }
+                }
+                espec = fac.refreshSpec(pspec, dspec, policy.getPolicy(), frozenSpan);
             }
             SaDefinition ndef = SaDefinition.builder()
                     .ts(nts)

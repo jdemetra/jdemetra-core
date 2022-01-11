@@ -33,14 +33,14 @@ public class QRLinearSystemSolverTest {
         DataBlock y=x.deepClone();
         QRLinearSystemSolver solver = QRLinearSystemSolver.builder().decomposer(A->new HouseholderWithPivoting().decompose(A,0)).build();
         solver.solve(M, x);
-        System.out.println(x);
+//        System.out.println(x);
         DataBlock z=DataBlock.make(n);
         z.product(M.rowsIterator(), x);
-        System.out.println(z);
-        System.out.println();
-        System.out.println(y);
-        System.out.println();
-        System.out.println(M);
+//        System.out.println(z);
+//        System.out.println();
+//        System.out.println(y);
+//        System.out.println();
+//        System.out.println(M);
         assertTrue(z.distance(y)<1e-7);
     }
     

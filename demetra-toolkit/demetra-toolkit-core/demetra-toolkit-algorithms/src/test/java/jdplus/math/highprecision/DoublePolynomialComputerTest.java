@@ -42,20 +42,20 @@ public class DoublePolynomialComputerTest {
         Polynomial sp = Polynomial.of(P.toArray());
         PolynomialComputer cp=new PolynomialComputer(sp);
         cp.computeAll(Complex.cart(.3, .5));
-        System.out.println(cp.f());
-        System.out.println(cp.df());
+//        System.out.println(cp.f());
+//        System.out.println(cp.df());
         cp.computeAll(0.9923);
-        System.out.println(cp.f());
-        System.out.println(cp.df());
+//        System.out.println(cp.f());
+//        System.out.println(cp.df());
 
         DoublePolynomial dp = DoublePolynomial.of(P);
         DoublePolynomialComputer dcp=new DoublePolynomialComputer(dp);
         dcp.computeAll(DoubleComplex.cart(.3, .5));
-        System.out.println(dcp.f());
-        System.out.println(dcp.df());
+//        System.out.println(dcp.f());
+//        System.out.println(dcp.df());
         dcp.computeAll(new DoubleDouble(0.9923, 0));
-        System.out.println(dcp.f());
-        System.out.println(dcp.df());
+//        System.out.println(dcp.f());
+//        System.out.println(dcp.df());
     }
     
 }

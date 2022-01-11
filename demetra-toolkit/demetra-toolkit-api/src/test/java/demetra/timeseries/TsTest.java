@@ -85,7 +85,7 @@ public class TsTest {
     public void testFreeze() {
         Ts original = factory.makeTs(tsMoniker, BaseInformation);
         Ts frozen = original.freeze();
-        Ts unfrozen = frozen.unfreeze(factory);
+        Ts unfrozen = frozen.unfreeze(factory, TsInformationType.All);
 
         assertThat(original.getData()).isEmpty();
 
@@ -95,7 +95,7 @@ public class TsTest {
         assertThat(unfrozen.getMoniker()).isEqualTo(original.getMoniker());
         assertThat(unfrozen.getData()).isNotEmpty();
 
-        assertThatNullPointerException().isThrownBy(() -> frozen.unfreeze(null));
+        assertThatNullPointerException().isThrownBy(() -> frozen.unfreeze(null, TsInformationType.All));
     }
 
     private final TsMoniker tsMoniker = TsMoniker.of(MockedTsProvider.NAME, "0:300");

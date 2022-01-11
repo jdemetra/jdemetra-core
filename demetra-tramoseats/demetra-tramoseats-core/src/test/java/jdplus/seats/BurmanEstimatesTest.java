@@ -44,11 +44,11 @@ public class BurmanEstimatesTest {
                 .ucarimaModel(ucm)
                 .build();
         DoubleSeq estimates = burman.estimates(0, true);
-        System.out.println(estimates);
+//        System.out.println(estimates);
         estimates = burman.estimates(1, true);
-        System.out.println(estimates);
+//        System.out.println(estimates);
         estimates = burman.estimates(2, true);
-        System.out.println(estimates);
+//        System.out.println(estimates);
     }
     
     public static UcarimaModel ucmAirline(double th, double bth) {

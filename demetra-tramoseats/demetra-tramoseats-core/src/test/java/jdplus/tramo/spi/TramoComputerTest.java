@@ -25,8 +25,8 @@ public class TramoComputerTest {
     @Test
     public void testBasic() {
         GeneralLinearModel<SarimaSpec> rslt = demetra.tramo.Tramo.process(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
-        System.out.println(rslt.getEstimation().getStatistics());
-        System.out.println(rslt.getDescription().getStochasticComponent());
+//        System.out.println(rslt.getEstimation().getStatistics());
+//        System.out.println(rslt.getDescription().getStochasticComponent());
     }
     
 }

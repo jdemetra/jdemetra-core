@@ -100,13 +100,13 @@ public class Ts {
                 .build();
     }
 
-    public @NonNull Ts unfreeze(@NonNull TsFactory factory) {
+    public @NonNull Ts unfreeze(@NonNull TsFactory factory, TsInformationType type) {
         if (moniker.isProvided())
             return this;
         TsMoniker pmoniker = getFreezeMeta(meta);
         if (pmoniker == null)
             return this;
-        return factory.makeTs(pmoniker, TsInformationType.All);
+        return factory.makeTs(pmoniker, type);
     }
 
     private static void putFreezeMeta(@NonNull Builder builder, @NonNull TsMoniker origin) {

@@ -39,7 +39,7 @@ public class SeatsTest {
     public void testProd() {
         SeatsResults rslts = Seats.process(Data.TS_PROD, true, new int[]{3, 1, 1}, new int[]{0, 1, 1}, false, -1, -2);
         Map<String, Class> dictionary = rslts.getDictionary();
-        dictionary.keySet().forEach(s->System.out.println(s));
+//        dictionary.keySet().forEach(s->System.out.println(s));
         TsData data = rslts.getData("t_lin_f", TsData.class);
         assertTrue(data.length() == 24);
     }
