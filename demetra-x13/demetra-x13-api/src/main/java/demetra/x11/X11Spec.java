@@ -141,11 +141,11 @@ public final class X11Spec implements Validatable<X11Spec> {
                 || (hendersonFilterLength != 0 && hendersonFilterLength % 2 == 0)) {
             throw new IllegalArgumentException("Invalid henderson length");
         }
-        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec != null) {
-            throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Signif");
+        if (!calendarSigma.equals(CalendarSigmaOption.Select) && sigmaVec != null) {
+            throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Select");
         }
-        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec == null) {
-            throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Signif");
+        if (calendarSigma.equals(CalendarSigmaOption.Select) && sigmaVec == null) {
+            throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Select");
         }
         return this;
     }
