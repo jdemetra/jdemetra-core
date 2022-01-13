@@ -54,7 +54,7 @@ public class Calendars {
         return rslt;
     }
 
-    public Matrix longTermMean(Calendar calendar, int period) {
+    public Matrix longTermMean(Calendar calendar, int period, int holiday) {
         double[][] ltm;
         if (calendar != null) {
             ltm = HolidaysUtility.longTermMean(calendar.getHolidays(), period);
@@ -69,16 +69,16 @@ public class Calendars {
             if (ltm[i] != null) {
                 DataBlock C = DataBlock.of(ltm[i]);
                 row.sub(C);
-                row.add(6, C.sum());
+                row.add(holiday-1, C.sum());
             }
         }
         return M.unmodifiable();
     }
 
-    public Matrix longTermMean(Calendar calendar, int period, int[] groups) {
+    public Matrix longTermMean(Calendar calendar, int period, int[] groups, int holiday) {
         DayClustering dc = DayClustering.of(groups);
         FastMatrix M = FastMatrix.make(period, dc.getGroupsCount());
-        Matrix m = longTermMean(calendar, period);
+        Matrix m = longTermMean(calendar, period, holiday);
         for (int i = 0; i < M.getColumnsCount(); ++i) {
             DataBlock col = M.column(i);
             for (int j = 0; j < 7; ++j) {
