@@ -115,22 +115,22 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
         private CubeAccessor load(DataSource key) {
             OdbcBean bean = param.get(key);
 
-            SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDsn(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getObsGathering(), bean.getLabelColumn());
+            SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDsn(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getCube().getObsGathering(), bean.getCube().getLabel());
 
             CubeAccessor result = TableAsCubeAccessor.of(sqlResource);
-            return BulkCubeAccessor.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(key::toString));
+            return BulkCubeAccessor.of(result, bean.getCache(), JCacheFactory.bulkCubeCacheOf(key::toString));
         }
 
         private static CubeId toRoot(OdbcBean bean) {
-            return CubeId.root(bean.getDimColumns());
+            return CubeId.root(bean.getCube().getDimensions());
         }
 
         private static TableDataParams toDataParams(OdbcBean bean) {
             return TableDataParams.builder()
-                    .periodColumn(bean.getPeriodColumn())
-                    .valueColumn(bean.getValueColumn())
-                    .versionColumn(bean.getVersionColumn())
-                    .obsFormat(bean.getObsFormat())
+                    .periodColumn(bean.getCube().getTimeDimension())
+                    .valueColumn(bean.getCube().getMeasure())
+                    .versionColumn(bean.getCube().getVersion())
+                    .obsFormat(bean.getCube().getObsFormat())
                     .build();
         }
     }

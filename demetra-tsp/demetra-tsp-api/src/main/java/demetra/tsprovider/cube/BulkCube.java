@@ -17,20 +17,28 @@
 package demetra.tsprovider.cube;
 
 import java.time.Duration;
+
+import lombok.Builder;
 import org.checkerframework.checker.index.qual.NonNegative;
+
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Value(staticConstructor = "of")
-public class BulkCubeConfig {
+@lombok.Value
+@lombok.Builder(toBuilder = true)
+public class BulkCube {
+
+    public static final BulkCube NONE = BulkCube.builder().build();
 
     @lombok.NonNull
-    private Duration ttl;
+    @lombok.Builder.Default
+    private Duration ttl = Duration.ZERO;
 
     @NonNegative
-    private int depth;
+    @lombok.Builder.Default
+    private int depth = 0;
 
     public boolean isCacheEnabled() {
         return getDepth() > 0 && !getTtl().isZero();
