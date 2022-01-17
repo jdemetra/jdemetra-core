@@ -16,14 +16,7 @@
  */
 package jdplus.ssf.akf;
 
-import jdplus.data.DataBlock;
 import jdplus.ssf.univariate.ISsf;
-import jdplus.ssf.univariate.DefaultFilteringResults;
-import jdplus.ssf.DataBlockResults;
-import jdplus.ssf.MatrixResults;
-import jdplus.ssf.StateInfo;
-import jdplus.ssf.ISsfInitialization;
-import jdplus.math.matrices.FastMatrix;
 
 /**
  *

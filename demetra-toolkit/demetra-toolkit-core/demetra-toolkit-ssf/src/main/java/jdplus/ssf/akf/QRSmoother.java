@@ -46,7 +46,7 @@ public class QRSmoother {
         QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
         FastMatrix psi = ls.unscaledCovariance();
         DoubleSeq delta = ls.getB();
-        double sig2 = ls.getSsqErr() / n;
+        double sig2 = ls.getSsqErr() / (n-nd);
         
         AugmentedSmoother smoother=new AugmentedSmoother();
         smoother.setCalcVariances(var);

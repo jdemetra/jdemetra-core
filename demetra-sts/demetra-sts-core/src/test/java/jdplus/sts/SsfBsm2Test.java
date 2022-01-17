@@ -18,21 +18,16 @@ package jdplus.sts;
 
 import demetra.data.Data;
 import demetra.sts.BsmSpec;
-import demetra.sts.Component;
-import demetra.sts.SeasonalModel;
-import jdplus.data.DataBlockStorage;
-import jdplus.ssf.StateComponent;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.akf.QRSmoother;
 import jdplus.ssf.ckms.CkmsToolkit;
-import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -150,6 +145,7 @@ public class SsfBsm2Test {
         System.out.println(rslt.getComponent(0));
         System.out.println(rslt.getComponentVariance(0));
         DefaultSmoothingResults fs = DkToolkit.smooth(BSM, data, true, true);
+        System.out.println(fs.getComponent(0));
         System.out.println(fs.getComponentVariance(0));
     }
 

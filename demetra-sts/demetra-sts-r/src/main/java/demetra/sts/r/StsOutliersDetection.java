@@ -9,8 +9,10 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
 import demetra.data.Parameter;
+import demetra.information.GenericExplorable;
 import demetra.information.InformationMapping;
 import demetra.likelihood.DiffuseLikelihoodStatistics;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.sts.BsmEstimationSpec;
@@ -24,10 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.data.DataBlock;
 import jdplus.likelihood.DiffuseConcentratedLikelihood;
-import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.akf.AugmentedSmoother;
+import jdplus.ssf.akf.DefaultQFilteringResults;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
@@ -35,11 +39,8 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
-import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmKernel;
-import demetra.information.GenericExplorable;
-import jdplus.ssf.akf.AkfToolkit;
-import demetra.math.matrices.Matrix;
+import jdplus.sts.internal.BsmMapping;
 
 /**
  *
@@ -253,7 +254,7 @@ public class StsOutliersDetection {
         sd0.prepare(xssf.getStateDim(), 0, data.length());
         smoother.process(xssf, data, sd0);
 
-        double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
+        double sig2=AkfToolkit.var(n, (DefaultQFilteringResults) smoother.getFilteringResults());
         FastMatrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
         FastMatrix W = od.getRegressors();
@@ -269,7 +270,7 @@ public class StsOutliersDetection {
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
 
-        sig2=AkfToolkit.var(n, smoother.getFilteringResults());
+        sig2=AkfToolkit.var(n, (DefaultQFilteringResults) smoother.getFilteringResults());
         FastMatrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
         int np = spec.getFreeParametersCount();
@@ -407,7 +408,7 @@ public class StsOutliersDetection {
 //        double sig2 = monitor.getLikelihood().sigma2();
         sd.prepare(ssf.getStateDim(), 0, data.length());
         smoother.process(ssf, data, sd);
-        double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
+        double sig2=AkfToolkit.var(n, (DefaultQFilteringResults) smoother.getFilteringResults());
 
         int spos = 0;
         if (bsm.getNoiseVar() != 0) {
