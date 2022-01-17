@@ -20,12 +20,16 @@ import demetra.data.Data;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
+import jdplus.data.DataBlockStorage;
 import jdplus.ssf.StateComponent;
+import jdplus.ssf.StateStorage;
 import jdplus.ssf.akf.AkfToolkit;
+import jdplus.ssf.akf.QRSmoother;
 import jdplus.ssf.ckms.CkmsToolkit;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -132,59 +136,62 @@ public class SsfBsm2Test {
         DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(BSM, data);
         DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
         DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true, true).compute(BSM, data);
+        DiffuseLikelihood ll4 = AkfToolkit.robustLikelihoodComputer(true, true).compute(BSM, data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
         assertEquals(ll.logLikelihood(), ll3.logLikelihood(), 1e-6);
+        assertEquals(ll.logLikelihood(), ll4.logLikelihood(), 1e-6);
+    }
+
+    @Test
+    public void testSmoothing() {
+        SsfData data = new SsfData(Data.EXPORTS);
+        QRSmoother smoother=new QRSmoother();
+        StateStorage rslt = smoother.process(BSM, data, true);
+        System.out.println(rslt.getComponent(0));
+        System.out.println(rslt.getComponentVariance(0));
+        DefaultSmoothingResults fs = DkToolkit.smooth(BSM, data, true, true);
+        System.out.println(fs.getComponentVariance(0));
     }
 
     public static void stressTestBsm() {
-//        SsfData data = new SsfData(Data.EXPORTS);
-//        long t0 = System.currentTimeMillis();
-//        for (int i = 0; i < N; ++i) {
-//            DkToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
-//        }
-//        long t1 = System.currentTimeMillis();
-//        System.out.println("dk filter (sqr)");
-//        System.out.println(t1 - t0);
-//        t0 = System.currentTimeMillis();
-//        for (int i = 0; i < N; ++i) {
-//            DkToolkit.likelihoodComputer(false, true, false).compute(BSM, data);
-//        }
-//        t1 = System.currentTimeMillis();
-//        System.out.println("dk filter");
-//        System.out.println(t1 - t0);
-//        t0 = System.currentTimeMillis();
-//        for (int i = 0; i < N; ++i) {
-//            AkfToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
-//        }
-//        t1 = System.currentTimeMillis();
-//        System.out.println("akf filter");
-//        System.out.println(t1 - t0);
-//        t0 = System.currentTimeMillis();
-//        for (int i = 0; i < N; ++i) {
-//            CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
-//        }
-//        t1 = System.currentTimeMillis();
-//        System.out.println("ckms filter");
-//        System.out.println(t1 - t0);
-//
-//        BsmSpec mspec = new BsmSpec();
-//        //mspec.setSeasonalModel(SeasonalModel.Crude);
-//        BsmData model = new BsmData(mspec, 12);
-//        StateComponent t = LocalLinearTrend.of(model.getVariance(Component.Level), model.getVariance(Component.Slope));
-//        StateComponent seas = SeasonalComponent.of(model.specification().getSeasonalModel(), 12, model.getVariance(Component.Seasonal));
-//        CompositeSsf composite = CompositeSsf.builder()
-//                .add(t, LocalLinearTrend.defaultLoading())
-//                .add(seas, SeasonalComponent.defaultLoading())
-//                .measurementError(model.getVariance(Component.Noise))
-//                .build();
-//        t0 = System.currentTimeMillis();
-//        for (int i = 0; i < N; ++i) {
-//            CkmsToolkit.likelihoodComputer(true).compute(composite, data);
-//        }
-//        t1 = System.currentTimeMillis();
-//        System.out.println("ckms filter / composite");
-//        System.out.println(t1 - t0);
-//
+        SsfData data = new SsfData(Data.EXPORTS);
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < N; ++i) {
+            DkToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
+        }
+        long t1 = System.currentTimeMillis();
+        System.out.println("dk filter (sqr)");
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < N; ++i) {
+            DkToolkit.likelihoodComputer(false, true, false).compute(BSM, data);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println("dk filter");
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < N; ++i) {
+            AkfToolkit.likelihoodComputer(true, true, false).compute(BSM, data);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println("akf filter");
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < N; ++i) {
+            AkfToolkit.robustLikelihoodComputer(true, false).compute(BSM, data);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println("robust akf filter");
+        System.out.println(t1 - t0);
+        t0 = System.currentTimeMillis();
+        for (int i = 0; i < N; ++i) {
+            CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
+        }
+        t1 = System.currentTimeMillis();
+        System.out.println("ckms filter");
+        System.out.println(t1 - t0);
+
+
     }
 
     public static void main(String[] args) {

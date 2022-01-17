@@ -69,7 +69,7 @@ public class CompositeModelEstimation {
         rslt.cmpName = mapping.parametersName();
         rslt.parametersName = mapping.parametersName();
         if (marginal) {
-            rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
+            rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated, true).
                     compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
         } else {
             rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data), true, false);

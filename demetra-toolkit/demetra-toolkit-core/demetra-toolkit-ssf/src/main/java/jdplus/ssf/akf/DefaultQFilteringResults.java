@@ -29,66 +29,69 @@ import jdplus.math.matrices.FastMatrix;
  *
  * @author Jean Palate
  */
-public class DefaultAugmentedFilteringResults extends DefaultFilteringResults implements IAugmentedFilteringResults {
+public class DefaultQFilteringResults extends DefaultAugmentedFilteringResults implements IQFilteringResults {
 
-    private final MatrixResults B;
-    private final DataBlockResults E;
+    private int collapsed;
+    private final QAugmentation Q = new QAugmentation();
 
-    protected DefaultAugmentedFilteringResults(boolean var) {
+    private DefaultQFilteringResults(boolean var) {
         super(var);
-        B = new MatrixResults();
-        E = new DataBlockResults();
     }
 
-    public static DefaultAugmentedFilteringResults full() {
-        return new DefaultAugmentedFilteringResults(true);
+    public static DefaultQFilteringResults full() {
+        return new DefaultQFilteringResults(true);
     }
 
-    public static DefaultAugmentedFilteringResults light() {
-        return new DefaultAugmentedFilteringResults(false);
+    public static DefaultQFilteringResults light() {
+        return new DefaultQFilteringResults(false);
     }
 
     @Override
     public void prepare(ISsf ssf, final int start, final int end) {
         super.prepare(ssf, start, end);
-        ISsfInitialization initialization = ssf.initialization();
-        int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
-        B.prepare(dim, n, 0, n);
-        E.prepare(n, 0, n);
+        int n = ssf.getDiffuseDim();
+        Q.prepare(n, 1);
     }
 
     @Override
     public void save(int t, AugmentedUpdateInformation pe) {
         super.save(t, pe);
-        E.save(t, pe.E());
+        Q.update(pe);
     }
 
     @Override
     public void close(int pos) {
     }
 
-    @Override
-    public void save(final int t, final AugmentedState state, final StateInfo info) {
-        if (info != StateInfo.Forecast) {
-            return;
-        }
-        super.save(t, state, info);
-        B.save(t, state.B());
-    }
-
-    @Override
-    public FastMatrix B(int pos) {
-        return B.matrix(pos);
-    }
-
-    @Override
-    public DataBlock E(int pos) {
-        return E.datablock(pos);
-    }
-
-    @Override
+     @Override
     public void clear() {
         super.clear();
-        B.clear();
+        collapsed = 0;
     }
+
+    @Override
+    public int getCollapsingPosition() {
+        return collapsed;
+    }
+
+    @Override
+    public QAugmentation getAugmentation() {
+        return Q;
+    }
+
+    @Override
+    public boolean canCollapse() {
+        return Q.canCollapse();
+    }
+
+    @Override
+    public boolean collapse(int pos, AugmentedState state) {
+        if (Q.collapse(state)) {
+            collapsed = pos;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

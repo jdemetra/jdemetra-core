@@ -55,12 +55,4 @@ public interface IAugmentedFilteringResults extends IFilteringResults {
     default DataBlock E(int pos) {
         return null;
     }
-
-    boolean canCollapse();
-
-    boolean collapse(int pos, AugmentedState state);
-
-    int getCollapsingPosition();
-
-    QAugmentation getAugmentation();
 }

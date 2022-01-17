@@ -34,10 +34,10 @@ import jdplus.ssf.likelihood.DiffuseLikelihood;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorDecomposition, IMultivariateAugmentedFilteringResults {
+public class QPredictionErrorsDecomposition implements IPredictionErrorDecomposition, IMultivariateQFilteringResults {
 
     private double det;
-    // Q is the cholesky factor copyOf the usual "Q matrix" copyOf De Jong.
+    // Q is the cholesky factor of the usual "Q matrix" of De Jong.
     // Q(dj) = |S   -s|
     //         |-s'  q|
     // Q = |a 0|
@@ -54,7 +54,7 @@ public class AugmentedPredictionErrorsDecomposition implements IPredictionErrorD
     /**
      *
      */
-    public AugmentedPredictionErrorsDecomposition() {
+    public QPredictionErrorsDecomposition() {
     }
 
     /**

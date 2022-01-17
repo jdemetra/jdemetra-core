@@ -265,7 +265,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             FastMatrix B = constraints();
             fn.transform(z, B);
             pe.Mi().setAY(z.get(0), B.column(0));
-            pe.Mi().apply(x->Math.abs(x)<1e-12 ? 0 : x);
+            pe.Mi().apply(x->Math.abs(x)<1e-17 ? 0 : x);
             // move right
             astate.dropDiffuseConstraint();
         }

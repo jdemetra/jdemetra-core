@@ -180,7 +180,7 @@ public class X11Kernel implements X11.Processor {
         double issq = i.log().ssq();
         double sig = Math.exp(issq / (2 * i.length()));
         int ifreq = context.getPeriod();
-        int length = (ifreq == 2) ? 5 : 2 * ifreq - 1;;
+        int length = (ifreq == 2) ? 5 : 2 * ifreq - 1;
 
         double[] x = table(s.length(), Double.NaN);
         int ndrop = length / 2;

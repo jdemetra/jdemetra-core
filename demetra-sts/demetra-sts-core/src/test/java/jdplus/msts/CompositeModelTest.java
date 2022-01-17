@@ -39,10 +39,10 @@ public class CompositeModelTest {
     public void test1() {
         CompositeModel model = new CompositeModel();
         StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
-        StateItem s1=AtomicModels.seasonalComponent("s", "Crude", 12, .01, false);
+        StateItem s1 = AtomicModels.seasonalComponent("s", "Crude", 12, .01, false);
 //        int[] h1 = new int[]{5, 10, 15, 20};
 //        StateItem s1 = AtomicModels.periodicComponent("s1", 60, h1, .01, false);
-        int[] h2 = new int[]{1,2,7};
+        int[] h2 = new int[]{1, 2, 7};
         StateItem s2 = AtomicModels.periodicComponent("s2", 365.25, h2, .01, false);
         StateItem n = AtomicModels.noise("n", .01, false);
         //model.add(AtomicModels.regression("r", x));
@@ -55,14 +55,14 @@ public class CompositeModelTest {
         eq.add(r);
         model.add(l);
         model.add(s1);
-       model.add(s2);
+        model.add(s2);
         model.add(n);
         model.add(r);
         model.add(eq);
         int len = Prod_B_C.length;
         FastMatrix M = FastMatrix.make(len, 1);
         M.column(0).copyFrom(Prod_B_C, 0);
-        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_NoCollapsing, Optimizer.LevenbergMarquardt, 1e-15, null);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.Augmented_Robust, Optimizer.LevenbergMarquardt, 1e-15, null);
         // CompositeModelEstimation rslt = model.estimate(M, 1e-15, false, true, null);
 //        System.out.println(DataBlock.of(rslt.getFullParameters()));
         StateStorage states = rslt.getSmoothedStates();

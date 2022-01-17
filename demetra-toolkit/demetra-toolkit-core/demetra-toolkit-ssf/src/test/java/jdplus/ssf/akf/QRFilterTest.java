@@ -10,6 +10,8 @@ import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
+import jdplus.ssf.dk.DkToolkit;
+import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import org.junit.Test;
@@ -37,20 +39,16 @@ public class QRFilterTest {
     public QRFilterTest() {
     }
 
+
     @Test
-    public void testMarginal() {
-        Ssf ssf1 = Ssf.of(SsfArima.of(arima1), SsfArima.defaultLoading());
-        Ssf ssf2 = Ssf.of(SsfArima.of(arima2), SsfArima.defaultLoading());
+    public void testDiffuse() {
+        Ssf ssf = Ssf.of(SsfArima.of(arima1), SsfArima.defaultLoading());
         SsfData ssfData = new SsfData(data);
 
         QRFilter filter = new QRFilter();
-        filter.process(ssf1, ssfData);
-        MarginalLikelihood ml11 = filter.getMarginalLikelihood();
-        MarginalLikelihood ml12 = QRFilter.ml(ssf1, ssfData, true);
-        filter.process(ssf2, ssfData);
-        MarginalLikelihood ml21 = filter.getMarginalLikelihood();
-        MarginalLikelihood ml22 = QRFilter.ml(ssf2, ssfData, true);
-        assertEquals(ml11.logLikelihood() - ml12.logLikelihood(), ml21.logLikelihood() - ml22.logLikelihood(), 1e-6);
+        filter.process(ssf, ssfData);
+        DiffuseLikelihood ll1 = filter.diffuseLikelihood(true, true);
+        DiffuseLikelihood ll2 = DkToolkit.likelihood(ssf, ssfData, true, true);
+        assertEquals(ll1.logLikelihood(), ll2.logLikelihood(), 1e-6);
     }
-
 }
