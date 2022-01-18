@@ -495,9 +495,9 @@ public final class ToolkitProtos {
      * November, 1
      * </pre>
      *
-     * <code>HOLIDAY_ALLSAINTDAY = 18;</code>
+     * <code>HOLIDAY_ALLSAINTSDAY = 18;</code>
      */
-    HOLIDAY_ALLSAINTDAY(18),
+    HOLIDAY_ALLSAINTSDAY(18),
     /**
      * <pre>
      **
@@ -691,9 +691,9 @@ public final class ToolkitProtos {
      * November, 1
      * </pre>
      *
-     * <code>HOLIDAY_ALLSAINTDAY = 18;</code>
+     * <code>HOLIDAY_ALLSAINTSDAY = 18;</code>
      */
-    public static final int HOLIDAY_ALLSAINTDAY_VALUE = 18;
+    public static final int HOLIDAY_ALLSAINTSDAY_VALUE = 18;
     /**
      * <pre>
      **
@@ -765,7 +765,7 @@ public final class ToolkitProtos {
         case 15: return HOLIDAY_ASSUMPTION;
         case 16: return HOLIDAY_LABORDAY;
         case 17: return HOLIDAY_HALLOWEEN;
-        case 18: return HOLIDAY_ALLSAINTDAY;
+        case 18: return HOLIDAY_ALLSAINTSDAY;
         case 19: return HOLIDAY_ARMISTICE;
         case 20: return HOLIDAY_THANKSGIVING;
         case 21: return HOLIDAY_CHRISTMAS;
@@ -32698,7 +32698,7 @@ public final class ToolkitProtos {
       "Type\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023PARAMETER_" +
       "UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021PARA" +
       "METER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMATED\020\004" +
-      "*\243\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECIFIE" +
+      "*\244\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECIFIE" +
       "D\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHRO" +
       "VEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003\022\030\n" +
       "\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EASTE" +
@@ -32709,12 +32709,12 @@ public final class ToolkitProtos {
       "IDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITMOND" +
       "AY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSU" +
       "MPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOLIDA" +
-      "Y_HALLOWEEN\020\021\022\027\n\023HOLIDAY_ALLSAINTDAY\020\022\022\025" +
-      "\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKSG" +
-      "IVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Inform" +
-      "ationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Erro" +
-      "r\020\002B,\n\033demetra.toolkit.io.protobufB\rTool" +
-      "kitProtosb\006proto3"
+      "Y_HALLOWEEN\020\021\022\030\n\024HOLIDAY_ALLSAINTSDAY\020\022\022" +
+      "\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKS" +
+      "GIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Infor" +
+      "mationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Err" +
+      "or\020\002B,\n\033demetra.toolkit.io.protobufB\rToo" +
+      "lkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

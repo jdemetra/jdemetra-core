@@ -33,10 +33,8 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
 
     private final MatrixResults B;
     private final DataBlockResults E;
-    private int collapsed;
-    private final QAugmentation Q = new QAugmentation();
 
-    private DefaultAugmentedFilteringResults(boolean var) {
+    protected DefaultAugmentedFilteringResults(boolean var) {
         super(var);
         B = new MatrixResults();
         E = new DataBlockResults();
@@ -57,14 +55,12 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
         int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
         B.prepare(dim, n, 0, n);
         E.prepare(n, 0, n);
-        Q.prepare(n, 1);
     }
 
     @Override
     public void save(int t, AugmentedUpdateInformation pe) {
         super.save(t, pe);
         E.save(t, pe.E());
-        Q.update(pe);
     }
 
     @Override
@@ -93,33 +89,6 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
     @Override
     public void clear() {
         super.clear();
-        collapsed = 0;
         B.clear();
     }
-
-    @Override
-    public int getCollapsingPosition() {
-        return collapsed;
-    }
-
-    @Override
-    public QAugmentation getAugmentation() {
-        return Q;
-    }
-
-    @Override
-    public boolean canCollapse() {
-        return Q.canCollapse();
-    }
-
-    @Override
-    public boolean collapse(int pos, AugmentedState state) {
-        if (Q.collapse(state)) {
-            collapsed = pos;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }

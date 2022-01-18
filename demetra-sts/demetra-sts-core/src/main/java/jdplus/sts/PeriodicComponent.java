@@ -59,7 +59,7 @@ public class PeriodicComponent {
 
         @Override
         public boolean isDiffuse() {
-            return false;
+            return true;
         }
 
         @Override
@@ -87,7 +87,7 @@ public class PeriodicComponent {
 
         @Override
         public void Pi0(FastMatrix p) {
-            p.set(1);
+            p.diagonal().set(1);
         }
     }
 

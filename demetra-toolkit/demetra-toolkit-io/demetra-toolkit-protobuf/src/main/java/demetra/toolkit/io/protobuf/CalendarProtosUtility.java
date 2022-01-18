@@ -129,7 +129,7 @@ public class CalendarProtosUtility {
             case Halloween:
                 return ToolkitProtos.CalendarEvent.HOLIDAY_HALLOWEEN;
             case AllSaintsDay:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_ALLSAINTDAY;
+                return ToolkitProtos.CalendarEvent.HOLIDAY_ALLSAINTSDAY;
             case Armistice:
                 return ToolkitProtos.CalendarEvent.HOLIDAY_ARMISTICE;
             case ThanksGiving:
@@ -175,7 +175,7 @@ public class CalendarProtosUtility {
                 return DayEvent.LaborDay;
             case HOLIDAY_HALLOWEEN:
                 return DayEvent.Halloween;
-            case HOLIDAY_ALLSAINTDAY:
+            case HOLIDAY_ALLSAINTSDAY:
                 return DayEvent.AllSaintsDay;
             case HOLIDAY_ARMISTICE:
                 return DayEvent.Armistice;

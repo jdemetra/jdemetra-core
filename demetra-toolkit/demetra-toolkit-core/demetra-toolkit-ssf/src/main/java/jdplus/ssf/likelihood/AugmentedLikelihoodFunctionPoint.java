@@ -66,10 +66,14 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
         DiffuseLikelihood dl = null;
         DoubleSeq e = null;
         try {
-            if (fastcomputer) {
-                dl = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+            if (fn.isRobust()) {
+                dl=AkfToolkit.robustLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
             } else {
-                dl = AkfToolkit.likelihoodComputer(fn.isCollapsing(), fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                if (fastcomputer) {
+                    dl = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                } else {
+                    dl = AkfToolkit.likelihoodComputer(fn.isCollapsing(), fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                }
             }
             if (fn.isScalingFactor()) {
                 DoubleSeq res = dl.e();

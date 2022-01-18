@@ -16,7 +16,9 @@
  */
 package jdplus.ssf.akf;
 
+import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.GeneralMatrix;
@@ -55,22 +57,37 @@ public class AugmentedSmoother {
     private boolean missing, hasinfo, calcvar = true;
 
     public boolean process(final ISsf ssf, final ISsfData data, ISmoothingResults sresults) {
-        DefaultAugmentedFilteringResults fresults = AkfToolkit.filter(ssf, data, true, true);
+        DefaultQFilteringResults fresults = AkfToolkit.filter(ssf, data, true, true);
         return process(ssf, data.length(), fresults, sresults);
     }
 
-    public boolean process(ISsf ssf, final int endpos, DefaultAugmentedFilteringResults results, ISmoothingResults sresults) {
+    public boolean process(ISsf ssf, final int endpos, DefaultQFilteringResults results, ISmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         initFilter(ssf);
         initSmoother(ssf, endpos);
-        int t = frslts.getCollapsingPosition();
+        int t = results.getCollapsingPosition();
         if (t == 0) {
+            QAugmentation q = results.getAugmentation();
+            // delta = S(s+B'*R), psi = S - S*B'*N*B*S 
+            // delta = a'^-1*a^-1(-a*b' + B'*R)
+            // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
+            // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1
+            FastMatrix B = q.B(); // B*a^-1'
+            S = q.a().deepClone();
+            delta = q.b().deepClone();
+            delta.chs();
+            LowerTriangularMatrix.solvexL(S, delta);
+            if (N != null) {
+                Psi = FastMatrix.identity(S.getColumnsCount());
+                LowerTriangularMatrix.solveXL(S, Psi);
+                LowerTriangularMatrix.solveLtX(S, Psi);
+            }
             return processNoCollapsing(endpos);
         }
-        ordinarySmoothing(ssf, endpos);
+        ordinarySmoothing(ssf, results.getCollapsingPosition(), endpos);
         if (t > 0) {
-            calcSmoothedDiffuseEffects();
+            calcSmoothedDiffuseEffects(results.getAugmentation());
             while (--t >= 0) {
                 iterate(t);
                 if (hasinfo) {
@@ -82,6 +99,21 @@ public class AugmentedSmoother {
         }
 
         return true;
+    }
+
+    public boolean process(ISsf ssf, final int endpos, DefaultAugmentedFilteringResults results, FastMatrix S, DoubleSeq delta, ISmoothingResults sresults) {
+        frslts = results;
+        srslts = sresults;
+        initFilter(ssf);
+        initSmoother(ssf, endpos);
+        this.delta = DataBlock.of(delta);
+        this.S=S;
+        if (N != null) {
+                Psi = FastMatrix.identity(S.getColumnsCount());
+                LowerTriangularMatrix.solveXL(this.S, Psi);
+                LowerTriangularMatrix.solveLtX(this.S, Psi);
+        }
+        return processNoCollapsing(endpos);
     }
 
     public ISmoothingResults getResults() {
@@ -241,7 +273,7 @@ public class AugmentedSmoother {
             dynamics.TtM(pos, N);
         }
         SymmetricMatrix.reenforceSymmetry(N);
-        N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+//        N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
 
         FastMatrix A = frslts.B(pos);
         // Rd(t-1)+N(t-1)*A(t)
@@ -252,7 +284,7 @@ public class AugmentedSmoother {
         Nc.chs();
         Nc.add(N);
         SymmetricMatrix.reenforceSymmetry(Nc);
-        Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+//        Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     /**
@@ -275,7 +307,7 @@ public class AugmentedSmoother {
         }
         Rc.copy(R);
         Rc.addProduct(Rd.rowsIterator(), delta);
-        Rc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+//        Rc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     private void iterateSmoothation(int pos) {
@@ -304,11 +336,11 @@ public class AugmentedSmoother {
                 C.product(K, NA.columnsIterator());
                 C.chs();
                 ucVariance = 1 / errVariance + QuadraticForm.apply(N, K) - vcorrection(U.deepClone(), C);
-                if (ucVariance < State.ZERO) {
+                if (ucVariance < Constants.MACHEP) {
                     ucVariance = 0;
                 }
                 if (ucVariance == 0) {
-                    if (Math.abs(uc) < State.ZERO) {
+                    if (Math.abs(uc) < Constants.MACHEP) {
                         uc = 0;
                     } else {
                         throw new SsfException(SsfException.INCONSISTENT);
@@ -337,13 +369,13 @@ public class AugmentedSmoother {
         return calcvar;
     }
 
-    private void ordinarySmoothing(ISsf ssf, final int endpos) {
+    private void ordinarySmoothing(ISsf ssf, final int startpos, final int endpos) {
         OrdinarySmoother smoother = OrdinarySmoother
                 .builder(ssf)
                 .calcVariance(calcvar)
                 .rescaleVariance(false)
                 .build();
-        smoother.process(frslts.getCollapsingPosition(), endpos, frslts, srslts);
+        smoother.process(startpos, endpos, frslts, srslts);
         // updates R, N
         R.copy(smoother.getFinalR());
         Rc.copy(smoother.getFinalR());
@@ -353,9 +385,8 @@ public class AugmentedSmoother {
         }
     }
 
-    private void calcSmoothedDiffuseEffects() {
+    private void calcSmoothedDiffuseEffects(QAugmentation q) {
         // computes the smoothed diffuse effects and their covariance...
-        QAugmentation q = frslts.getAugmentation();
         // delta = S(s+B'*R), psi = S - S*B'*N*B*S 
         // delta = a'^-1*a^-1(-a*b' + B'*R)
         // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
@@ -423,21 +454,6 @@ public class AugmentedSmoother {
     }
 
     private boolean processNoCollapsing(int endpos) {
-        QAugmentation q = frslts.getAugmentation();
-        // delta = S(s+B'*R), psi = S - S*B'*N*B*S 
-        // delta = a'^-1*a^-1(-a*b' + B'*R)
-        // delta = - (b * a^-1)' + a'^-1*a^-1*B'*r = a'^-1 * (a^-1*B'*r - b)
-        // Psi = = a'^-1*(I - a^-1*B'*N*B*a'^-1)* a^-1
-        FastMatrix B = q.B(); // B*a^-1'
-        S = q.a().deepClone();
-        delta = q.b().deepClone();
-        delta.chs();
-        LowerTriangularMatrix.solvexL(S, delta);
-        if (N != null) {
-            Psi = FastMatrix.identity(S.getColumnsCount());
-            LowerTriangularMatrix.solveXL(S, Psi);
-            LowerTriangularMatrix.solveLtX(S, Psi);
-        }
         int t = endpos;
         while (--t >= 0) {
             iterate(t);

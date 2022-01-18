@@ -28,9 +28,9 @@ import jdplus.ssf.univariate.OrdinaryFilter;
  */
 public class AugmentedFilterInitializer implements OrdinaryFilter.Initializer {
 
-    private final IAugmentedFilteringResults results;
+    private final IQFilteringResults results;
 
-    public AugmentedFilterInitializer(IAugmentedFilteringResults results) {
+    public AugmentedFilterInitializer(IQFilteringResults results) {
         this.results = results;
     }
 

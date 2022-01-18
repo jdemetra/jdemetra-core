@@ -16,5 +16,6 @@ public enum SsfInitialization{
     Diffuse,
     SqrtDiffuse,
     Augmented,
-    Augmented_NoCollapsing
+    Augmented_NoCollapsing,
+    Augmented_Robust
 }

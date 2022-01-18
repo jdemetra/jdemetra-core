@@ -24,10 +24,12 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
+import demetra.math.Constants;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.ssf.SsfException;
 
 /**
  *
@@ -94,6 +96,12 @@ public class AugmentedFilter {
 
     protected void update() {
         double v = pe.getVariance(), e = pe.get();
+        if (v == 0){
+            if (Math.abs(e)<Constants.MACHEP)
+                return;
+            else
+                throw new SsfException(SsfException.INCONSISTENT); 
+        }
         // P = P - (M)* F^-1 *(M)' --> Symmetric
         // PZ'(LL')^-1 ZP' =PZ'L'^-1*L^-1*ZP'
         // a = a + (M)* F^-1 * v
@@ -135,7 +143,7 @@ public class AugmentedFilter {
      * @param rslts
      * @return
      */
-    public boolean process(final ISsf ssf, final ISsfData data, final IAugmentedFilteringResults rslts) {
+    public boolean process(final ISsf ssf, final ISsfData data, final IQFilteringResults rslts) {
         this.ssf = ssf;
         loading = ssf.loading();
         error = ssf.measurementError();
@@ -169,12 +177,43 @@ public class AugmentedFilter {
         return true;
     }
 
+    public boolean process(final ISsf ssf, final ISsfData data, final IAugmentedFilteringResults rslts) {
+        this.ssf = ssf;
+        loading = ssf.loading();
+        error = ssf.measurementError();
+        dynamics = ssf.dynamics();
+        this.data = data;
+        if (!initState()) {
+            return false;
+        }
+        int t = 0, end = data.length();
+        while (t < end) {
+            if (rslts != null) {
+                rslts.save(t, state, StateInfo.Forecast);
+            }
+            if (error(t)) {
+                if (rslts != null) {
+                    rslts.save(t, pe);
+                }
+                update();
+            }
+            if (rslts != null) {
+                rslts.save(t, state, StateInfo.Concurrent);
+            }
+            state.next(t++, dynamics);
+        }
+//        if (collapsing && collapsingPos < 0) {
+//            collapsingPos=end;
+//        }
+        return true;
+    }
+
     // P -= c*r
     private void update(FastMatrix P, double v, DataBlock C) {
         P.addXaXt(-1 / v, C);
     }
 
-    protected boolean collapse(int t, IAugmentedFilteringResults decomp) {
+    protected boolean collapse(int t, IQFilteringResults decomp) {
         if (!collapsing) {
             return false;
         }

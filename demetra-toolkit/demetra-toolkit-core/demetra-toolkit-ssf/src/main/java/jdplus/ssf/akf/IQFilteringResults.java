@@ -16,40 +16,17 @@
  */
 package jdplus.ssf.akf;
 
-import jdplus.ssf.StateInfo;
-import jdplus.ssf.multivariate.IMultivariateSsf;
-import jdplus.ssf.multivariate.IMultivariateSsfData;
-
 /**
  *
  * @author Jean Palate
  */
-public interface IMultivariateAugmentedFilteringResults {
-    /**
-     *
-     */
-    void close();
+public interface IQFilteringResults extends IAugmentedFilteringResults {
 
-    /**
-     *
-     * @param ssf
-     * @param data
-     */
-    void open(IMultivariateSsf ssf, IMultivariateSsfData data);
+    boolean canCollapse();
 
-    /**
-     *
-     * @param t
-     * @param pe
-     */
-    void save(int t, MultivariateAugmentedUpdateInformation pe);
-    
-    /**
-     *
-     * @param t
-     * @param state
-     * @param info
-     */
-    void save(int t, AugmentedState state, StateInfo info);
-   
+    boolean collapse(int pos, AugmentedState state);
+
+    int getCollapsingPosition();
+
+    QAugmentation getAugmentation();
 }
