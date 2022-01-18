@@ -20,9 +20,9 @@ import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.tsprovider.cube.BulkCubeConfig;
+import demetra.tsprovider.cube.BulkCube;
 import demetra.util.TreeTraverser;
-import internal.tsprovider.util.BulkCubeConfigParam;
+import internal.tsprovider.util.BulkCubeParam;
 import internal.tsprovider.util.ObsFormatParam;
 import internal.tsprovider.util.ObsGatheringParam;
 import nbbrd.io.function.IOFunction;
@@ -81,8 +81,8 @@ public class TsProviders {
         return new ObsGatheringParam(defaultValue, frequencyKey, aggregationKey, skipKey);
     }
 
-    public static DataSource.@NonNull Converter<BulkCubeConfig> onBulkCubeConfig(@NonNull BulkCubeConfig defaultValue, @NonNull String ttlKey, @NonNull String depthKey) {
-        return new BulkCubeConfigParam(defaultValue, ttlKey, depthKey);
+    public static DataSource.@NonNull Converter<BulkCube> onBulkCube(@NonNull BulkCube defaultValue, @NonNull String ttlKey, @NonNull String depthKey) {
+        return new BulkCubeParam(defaultValue, ttlKey, depthKey);
     }
 
     public static <P> DataSet.Converter<P> dataSetConverterOf(Property<P> p) {

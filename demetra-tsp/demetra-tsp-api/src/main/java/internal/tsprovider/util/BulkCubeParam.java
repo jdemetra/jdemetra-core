@@ -1,7 +1,7 @@
 package internal.tsprovider.util;
 
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.cube.BulkCubeConfig;
+import demetra.tsprovider.cube.BulkCube;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import nbbrd.io.text.Property;
@@ -11,14 +11,14 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public final class BulkCubeConfigParam implements DataSource.Converter<BulkCubeConfig> {
+public final class BulkCubeParam implements DataSource.Converter<BulkCube> {
 
-    private final BulkCubeConfig defaultValue;
+    private final BulkCube defaultValue;
     private final Property<Long> cacheTtl;
     private final Property<Integer> cacheDepth;
 
-    public BulkCubeConfigParam(
-            @NonNull BulkCubeConfig defaultValue,
+    public BulkCubeParam(
+            @NonNull BulkCube defaultValue,
             @NonNull String ttlKey,
             @NonNull String depthKey) {
         this.defaultValue = defaultValue;
@@ -27,17 +27,21 @@ public final class BulkCubeConfigParam implements DataSource.Converter<BulkCubeC
     }
 
     @Override
-    public BulkCubeConfig getDefaultValue() {
+    public BulkCube getDefaultValue() {
         return defaultValue;
     }
 
     @Override
-    public BulkCubeConfig get(DataSource config) {
-        return BulkCubeConfig.of(Duration.ofMillis(cacheTtl.get(config::getParameter)), cacheDepth.get(config::getParameter));
+    public BulkCube get(DataSource config) {
+        return BulkCube
+                .builder()
+                .ttl(Duration.ofMillis(cacheTtl.get(config::getParameter)))
+                .depth(cacheDepth.get(config::getParameter))
+                .build();
     }
 
     @Override
-    public void set(DataSource.Builder builder, BulkCubeConfig value) {
+    public void set(DataSource.Builder builder, BulkCube value) {
         Objects.requireNonNull(builder);
         cacheTtl.set(builder::parameter, value.getTtl().toMillis());
         cacheDepth.set(builder::parameter, value.getDepth());

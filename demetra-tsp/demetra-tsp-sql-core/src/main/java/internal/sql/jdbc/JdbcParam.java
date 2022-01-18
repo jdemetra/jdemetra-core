@@ -20,9 +20,10 @@ import demetra.sql.jdbc.JdbcBean;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.cube.BulkCubeConfig;
+import demetra.tsprovider.cube.BulkCube;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
+import demetra.tsprovider.cube.TableAsCube;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.tsprovider.util.TsProviders;
 import demetra.util.List2;
@@ -65,7 +66,7 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
         private final Property<String> versionColumn = Property.of("versionColumn", "", Parser.onString(), Formatter.onString());
         private final Property<String> labelColumn = Property.of("labelColumn", "", Parser.onString(), Formatter.onString());
         private final DataSource.Converter<ObsGathering> obsGathering = TsProviders.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final DataSource.Converter<BulkCubeConfig> cacheConfig = TsProviders.onBulkCubeConfig(BulkCubeConfig.of(Duration.ofMinutes(5), 1), "cacheTtl", "cacheDepth");
+        private final DataSource.Converter<BulkCube> cacheConfig = TsProviders.onBulkCube(BulkCube.builder().ttl(Duration.ofMinutes(5)).depth(1).build(), "cacheTtl", "cacheDepth");
 
         @Override
         public String getVersion() {
@@ -77,14 +78,17 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
             JdbcBean result = new JdbcBean();
             result.setDatabase(dbName.getDefaultValue());
             result.setTable(tableName.getDefaultValue());
-            result.setDimColumns(dimColumns.getDefaultValue());
-            result.setPeriodColumn(periodColumn.getDefaultValue());
-            result.setValueColumn(valueColumn.getDefaultValue());
-            result.setObsFormat(dataFormat.getDefaultValue());
-            result.setVersionColumn(versionColumn.getDefaultValue());
-            result.setLabelColumn(labelColumn.getDefaultValue());
-            result.setObsGathering(obsGathering.getDefaultValue());
-            result.setCacheConfig(cacheConfig.getDefaultValue());
+            result.setCube(TableAsCube
+                    .builder()
+                    .dimensions(dimColumns.getDefaultValue())
+                    .timeDimension(periodColumn.getDefaultValue())
+                    .measure(valueColumn.getDefaultValue())
+                    .obsFormat(dataFormat.getDefaultValue())
+                    .version(versionColumn.getDefaultValue())
+                    .label(labelColumn.getDefaultValue())
+                    .obsGathering(obsGathering.getDefaultValue())
+                    .build());
+            result.setCache(cacheConfig.getDefaultValue());
             return result;
         }
 
@@ -93,14 +97,17 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
             JdbcBean result = new JdbcBean();
             result.setDatabase(dbName.get(dataSource::getParameter));
             result.setTable(tableName.get(dataSource::getParameter));
-            result.setDimColumns(dimColumns.get(dataSource::getParameter));
-            result.setPeriodColumn(periodColumn.get(dataSource::getParameter));
-            result.setValueColumn(valueColumn.get(dataSource::getParameter));
-            result.setObsFormat(dataFormat.get(dataSource));
-            result.setVersionColumn(versionColumn.get(dataSource::getParameter));
-            result.setLabelColumn(labelColumn.get(dataSource::getParameter));
-            result.setObsGathering(obsGathering.get(dataSource));
-            result.setCacheConfig(cacheConfig.get(dataSource));
+            result.setCube(TableAsCube
+                    .builder()
+                    .dimensions(dimColumns.get(dataSource::getParameter))
+                    .timeDimension(periodColumn.get(dataSource::getParameter))
+                    .measure(valueColumn.get(dataSource::getParameter))
+                    .obsFormat(dataFormat.get(dataSource))
+                    .version(versionColumn.get(dataSource::getParameter))
+                    .label(labelColumn.get(dataSource::getParameter))
+                    .obsGathering(obsGathering.get(dataSource))
+                    .build());
+            result.setCache(cacheConfig.get(dataSource));
             return result;
         }
 
@@ -108,14 +115,14 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
         public void set(DataSource.Builder builder, JdbcBean value) {
             dbName.set(builder::parameter, value.getDatabase());
             tableName.set(builder::parameter, value.getTable());
-            dimColumns.set(builder::parameter, value.getDimColumns());
-            periodColumn.set(builder::parameter, value.getPeriodColumn());
-            valueColumn.set(builder::parameter, value.getValueColumn());
-            dataFormat.set(builder, value.getObsFormat());
-            versionColumn.set(builder::parameter, value.getVersionColumn());
-            labelColumn.set(builder::parameter, value.getLabelColumn());
-            obsGathering.set(builder, value.getObsGathering());
-            cacheConfig.set(builder, value.getCacheConfig());
+            dimColumns.set(builder::parameter, value.getCube().getDimensions());
+            periodColumn.set(builder::parameter, value.getCube().getTimeDimension());
+            valueColumn.set(builder::parameter, value.getCube().getMeasure());
+            dataFormat.set(builder, value.getCube().getObsFormat());
+            versionColumn.set(builder::parameter, value.getCube().getVersion());
+            labelColumn.set(builder::parameter, value.getCube().getLabel());
+            obsGathering.set(builder, value.getCube().getObsGathering());
+            cacheConfig.set(builder, value.getCache());
         }
 
         @Override

@@ -43,7 +43,7 @@ public class BulkCubeAccessorTest {
 
     @Test
     public void testBulkApi() throws IOException {
-        CubeAccessor accessor = BulkCubeAccessor.of(newSample(), BulkCubeConfig.of(Duration.ZERO, 0), ttl -> new FakeCache(new ConcurrentHashMap<>()));
+        CubeAccessor accessor = BulkCubeAccessor.of(newSample(), BulkCube.NONE, ttl -> new FakeCache(new ConcurrentHashMap<>()));
         assertThatThrownBy(() -> accessor.getAllSeriesWithData(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> accessor.getSeriesWithData(null)).isInstanceOf(NullPointerException.class);
     }

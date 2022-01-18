@@ -41,7 +41,7 @@ import nbbrd.io.function.IORunnable;
 public final class BulkCubeAccessor implements CubeAccessor {
 
     @NonNull
-    public static CubeAccessor of(@NonNull CubeAccessor delegate, @NonNull BulkCubeConfig options, BulkCubeCache.@NonNull Factory cacheFactory) {
+    public static CubeAccessor of(@NonNull CubeAccessor delegate, @NonNull BulkCube options, BulkCubeCache.@NonNull Factory cacheFactory) {
         return options.isCacheEnabled()
                 ? new BulkCubeAccessor(delegate, options.getDepth(), cacheFactory.ofTtl(options.getTtl()))
                 : delegate;

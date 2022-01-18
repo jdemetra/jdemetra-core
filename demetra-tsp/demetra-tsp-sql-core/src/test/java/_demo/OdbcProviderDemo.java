@@ -1,17 +1,17 @@
 /*
  * Copyright 2018 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package _demo;
@@ -21,12 +21,12 @@ import demetra.sql.odbc.OdbcBean;
 import demetra.sql.odbc.OdbcProvider;
 import demetra.timeseries.TsDataTable;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.cube.TableAsCube;
+
 import java.io.IOException;
 import java.sql.DriverManager;
-import java.util.Arrays;
 
 /**
- *
  * @author Philippe Charles
  */
 public class OdbcProviderDemo {
@@ -40,9 +40,13 @@ public class OdbcProviderDemo {
             OdbcBean bean = provider.newBean();
             bean.setDsn("mydb");
             bean.setTable("Table2");
-            bean.setDimColumns(Arrays.asList("Sector", "Region"));
-            bean.setPeriodColumn("Table2.Period");
-            bean.setValueColumn("Rate");
+            bean.setCube(TableAsCube
+                    .builder()
+                    .dimension("Sector")
+                    .dimension("Region")
+                    .timeDimension("Table2.Period")
+                    .measure("Rate")
+                    .build());
 
             // 3. create and open a DataSource from the bean
             DataSource dataSource = provider.encodeBean(bean);
