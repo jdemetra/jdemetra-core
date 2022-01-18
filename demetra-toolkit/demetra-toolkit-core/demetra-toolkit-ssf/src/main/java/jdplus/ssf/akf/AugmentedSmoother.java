@@ -18,6 +18,7 @@ package jdplus.ssf.akf;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.GeneralMatrix;
@@ -100,14 +101,18 @@ public class AugmentedSmoother {
         return true;
     }
 
-    public boolean process(ISsf ssf, final int endpos, DefaultAugmentedFilteringResults results, FastMatrix psi, DoubleSeq delta, ISmoothingResults sresults) {
+    public boolean process(ISsf ssf, final int endpos, DefaultAugmentedFilteringResults results, FastMatrix S, DoubleSeq delta, ISmoothingResults sresults) {
         frslts = results;
         srslts = sresults;
         initFilter(ssf);
         initSmoother(ssf, endpos);
         this.delta = DataBlock.of(delta);
-        this.Psi = psi.deepClone();
-        this.S=SymmetricMatrix.inverse(psi);
+        this.S=S;
+        if (N != null) {
+                Psi = FastMatrix.identity(S.getColumnsCount());
+                LowerTriangularMatrix.solveXL(this.S, Psi);
+                LowerTriangularMatrix.solveLtX(this.S, Psi);
+        }
         return processNoCollapsing(endpos);
     }
 
@@ -268,7 +273,7 @@ public class AugmentedSmoother {
             dynamics.TtM(pos, N);
         }
         SymmetricMatrix.reenforceSymmetry(N);
-        N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+//        N.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
 
         FastMatrix A = frslts.B(pos);
         // Rd(t-1)+N(t-1)*A(t)
@@ -279,7 +284,7 @@ public class AugmentedSmoother {
         Nc.chs();
         Nc.add(N);
         SymmetricMatrix.reenforceSymmetry(Nc);
-        Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+//        Nc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     /**
@@ -302,7 +307,7 @@ public class AugmentedSmoother {
         }
         Rc.copy(R);
         Rc.addProduct(Rd.rowsIterator(), delta);
-        Rc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
+//        Rc.apply(z -> Math.abs(z) < State.ZERO ? 0 : z);
     }
 
     private void iterateSmoothation(int pos) {
@@ -331,11 +336,11 @@ public class AugmentedSmoother {
                 C.product(K, NA.columnsIterator());
                 C.chs();
                 ucVariance = 1 / errVariance + QuadraticForm.apply(N, K) - vcorrection(U.deepClone(), C);
-                if (ucVariance < State.ZERO) {
+                if (ucVariance < Constants.MACHEP) {
                     ucVariance = 0;
                 }
                 if (ucVariance == 0) {
-                    if (Math.abs(uc) < State.ZERO) {
+                    if (Math.abs(uc) < Constants.MACHEP) {
                         uc = 0;
                     } else {
                         throw new SsfException(SsfException.INCONSISTENT);

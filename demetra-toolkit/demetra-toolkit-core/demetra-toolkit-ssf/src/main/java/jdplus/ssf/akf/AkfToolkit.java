@@ -38,7 +38,7 @@ import jdplus.ssf.multivariate.M2uAdapter;
  */
 @lombok.experimental.UtilityClass
 public class AkfToolkit {
-    
+
     public ILikelihoodComputer<MarginalLikelihood> marginalLikelihoodComputer(final boolean scalingfactor, boolean res) {
         return (ssf, data)
                 -> {
@@ -47,7 +47,7 @@ public class AkfToolkit {
             return qr.marginalLikelihood(scalingfactor, res);
         };
     }
-    
+
     public ILikelihoodComputer<ProfileLikelihood> profileLikelihoodComputer() {
         return (ssf, data) -> {
             QRFilter qr = new QRFilter();
@@ -57,7 +57,7 @@ public class AkfToolkit {
             return qr.profileLikelihood();
         };
     }
-    
+
     public ILikelihoodComputer<DiffuseLikelihood> robustLikelihoodComputer(final boolean scalingfactor, boolean res) {
         return (ssf, data) -> {
             QRFilter qr = new QRFilter();
@@ -67,11 +67,11 @@ public class AkfToolkit {
             return qr.diffuseLikelihood(scalingfactor, res);
         };
     }
-    
+
     public ILikelihoodComputer<DiffuseLikelihood> likelihoodComputer(boolean collapsing, boolean scalingfactor, boolean res) {
         return collapsing ? new LLComputer2(scalingfactor, res) : new LLComputer1(scalingfactor, res);
     }
-    
+
     public ILikelihoodComputer<DiffuseLikelihood> fastLikelihoodComputer(boolean scalingfactor, boolean res) {
         return (ISsf ssf, ISsfData data) -> {
             QPredictionErrorDecomposition decomp = new QPredictionErrorDecomposition(res);
@@ -81,7 +81,7 @@ public class AkfToolkit {
             return decomp.likelihood(scalingfactor);
         };
     }
-    
+
     public DefaultQFilteringResults filter(ISsf ssf, ISsfData data, boolean all, boolean collapsing) {
         DefaultQFilteringResults frslts = all
                 ? DefaultQFilteringResults.full() : DefaultQFilteringResults.light();
@@ -96,7 +96,7 @@ public class AkfToolkit {
         }
         return frslts;
     }
-    
+
     public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance, boolean collapsing) {
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(all);
@@ -113,7 +113,11 @@ public class AkfToolkit {
             return null;
         }
     }
-    
+
+    public SmoothingOutput robustSmooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
+       return QRSmoother.process(ssf, data, all, rescaleVariance);
+    }
+
     public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance, boolean collapsing) {
         ISsf ussf = M2uAdapter.of(ssf);
         ISsfData udata = M2uAdapter.of(data);
@@ -132,16 +136,35 @@ public class AkfToolkit {
         }
         return ss;
     }
-    
+
+    public StateStorage robustSmooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
+        ISsf ussf = M2uAdapter.of(ssf);
+        ISsfData udata = M2uAdapter.of(data);
+        StateStorage sr = robustSmooth(ussf, udata, all, rescaleVariance).getSmoothing();
+        StateStorage ss = all ? StateStorage.full(StateInfo.Smoothed) : StateStorage.light(StateInfo.Smoothed);
+        int m = data.getVarsCount(), n = data.getObsCount();
+        ss.prepare(ussf.getStateDim(), 0, n);
+        if (all) {
+            for (int i = 0; i < n; ++i) {
+                ss.save(i, sr.a(i * m), sr.P(i * m));
+            }
+        } else {
+            for (int i = 0; i < n; ++i) {
+                ss.save(i, sr.a(i * m), null);
+            }
+        }
+        return ss;
+    }
+
     private static class LLComputer1 implements ILikelihoodComputer<DiffuseLikelihood> {
-        
+
         private final boolean scalingfactor, res;
-        
+
         private LLComputer1(boolean scalingfactor, boolean res) {
             this.scalingfactor = scalingfactor;
             this.res = res;
         }
-        
+
         @Override
         public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
             AugmentedFilter akf = new AugmentedFilter();
@@ -152,18 +175,18 @@ public class AkfToolkit {
             }
             return pe.likelihood(scalingfactor);
         }
-        
+
     }
-    
+
     private static class LLComputer2 implements ILikelihoodComputer<DiffuseLikelihood> {
-        
+
         private final boolean scalingfactor, res;
-        
+
         private LLComputer2(boolean scalingfactor, boolean res) {
             this.scalingfactor = scalingfactor;
             this.res = res;
         }
-        
+
         @Override
         public DiffuseLikelihood compute(ISsf ssf, ISsfData data) {
             QPredictionErrorDecomposition pe = new QPredictionErrorDecomposition(res);
@@ -174,7 +197,7 @@ public class AkfToolkit {
             return pe.likelihood(scalingfactor);
         }
     }
-    
+
     public double var(int n, DefaultQFilteringResults frslts) {
         double c = frslts.getAugmentation().c();
         double ssq = c * c;
@@ -189,5 +212,5 @@ public class AkfToolkit {
         }
         return ssq / m;
     }
-    
+
 }

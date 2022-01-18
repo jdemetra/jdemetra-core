@@ -24,6 +24,7 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
+import demetra.math.Constants;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
@@ -96,7 +97,7 @@ public class AugmentedFilter {
     protected void update() {
         double v = pe.getVariance(), e = pe.get();
         if (v == 0){
-            if (Math.abs(e)<State.ZERO)
+            if (Math.abs(e)<Constants.MACHEP)
                 return;
             else
                 throw new SsfException(SsfException.INCONSISTENT); 

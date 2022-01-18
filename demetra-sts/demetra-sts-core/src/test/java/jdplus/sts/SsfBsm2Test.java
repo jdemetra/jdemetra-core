@@ -20,7 +20,6 @@ import demetra.data.Data;
 import demetra.sts.BsmSpec;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.akf.AkfToolkit;
-import jdplus.ssf.akf.QRSmoother;
 import jdplus.ssf.ckms.CkmsToolkit;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
@@ -140,13 +139,13 @@ public class SsfBsm2Test {
     @Test
     public void testSmoothing() {
         SsfData data = new SsfData(Data.EXPORTS);
-        QRSmoother smoother=new QRSmoother();
-        StateStorage rslt = smoother.process(BSM, data, true);
-        System.out.println(rslt.getComponent(0));
-        System.out.println(rslt.getComponentVariance(0));
-        DefaultSmoothingResults fs = DkToolkit.smooth(BSM, data, true, true);
-        System.out.println(fs.getComponent(0));
-        System.out.println(fs.getComponentVariance(0));
+        StateStorage rslt = AkfToolkit.robustSmooth(BSM, data, true, true).getSmoothing();
+//        System.out.println(rslt.getComponent(0));
+//        System.out.println(rslt.getComponentVariance(0));
+        DefaultSmoothingResults fs = DkToolkit.sqrtSmooth(BSM, data, true, true);
+//        System.out.println(fs.getComponent(0));
+//        System.out.println(fs.getComponentVariance(0));
+        assertTrue(rslt.getComponent(0).distance(fs.getComponent(0)) < 1e-6);
     }
 
     public static void stressTestBsm() {
@@ -186,7 +185,6 @@ public class SsfBsm2Test {
         t1 = System.currentTimeMillis();
         System.out.println("ckms filter");
         System.out.println(t1 - t0);
-
 
     }
 
