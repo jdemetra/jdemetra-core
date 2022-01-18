@@ -16,20 +16,19 @@
  */
 package jdplus.ssf.akf;
 
+import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.ISsfLoading;
+import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
-import jdplus.data.DataBlockIterator;
-import demetra.data.DoubleSeqCursor;
-import demetra.math.Constants;
-import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
-import jdplus.ssf.ISsfLoading;
-import jdplus.math.matrices.FastMatrix;
-import jdplus.ssf.SsfException;
 
 /**
  *
@@ -97,7 +96,7 @@ public class AugmentedFilter {
     protected void update() {
         double v = pe.getVariance(), e = pe.get();
         if (v == 0){
-            if (Math.abs(e)<Constants.MACHEP)
+            if (Math.abs(e)<State.ZERO)
                 return;
             else
                 throw new SsfException(SsfException.INCONSISTENT); 

@@ -18,6 +18,7 @@
  */
 package jdplus.ssf.univariate;
 
+import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
@@ -25,7 +26,6 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.ResultsRange;
-import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 
@@ -223,16 +223,16 @@ public class OrdinarySmoother {
                 // uvar = 1/f(t)+ K'NK
                 // = 1/f + 1/f*M'T'*N*T*M/f
                 uVariance = 1 / errVariance + QuadraticForm.apply(N, k);
-                if (uVariance < State.ZERO) {
+                if (uVariance < Constants.getEpsilon()) {
                     uVariance = 0;
                 }
-                if (uVariance == 0) {
-                    if (Math.abs(u) < State.ZERO) {
-                        u = 0;
-                    } else {
-                        throw new SsfException(SsfException.INCONSISTENT);
-                    }
-                }
+//                if (uVariance == 0) {
+//                    if (Math.abs(u) < State.ZERO) {
+//                        u = 0;
+//                    } else {
+//                        throw new SsfException(SsfException.INCONSISTENT);
+//                    }
+//                }
             }
         } else {
             u = 0;
