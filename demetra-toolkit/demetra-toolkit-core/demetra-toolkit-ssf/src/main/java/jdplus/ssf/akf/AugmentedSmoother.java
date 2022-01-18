@@ -21,15 +21,14 @@ import demetra.data.DoubleSeqCursor;
 import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.univariate.ISmoothingResults;
@@ -340,10 +339,10 @@ public class AugmentedSmoother {
                     ucVariance = 0;
                 }
                 if (ucVariance == 0) {
-                    if (Math.abs(uc) < Constants.MACHEP) {
+                    if (Math.abs(uc) < Constants.getEpsilon()) {
                         uc = 0;
-                    } else {
-                        throw new SsfException(SsfException.INCONSISTENT);
+//                    } else {
+//                        throw new SsfException(SsfException.INCONSISTENT);
                     }
                 }
             }
