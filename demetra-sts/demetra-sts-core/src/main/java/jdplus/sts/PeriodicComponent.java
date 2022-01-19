@@ -26,7 +26,7 @@ public class PeriodicComponent {
     }
 
     public ISsfLoading defaultLoading(int k) {
-        if (k == 0) {
+        if (k == 1) {
             return Loading.fromPosition(0);
         }
         int[] pos = new int[k];
