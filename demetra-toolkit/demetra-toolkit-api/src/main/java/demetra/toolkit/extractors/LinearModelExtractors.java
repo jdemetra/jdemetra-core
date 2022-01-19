@@ -56,7 +56,7 @@ public class LinearModelExtractors {
                 ADJUST = "adjust", MEAN = "mean",
                 SPAN = "span", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
                 REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS = "residuals",
-                NTD = "ntd", NMH = "nmh", NEASTER = "neaster",
+                NTD = "ntd", NLP = "nlp", NMH = "nmh", NEASTER = "neaster",
                 NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
                 COEFF = "coefficients", COVAR = "covar", COVAR_ML = "covar-ml", COEFFDESC = "description", REGTYPE = "type",
                 P = "parameters", PCOVAR = "pcovar", PCOVAR_ML = "pcovar-ml", PCORR = "pcorr", SCORE = "pscore";
@@ -73,6 +73,8 @@ public class LinearModelExtractors {
             set(ADJUST, String.class, source -> source.getDescription().getLengthOfPeriodTransformation().name());
             set(BasicInformationExtractor.concatenate(REGRESSION, MEAN), Boolean.class,
                     source -> count(source, v -> v instanceof TrendConstant) == 1);
+            set(BasicInformationExtractor.concatenate(REGRESSION, NLP), Integer.class,
+                    source -> count(source, v -> v instanceof ILengthOfPeriodVariable));
             set(BasicInformationExtractor.concatenate(REGRESSION, NTD), Integer.class,
                     source -> count(source, v -> v instanceof ITradingDaysVariable));
             set(BasicInformationExtractor.concatenate(REGRESSION, NEASTER), Integer.class,

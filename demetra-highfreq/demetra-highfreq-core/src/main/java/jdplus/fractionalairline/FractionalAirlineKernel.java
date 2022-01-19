@@ -71,6 +71,7 @@ public class FractionalAirlineKernel {
                     .addFactories(factories)
                     .processor(processor)
                     .build();
+            
             od.setCriticalValue(spec.getCriticalValue());
             RegArimaModel regarima = builder.build();
             od.prepare(regarima.getObservationsCount());
