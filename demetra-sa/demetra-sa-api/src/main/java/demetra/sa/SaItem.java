@@ -44,6 +44,8 @@ public final class SaItem {
     @lombok.Singular("meta")
     @lombok.EqualsAndHashCode.Exclude
     Map<String, String> meta;
+    
+    String comment;
 
     /**
      * Operational. Importance of this estimation
@@ -60,15 +62,19 @@ public final class SaItem {
     private volatile SaEstimation estimation;
 
     public SaItem withPriority(int priority) {
-        return new SaItem(name, definition, meta, priority, estimation);
+        return new SaItem(name, definition, meta, comment, priority, estimation);
     }
 
     public SaItem withName(String name) {
-        return new SaItem(name, definition, meta, priority, estimation);
+        return new SaItem(name, definition, meta, comment, priority, estimation);
     }
 
     public SaItem withInformations(Map<String, String> info) {
-        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation);
+        return new SaItem(name, definition, Collections.unmodifiableMap(info), comment, priority, estimation);
+    }
+
+    public SaItem withComment(String ncomment) {
+        return new SaItem(name, definition, meta, ncomment, priority, estimation);
     }
 
     public void accept() {
@@ -162,7 +168,7 @@ public final class SaItem {
                     .domainSpec(dspec)
                     .estimationSpec(definition.activeSpecification())
                     .build();
-            return new SaItem(name, ndef, meta, priority, estimation);
+            return new SaItem(name, ndef, meta, comment, priority, estimation);
         } else {
             SaSpecification dspec = definition.getDomainSpec();
             SaSpecification pspec = estimation.getPointSpec();
@@ -187,7 +193,7 @@ public final class SaItem {
                     .domainSpec(dspec)
                     .estimationSpec(espec)
                     .build();
-            return new SaItem(name, ndef, meta, priority, null);
+            return new SaItem(name, ndef, meta, comment, priority, null);
         }
     }
 
