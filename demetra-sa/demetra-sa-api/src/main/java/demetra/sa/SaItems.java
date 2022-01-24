@@ -16,27 +16,111 @@
  */
 package demetra.sa;
 
+import demetra.timeseries.TsInformationType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  *
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder( toBuilder=true)
+@lombok.Builder(toBuilder = true)
 public class SaItems {
-    
+
     @lombok.NonNull
     @lombok.Builder.Default
-    String name="";
-    
+    String name = "";
+
     @lombok.Singular("meta")
     @lombok.NonNull
     private Map<String, String> meta;
-    
+
     @lombok.Singular("item")
     @lombok.NonNull
     private List<SaItem> items;
+
+    public static SaItems empty() {
+        return EMPTY;
+    }
+
+    public SaItems refresh(EstimationPolicy policy, TsInformationType info) {
+        Builder builder = this.toBuilder()
+                .clearItems();
+        for (SaItem cur : items) {
+            builder.item(cur.refresh(policy, info));
+        }
+        return builder.build();
+    }
+
+    public SaItems withMetadata(Map<String, String> meta) {
+        return new SaItems(name, Collections.unmodifiableMap(meta), items);
+    }
+
+    public SaItems withItem(int pos, SaItem nitem) {
+        List<SaItem> nitems = new ArrayList<>(items);
+        nitems.set(pos, nitem);
+        return new SaItems(name, meta, Collections.unmodifiableList(nitems));
+    }
+
+    public SaItems replaceItem(SaItem oitem, SaItem nitem) {
+        List<SaItem> nitems = new ArrayList<>();
+        for (SaItem cur : items) {
+            if (cur == oitem) {
+                nitems.add(nitem);
+            } else {
+                nitems.add(cur);
+            }
+        }
+        return new SaItems(name, meta, Collections.unmodifiableList(nitems));
+    }
     
+    public SaItems replaceItems(Predicate<SaItem> test, UnaryOperator<SaItem> op) {
+        List<SaItem> nitems = new ArrayList<>();
+        for (SaItem cur : items) {
+            if (test.test(cur)) {
+                nitems.add(op.apply(cur));
+            } else {
+                nitems.add(cur);
+            }
+        }
+        return new SaItems(name, meta, Collections.unmodifiableList(nitems));
+    }
+    
+
+    public SaItems removeItems(SaItem... nitems) {
+        List<SaItem> ritems = new ArrayList<>();
+        Set<SaItem> sitems = new HashSet<>();
+        for (SaItem item : nitems) {
+            sitems.add(item);
+        }
+        for (SaItem item : items) {
+            if (!sitems.contains(item)) {
+                ritems.add(item);
+            }
+        }
+        return new SaItems(name, meta, Collections.unmodifiableList(ritems));
+    }
+
+    public SaItems addItems(SaItem... nitems) {
+        List<SaItem> ritems = new ArrayList<>(items);
+        for (SaItem item : nitems) {
+            ritems.add(item);
+        }
+        return new SaItems(name, meta, Collections.unmodifiableList(ritems));
+    }
+
+    private static final SaItems EMPTY = new SaItems("", Collections.emptyMap(),
+            Collections.emptyList());
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
 }
