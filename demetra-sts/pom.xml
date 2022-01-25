@@ -67,6 +67,11 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-core</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-sts-api</artifactId>
                 <version>${jd3-sts.version}</version>            
             </dependency>
