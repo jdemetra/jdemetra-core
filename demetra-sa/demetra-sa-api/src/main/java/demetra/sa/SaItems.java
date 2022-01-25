@@ -93,6 +93,18 @@ public class SaItems {
         return new SaItems(name, meta, Collections.unmodifiableList(nitems));
     }
     
+    public SaItems refresh(EstimationPolicy policy, TsInformationType info, Predicate<SaItem> test) {
+        Builder builder = this.toBuilder()
+                .clearItems();
+        for (SaItem cur : items) {
+            if (test.test(cur))
+                builder.item(cur.refresh(policy, info));
+            else
+                builder.item(cur);
+        }
+        return builder.build();
+    }
+
 
     public SaItems removeItems(SaItem... nitems) {
         List<SaItem> ritems = new ArrayList<>();

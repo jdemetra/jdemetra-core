@@ -72,12 +72,12 @@ import jdplus.regsarima.regular.RegSarimaModel;
  *
  * @author Jean Palate
  */
-public class HtmlRegArima extends AbstractHtmlElement {
+public class HtmlRegSarima extends AbstractHtmlElement {
 
     private final RegSarimaModel model;
     boolean summary;
 
-    public HtmlRegArima(final RegSarimaModel model, boolean summary) {
+    public HtmlRegSarima(final RegSarimaModel model, boolean summary) {
         this.model = model;
         this.summary = summary;
     }
