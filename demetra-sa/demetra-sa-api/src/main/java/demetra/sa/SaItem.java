@@ -26,6 +26,8 @@ import demetra.timeseries.TsInformationType;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -34,6 +36,26 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class SaItem {
+    
+    private static final AtomicInteger ID=new AtomicInteger(0);
+    
+    @lombok.Getter(value=lombok.AccessLevel.NONE)
+    @lombok.Setter(value=lombok.AccessLevel.NONE)
+    private final int key= ID.getAndIncrement();
+    
+     @Override
+    public boolean equals(Object obj) {
+        return this == obj || (obj instanceof SaItem && equals((SaItem) obj));
+    }
+
+    private boolean equals(SaItem other) {
+        return key == other.key;
+    }
+    
+    @Override
+    public int hashCode(){
+        return Integer.hashCode(key);
+    }
 
     @lombok.NonNull
     String name;

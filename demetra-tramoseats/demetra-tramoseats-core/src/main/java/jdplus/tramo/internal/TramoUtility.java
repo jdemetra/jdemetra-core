@@ -73,21 +73,9 @@ public class TramoUtility {
         return Math.abs(t) > vct;
     }
 
-    public int calcLBLength(final int freq) {
-        int n;
-        if (freq == 12) {
-            n = 24;
-        } else if (freq == 1) {
-            n = 8;
-        } else {
-            n = 4 * freq;
-        }
-        return n;
-    }
-
     public double PLjungBox(final int freq, final double[] res,
             final int hp) {
-        int n = calcLBLength(freq);
+        int n = LjungBox.defaultAutoCorrelationsCount(freq);
 
         StatisticalTest lb = new LjungBox(DoubleSeq.of(res))
                 .hyperParametersCount(hp)
