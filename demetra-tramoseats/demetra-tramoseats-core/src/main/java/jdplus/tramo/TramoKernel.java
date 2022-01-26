@@ -666,7 +666,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();
             SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries().getValues(), period);
-            context.originalSeasonalityTest = s.getAsInt();
+            context.originalSeasonalityTest = s.toInt();
             if (context.originalSeasonalityTest < 2) {
                 SarimaOrders nspec = SarimaOrders.m011(period);
                 model.setSpecification(nspec);

@@ -18,9 +18,8 @@
 package demetra.sa;
 
 import nbbrd.design.Development;
-import demetra.util.PrimitiveEnum;
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
+import nbbrd.design.RepresentableAsInt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 
 /**
@@ -28,8 +27,10 @@ import java.util.function.IntSupplier;
  * SeasonallyAdjusted = Trend + Seasonal + CalendarEffect
  * @author Jean Palate
  */
+@RepresentableAsInt
+@lombok.AllArgsConstructor
 @Development(status = Development.Status.Alpha)
-public enum ComponentType implements IntSupplier {
+public enum ComponentType {
 
 
     /**
@@ -60,31 +61,24 @@ public enum ComponentType implements IntSupplier {
      *
      */
     CalendarEffect(6);
-    /**
-     * 
-     * @param value
-     * @return
-     */
-    public static ComponentType valueOf(int value)
-    {
-        return FACTORY.apply(value);
-    }
 
-    private static final IntFunction<ComponentType> FACTORY = PrimitiveEnum.ofInt(ComponentType.class);
-    
     private final int value;
-
-    ComponentType(final int value) {
-	this.value = value;
-    }
 
     /**
      * Returns the value of this ComponentType as an int.
      * @return
      */
-    @Override
-    public int getAsInt()
+    public int toInt()
     {
 	return value;
+    }
+
+    public static @NonNull ComponentType parse(int value) throws IllegalArgumentException {
+        for (ComponentType o : values()) {
+            if (o.value == value) {
+                return o;
+            }
+        }
+        throw new IllegalArgumentException("Cannot parse " + value);
     }
 }

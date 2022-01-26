@@ -18,7 +18,8 @@ package internal.timeseries;
 
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.util.function.IntSupplier;
+import nbbrd.design.RepresentableAsInt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -29,7 +30,7 @@ import java.util.function.IntSupplier;
 public class InternalFixme {
 
     public int getAsInt(TsUnit freq) {
-        return OldFreq.of(freq).getAsInt();
+        return OldFreq.of(freq).toInt();
     }
 
     public int getId(TsPeriod p) {
@@ -41,27 +42,32 @@ public class InternalFixme {
             throw new UnsupportedOperationException("Unsupported origin");
         }
         OldFreq freq = OldFreq.of(p.getUnit());
-        return (p.start().getMonthValue() - 1) * freq.getAsInt() / 12;
+        return (p.start().getMonthValue() - 1) * freq.toInt() / 12;
     }
 
-    private enum OldFreq implements IntSupplier {
+    @RepresentableAsInt
+    @lombok.AllArgsConstructor
+    private enum OldFreq {
         Undefined(0, TsUnit.UNDEFINED),
         Yearly(1, TsUnit.YEAR),
         HalfYearly(2, TsUnit.HALF_YEAR),
         Quarterly(4, TsUnit.QUARTER),
         Monthly(12, TsUnit.MONTH);
 
-        final int val;
+        final int annualFrequency;
         final TsUnit freq;
 
-        private OldFreq(int val, TsUnit freq) {
-            this.val = val;
-            this.freq = freq;
+        public int toInt() {
+            return annualFrequency;
         }
 
-        @Override
-        public int getAsInt() {
-            return val;
+        public static @NonNull OldFreq parse(int value) throws IllegalArgumentException {
+            for (OldFreq o : values()) {
+                if (o.annualFrequency == value) {
+                    return o;
+                }
+            }
+            throw new IllegalArgumentException("Cannot parse " + value);
         }
 
         public static OldFreq of(TsUnit freq) {
