@@ -18,8 +18,8 @@ package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
-import demetra.timeseries.TsData;
-import java.util.function.IntSupplier;
+import nbbrd.design.RepresentableAsInt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
@@ -28,7 +28,9 @@ import java.util.function.IntSupplier;
 @Development(status = Development.Status.Exploratory)
 public interface SeasonalityDetector {
 
-    public static enum Seasonality implements IntSupplier {
+    @RepresentableAsInt
+    @lombok.AllArgsConstructor
+    enum Seasonality {
 
         NotApplicable(-1),
         NotObservable(0),
@@ -38,18 +40,22 @@ public interface SeasonalityDetector {
 
         private final int value;
 
-        Seasonality(final int value) {
-            this.value = value;
-        }
-
         /**
          * Returns the value of this ParamValidation as an int.
          *
          * @return
          */
-        @Override
-        public int getAsInt() {
+        public int toInt() {
             return value;
+        }
+
+        public static @NonNull Seasonality parse(int value) throws IllegalArgumentException {
+            for (Seasonality o : values()) {
+                if (o.value == value) {
+                    return o;
+                }
+            }
+            throw new IllegalArgumentException("Cannot parse " + value);
         }
     }
 

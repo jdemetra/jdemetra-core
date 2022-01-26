@@ -73,7 +73,7 @@ public class SeatsModel {
                 .build();
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
-        SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.getAsInt() > 1);
+        SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.toInt() > 1);
         seatsModel.meanCorrection = mean;
         double var = spec.getInnovationVariance();
         if (var == 0) {
@@ -118,7 +118,7 @@ public class SeatsModel {
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
 
-        SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.getAsInt() > 1);
+        SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.toInt() > 1);
         seatsModel.meanCorrection = mean;
         seatsModel.innovationVariance = var;
         return seatsModel;
