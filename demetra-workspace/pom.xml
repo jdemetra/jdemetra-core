@@ -19,7 +19,6 @@
         <jimfs.version>1.2</jimfs.version>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
-        <slf4j.version>1.7.33</slf4j.version>
     </properties>
    
     <dependencies>
@@ -35,11 +34,6 @@
             <scope>provided</scope>
         </dependency>
         <!-- compile and runtime -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-toolkit-xml</artifactId>

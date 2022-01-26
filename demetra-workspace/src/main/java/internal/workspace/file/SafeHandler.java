@@ -19,6 +19,7 @@ package internal.workspace.file;
 import demetra.DemetraVersion;
 import demetra.workspace.WorkspaceFamily;
 import demetra.workspace.file.spi.FamilyHandler;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import org.slf4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -106,7 +108,7 @@ final class SafeHandler {
             if (family != null) {
                 result.put(family, o);
             } else {
-                logger.info("Handler should not return null family: {}", o);
+                logger.log(Level.INFO, "Handler should not return null family: {}", o);
             }
         }
     }
