@@ -18,8 +18,9 @@ package demetra.tsprovider;
 
 import demetra.util.UriBuilder;
 import internal.util.SortedMaps;
+import nbbrd.design.RepresentableAs;
+import nbbrd.design.RepresentableAsString;
 import nbbrd.design.StaticFactoryMethod;
-import nbbrd.design.StringValue;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,12 +36,12 @@ import java.util.SortedMap;
  * collection or a dummy set.<p>
  * This object doesn't hold data but only the parameters used to retrieve
  * it.<br>It is immutable and therefore thread-safe.<br>It is created by a
- * builder.<br>A default xml serializer is provided but its use is not
- * mandatory.
+ * builder.
  *
  * @author Philippe Charles
  */
-@StringValue
+@RepresentableAsString
+@RepresentableAs(value = URI.class, parseMethodName = "parseURI")
 @lombok.Value
 @lombok.Builder(toBuilder = true)
 public class DataSet {
@@ -91,11 +92,20 @@ public class DataSet {
 
     @Override
     public String toString() {
-        return formatAsUri(this);
+        return formatAsUri(this).buildString();
+    }
+
+    public @NonNull URI toURI() {
+        return formatAsUri(this).build();
     }
 
     @StaticFactoryMethod
     public static @NonNull DataSet parse(@NonNull CharSequence input) throws IllegalArgumentException {
+        return parseAsUri(URI.create(input.toString()));
+    }
+
+    @StaticFactoryMethod
+    public static @NonNull DataSet parseURI(@NonNull URI input) throws IllegalArgumentException {
         return parseAsUri(input);
     }
 
@@ -129,8 +139,7 @@ public class DataSet {
     private static final String SCHEME = "demetra";
     private static final String HOST = "tsprovider";
 
-    private static DataSet parseAsUri(CharSequence input) throws IllegalArgumentException {
-        URI uri = URI.create(input.toString());
+    private static DataSet parseAsUri(URI uri) throws IllegalArgumentException {
         if (!SCHEME.equals(uri.getScheme())) {
             throw new IllegalArgumentException("Invalid scheme: " + uri.getScheme());
         }
@@ -153,13 +162,12 @@ public class DataSet {
         return new DataSet(dataSource, Kind.valueOf(path[2]), SortedMaps.immutableCopyOf(fragment));
     }
 
-    private static String formatAsUri(DataSet value) {
+    private static UriBuilder formatAsUri(DataSet value) {
         DataSource dataSource = value.getDataSource();
         return new UriBuilder(SCHEME, HOST)
                 .path(dataSource.getProviderName(), dataSource.getVersion(), value.getKind().name())
                 .query(dataSource.getParameters())
-                .fragment(value.getParameters())
-                .buildString();
+                .fragment(value.getParameters());
     }
 
     /**
