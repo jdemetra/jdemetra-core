@@ -50,13 +50,12 @@ public class SaItems {
         return EMPTY;
     }
 
-    public SaItems refresh(EstimationPolicy policy, TsInformationType info) {
-        Builder builder = this.toBuilder()
-                .clearItems();
+    public List<SaItem> refresh(EstimationPolicy policy, TsInformationType info) {
+        List<SaItem> list=new ArrayList<>();
         for (SaItem cur : items) {
-            builder.item(cur.refresh(policy, info));
+            list.add(cur.refresh(policy, info));
         }
-        return builder.build();
+        return list;
     }
 
     public SaItems withMetadata(Map<String, String> meta) {

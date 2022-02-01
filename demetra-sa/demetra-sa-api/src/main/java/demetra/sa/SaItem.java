@@ -36,26 +36,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class SaItem {
-    
-    private static final AtomicInteger ID=new AtomicInteger(0);
-    
-    @lombok.Getter(value=lombok.AccessLevel.NONE)
-    @lombok.Setter(value=lombok.AccessLevel.NONE)
-    private final int key= ID.getAndIncrement();
-    
-     @Override
-    public boolean equals(Object obj) {
-        return this == obj || (obj instanceof SaItem && equals((SaItem) obj));
-    }
-
-    private boolean equals(SaItem other) {
-        return key == other.key;
-    }
-    
-    @Override
-    public int hashCode(){
-        return Integer.hashCode(key);
-    }
 
     @lombok.NonNull
     String name;
@@ -66,7 +46,7 @@ public final class SaItem {
     @lombok.Singular("meta")
     @lombok.EqualsAndHashCode.Exclude
     Map<String, String> meta;
-    
+
     String comment;
 
     /**
@@ -82,6 +62,20 @@ public final class SaItem {
     @lombok.experimental.NonFinal
     @lombok.EqualsAndHashCode.Exclude
     private volatile SaEstimation estimation;
+
+    public static SaItem of(Ts s, SaSpecification spec) {
+        if (!s.getType().encompass(TsInformationType.Data)) {
+            throw new IllegalArgumentException();
+        }
+        return SaItem.builder()
+                .name(s.getName())
+                .definition(SaDefinition.builder()
+                        .domainSpec(spec)
+                        .ts(s)
+                        .policy(EstimationPolicyType.None)
+                        .build())
+                .build();
+    }
 
     public SaItem withPriority(int priority) {
         return new SaItem(name, definition, meta, comment, priority, estimation);

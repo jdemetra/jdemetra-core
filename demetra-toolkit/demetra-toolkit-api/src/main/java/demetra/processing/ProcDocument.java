@@ -16,7 +16,6 @@
  */
 package demetra.processing;
 
-import demetra.timeseries.TsDocument;
 import demetra.util.Documented;
 import java.util.Map;
 import java.util.UUID;

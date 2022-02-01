@@ -50,7 +50,7 @@ public class DiagnosticFormatter implements InformationFormatter {
         } else if (Math.abs(item) == 2) {
             return fmt.format(test.getValue());
         } else {
-            return "";
+            return null;
         }
     }
 }

@@ -53,7 +53,7 @@ public class ParameterFormatter implements InformationFormatter {
             case 1:
                 return fmt.format(param.getValue());
             default:
-                return "";
+                return null;
         }
     }
 }

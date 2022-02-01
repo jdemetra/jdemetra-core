@@ -38,7 +38,7 @@ class BooleanFormatter implements InformationFormatter {
     @Override
     public String format(Object obj, int item) {
         if (item > 0)
-            return "";
+            return null;
         if (strue == null || sfalse == null)
             return obj.toString();
         boolean b = (Boolean)obj;
