@@ -19,7 +19,6 @@
     <properties>
         <slf4j.version>1.7.35</slf4j.version>
         <guava.version>30.1.1-jre</guava.version>
-        <java-io-util.version>0.0.16</java-io-util.version>
     </properties>
 
     <dependencyManagement>
@@ -59,13 +58,10 @@
             <!-- java-io-util -->
             <dependency>
                 <groupId>com.github.nbbrd.java-io-util</groupId>
-                <artifactId>java-io-xml</artifactId>
-                <version>${java-io-util.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.nbbrd.java-io-util</groupId>
-                <artifactId>java-io-xml-bind</artifactId>
-                <version>${java-io-util.version}</version>
+                <artifactId>java-io-bom</artifactId>
+                <version>0.0.16</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -90,10 +86,22 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.nbbrd.java-design-util</groupId>
+                    <artifactId>java-design-processor</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml-bind</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.nbbrd.java-design-util</groupId>
+                    <artifactId>java-design-processor</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test only -->
