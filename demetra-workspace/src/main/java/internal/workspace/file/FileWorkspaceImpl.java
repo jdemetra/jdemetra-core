@@ -23,6 +23,9 @@ import demetra.workspace.WorkspaceItemDescriptor;
 import demetra.workspace.WorkspaceItemDescriptor.Key;
 import demetra.workspace.file.FileWorkspace;
 import demetra.workspace.file.spi.FamilyHandler;
+import nbbrd.io.Resource;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -32,10 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Supplier;
-import nbbrd.io.Resource;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 /**
  *
@@ -48,7 +48,7 @@ public final class FileWorkspaceImpl implements FileWorkspace {
         Objects.requireNonNull(file, "file");
         Objects.requireNonNull(version, "version");
         Objects.requireNonNull(handlers, "handler");
-        return create(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, version, handlers);
+        return create(Logger.getLogger(FileWorkspaceImpl.class.getName()), file, version, handlers);
     }
 
     @NonNull
@@ -56,7 +56,7 @@ public final class FileWorkspaceImpl implements FileWorkspace {
         Objects.requireNonNull(file, "file");
         Objects.requireNonNull(version, "version");
         Objects.requireNonNull(handlers, "handler");
-        return open(LoggerFactory.getLogger(FileWorkspaceImpl.class), file, version, handlers);
+        return open(Logger.getLogger(FileWorkspaceImpl.class.getName()), file, version, handlers);
     }
 
     static FileWorkspaceImpl create(Logger logger, Path file, @NonNull DemetraVersion version, Supplier<Iterable<FamilyHandler>> handlers) throws IOException {

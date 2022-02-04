@@ -39,7 +39,7 @@
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd2.version>2.2.4-SNAPSHOT</jd2.version>
-        <java-io-util.version>0.0.15</java-io-util.version>
+        <java-io-util.version>0.0.16</java-io-util.version>
     </properties>
 
     <modules>
@@ -68,7 +68,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.21.1</version>
+                <version>3.21.2</version>
             </dependency>
 
             <!-- test libraries -->
@@ -207,7 +207,7 @@
                     <dependency>
                         <groupId>com.google.protobuf</groupId>
                         <artifactId>protobuf-java</artifactId>
-                        <version>3.19.3</version>
+                        <version>3.19.4</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>
