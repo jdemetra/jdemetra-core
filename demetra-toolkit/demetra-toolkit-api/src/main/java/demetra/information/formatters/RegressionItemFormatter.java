@@ -74,7 +74,7 @@ public class RegressionItemFormatter implements InformationFormatter {
                 return fmt.format(reg.getCoefficient());
             case 3:
                 if (reg.getStdError() == 0) {
-                    return "";
+                    return null;
                 } else {
                     return df4.format(reg.getCoefficient() / reg.getStdError());
                 }
@@ -83,7 +83,7 @@ public class RegressionItemFormatter implements InformationFormatter {
             case 5:
                 return df4.format(reg.getPvalue());
             default:
-                return "";
+                return null;
         }
     }
 

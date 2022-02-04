@@ -60,7 +60,7 @@ public class StatisticalTestFormatter implements InformationFormatter {
             case 3:
                 return df4.format(test.getPvalue());
             default:
-                return "";
+                return null;
         }
     }
 }

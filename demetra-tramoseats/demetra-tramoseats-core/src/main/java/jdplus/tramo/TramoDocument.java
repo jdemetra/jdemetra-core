@@ -18,17 +18,16 @@ package jdplus.tramo;
 
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDocument;
+import demetra.timeseries.AbstractTsDocument;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.tramo.TramoKernel;
 
 /**
  *
  * @author PALATEJ
  */
-public class TramoDocument extends TsDocument<TramoSpec, RegSarimaModel> {
+public class TramoDocument extends AbstractTsDocument<TramoSpec, RegSarimaModel> {
 
     private final ModellingContext context;
 

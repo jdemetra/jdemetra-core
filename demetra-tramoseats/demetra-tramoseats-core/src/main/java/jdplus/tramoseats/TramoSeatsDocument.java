@@ -18,7 +18,7 @@ package jdplus.tramoseats;
 
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDocument;
+import demetra.timeseries.AbstractTsDocument;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeatsSpec;
 
@@ -26,7 +26,7 @@ import demetra.tramoseats.TramoSeatsSpec;
  *
  * @author PALATEJ
  */
-public class TramoSeatsDocument extends TsDocument<TramoSeatsSpec, TramoSeatsResults>{
+public class TramoSeatsDocument extends AbstractTsDocument<TramoSeatsSpec, TramoSeatsResults>{
     
      private final ModellingContext context;
     
@@ -45,5 +45,5 @@ public class TramoSeatsDocument extends TsDocument<TramoSeatsSpec, TramoSeatsRes
     protected TramoSeatsResults internalProcess(TramoSeatsSpec spec, TsData data) {
         return TramoSeatsKernel.of(spec, context).process(data, ProcessingLog.dummy());
     }
-    
+
 }

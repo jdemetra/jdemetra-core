@@ -32,4 +32,13 @@ public interface ProcSpecification {
     default String display() {
         return toString();
     }
+    
+    default String longDisplay(){
+        StringBuilder builder=new StringBuilder();
+        return builder.append(getAlgorithmDescriptor().getName())
+                .append('.')
+                .append(display())
+                .toString();
+        
+    }
 }

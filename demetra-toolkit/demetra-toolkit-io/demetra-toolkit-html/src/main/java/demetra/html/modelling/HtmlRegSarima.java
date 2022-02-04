@@ -34,7 +34,10 @@ import demetra.stats.ProbabilityType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
+import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
 import demetra.timeseries.regression.ICalendarVariable;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -60,6 +63,7 @@ import jdplus.dstats.F;
 import jdplus.dstats.T;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -68,12 +72,12 @@ import jdplus.regsarima.regular.RegSarimaModel;
  *
  * @author Jean Palate
  */
-public class HtmlRegArima extends AbstractHtmlElement {
+public class HtmlRegSarima extends AbstractHtmlElement {
 
     private final RegSarimaModel model;
     boolean summary;
 
-    public HtmlRegArima(final RegSarimaModel model, boolean summary) {
+    public HtmlRegSarima(final RegSarimaModel model, boolean summary) {
         this.model = model;
         this.summary = summary;
     }
@@ -213,8 +217,8 @@ public class HtmlRegArima extends AbstractHtmlElement {
         int nobs = ll.getEffectiveObservationsCount(), nparams = ll.getEstimatedParametersCount();
         T t = new T(nobs - nparams);
         DoubleSeqCursor vars = model.getEstimation().getParameters().getCovariance().diagonal().cursor();
-        double ndf=nobs - nparams;
-        double vcorr = ndf / (ndf+ nhp);
+        double ndf = nobs - nparams;
+        double vcorr = ndf / (ndf + nhp);
         List<String> headers = new ArrayList<>();
         for (int j = 0; j < P; ++j) {
             stream.open(HtmlTag.TABLEROW);
@@ -356,14 +360,14 @@ public class HtmlRegArima extends AbstractHtmlElement {
         }
         Variable[] variables = model.getDescription().getVariables();
         Optional<Variable> mean = Arrays.stream(variables).filter(var -> var.getCore() instanceof TrendConstant).findFirst();
-        if (! mean.isPresent()) {
+        if (!mean.isPresent()) {
             return;
         }
         Variable v = mean.get();
         if (v.isFree()) {
             List<RegSarimaModel.RegressionDesc> regressionItems = model.getDetails().getRegressionItems();
             Optional<RegSarimaModel.RegressionDesc> d = regressionItems.stream().filter(desc -> desc.getCore() instanceof TrendConstant).findFirst();
-            if (! d.isPresent()) {
+            if (!d.isPresent()) {
                 return;
             }
             RegSarimaModel.RegressionDesc reg = d.get();
@@ -442,7 +446,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsDomain context, Predicate<Variable> predicate) throws IOException {
-        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var->predicate.test(var))
+        Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty() && header != null) {
@@ -457,7 +461,7 @@ public class HtmlRegArima extends AbstractHtmlElement {
                 .collect(Collectors.toSet());
         if (!selection.isEmpty()) {
             for (ITsVariable var : selection) {
-                 writeRegressionItems(stream, var, context);
+                writeRegressionItems(stream, var, context);
             }
         }
     }
@@ -525,45 +529,69 @@ public class HtmlRegArima extends AbstractHtmlElement {
             GeneralLinearModel.Estimation estimation = model.getEstimation();
             int startpos = regs.get(0).getPosition();
             DoubleSeq coef = estimation.getCoefficients().extract(startpos, size);
-            double b = -coef.sum();
             FastMatrix bvar = FastMatrix.of(estimation.getCoefficientsCovariance().extract(startpos, size, startpos, size));
-            double v = bvar.sum();
-            double tval = b / Math.sqrt(v);
-            T t = new T(estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
+            DataBlock w = weights((ITradingDaysVariable) var);
+            if (w != null) {
+                double b = -coef.dot(w);
+                double v = QuadraticForm.apply(bvar, w);
+                double tval = b / Math.sqrt(v);
+                T t = new T(estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
 
-            stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell("Contrast (derived)").withWidth(100));
-            stream.write(new HtmlTableCell(df4.format(b)).withWidth(100));
-            stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
-            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
-            stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
-            stream.close(HtmlTag.TABLEROW);
-            stream.close(HtmlTag.TABLE);
-            stream.newLine();
+                stream.open(HtmlTag.TABLEROW);
+                stream.write(new HtmlTableCell("sunday (derived)").withWidth(100));
+                stream.write(new HtmlTableCell(df4.format(b)).withWidth(100));
+                stream.write(new HtmlTableCell(formatT(tval)).withWidth(100));
+                double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+                stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
+                stream.close(HtmlTag.TABLEROW);
+                stream.close(HtmlTag.TABLE);
+                stream.newLine();
+                try {
+                    SymmetricMatrix.lcholesky(bvar);
+                    DataBlock r = DataBlock.of(coef);
+                    LowerTriangularMatrix.solveLx(bvar, r);
+                    double f = r.ssq() / size;
+                    F fdist = new F(size, estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
+                    StringBuilder builder = new StringBuilder();
+                    double pval = fdist.getProbability(f, ProbabilityType.Upper);
+                    builder.append("Joint F-Test = ").append(df2.format(f))
+                            .append(" (").append(df4.format(pval)).append(')');
+                    if (pval > .05) {
+                        stream.write(HtmlTag.IMPORTANT_TEXT, builder.toString(), Bootstrap4.TEXT_DANGER);
+                    } else {
+                        stream.write(HtmlTag.EMPHASIZED_TEXT, builder.toString());
+                    }
+                    stream.newLines(2);
+                } catch (Exception ex) {
 
-            try {
-                SymmetricMatrix.lcholesky(bvar);
-                DataBlock r = DataBlock.of(coef);
-                LowerTriangularMatrix.solveLx(bvar, r);
-                double f = r.ssq() / size;
-                F fdist = new F(size, estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
-                StringBuilder builder = new StringBuilder();
-                double pval = fdist.getProbability(f, ProbabilityType.Upper);
-                builder.append("Joint F-Test = ").append(df2.format(f))
-                        .append(" (").append(df4.format(pval)).append(')');
-                if (pval > .05) {
-                    stream.write(HtmlTag.IMPORTANT_TEXT, builder.toString(), Bootstrap4.TEXT_DANGER);
-                } else {
-                    stream.write(HtmlTag.EMPHASIZED_TEXT, builder.toString());
                 }
-                stream.newLines(2);
-            } catch (Exception ex) {
-
             }
+
         } else {
             stream.close(HtmlTag.TABLE);
             stream.newLine();
         }
+    }
+
+    private DataBlock weights(ITradingDaysVariable var) {
+        if (var instanceof GenericTradingDaysVariable) {
+            GenericTradingDaysVariable td = (GenericTradingDaysVariable) var;
+            return weights(td.getClustering());
+        } else if (var instanceof HolidaysCorrectedTradingDays) {
+            HolidaysCorrectedTradingDays td = (HolidaysCorrectedTradingDays) var;
+            return weights(td.getClustering());
+        } else {
+            return null;
+        }
+    }
+
+    private DataBlock weights(DayClustering td) {
+        int n = td.getGroupsCount();
+        double[] w = new double[n - 1];
+        for (int i = 1; i < n; ++i) {
+            w[i - 1] = td.getGroupCount(i);
+        }
+        return DataBlock.of(w);
     }
 
     private void writeMissing(HtmlStream stream) throws IOException {

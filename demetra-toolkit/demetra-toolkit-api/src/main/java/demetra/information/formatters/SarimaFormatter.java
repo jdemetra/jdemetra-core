@@ -47,7 +47,7 @@ public class SarimaFormatter implements InformationFormatter {
             case 6:
                 return Integer.toString(orders.getBq());
             default:
-                return "";
+                return null;
         }
     }
 }

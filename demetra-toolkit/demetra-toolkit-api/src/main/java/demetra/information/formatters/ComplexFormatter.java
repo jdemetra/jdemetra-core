@@ -59,7 +59,7 @@ public class ComplexFormatter implements InformationFormatter {
             case 2:
                 double arg = c.arg();
                 if (arg == 0) {
-                    return "";
+                    return null;
                 } else {
                     double period = (2 * Math.PI) / arg;
                     if (period < -2 + 1e-6 && period > -2 - 1e-6) {
@@ -69,7 +69,7 @@ public class ComplexFormatter implements InformationFormatter {
                     }
                 }
             default:
-                return "";
+                return null;
         }
     }
 }

@@ -31,7 +31,7 @@ public class PeriodFormatter implements InformationFormatter {
     public String format(Object obj, int item) {
 
         if (item != 0) {
-            return "";
+            return null;
         }
 
         TsPeriod period = (TsPeriod) obj;
