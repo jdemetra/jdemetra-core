@@ -12,7 +12,6 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.math.polynomials.Polynomial;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
