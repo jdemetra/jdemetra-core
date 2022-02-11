@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <artifactId>demetra-tsp</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>demetra-tsp-extra-core</artifactId>
+
+    <properties>
+        <sdmx-dl.version>3.0.0-beta.6-SNAPSHOT</sdmx-dl.version>
+    </properties>
+
+    <dependencies>
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tsp-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.sdmx-dl</groupId>
+            <artifactId>sdmx-dl-api</artifactId>
+            <version>${sdmx-dl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.sdmx-dl</groupId>
+            <artifactId>sdmx-dl-format-xml</artifactId>
+            <version>${sdmx-dl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.sdmx-dl</groupId>
+            <artifactId>sdmx-dl-provider-util</artifactId>
+            <version>${sdmx-dl.version}</version>
+        </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <groupId>com.github.nbbrd.sdmx-dl</groupId>
+            <artifactId>sdmx-dl-provider-ri</artifactId>
+            <version>${sdmx-dl.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- test only -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tsp-tck</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tsp-bridge</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.sdmx-dl</groupId>
+            <artifactId>sdmx-dl-tck</artifactId>
+            <version>${sdmx-dl.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
