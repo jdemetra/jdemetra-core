@@ -26,8 +26,6 @@ import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSeries;
 import demetra.tsprovider.cube.CubeSeriesWithData;
 import nbbrd.design.VisibleForTesting;
-import nbbrd.io.function.IORunnable;
-import nbbrd.io.function.IOSupplier;
 import sdmxdl.*;
 import sdmxdl.util.SdmxCubeUtil;
 
@@ -46,16 +44,14 @@ import java.util.stream.Stream;
 @lombok.RequiredArgsConstructor
 public final class SdmxCubeConnection implements CubeConnection {
 
-    public static SdmxCubeConnection of(IOSupplier<SdmxConnection> supplier, DataflowRef ref, List<String> dimensions, String labelAttribute, String sourceLabel) throws IOException {
-        try (SdmxConnection conn = supplier.getWithIO()) {
-            Dataflow flow = conn.getFlow(ref);
-            DataStructure dsd = conn.getStructure(ref);
-            CubeId root = getOrLoadRoot(dimensions, dsd);
-            return new SdmxCubeConnection(supplier, flow, dsd, root, labelAttribute, sourceLabel);
-        }
+    public static SdmxCubeConnection of(SdmxConnection connection, DataflowRef ref, List<String> dimensions, String labelAttribute, String sourceLabel) throws IOException {
+        Dataflow flow = connection.getFlow(ref);
+        DataStructure dsd = connection.getStructure(ref);
+        CubeId root = getOrLoadRoot(dimensions, dsd);
+        return new SdmxCubeConnection(connection, flow, dsd, root, labelAttribute, sourceLabel);
     }
 
-    private final IOSupplier<SdmxConnection> supplier;
+    private final SdmxConnection connection;
     private final Dataflow flow;
     private final DataStructure dsd;
     private final CubeId root;
@@ -74,46 +70,44 @@ public final class SdmxCubeConnection implements CubeConnection {
 
     @Override
     public Stream<CubeSeries> getAllSeries(CubeId ref) throws IOException {
-        SdmxConnection conn = supplier.getWithIO();
-        try {
-            return getAllSeries(conn, flow, dsd, ref, labelAttribute).onClose(IORunnable.unchecked(conn::close));
-        } catch (IOException ex) {
-            throw close(conn, ex);
-        }
+        KeyConverter converter = KeyConverter.of(dsd, ref);
+        return SdmxCubeUtil
+                .getAllSeries(connection, flow.getRef(), converter.toKey(ref))
+                .map(series -> cubeSeriesOf(converter, series, labelAttribute));
     }
 
     @Override
     public Stream<CubeSeriesWithData> getAllSeriesWithData(CubeId ref) throws IOException {
-        SdmxConnection conn = supplier.getWithIO();
-        try {
-            return getAllSeriesWithData(conn, flow, dsd, ref, labelAttribute).onClose(IORunnable.unchecked(conn::close));
-        } catch (IOException ex) {
-            throw close(conn, ex);
-        }
+        KeyConverter converter = KeyConverter.of(dsd, ref);
+        return SdmxCubeUtil
+                .getAllSeriesWithData(connection, flow.getRef(), converter.toKey(ref))
+                .map(series -> cubeSeriesWithDataOf(converter, series, labelAttribute));
     }
 
     @Override
     public Optional<CubeSeries> getSeries(CubeId id) throws IOException {
-        try (SdmxConnection conn = supplier.getWithIO()) {
-            return getSeries(conn, flow, dsd, id, labelAttribute);
-        }
+        KeyConverter converter = KeyConverter.of(dsd, id);
+        return SdmxCubeUtil
+                .getSeries(connection, flow.getRef(), converter.toKey(id))
+                .map(series -> cubeSeriesOf(converter, series, labelAttribute));
     }
 
     @Override
     public Optional<CubeSeriesWithData> getSeriesWithData(CubeId ref) throws IOException {
-        try (SdmxConnection conn = supplier.getWithIO()) {
-            return getSeriesWithData(conn, flow, dsd, ref, labelAttribute);
-        }
+        KeyConverter converter = KeyConverter.of(dsd, ref);
+        return SdmxCubeUtil
+                .getSeriesWithData(connection, flow.getRef(), converter.toKey(ref))
+                .map(series -> cubeSeriesWithDataOf(converter, series, labelAttribute));
     }
 
     @Override
     public Stream<CubeId> getChildren(CubeId ref) throws IOException {
-        SdmxConnection conn = supplier.getWithIO();
-        try {
-            return getChildren(conn, flow, dsd, ref).onClose(IORunnable.unchecked(conn::close));
-        } catch (IOException ex) {
-            throw close(conn, ex);
-        }
+        KeyConverter converter = KeyConverter.of(dsd, ref);
+        String dimensionId = ref.getDimensionId(ref.getLevel());
+        int dimensionIndex = SdmxCubeUtil.getDimensionIndexById(dsd, dimensionId).orElseThrow(RuntimeException::new);
+        return SdmxCubeUtil
+                .getChildren(connection, flow.getRef(), converter.toKey(ref), dimensionIndex)
+                .map(ref::child);
     }
 
     @Override
@@ -138,62 +132,17 @@ public final class SdmxCubeConnection implements CubeConnection {
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
+        connection.close();
     }
 
     //<editor-fold defaultstate="collapsed" desc="Implementation details">
-    private static Stream<CubeSeries> getAllSeries(SdmxConnection conn, Dataflow flow, DataStructure dsd, CubeId node, String labelAttribute) throws IOException {
-        KeyConverter converter = KeyConverter.of(dsd, node);
-        return SdmxCubeUtil
-                .getAllSeries(conn, flow.getRef(), converter.toKey(node))
-                .map(series -> cubeSeriesOf(converter, series, labelAttribute));
-    }
-
-    private static Stream<CubeSeriesWithData> getAllSeriesWithData(SdmxConnection conn, Dataflow flow, DataStructure dsd, CubeId node, String labelAttribute) throws IOException {
-        KeyConverter converter = KeyConverter.of(dsd, node);
-        return SdmxCubeUtil
-                .getAllSeriesWithData(conn, flow.getRef(), converter.toKey(node))
-                .map(series -> cubeSeriesWithDataOf(converter, series, labelAttribute));
-    }
-
-    private static Optional<CubeSeries> getSeries(SdmxConnection conn, Dataflow flow, DataStructure dsd, CubeId leaf, String labelAttribute) throws IOException {
-        KeyConverter converter = KeyConverter.of(dsd, leaf);
-        return SdmxCubeUtil
-                .getSeries(conn, flow.getRef(), converter.toKey(leaf))
-                .map(series -> cubeSeriesOf(converter, series, labelAttribute));
-    }
-
-    private static Optional<CubeSeriesWithData> getSeriesWithData(SdmxConnection conn, Dataflow flow, DataStructure dsd, CubeId leaf, String labelAttribute) throws IOException {
-        KeyConverter converter = KeyConverter.of(dsd, leaf);
-        return SdmxCubeUtil
-                .getSeriesWithData(conn, flow.getRef(), converter.toKey(leaf))
-                .map(series -> cubeSeriesWithDataOf(converter, series, labelAttribute));
-    }
-
-    private static Stream<CubeId> getChildren(SdmxConnection conn, Dataflow flow, DataStructure dsd, CubeId node) throws IOException {
-        KeyConverter converter = KeyConverter.of(dsd, node);
-        String dimensionId = node.getDimensionId(node.getLevel());
-        int dimensionIndex = SdmxCubeUtil.getDimensionIndexById(dsd, dimensionId).orElseThrow(RuntimeException::new);
-        return SdmxCubeUtil
-                .getChildren(conn, flow.getRef(), converter.toKey(node), dimensionIndex)
-                .map(node::child);
-    }
-
     private static CubeSeries cubeSeriesOf(KeyConverter converter, Series series, String labelAttribute) {
         return new CubeSeries(converter.fromKey(series.getKey()), series.getMeta().get(labelAttribute), series.getMeta());
     }
 
     private static CubeSeriesWithData cubeSeriesWithDataOf(KeyConverter converter, Series series, String labelAttribute) {
         return new CubeSeriesWithData(converter.fromKey(series.getKey()), series.getMeta().get(labelAttribute), series.getMeta(), getData(series));
-    }
-
-    private static <EX extends Throwable> EX close(SdmxConnection conn, EX ex) {
-        try {
-            conn.close();
-        } catch (IOException other) {
-            ex.addSuppressed(other);
-        }
-        return ex;
     }
 
     private static String getDisplayNodeName(DataStructure dsd, CubeId ref) {

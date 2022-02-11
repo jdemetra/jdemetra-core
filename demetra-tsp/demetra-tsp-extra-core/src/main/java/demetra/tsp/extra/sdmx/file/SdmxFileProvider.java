@@ -27,7 +27,7 @@ import demetra.tsprovider.util.ResourcePool;
 import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxCubeItems;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
-import nbbrd.io.function.IOSupplier;
+import nbbrd.design.MightBePromoted;
 import nbbrd.service.ServiceProvider;
 import sdmxdl.DataflowRef;
 import sdmxdl.SdmxConnection;
@@ -123,21 +123,36 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
 
         DataflowRef flow = files.asDataflowRef();
 
-        return SdmxCubeConnection.of(toConnection(properties, files), flow, bean.getDimensions(), bean.getLabelAttribute(), getSourceLabel(bean));
+        SdmxConnection conn = getConnection(properties, files);
+        try {
+            return SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), getSourceLabel(bean));
+        } catch (IOException ex) {
+            throw close(conn, ex);
+        }
     }
 
-    private static IOSupplier<SdmxConnection> toConnection(HasSdmxProperties properties, SdmxFileSource files) throws IOException {
+    private static SdmxConnection getConnection(HasSdmxProperties properties, SdmxFileSource files) throws IOException {
         SdmxManager supplier = properties.getSdmxManager();
 
         if (supplier instanceof SdmxFileManager) {
-            return () -> ((SdmxFileManager) supplier).getConnection(files);
+            return ((SdmxFileManager) supplier).getConnection(files);
         }
 
         String name = XmlFileSource.getFormatter().formatToString(files);
-        return () -> supplier.getConnection(name);
+        return supplier.getConnection(name);
     }
 
     private static String getSourceLabel(SdmxFileBean bean) {
         return bean.getFile().getPath();
+    }
+
+    @MightBePromoted
+    private static <EX extends Throwable> EX close(SdmxConnection conn, EX ex) {
+        try {
+            conn.close();
+        } catch (IOException other) {
+            ex.addSuppressed(other);
+        }
+        return ex;
     }
 }

@@ -30,7 +30,7 @@ import demetra.tsprovider.util.JCacheFactory;
 import demetra.tsprovider.util.ResourcePool;
 import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
-import nbbrd.io.function.IOSupplier;
+import nbbrd.design.MightBePromoted;
 import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import sdmxdl.*;
@@ -142,12 +142,27 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
 
         DataflowRef flow = DataflowRef.parse(bean.getFlow());
 
-        CubeConnection result = SdmxCubeConnection.of(toConnection(properties, bean.getSource()), flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
-        return BulkCubeConnection.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(source::toString));
+        SdmxConnection conn = getConnection(properties, bean.getSource());
+        try {
+            CubeConnection result = SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
+            return BulkCubeConnection.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(source::toString));
+        } catch (IOException ex) {
+            throw close(conn, ex);
+        }
     }
 
-    private static IOSupplier<SdmxConnection> toConnection(HasSdmxProperties properties, String name) {
+    private static SdmxConnection getConnection(HasSdmxProperties properties, String name) throws IOException {
         SdmxManager supplier = properties.getSdmxManager();
-        return () -> supplier.getConnection(name);
+        return supplier.getConnection(name);
+    }
+
+    @MightBePromoted
+    private static <EX extends Throwable> EX close(SdmxConnection conn, EX ex) {
+        try {
+            conn.close();
+        } catch (IOException other) {
+            ex.addSuppressed(other);
+        }
+        return ex;
     }
 }

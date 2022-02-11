@@ -12,6 +12,8 @@
 
     <artifactId>demetra-tsp-extra-core</artifactId>
 
+    <name>JD3 - TSP - Extra</name>
+
     <properties>
         <sdmx-dl.version>3.0.0-beta.6-SNAPSHOT</sdmx-dl.version>
     </properties>
