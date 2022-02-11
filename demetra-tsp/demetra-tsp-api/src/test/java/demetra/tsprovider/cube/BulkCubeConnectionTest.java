@@ -17,12 +17,11 @@
 package demetra.tsprovider.cube;
 
 import demetra.io.ResourceWatcher;
-import _util.tsproviders.XCubeAccessor;
+import _util.tsproviders.XCubeConnection;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
 import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
 import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,15 +34,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Philippe Charles
  */
-public class BulkCubeAccessorTest {
+public class BulkCubeConnectionTest {
 
-    private static CubeAccessor newSample() {
-        return new XCubeAccessor(SECTOR_REGION, new ResourceWatcher());
+    private static CubeConnection newSample() {
+        return new XCubeConnection(SECTOR_REGION, new ResourceWatcher());
     }
 
     @Test
     public void testBulkApi() throws IOException {
-        CubeAccessor accessor = BulkCubeAccessor.of(newSample(), BulkCube.NONE, ttl -> new FakeCache(new ConcurrentHashMap<>()));
+        CubeConnection accessor = BulkCubeConnection.of(newSample(), BulkCube.NONE, ttl -> new FakeCache(new ConcurrentHashMap<>()));
         assertThatThrownBy(() -> accessor.getAllSeriesWithData(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> accessor.getSeriesWithData(null)).isInstanceOf(NullPointerException.class);
     }
@@ -52,9 +51,9 @@ public class BulkCubeAccessorTest {
     public void testBulkDepth() throws IOException {
         ConcurrentMap x = new ConcurrentHashMap<>();
         try (BulkCubeCache cache = new FakeCache(x)) {
-            IntFunction<BulkCubeAccessor> factory = o -> {
+            IntFunction<BulkCubeConnection> factory = o -> {
                 x.clear();
-                return new BulkCubeAccessor(newSample(), o, cache);
+                return new BulkCubeConnection(newSample(), o, cache);
             };
 
             factory.apply(0).getSeriesWithData(INDUSTRY_BE);
@@ -91,7 +90,7 @@ public class BulkCubeAccessorTest {
         ResourceWatcher watcher = new ResourceWatcher();
         ConcurrentMap x = new ConcurrentHashMap<>();
         try (BulkCubeCache cache = new FakeCache(x)) {
-            BulkCubeAccessor accessor = new BulkCubeAccessor(new XCubeAccessor(SECTOR_REGION, watcher), 1, cache);
+            BulkCubeConnection accessor = new BulkCubeConnection(new XCubeConnection(SECTOR_REGION, watcher), 1, cache);
             accessor.getSeriesWithData(INDUSTRY_BE);
             assertThat(x).isNotEmpty();
             assertThat(watcher.isLeaking()).isFalse();

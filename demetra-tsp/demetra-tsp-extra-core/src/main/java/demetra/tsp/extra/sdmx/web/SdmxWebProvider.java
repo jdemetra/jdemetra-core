@@ -21,15 +21,14 @@ import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsProvider;
 import demetra.tsp.extra.sdmx.HasSdmxProperties;
 import demetra.tsprovider.*;
-import demetra.tsprovider.cube.BulkCubeAccessor;
-import demetra.tsprovider.cube.CubeAccessor;
-import demetra.tsprovider.cube.CubeId;
+import demetra.tsprovider.cube.BulkCubeConnection;
+import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.JCacheFactory;
-import demetra.tsprovider.util.ResourceMap;
-import internal.tsp.extra.sdmx.SdmxCubeAccessor;
+import demetra.tsprovider.util.ResourcePool;
+import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
 import nbbrd.io.function.IOSupplier;
 import nbbrd.service.ServiceProvider;
@@ -76,15 +75,15 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
     public SdmxWebProvider() {
         this.displayCodes = new AtomicBoolean(false);
 
-        ResourceMap<CubeAccessor> accessors = ResourceMap.newInstance();
-        SdmxWebParam beanParam = new SdmxWebParam.V1();
+        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        SdmxWebParam param = new SdmxWebParam.V1();
 
-        this.properties = SdmxPropertiesSupport.of(SdmxWebManager::ofServiceLoader, accessors::clear);
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
+        this.properties = SdmxPropertiesSupport.of(SdmxWebManager::ofServiceLoader, pool::clear);
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
-        this.beanSupport = HasDataSourceBean.of(NAME, beanParam, beanParam.getVersion());
-        this.cubeSupport = CubeSupport.of(NAME, new SdmxWebCubeResource(accessors, properties, beanParam));
-        this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
+        this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
+        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, param)), param::getCubeIdParam);
+        this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 
     @Override
@@ -138,35 +137,17 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
         }
     }
 
-    @lombok.AllArgsConstructor
-    private static final class SdmxWebCubeResource implements CubeSupport.Resource {
+    private static CubeConnection openConnection(DataSource source, HasSdmxProperties properties, SdmxWebParam param) throws IOException {
+        SdmxWebBean bean = param.get(source);
 
-        private final ResourceMap<CubeAccessor> accessors;
-        private final HasSdmxProperties properties;
-        private final SdmxWebParam param;
+        DataflowRef flow = DataflowRef.parse(bean.getFlow());
 
-        @Override
-        public CubeAccessor getAccessor(DataSource dataSource) throws IOException {
-            return accessors.computeIfAbsent(dataSource, this::load);
-        }
+        CubeConnection result = SdmxCubeConnection.of(toConnection(properties, bean.getSource()), flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
+        return BulkCubeConnection.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(source::toString));
+    }
 
-        @Override
-        public DataSet.Converter<CubeId> getIdParam(CubeId root) {
-            return param.getCubeIdParam(root);
-        }
-
-        private CubeAccessor load(DataSource source) throws IOException {
-            SdmxWebBean bean = param.get(source);
-
-            DataflowRef flow = DataflowRef.parse(bean.getFlow());
-
-            CubeAccessor result = SdmxCubeAccessor.of(toConnection(properties, bean.getSource()), flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
-            return BulkCubeAccessor.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(source::toString));
-        }
-
-        private static IOSupplier<SdmxConnection> toConnection(HasSdmxProperties properties, String name) {
-            SdmxManager supplier = properties.getSdmxManager();
-            return () -> supplier.getConnection(name);
-        }
+    private static IOSupplier<SdmxConnection> toConnection(HasSdmxProperties properties, String name) {
+        SdmxManager supplier = properties.getSdmxManager();
+        return () -> supplier.getConnection(name);
     }
 }

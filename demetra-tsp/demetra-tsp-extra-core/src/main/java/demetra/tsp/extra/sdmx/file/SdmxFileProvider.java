@@ -19,13 +19,12 @@ package demetra.tsp.extra.sdmx.file;
 import demetra.timeseries.TsProvider;
 import demetra.tsp.extra.sdmx.HasSdmxProperties;
 import demetra.tsprovider.*;
-import demetra.tsprovider.cube.CubeAccessor;
-import demetra.tsprovider.cube.CubeId;
+import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
-import demetra.tsprovider.util.ResourceMap;
-import internal.tsp.extra.sdmx.SdmxCubeAccessor;
+import demetra.tsprovider.util.ResourcePool;
+import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxCubeItems;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
 import nbbrd.io.function.IOSupplier;
@@ -71,16 +70,16 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
     private final TsProvider tsSupport;
 
     public SdmxFileProvider() {
-        ResourceMap<CubeAccessor> accessors = ResourceMap.newInstance();
-        SdmxFileParam sdmxParam = new SdmxFileParam.V1();
+        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        SdmxFileParam param = new SdmxFileParam.V1();
 
-        this.properties = SdmxPropertiesSupport.of(SdmxFileManager::ofServiceLoader, accessors::clear);
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
+        this.properties = SdmxPropertiesSupport.of(SdmxFileManager::ofServiceLoader, pool::clear);
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
-        this.beanSupport = HasDataSourceBean.of(NAME, sdmxParam, sdmxParam.getVersion());
-        this.filePathSupport = HasFilePaths.of(accessors::clear);
-        this.cubeSupport = CubeSupport.of(NAME, new SdmxFileCubeResource(accessors, properties, filePathSupport, sdmxParam));
-        this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, accessors::clear);
+        this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
+        this.filePathSupport = HasFilePaths.of(pool::clear);
+        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, filePathSupport, param)), param::getCubeIdParam);
+        this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 
     @Override
@@ -118,43 +117,24 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
         return cubeSupport.getDisplayNodeName(dataSet);
     }
 
-    @lombok.AllArgsConstructor
-    private static final class SdmxFileCubeResource implements CubeSupport.Resource {
+    private static CubeConnection openConnection(DataSource dataSource, HasSdmxProperties properties, HasFilePaths paths, SdmxFileParam param) throws IOException {
+        SdmxFileBean bean = param.get(dataSource);
+        SdmxFileSource files = SdmxCubeItems.resolveFileSet(paths, bean);
 
-        private final ResourceMap<CubeAccessor> accessors;
-        private final HasSdmxProperties properties;
-        private final HasFilePaths paths;
-        private final SdmxFileParam param;
+        DataflowRef flow = files.asDataflowRef();
 
-        @Override
-        public CubeAccessor getAccessor(DataSource dataSource) throws IOException {
-            return accessors.computeIfAbsent(dataSource, this::load);
+        return SdmxCubeConnection.of(toConnection(properties, files), flow, bean.getDimensions(), bean.getLabelAttribute(), getSourceLabel(bean));
+    }
+
+    private static IOSupplier<SdmxConnection> toConnection(HasSdmxProperties properties, SdmxFileSource files) throws IOException {
+        SdmxManager supplier = properties.getSdmxManager();
+
+        if (supplier instanceof SdmxFileManager) {
+            return () -> ((SdmxFileManager) supplier).getConnection(files);
         }
 
-        @Override
-        public DataSet.Converter<CubeId> getIdParam(CubeId root) {
-            return param.getCubeIdParam(root);
-        }
-
-        private CubeAccessor load(DataSource dataSource) throws IOException {
-            SdmxFileBean bean = param.get(dataSource);
-            SdmxFileSource files = SdmxCubeItems.resolveFileSet(paths, bean);
-
-            DataflowRef flow = files.asDataflowRef();
-
-            return SdmxCubeAccessor.of(toConnection(properties, files), flow, bean.getDimensions(), bean.getLabelAttribute(), getSourceLabel(bean));
-        }
-
-        private static IOSupplier<SdmxConnection> toConnection(HasSdmxProperties properties, SdmxFileSource files) throws IOException {
-            SdmxManager supplier = properties.getSdmxManager();
-
-            if (supplier instanceof SdmxFileManager) {
-                return () -> ((SdmxFileManager) supplier).getConnection(files);
-            }
-
-            String name = XmlFileSource.getFormatter().formatToString(files);
-            return () -> supplier.getConnection(name);
-        }
+        String name = XmlFileSource.getFormatter().formatToString(files);
+        return () -> supplier.getConnection(name);
     }
 
     private static String getSourceLabel(SdmxFileBean bean) {
