@@ -1,17 +1,17 @@
 /*
  * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * https://joinup.ec.europa.eu/software/page/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package jdplus.x13;
@@ -25,20 +25,20 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ModellingContext;
-import jdplus.x11.X11Kernel;
 import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
 import demetra.x13.X13Finals;
 import demetra.x13.X13Preadjustment;
 import demetra.x13.X13Spec;
-import jdplus.x13.regarima.FastArimaForecasts;
-import jdplus.x13.regarima.RegArimaKernel;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
 import jdplus.sarima.SarimaModel;
+import jdplus.x11.X11Kernel;
 import jdplus.x11.X11Utility;
+import jdplus.x13.regarima.FastArimaForecasts;
+import jdplus.x13.regarima.RegArimaKernel;
 
 /**
  *
@@ -62,13 +62,15 @@ public class X13Kernel {
     private RegArimaKernel regarima;
     private SaVariablesMapping samapping;
     private X11Spec spec;
+    private boolean preprop;
 
     public static X13Kernel of(X13Spec spec, ModellingContext context) {
         PreliminaryChecks check = of(spec);
         RegArimaKernel regarima = RegArimaKernel.of(spec.getRegArima(), context);
         SaVariablesMapping mapping = new SaVariablesMapping();
         // TO DO: fill maping with existing information in TramoSpec (section Regression)
-        return new X13Kernel(check, regarima, mapping, spec.getX11());
+        boolean blPreprop = spec.getRegArima().getBasic().isPreprocessing();
+        return new X13Kernel(check, regarima, mapping, spec.getX11(), blPreprop);
     }
 
     public X13Results process(TsData s, ProcessingLog log) {
@@ -193,6 +195,10 @@ public class X13Kernel {
                 .backcastHorizon(nb < 0 ? -nb * period : nb)
                 .forecastHorizon(nf < 0 ? -nf * period : nf);
 
+        if (!preprop) {
+            builder.mode(spec.getMode() == DecompositionMode.Undefined ? DecompositionMode.Additive : spec.getMode());
+            return builder.build();
+        }
         if (spec.getMode() != DecompositionMode.PseudoAdditive) {
             boolean mul = model.getDescription().isLogTransformation();
             builder.mode(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
@@ -265,7 +271,6 @@ public class X13Kernel {
 //        }
 //        return sa;
 //    }
-    
     private X13Finals finals(DecompositionMode mode, X13Preadjustment astep, X11Results x11) {
         // add preadjustment
         TsData a1 = astep.getA1();
@@ -303,7 +308,7 @@ public class X13Kernel {
         // add pi to irregular
         TsData d13c = invOp(mode, d13, a8i);
         if (fd != null) {
-             d13c = TsData.fitToDomain(d13c, d);
+            d13c = TsData.fitToDomain(d13c, d);
         }
         decomp.d13final(d13c);
 
@@ -319,10 +324,10 @@ public class X13Kernel {
         }
         decomp.d11final(d11c);
 
-        TsData a6=astep.getA6(), a7=astep.getA7();
-        TsData d18=invOp(mode, a6, a7);
-        
-        TsData d16=invOp(mode, d10c, d18);
+        TsData a6 = astep.getA6(), a7 = astep.getA7();
+        TsData d18 = invOp(mode, a6, a7);
+
+        TsData d16 = invOp(mode, d10c, d18);
 //        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
 //            TsData tmp = TsData.divide(a1, d12);
 //            tmp = TsData.subtract(tmp, d13);
@@ -338,7 +343,7 @@ public class X13Kernel {
 //        TsData d18=op(mode, d16, d10c);
         if (fd != null) {
             decomp.d18a(TsData.fitToDomain(d18, fd));
-            d18= TsData.fitToDomain(d18, d);
+            d18 = TsData.fitToDomain(d18, d);
         }
         decomp.d18(d18);
 

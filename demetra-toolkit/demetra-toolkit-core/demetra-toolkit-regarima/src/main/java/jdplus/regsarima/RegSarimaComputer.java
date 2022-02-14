@@ -1,44 +1,45 @@
 /*
  * Copyright 2013 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.1 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * http://ec.europa.eu/idabc/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package jdplus.regsarima;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import jdplus.sarima.estimation.SarimaMapping;
-import jdplus.regsarima.internal.HannanRissanenInitializer;
-import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.estimation.RegArmaEstimation;
-import jdplus.regarima.RegArmaModel;
-import jdplus.regarima.estimation.RegArmaProcessor;
+import java.util.function.Function;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.regarima.RegArimaMapping;
-import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
-import java.util.function.Function;
-import jdplus.arima.estimation.IArimaMapping;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
-import jdplus.sarima.SarimaModel;
 import jdplus.regarima.IRegArimaComputer;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaMapping;
+import jdplus.regarima.RegArimaModel;
+import jdplus.regarima.RegArmaModel;
+import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
+import jdplus.regarima.estimation.RegArmaEstimation;
+import jdplus.regarima.estimation.RegArmaProcessor;
+import jdplus.regsarima.internal.HannanRissanenInitializer;
+import jdplus.sarima.SarimaModel;
+import jdplus.sarima.estimation.SarimaFixedMapping;
+import jdplus.sarima.estimation.SarimaMapping;
+import nbbrd.design.BuilderPattern;
+import nbbrd.design.Development;
 
 /**
  *
@@ -117,7 +118,6 @@ public class RegSarimaComputer implements IRegArimaComputer<SarimaModel> {
     public static Builder builder() {
         return new Builder();
     }
-
 
     public static final double DEF_EPS = 1e-7, DEF_INTERNAL_EPS = 1e-4;
     private final double eps, feps;
@@ -388,8 +388,17 @@ public class RegSarimaComputer implements IRegArimaComputer<SarimaModel> {
 
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, p, stationaryMapping, min.functionPrecision(precision).build(), ndf);
 
+        boolean fm = (stationaryMapping instanceof SarimaFixedMapping);
+        DoubleSeq r;
+        if (fm) {
+            SarimaFixedMapping sfm = (SarimaFixedMapping) stationaryMapping;
+            r = sfm.fullParameters(rslt.getParameters());
+        } else {
+            r = rslt.getParameters();
+        }
+
         SarimaModel arima = SarimaModel.builder(regs.arima().orders())
-                .parameters(rslt.getParameters())
+                .parameters(r)
                 .build();
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
         RegArimaEstimation finalRslt = RegArimaEstimation.<SarimaModel>builder()

@@ -149,10 +149,16 @@ public class X13SpecMapping {
         if (info == null) {
             return X13Spec.RSA0;
         }
+
+        InformationSet subSetX11 = info.getSubSet(X11);
+        if (subSetX11 != null && subSetX11.get(X11SpecMapping.FCASTS, Integer.class) == null) {
+            subSetX11.add(X11SpecMapping.FCASTS, -1);
+        }
+
         return X13Spec.builder()
                 .regArima(RegArimaSpecMapping.readLegacy(info.getSubSet(REGARIMA)))
                 // .x11(X11SpecMapping.read(info.getSubSet(X11)))
-                .x11(X11SpecMapping.readlegacy(info.getSubSet(X11), -1))
+                .x11(X11SpecMapping.read(info.getSubSet(X11)))
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
                 .build();
     }

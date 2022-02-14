@@ -81,14 +81,14 @@ public class X11SpecMapping {
 
         if (verbose || spec.getCalendarSigma() != CalendarSigmaOption.None) {
             info.add(CALENDARSIGMA, spec.getCalendarSigma().name());
-        }
-        SigmaVecOption[] vsig = spec.getSigmaVec();
-        if (vsig != null) {
-            String[] sigmavec = new String[vsig.length];
-            for (int i = 0; i < vsig.length; ++i) {
-                sigmavec[i] = vsig[i].name();
+            SigmaVecOption[] vsig = spec.getSigmaVec();
+            if (vsig != null && spec.getCalendarSigma() == CalendarSigmaOption.Select) {
+                String[] sigmavec = new String[vsig.length];
+                for (int i = 0; i < vsig.length; ++i) {
+                    sigmavec[i] = vsig[i].name();
+                }
+                info.add(SIGMAVEC, sigmavec);
             }
-            info.add(SIGMAVEC, sigmavec);
         }
 
         if (verbose || spec.isExcludeForecast()) {
@@ -98,25 +98,6 @@ public class X11SpecMapping {
             info.add(BIAS, spec.getBias().name());
         }
         return info;
-    }
-
-    public X11Spec readlegacy(InformationSet info, int defaultFcastHoizont) {
-
-        //Set the default value because it depends if it is with preprop or without
-        if (info.get(FCASTS, Integer.class) == null) {
-            info.add(FCASTS, defaultFcastHoizont);
-        }
-
-        if (info.get(CALENDARSIGMA, String.class) != null) {
-            String cs = info.get(CALENDARSIGMA, String.class);
-            if (cs != CalendarSigmaOption.Select.toString()) {
-                // With UI Version 2 it is possible to save select and sigmavec and then change Calendar sigma and Sigmaveg remains in the setting
-                if (info.get(SIGMAVEC, String[].class) != null) {
-                    info.remove(SIGMAVEC);
-                }
-            }
-        }
-        return read(info);
     }
 
     public X11Spec read(InformationSet info) {
@@ -165,15 +146,14 @@ public class X11SpecMapping {
         String calendarsigma = info.get(CALENDARSIGMA, String.class);
         if (calendarsigma != null) {
             builder.calendarSigma(CalendarSigmaOption.valueOf(calendarsigma));
-        }
-
-        String[] sigmavec = info.get(SIGMAVEC, String[].class);
-        if (sigmavec != null) {
-            SigmaVecOption[] vsig = new SigmaVecOption[sigmavec.length];
-            for (int i = 0; i < sigmavec.length; ++i) {
-                vsig[i] = SigmaVecOption.valueOf(sigmavec[i]);
+            String[] sigmavec = info.get(SIGMAVEC, String[].class);
+            if (sigmavec != null && calendarsigma.equals(CalendarSigmaOption.Select.toString())) {
+                SigmaVecOption[] vsig = new SigmaVecOption[sigmavec.length];
+                for (int i = 0; i < sigmavec.length; ++i) {
+                    vsig[i] = SigmaVecOption.valueOf(sigmavec[i]);
+                }
+                builder.sigmaVec(vsig);
             }
-            builder.sigmaVec(vsig);
         }
 
         Boolean excludefcst = info.get(EXCLUDEFCAST, Boolean.class);
