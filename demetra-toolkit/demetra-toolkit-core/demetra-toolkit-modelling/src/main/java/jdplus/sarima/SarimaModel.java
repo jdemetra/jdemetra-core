@@ -23,7 +23,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import java.util.Arrays;
 import jdplus.arima.AbstractArimaModel;
 import jdplus.arima.StationaryTransformation;

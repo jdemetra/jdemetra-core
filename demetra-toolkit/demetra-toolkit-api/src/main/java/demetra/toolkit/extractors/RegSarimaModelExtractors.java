@@ -19,7 +19,7 @@ package demetra.toolkit.extractors;
 import demetra.information.InformationDelegate;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
 import nbbrd.design.Development;

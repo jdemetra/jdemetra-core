@@ -7,7 +7,7 @@ package demetra.arima.r;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import jdplus.arima.ArimaSeriesGenerator;
 import jdplus.dstats.Normal;

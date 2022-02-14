@@ -5,7 +5,7 @@
  */
 package jdplus.tramo;
 
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
 import demetra.sa.EstimationPolicyType;

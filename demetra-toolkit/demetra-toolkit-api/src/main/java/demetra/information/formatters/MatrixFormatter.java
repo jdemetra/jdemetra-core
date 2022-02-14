@@ -17,8 +17,8 @@
 
 package demetra.information.formatters;
 
-import demetra.arima.SarimaModel;
 import demetra.data.Parameter;
+import demetra.information.Explorable;
 import demetra.information.InformationSet;
 import demetra.math.Complex;
 import demetra.processing.ProcDiagnostic;
@@ -28,7 +28,6 @@ import demetra.timeseries.regression.modelling.RegressionItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import demetra.information.Explorable;
 
 /**
  *
@@ -49,7 +48,7 @@ public class MatrixFormatter {
         DICTIONARY.put(Long.class, new LongFormatter());
         DICTIONARY.put(Boolean.class, new BooleanFormatter("1", "0"));
         DICTIONARY.put(String.class, new StringFormatter());
-        DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
+//        DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
         DICTIONARY.put(Parameter.class, new ParameterFormatter());
 //        DICTIONARY.put(ParameterInfo.class, new ParameterInfoFormatter());
 //        DICTIONARY.put(TsMoniker.class, new MonikerFormatter());

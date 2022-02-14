@@ -29,7 +29,7 @@ import demetra.html.Bootstrap4;
 import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.math.matrices.Matrix;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.stats.ProbabilityType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;

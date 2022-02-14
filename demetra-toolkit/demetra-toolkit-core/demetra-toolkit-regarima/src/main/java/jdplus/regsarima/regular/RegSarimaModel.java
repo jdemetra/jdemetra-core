@@ -26,7 +26,7 @@ import demetra.likelihood.LikelihoodStatistics;
 import demetra.likelihood.MissingValueEstimation;
 import demetra.likelihood.ParametersEstimation;
 import demetra.math.matrices.Matrix;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.stats.ProbabilityType;
 import demetra.timeseries.TsData;

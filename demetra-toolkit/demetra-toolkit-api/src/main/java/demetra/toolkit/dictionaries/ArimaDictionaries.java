@@ -57,7 +57,7 @@ public class ArimaDictionaries {
             .item(Item.builder().name(NAME).description("name of the model").type(String.class).build())
             .build();
 
-    public final  String COMPONENT = "component(?)", MODEL = "model", REDUCEDMODEL = "reducedmodel", // Component
+    public final  String COMPONENT = "component(?)", COMPONENTC = "complement(?)", MODEL = "model", REDUCEDMODEL = "reducedmodel", // Component
             SUM = "sum", // Reduced model
             SIZE = "size";  // Number of components
     
@@ -70,6 +70,7 @@ public class ArimaDictionaries {
             .dictionary(new PrefixedDictionary(null, UCARIMA_DETAILS))
             .dictionary(new PrefixedDictionary(MODEL, ARIMA))
             .dictionary(new PrefixedDictionary(COMPONENT, ARIMA))
+            .dictionary(new PrefixedDictionary(COMPONENTC, ARIMA))
             .dictionary(new PrefixedDictionary(REDUCEDMODEL, ARIMA))
             .build();
 

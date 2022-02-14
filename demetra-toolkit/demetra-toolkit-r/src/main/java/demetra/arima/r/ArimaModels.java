@@ -5,12 +5,10 @@
  */
 package demetra.arima.r;
 
-import demetra.arima.ArimaModel;
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
+import jdplus.arima.ArimaModel;
 import jdplus.arima.AutoCovarianceFunction;
-import jdplus.arima.Spectrum;
-import jdplus.modelling.ApiUtility;
 
 /**
  *

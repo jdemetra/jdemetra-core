@@ -17,7 +17,7 @@
 package demetra.timeseries.regression.modelling;
 
 import demetra.information.GenericExplorable;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import java.util.Map;
 
 /**

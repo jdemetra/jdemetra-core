@@ -16,7 +16,7 @@ import demetra.information.InformationDelegate;
 import demetra.information.InformationExtractor;
 import demetra.modelling.ModellingDictionary;
 import demetra.modelling.SeriesInfo;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;

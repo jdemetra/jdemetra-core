@@ -7,7 +7,7 @@ package jdplus.tramo.spi;
 
 import demetra.arima.SarimaModel;
 import demetra.data.Data;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.tramo.TramoSpec;

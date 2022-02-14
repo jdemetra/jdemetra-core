@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.modelling.implementations;
+package demetra.arima;
 
 import demetra.arima.SarimaOrders;
 import nbbrd.design.Development;

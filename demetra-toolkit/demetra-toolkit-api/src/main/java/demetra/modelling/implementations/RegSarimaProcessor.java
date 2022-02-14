@@ -16,6 +16,7 @@
  */
 package demetra.modelling.implementations;
 
+import demetra.arima.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.modelling.GeneralLinearModel;

@@ -7,7 +7,7 @@ package jdplus.x13.regarima;
 
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.OutlierSpec;

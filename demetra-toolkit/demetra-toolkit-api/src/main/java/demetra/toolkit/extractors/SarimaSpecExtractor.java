@@ -19,7 +19,7 @@ package demetra.toolkit.extractors;
 import demetra.data.Parameter;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import nbbrd.service.ServiceProvider;
 
 /**
