@@ -18,7 +18,7 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import java.util.Arrays;

@@ -22,7 +22,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.ISsfInitialization;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;

@@ -26,11 +26,11 @@ import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import jdplus.leastsquares.QRSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 
@@ -111,7 +111,7 @@ public class ExactSingleOutlierDetector<T extends IArimaModel> extends SingleOut
                 filter.apply(rcols.next(), drcols.next());
             }
 
-            QRSolution ls = QRSolver.robustLeastSquares(Yl, Xl);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(Yl, Xl);
             if (ls.rank() != regs.getColumnsCount()) {
                 return false;
             }

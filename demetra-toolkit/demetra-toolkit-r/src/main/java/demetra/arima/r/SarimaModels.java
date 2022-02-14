@@ -24,19 +24,13 @@ import jdplus.sarima.estimation.SarimaMapping;
 @lombok.experimental.UtilityClass
 public class SarimaModels {
     
-    public demetra.arima.SarimaModel of(String name, int period, double[] phi, int d, double[] theta, double[] bphi, int bd, double[] btheta) {
-        SarimaOrders orders=new SarimaOrders(period);
-        orders.setRegular(phi == null ? 0 : phi.length, d, theta == null ? 0 : theta.length);
-        orders.setSeasonal(bphi == null ? 0 : bphi.length, bd, btheta == null ? 0 : btheta.length);
-        return demetra.arima.SarimaModel.builder()
-                .name(name)
-                .period(period)
-                .phi(phi == null ? DoubleSeq.empty() : DoubleSeq.of(phi))
-                .d(d)
-                .theta(theta == null ? DoubleSeq.empty() : DoubleSeq.of(theta))
-                .bphi(bphi == null ? DoubleSeq.empty() : DoubleSeq.of(bphi))
-                .bd(bd)
-                .btheta(btheta == null ? DoubleSeq.empty() : DoubleSeq.of(btheta))
+    public SarimaModel of(int period, double[] phi, int d, double[] theta, double[] bphi, int bd, double[] btheta) {
+         return SarimaModel.builder(period)
+                .phi(phi)
+                .differencing(d, bd)
+                .theta(theta)
+                .bphi(bphi)
+                .btheta(btheta)
                 .build();
     }
     

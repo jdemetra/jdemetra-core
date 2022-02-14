@@ -19,7 +19,7 @@ import jdplus.dstats.Gamma;
 import jdplus.dstats.InverseGamma;
 import jdplus.dstats.InverseGaussian;
 import jdplus.dstats.Normal;
-import jdplus.dstats.internal.SpecialFunctions;
+import internal.jdplus.dstats.SpecialFunctions;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;

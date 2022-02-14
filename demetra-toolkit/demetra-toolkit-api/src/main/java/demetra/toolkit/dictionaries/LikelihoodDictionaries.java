@@ -13,7 +13,7 @@ import demetra.toolkit.dictionaries.AtomicDictionary.Item;
 @lombok.experimental.UtilityClass
 public class LikelihoodDictionaries {
 
-    private final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
+    public final String LL = "ll", LLC = "adjustedll", SSQ = "ssqerr", AIC = "aic", BIC = "bic", AICC = "aicc", BICC = "bicc", BIC2 = "bic2", HQ = "hannanquinn",
             NPARAMS = "nparams", NOBS = "nobs", NEFFECTIVEOBS = "neffectiveobs", DF = "df", NDIFFUSE = "ndiffuse";
 
     public final AtomicDictionary LIKELIHOOD = AtomicDictionary.builder()

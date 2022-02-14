@@ -16,9 +16,8 @@
  */
 package demetra.tramo;
 
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.information.Explorable;
 import demetra.processing.ProcessingLog;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Map;
 
 /**
@@ -28,7 +27,7 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder
 public class TramoOutput {
-    GeneralLinearModel<SarimaSpec> result;
+    Explorable result;
 
     @lombok.NonNull
     TramoSpec estimationSpec;

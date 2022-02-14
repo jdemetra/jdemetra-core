@@ -12,7 +12,7 @@ import demetra.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.SeriesComponent;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import java.util.List;
 import nbbrd.service.ServiceProvider;

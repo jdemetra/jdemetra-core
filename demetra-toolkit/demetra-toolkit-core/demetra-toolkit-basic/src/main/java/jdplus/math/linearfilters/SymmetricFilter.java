@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.math.Complex;
-import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
+import internal.jdplus.math.linearfilters.SymmetricFilterAlgorithms;
 import jdplus.math.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;

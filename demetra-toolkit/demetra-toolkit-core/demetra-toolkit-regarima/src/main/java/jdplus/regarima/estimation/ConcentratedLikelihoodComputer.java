@@ -24,9 +24,9 @@ import jdplus.arima.IArimaModel;
 import jdplus.arima.estimation.ArmaFilter;
 import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -135,7 +135,7 @@ public final class ConcentratedLikelihoodComputer {
             }
             HouseholderWithPivoting hous = new HouseholderWithPivoting();
             QRDecomposition qr = hous.decompose(xl, xfixed ? nx : nm);
-            QRSolution ls = QRSolver.leastSquares(qr, yl, rcond);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, yl, rcond);
             ConcentratedLikelihoodWithMissing cll;
             if (xfixed && ls.rank() != nx) {
                 throw new EcoException(EcoException.GLS_FAILED);

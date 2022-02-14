@@ -24,7 +24,7 @@ import jdplus.arima.estimation.IArimaMapping;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.likelihood.DefaultLikelihoodEvaluation;
+import jdplus.stats.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 
 /**

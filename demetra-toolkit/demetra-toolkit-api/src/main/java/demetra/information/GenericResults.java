@@ -17,7 +17,9 @@
 package demetra.information;
 
 import demetra.util.WildCards;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +29,29 @@ import java.util.Map;
 @lombok.Getter
 @lombok.Builder
 public class GenericResults implements Explorable {
+
+    public static GenericResults of(Explorable explorable, List<String> items) {
+
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+
+        for (String item : items) {
+            if (WildCards.hasWildCards(item)) {
+                Map<String, Object> all = explorable.searchAll(item, Object.class);
+                for (String s : all.keySet()) {
+                    Object obj = explorable.getData(s);
+                    if (obj != null) {
+                        map.put(s, obj);
+                    }
+                }
+            } else {
+                Object obj = explorable.getData(item);
+                if (obj != null) {
+                    map.put(item, obj);
+                }
+            }
+        }
+        return new GenericResults(Collections.unmodifiableMap(map));
+    }
 
     @lombok.NonNull
     @lombok.Singular("entry")

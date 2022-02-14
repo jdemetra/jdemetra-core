@@ -8,7 +8,7 @@ package demetra.highfreq.extractors;
 import demetra.highfreq.FractionalAirlineEstimation;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import nbbrd.service.ServiceProvider;

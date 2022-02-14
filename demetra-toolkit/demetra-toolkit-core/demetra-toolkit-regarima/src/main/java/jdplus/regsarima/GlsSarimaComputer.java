@@ -24,8 +24,6 @@ import jdplus.regarima.estimation.RegArmaEstimation;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regarima.estimation.RegArmaProcessor;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.arima.estimation.IArimaMapping;
@@ -35,6 +33,8 @@ import java.util.function.Function;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.sarima.SarimaModel;
 import jdplus.regarima.IRegArimaComputer;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 
 /**
  *

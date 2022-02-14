@@ -16,8 +16,7 @@ public class ArimaDictionaries {
     public final String AR = "ar", // Stationary auto-regressive polynomial
             DELTA = "delta", // Differencing polynomial
             MA = "ma", // Moving average polynomial
-            VAR = "var",// Innovation variance
-            NAME = "name";
+            VAR = "var";// Innovation variance
 
     public final Dictionary ARIMA = AtomicDictionary.builder()
             .name("arima")
@@ -25,7 +24,6 @@ public class ArimaDictionaries {
             .item(Item.builder().name(DELTA).description("non-stationary autoregressive polynomial").type(double[].class).build())
             .item(Item.builder().name(MA).description("moving-average polynomial").type(double[].class).build())
             .item(Item.builder().name(VAR).description("innovation variance").type(double.class).build())
-            .item(Item.builder().name(NAME).description("name of the model").type(String.class).build())
             .build();
 
     public final static String P = "p", D = "d", Q = "q",
@@ -54,10 +52,9 @@ public class ArimaDictionaries {
             .item(Item.builder().name(BPHI_).description("seasonal autoregressive parameter").type(double.class).list(true).build())
             .item(Item.builder().name(PARAMETERS).description("phi, bphi, theta, btheta").type(double[].class).build())
             .item(Item.builder().name(PARAMETERS2).description("-phi, -bphi, theta, btheta").type(double[].class).build())
-            .item(Item.builder().name(NAME).description("name of the model").type(String.class).build())
             .build();
 
-    public final  String COMPONENT = "component(?)", COMPONENTC = "complement(?)", MODEL = "model", REDUCEDMODEL = "reducedmodel", // Component
+    public final  String COMPONENT = "component(*)", COMPONENTC = "complement(*)", MODEL = "model", 
             SUM = "sum", // Reduced model
             SIZE = "size";  // Number of components
     
@@ -71,7 +68,7 @@ public class ArimaDictionaries {
             .dictionary(new PrefixedDictionary(MODEL, ARIMA))
             .dictionary(new PrefixedDictionary(COMPONENT, ARIMA))
             .dictionary(new PrefixedDictionary(COMPONENTC, ARIMA))
-            .dictionary(new PrefixedDictionary(REDUCEDMODEL, ARIMA))
+            .dictionary(new PrefixedDictionary(SUM, ARIMA))
             .build();
 
 }

@@ -7,11 +7,11 @@ package jdplus.math.matrices.decomposition;
 
 import demetra.math.Complex;
 import ec.tstoolkit.random.JdkRNG;
+import internal.jdplus.math.linearfilters.SymmetricFilterAlgorithms;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.math.ComplexUtility;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
 import static jdplus.math.matrices.GeneralMatrix.AB;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;

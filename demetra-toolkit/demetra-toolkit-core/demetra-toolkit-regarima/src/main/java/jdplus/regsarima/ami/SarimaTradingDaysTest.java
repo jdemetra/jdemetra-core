@@ -16,16 +16,12 @@
  */
 package jdplus.regsarima.ami;
 
-import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
-import jdplus.linearmodel.JointTest;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.JointTest;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;

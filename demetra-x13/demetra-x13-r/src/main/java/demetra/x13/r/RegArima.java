@@ -18,7 +18,7 @@ package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.DoubleSeq;
-import demetra.modelling.StationaryTransformation;
+import jdplus.modelling.StationaryTransformation;
 import demetra.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;

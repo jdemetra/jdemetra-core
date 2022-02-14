@@ -26,7 +26,7 @@ import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-import demetra.modelling.implementations.RegSarimaProcessor;
+import jdplus.regsarima.regular.RegSarimaProcessor;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.ProcessingResult;

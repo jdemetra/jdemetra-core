@@ -17,6 +17,7 @@
 package demetra.tramoseats;
 
 import demetra.design.Algorithm;
+import demetra.information.Explorable;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -46,7 +47,7 @@ public class TramoSeats {
         return ENGINE.get();
     }
 
-    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public Explorable process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
         return ENGINE.get().process(series, spec, context, addtionalItems);
     }
     
@@ -62,7 +63,7 @@ public class TramoSeats {
         return LEGACYENGINE.get();
     }
 
-    public TramoSeatsResults processLegacy(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public Explorable processLegacy(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new TramoSeatsException("No legacy engine");
@@ -73,7 +74,7 @@ public class TramoSeats {
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public static interface Processor {
 
-        public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems);
+        public Explorable process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems);
         public Map<String, Class> outputDictionary(boolean compact);
 
     }

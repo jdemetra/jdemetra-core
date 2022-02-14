@@ -11,8 +11,8 @@ import demetra.data.DoubleSeq;
 import ec.tstoolkit.maths.Constants;
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -38,7 +38,7 @@ public class HouseholderWithPivotingTest {
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(A, 0);
-        QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, Y, 1e-15);
         DoubleSeq beta = ls.getB();
     }
 
@@ -61,7 +61,7 @@ public class HouseholderWithPivotingTest {
         System.out.println("");
         System.out.println(qr.rawR());
         System.out.println("");
-        QRSolution ls = QRSolver.leastSquares(qr, Y, Constants.getEpsilon());
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, Y, Constants.getEpsilon());
         System.out.println(ls.getB());
     }
 
@@ -83,7 +83,7 @@ public class HouseholderWithPivotingTest {
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
         System.out.println("Filip");
         System.out.println(beta);
@@ -107,7 +107,7 @@ public class HouseholderWithPivotingTest {
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
         System.out.println("Wampler3");
         System.out.println(beta);
@@ -131,7 +131,7 @@ public class HouseholderWithPivotingTest {
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
         System.out.println("Wampler4");
         System.out.println(beta);
@@ -155,7 +155,7 @@ public class HouseholderWithPivotingTest {
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(M, 0);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
         System.out.println("Wampler5");
         System.out.println(beta);
@@ -196,7 +196,7 @@ public class HouseholderWithPivotingTest {
         for (int i = 0; i < K; ++i) {
             HouseholderWithPivoting H2 = new HouseholderWithPivoting();
             QRDecomposition qr = H2.decompose(A, 0);
-            QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, Y, 1e-15);
         }
         t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);

@@ -7,7 +7,7 @@ package demetra.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.information.GenericExplorable;

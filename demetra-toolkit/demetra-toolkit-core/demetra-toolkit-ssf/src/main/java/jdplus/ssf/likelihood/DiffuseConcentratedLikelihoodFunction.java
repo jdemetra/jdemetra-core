@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.likelihood;
 
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.ssf.univariate.ISsf;
@@ -25,7 +25,7 @@ import jdplus.ssf.univariate.ISsfData;
 import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.likelihood.LikelihoodFunction;
+import jdplus.stats.likelihood.LikelihoodFunction;
 
 /**
  *

@@ -16,6 +16,9 @@
  */
 package jdplus.linearmodel;
 
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
+import jdplus.stats.linearmodel.LeastSquaresResults;
 import java.util.Random;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;

@@ -22,7 +22,7 @@ import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.IFiniteFilter;

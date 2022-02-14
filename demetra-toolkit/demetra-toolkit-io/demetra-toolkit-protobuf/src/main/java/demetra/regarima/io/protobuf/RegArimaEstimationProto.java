@@ -17,9 +17,8 @@
 package demetra.regarima.io.protobuf;
 
 import demetra.data.Iterables;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.MissingValueEstimation;
-import demetra.modelling.implementations.SarimaSpec;
+import jdplus.stats.likelihood.LikelihoodStatistics;
+import demetra.arima.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsDomain;
@@ -36,9 +35,10 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TransitoryChange;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.regression.MissingValueEstimation;
+import jdplus.modelling.GeneralLinearModel;
 
 /**
  *

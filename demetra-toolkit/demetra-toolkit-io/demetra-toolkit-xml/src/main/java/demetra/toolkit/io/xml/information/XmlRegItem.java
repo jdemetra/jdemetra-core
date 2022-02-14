@@ -16,7 +16,7 @@
  */
 package demetra.toolkit.io.xml.information;
 
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
 import demetra.toolkit.io.xml.legacy.IXmlConverter;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;

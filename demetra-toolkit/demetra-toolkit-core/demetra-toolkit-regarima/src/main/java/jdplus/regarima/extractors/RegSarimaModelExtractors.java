@@ -14,7 +14,6 @@ import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.information.BasicInformationExtractor;
 import demetra.information.InformationDelegate;
 import demetra.information.InformationExtractor;
-import demetra.modelling.ModellingDictionary;
 import demetra.modelling.SeriesInfo;
 import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsData;
@@ -24,11 +23,12 @@ import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 import demetra.math.matrices.Matrix;
+import demetra.toolkit.dictionaries.RegressionDictionaries;
+import jdplus.modelling.GeneralLinearModel;
 
 /**
  *
@@ -69,76 +69,76 @@ public class RegSarimaModelExtractors {
             set(BasicInformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getLastPeriod());
             set(BasicInformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getDetails().getEstimationDomain().getLength());
 
-        set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecasts());
-        set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecastsStdev());
-            set(ModellingDictionary.YC, TsData.class, source -> source.interpolatedSeries(false));
+        set(RegressionDictionaries.Y + SeriesInfo.F_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecasts());
+        set(RegressionDictionaries.Y + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecastsStdev());
+            set(RegressionDictionaries.YC, TsData.class, source -> source.interpolatedSeries(false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
-            set(ModellingDictionary.L, TsData.class, source -> source.linearizedSeries());
-            set(ModellingDictionary.Y_LIN, TsData.class, source -> {
+            set(RegressionDictionaries.L, TsData.class, source -> source.linearizedSeries());
+            set(RegressionDictionaries.Y_LIN, TsData.class, source -> {
                 TsData lin = source.linearizedSeries();
                 return source.backTransform(lin, false);
             });
-//        MAPPING.set(ModellingDictionary.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
-//        MAPPING.set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
-//        MAPPING.set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
-            set(ModellingDictionary.YCAL, TsData.class, source -> {
+//        MAPPING.set(RegressionDictionaries.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
+//        MAPPING.set(RegressionDictionaries.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
+//        MAPPING.set(RegressionDictionaries.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
+            set(RegressionDictionaries.YCAL, TsData.class, source -> {
                 TsData y = source.getDescription().getSeries();
                 TsData cal = source.getCalendarEffect(y.getDomain());
                 cal = source.backTransform(cal, true);
                 return source.inv_op(y, cal);
             });
-//        MAPPING.set(ModellingDictionary.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
+//        MAPPING.set(RegressionDictionaries.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
 
 // All determinsitic effects
-            set(ModellingDictionary.DET, TsData.class, (RegSarimaModel source) -> {
+            set(RegressionDictionaries.DET, TsData.class, (RegSarimaModel source) -> {
                 TsData det=source.deterministicEffect(null, v-> ! (v.getCore() instanceof TrendConstant));
                 return source.backTransform(det, true);
             });
-            setArray(ModellingDictionary.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            setArray(RegressionDictionaries.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> {
                 TsData det=source.deterministicEffect(source.forecastDomain(i), v-> ! (v.getCore() instanceof TrendConstant));
                 return source.backTransform(det, true);
             });
-            setArray(ModellingDictionary.DET + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.DET + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> {
                 TsData det=source.deterministicEffect(source.backcastDomain(i), v-> ! (v.getCore() instanceof TrendConstant));
                 return source.backTransform(det, true);
             });
 
 // All calendar effects
-            set(ModellingDictionary.CAL, TsData.class, source -> source.getCalendarEffect(null));
-            setArray(ModellingDictionary.CAL + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            set(RegressionDictionaries.CAL, TsData.class, source -> source.getCalendarEffect(null));
+            setArray(RegressionDictionaries.CAL + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getCalendarEffect(source.forecastDomain(i)));
-            setArray(ModellingDictionary.CAL + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.CAL + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getCalendarEffect(source.backcastDomain(i)));
 
 // Trading days effects
-            set(ModellingDictionary.TDE, TsData.class, source -> source.getTradingDaysEffect(null));
-            setArray(ModellingDictionary.TDE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            set(RegressionDictionaries.TDE, TsData.class, source -> source.getTradingDaysEffect(null));
+            setArray(RegressionDictionaries.TDE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getTradingDaysEffect(source.forecastDomain(i)));
-            setArray(ModellingDictionary.TDE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.TDE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getTradingDaysEffect(source.backcastDomain(i)));
 
 // All moving holidays effects
-            set(ModellingDictionary.MHE, TsData.class, source -> source.getMovingHolidayEffect(null));
-            setArray(ModellingDictionary.MHE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            set(RegressionDictionaries.MHE, TsData.class, source -> source.getMovingHolidayEffect(null));
+            setArray(RegressionDictionaries.MHE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getMovingHolidayEffect(source.forecastDomain(i)));
-            setArray(ModellingDictionary.MHE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.MHE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getMovingHolidayEffect(source.backcastDomain(i)));
 
 // Easter effect
-            set(ModellingDictionary.EE, TsData.class, source -> source.getEasterEffect(null));
-            setArray(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            set(RegressionDictionaries.EE, TsData.class, source -> source.getEasterEffect(null));
+            setArray(RegressionDictionaries.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.forecastDomain(i)));
-            setArray(ModellingDictionary.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.backcastDomain(i)));
 
 // All Outliers effect
-            set(ModellingDictionary.OUT, TsData.class, source -> source.getOutliersEffect(null));
-            setArray(ModellingDictionary.OUT + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            set(RegressionDictionaries.OUT, TsData.class, source -> source.getOutliersEffect(null));
+            setArray(RegressionDictionaries.OUT + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getOutliersEffect(source.forecastDomain(i)));
-            setArray(ModellingDictionary.OUT + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.OUT + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getOutliersEffect(source.backcastDomain(i)));
 
             set(BasicInformationExtractor.concatenate(REGRESSION, MU), RegressionItem.class,
@@ -154,10 +154,10 @@ public class RegSarimaModelExtractors {
             setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, 31, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof Ramp, i - 1));
 
-            set(ModellingDictionary.EE, TsData.class, source -> source.getEasterEffect(null));
-            setArray(ModellingDictionary.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            set(RegressionDictionaries.EE, TsData.class, source -> source.getEasterEffect(null));
+            setArray(RegressionDictionaries.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.forecastDomain(i)));
-            setArray(ModellingDictionary.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.backcastDomain(i)));
             
 //        MAPPING.set(FULLRES, source -> source.getFullResiduals());

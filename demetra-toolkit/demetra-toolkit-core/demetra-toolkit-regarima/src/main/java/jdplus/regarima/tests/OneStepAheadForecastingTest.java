@@ -19,7 +19,6 @@ package jdplus.regarima.tests;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.dstats.F;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
@@ -29,6 +28,7 @@ import demetra.stats.TestType;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import jdplus.regarima.IRegArimaComputer;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.stats.tests.TestsUtility;
 
 /**

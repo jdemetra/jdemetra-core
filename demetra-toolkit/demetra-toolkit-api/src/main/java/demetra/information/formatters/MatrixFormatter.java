@@ -24,7 +24,7 @@ import demetra.math.Complex;
 import demetra.processing.ProcDiagnostic;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

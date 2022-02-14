@@ -21,7 +21,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.likelihood.LikelihoodStatistics;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.timeseries.TsData;

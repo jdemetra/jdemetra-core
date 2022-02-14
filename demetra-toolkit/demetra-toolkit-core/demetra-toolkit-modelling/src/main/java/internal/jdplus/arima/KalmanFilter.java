@@ -23,7 +23,7 @@ import demetra.data.DoubleSeqCursor;
 import demetra.design.AlgorithmImplementation;
 import static demetra.design.AlgorithmImplementation.Feature.Fast;
 import nbbrd.design.Development;
-import jdplus.likelihood.DeterminantalTerm;
+import jdplus.stats.likelihood.DeterminantalTerm;
 import nbbrd.service.ServiceProvider;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;

@@ -5,10 +5,13 @@
  */
 package demetra.arima.r;
 
-import demetra.data.DoubleSeq;
+import demetra.math.Complex;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.AutoCovarianceFunction;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.Polynomial;
+import jdplus.sarima.estimation.SarimaMapping;
 
 /**
  *
@@ -17,14 +20,29 @@ import jdplus.arima.AutoCovarianceFunction;
 @lombok.experimental.UtilityClass
 public class ArimaModels {
 
-    public ArimaModel of(String name, double[] ar, double[] delta, double[] ma, double variance) {
-        return ArimaModel.builder()
-                .name(name)
-                .ar(ar == null ? DoubleSeq.ONE : DoubleSeq.of(ar))
-                .delta(delta == null ? DoubleSeq.ONE : DoubleSeq.of(delta))
-                .ma(ma == null ? DoubleSeq.ONE : DoubleSeq.of(ma))
-                .innovationVariance(variance)
-                .build();
+    public ArimaModel of(double[] ar, double[] delta, double[] ma, double variance, boolean check) {
+        Polynomial AR = ar == null ? Polynomial.ONE : Polynomial.of(ar);
+        Polynomial D = delta == null ? Polynomial.ONE : Polynomial.of(delta);
+        Polynomial MA = ma == null ? Polynomial.ONE : Polynomial.of(ma);
+
+        if (check) {
+            if (!SarimaMapping.checkStability(AR.coefficients())) {
+                throw new IllegalArgumentException("AR");
+            }
+            if (!SarimaMapping.checkStability(MA.coefficients())) {
+                throw new IllegalArgumentException("MA");
+            }
+            if (D.degree() > 0) {
+                Complex[] roots = D.roots();
+                for (int i = 0; i < roots.length; ++i) {
+                    if (Math.abs(1 - roots[i].absSquare()) > 1e-6) {
+                        throw new IllegalArgumentException("DELTA");
+                    }
+                }
+            }
+        }
+        return new ArimaModel(
+                new BackFilter(AR), new BackFilter(D), new BackFilter(MA), variance);
     }
 
     public ArimaModel sum(ArimaModel[] components) {
@@ -35,15 +53,14 @@ public class ArimaModels {
             return components[0];
         }
 
-        jdplus.arima.ArimaModel m = ApiUtility.fromApi(components[0]);
+        jdplus.arima.ArimaModel m = components[0];
         for (int i = 1; i < components.length; ++i) {
-            m = m.plus(ApiUtility.fromApi(components[i]));
+            m = m.plus(components[i]);
         }
-        return ApiUtility.toApi(m, "sum");
+        return m;
     }
 
-    public double[] spectrum(ArimaModel arima, int n) {
-        jdplus.arima.ArimaModel m = ApiUtility.fromApi(arima);
+    public double[] spectrum(ArimaModel m, int n) {
         DoubleUnaryOperator s = m.getSpectrum().asFunction();
         double[] g = new double[n];
         double q = Math.PI / (n - 1);
@@ -54,11 +71,10 @@ public class ArimaModels {
         return g;
     }
 
-    public double[] acf(ArimaModel arima, int n) {
-        jdplus.arima.ArimaModel m = ApiUtility.fromApi(arima);
+    public double[] acf(ArimaModel m, int n) {
         AutoCovarianceFunction acf = m.stationaryTransformation().getStationaryModel().getAutoCovarianceFunction();
         acf.prepare(n);
-        double[] g = new double[n+1];
+        double[] g = new double[n + 1];
         for (int i = 0; i <= n; ++i) {
             g[i] = acf.get(i);
         }

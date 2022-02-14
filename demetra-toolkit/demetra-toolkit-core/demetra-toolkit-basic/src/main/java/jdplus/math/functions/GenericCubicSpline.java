@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.FastMatrix;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

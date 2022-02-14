@@ -13,18 +13,20 @@ public class RegArimaDictionaries {
 
     public final String LOG = "log",
             ADJUST = "adjust", MEAN = "mean",
-            SPAN = "span", PERIOD = "period",
-            REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS = "residuals",
-            NTD = "ntd", NLP = "nlp", NMH = "nmh", NEASTER = "neaster",
-            NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
-            COEFF = "coefficients", COVAR = "covar", COVAR_ML = "covar-ml", COEFFDESC = "description", REGTYPE = "type";
-    
+            SPAN = "span", ESPAN="espan", PERIOD = "period", ARIMA = "arima",
+            REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS = "residuals";
     
     public final Dictionary REGSARIMA = ComplexDictionary.builder()
-            .dictionary(new PrefixedDictionary(SPAN, UtilDictionaries.OBS_SPAN))
-            .dictionary(new PrefixedDictionary(MAX, UtilDictionaries.LL_MAX))
+            .dictionary(new PrefixedDictionary(SPAN, UtilityDictionaries.OBS_SPAN))
+            .dictionary(new PrefixedDictionary(ESPAN, UtilityDictionaries.OBS_SPAN))
+            .dictionary(new PrefixedDictionary(MAX, UtilityDictionaries.LL_MAX))
             .dictionary(new PrefixedDictionary(LIKELIHOOD, LikelihoodDictionaries.LIKELIHOOD))
+            .dictionary(new PrefixedDictionary(ARIMA, ArimaDictionaries.SARIMA))
+            .dictionary(new PrefixedDictionary(REGRESSION, RegressionDictionaries.TRANSFORMATION))
+            .dictionary(new PrefixedDictionary(REGRESSION, RegressionDictionaries.REGRESSION_DESC))
+            .dictionary(new PrefixedDictionary(REGRESSION, RegressionDictionaries.REGRESSION_EST))
             .dictionary(new PrefixedDictionary(RESIDUALS, ResidualsDictionaries.RESIDUALS_DEFAULT))
+            .dictionary(new PrefixedDictionary(null, RegressionDictionaries.REGRESSION_EFFECTS))
             .build();
     
 

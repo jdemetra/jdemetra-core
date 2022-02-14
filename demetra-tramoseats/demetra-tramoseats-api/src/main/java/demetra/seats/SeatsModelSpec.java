@@ -16,7 +16,7 @@
  */
 package demetra.seats;
 
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.TsData;

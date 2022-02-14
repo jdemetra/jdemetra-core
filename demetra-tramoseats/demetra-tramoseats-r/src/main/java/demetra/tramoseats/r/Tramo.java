@@ -19,7 +19,7 @@ package demetra.tramoseats.r;
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.Matrix;
-import demetra.modelling.StationaryTransformation;
+import jdplus.modelling.StationaryTransformation;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;

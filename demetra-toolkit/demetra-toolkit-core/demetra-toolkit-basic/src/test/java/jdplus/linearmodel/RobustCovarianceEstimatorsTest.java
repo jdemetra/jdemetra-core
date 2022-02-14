@@ -16,6 +16,10 @@
  */
 package jdplus.linearmodel;
 
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.RobustCovarianceEstimators;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
 import jdplus.data.analysis.WindowFunction;

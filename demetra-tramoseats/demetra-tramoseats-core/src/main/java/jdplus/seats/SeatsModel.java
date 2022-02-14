@@ -23,7 +23,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
 import demetra.data.Parameter;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.likelihood.LikelihoodStatistics;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;

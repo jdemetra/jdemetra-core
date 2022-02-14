@@ -29,8 +29,8 @@ import jdplus.math.Simplifying;
 import demetra.util.Arrays2;
 import lombok.NonNull;
 import demetra.data.DoubleSeq;
-import internal.jdplus.maths.polynomials.Coefficients;
-import internal.jdplus.maths.polynomials.Polynomials;
+import internal.jdplus.math.polynomials.Coefficients;
+import internal.jdplus.math.polynomials.Polynomials;
 import nbbrd.design.Unsafe;
 import jdplus.math.ComplexUtility;
 

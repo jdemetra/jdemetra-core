@@ -9,7 +9,7 @@ import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.arima.SarimaSpec;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import jdplus.modelling.GeneralLinearModel;
 import demetra.tramo.TramoSpec;
 import org.junit.Test;
 

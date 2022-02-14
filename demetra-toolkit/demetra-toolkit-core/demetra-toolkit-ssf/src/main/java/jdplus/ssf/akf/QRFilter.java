@@ -20,7 +20,7 @@ import jdplus.ssf.likelihood.ProfileLikelihood;
 import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
-import jdplus.likelihood.DeterminantalTerm;
+import jdplus.stats.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
 import jdplus.ssf.ResultsRange;
@@ -31,8 +31,8 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -124,7 +124,7 @@ public class QRFilter {
     }
 
     public DiffuseLikelihood diffuseLikelihood(boolean scalingFactor, boolean res) {
-        QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, Xl);
         DataBlock b = DataBlock.of(ls.getB());
         DataBlock e = DataBlock.of(ls.getE());
         int nd = b.length(), n = Xl.getRowsCount();
@@ -141,7 +141,7 @@ public class QRFilter {
     }
 
     public ProfileLikelihood profileLikelihood() {
-        QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, Xl);
         DataBlock b = DataBlock.of(ls.getB());
         DataBlock e = DataBlock.of(ls.getE());
         int nd = b.length(), n = Xl.getRowsCount();

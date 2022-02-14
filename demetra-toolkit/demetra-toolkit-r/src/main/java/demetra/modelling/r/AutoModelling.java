@@ -6,7 +6,7 @@
 package demetra.modelling.r;
 
 import demetra.data.DoubleSeq;
-import jdplus.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LeastSquaresResults;
 import jdplus.modelling.RangeMeanTest;
 
 /**

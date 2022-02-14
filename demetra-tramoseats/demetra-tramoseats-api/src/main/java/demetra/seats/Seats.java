@@ -17,6 +17,7 @@
 package demetra.seats;
 
 import demetra.design.Algorithm;
+import demetra.information.Explorable;
 import nbbrd.design.Development;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,7 +44,7 @@ public class Seats {
         return ENGINE.get();
     }
 
-    public SeatsResults process(SeatsSpec spec, List<String> addtionalItems) {
+    public Explorable process(SeatsSpec spec, List<String> addtionalItems) {
         return ENGINE.get().process(spec, addtionalItems);
     }
 
@@ -55,7 +56,7 @@ public class Seats {
         return LEGACYENGINE.get();
     }
 
-    public SeatsResults processLegacy(SeatsSpec spec, List<String> addtionalItems) {
+    public Explorable processLegacy(SeatsSpec spec, List<String> addtionalItems) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new SeatsException("No legacy engine");
@@ -66,7 +67,7 @@ public class Seats {
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public static interface Processor {
 
-        SeatsResults process(SeatsSpec spec, List<String> addtionalItems);
+        Explorable process(SeatsSpec spec, List<String> addtionalItems);
 
     }
 }

@@ -24,8 +24,8 @@ import jdplus.math.functions.ssq.ISsqFunctionPoint;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 
@@ -221,7 +221,7 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                 double smu = Math.sqrt(mu);
                 JC.subDiagonal(-n).set(smu);
             }
-            QRSolution ls = QRSolver.fastLeastSquares(DoubleSeq.of(e), JC);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(DoubleSeq.of(e), JC);
             if (ls.rank() == m) {
                 V = ls.RtR();
                 DoubleSeq dp = ls.getB().times(-1);

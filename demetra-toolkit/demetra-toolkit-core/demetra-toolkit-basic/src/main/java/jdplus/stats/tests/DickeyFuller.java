@@ -23,11 +23,11 @@ import nbbrd.design.BuilderPattern;
 import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.math.matrices.FastMatrix;
 import demetra.stats.AutoCovariances;
 
@@ -156,7 +156,7 @@ public class DickeyFuller {
 
             // compute the model
             DoubleSeq z = del.extract(k, ndata);
-            QRSolution ls = QRSolver.fastLeastSquares(z, x);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(z, x);
             DoubleSeq b = DataBlock.of(ls.getB());
             double ssq = ls.getSsqErr();
             double d = b.get(ncols - 1), rho = d + 1;

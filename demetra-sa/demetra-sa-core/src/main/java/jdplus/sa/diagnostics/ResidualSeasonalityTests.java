@@ -17,7 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.DoubleSeq;
-import demetra.modelling.DifferencingResult;
+import jdplus.modelling.DifferencingResult;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import jdplus.sa.tests.AutoRegressiveSpectrumTest;

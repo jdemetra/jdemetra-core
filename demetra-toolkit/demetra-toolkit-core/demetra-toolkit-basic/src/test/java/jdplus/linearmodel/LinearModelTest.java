@@ -16,6 +16,7 @@
  */
 package jdplus.linearmodel;
 
+import jdplus.stats.linearmodel.LinearModel;
 import jdplus.data.DataBlock;
 import java.util.Random;
 

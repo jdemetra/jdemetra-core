@@ -18,7 +18,7 @@ package demetra.regarima;
 
 import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import jdplus.modelling.GeneralLinearModel;
 import java.util.Map;
 
 /**

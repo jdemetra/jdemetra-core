@@ -40,7 +40,7 @@ import jdplus.math.matrices.FastMatrix;
 import static jdplus.timeseries.simplets.TsDataToolkit.add;
 import static jdplus.timeseries.simplets.TsDataToolkit.subtract;
 import demetra.information.GenericExplorable;
-import demetra.likelihood.DiffuseLikelihoodStatistics;
+import jdplus.likelihood.DiffuseLikelihoodStatistics;
 
 /**
  *

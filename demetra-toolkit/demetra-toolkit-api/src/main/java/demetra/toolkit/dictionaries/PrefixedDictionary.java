@@ -16,7 +16,6 @@ import lombok.NonNull;
 @lombok.AllArgsConstructor
 public class PrefixedDictionary implements Dictionary {
 
-    public static final char SEP = '.';
 
     String path;
 

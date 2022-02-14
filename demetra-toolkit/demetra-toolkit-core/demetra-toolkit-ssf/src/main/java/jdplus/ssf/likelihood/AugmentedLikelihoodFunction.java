@@ -23,7 +23,7 @@ import jdplus.ssf.univariate.ISsfBuilder;
 import jdplus.ssf.univariate.ISsfData;
 import nbbrd.design.BuilderPattern;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.LikelihoodFunction;
+import jdplus.stats.likelihood.LikelihoodFunction;
 
 /**
  *

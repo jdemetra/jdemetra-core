@@ -17,7 +17,7 @@
 package jdplus.ssf.likelihood;
 
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.ssq.ISsqFunction;
@@ -29,7 +29,7 @@ import jdplus.math.functions.NumericalDerivatives;
 import jdplus.math.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.stats.likelihood.LikelihoodFunctionPoint;
 import jdplus.ssf.SsfException;
 
 /**

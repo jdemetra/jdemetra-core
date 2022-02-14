@@ -19,10 +19,9 @@ package jdplus.sa.diagnostics;
 import demetra.data.AggregationType;
 import demetra.information.BasicInformationExtractor;
 import nbbrd.design.Development;
-import demetra.modelling.ModellingDictionary;
 import demetra.processing.ProcQuality;
 import demetra.sa.DecompositionMode;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsUnit;
 import java.util.Collections;
@@ -30,6 +29,7 @@ import java.util.List;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.information.Explorable;
 import demetra.processing.Diagnostics;
+import demetra.toolkit.dictionaries.RegressionDictionaries;
 
 /**
  *
@@ -77,19 +77,19 @@ public final class CoherenceDiagnostics implements Diagnostics {
     }
 
     private void test(Explorable rslts, DecompositionMode mode) {
-        TsData yl = rslts.getData(ModellingDictionary.Y_LIN, TsData.class);
+        TsData yl = rslts.getData(RegressionDictionaries.Y_LIN, TsData.class);
         if (yl != null && yl.length() < config.getShortSeriesLimit() * yl.getAnnualFrequency()) {
             shortSeries = true;
         }
         multiplicative = mode != DecompositionMode.Additive;
-        TsData y = rslts.getData(ModellingDictionary.YC, TsData.class);
+        TsData y = rslts.getData(RegressionDictionaries.YC, TsData.class);
         DescriptiveStatistics ds = DescriptiveStatistics.of(y.getValues());
         scale = ds.getRmse();
         TsData yc = y;
-        TsData sa = rslts.getData(SaDictionary.SA, TsData.class);
-        TsData s = rslts.getData(SaDictionary.S, TsData.class);
-        TsData t = rslts.getData(SaDictionary.T, TsData.class);
-        TsData i = rslts.getData(SaDictionary.I, TsData.class);
+        TsData sa = rslts.getData(SaDictionaries.SA, TsData.class);
+        TsData s = rslts.getData(SaDictionaries.S, TsData.class);
+        TsData t = rslts.getData(SaDictionaries.T, TsData.class);
+        TsData i = rslts.getData(SaDictionaries.I, TsData.class);
         if (mode == DecompositionMode.PseudoAdditive) {
             // finals
             TsData df0 = sub(y, TsData.multiply(t, TsData.add(s, i).subtract(1)));
@@ -97,27 +97,27 @@ public final class CoherenceDiagnostics implements Diagnostics {
             check(df0);
             check(df1);
         } else {
-            TsData regy = rslts.getData(SaDictionary.REG_Y, TsData.class);
-            TsData regsa = rslts.getData(SaDictionary.REG_SA, TsData.class);
-            TsData ct = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.T_CMP), TsData.class);
-            TsData cs = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.S_CMP), TsData.class);
-            TsData ci = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.I_CMP), TsData.class);
-            TsData csa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.SA_CMP), TsData.class);
-            TsData ly = rslts.getData(ModellingDictionary.L, TsData.class);
-            TsData lt = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.T_LIN), TsData.class);
-            TsData ls = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.S_LIN), TsData.class);
-            TsData li = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.I_LIN), TsData.class);
-            TsData lsa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionary.DECOMPOSITION,SaDictionary.SA_LIN), TsData.class);
-            TsData tde = rslts.getData(ModellingDictionary.TDE, TsData.class);
-            TsData ee = rslts.getData(ModellingDictionary.EE, TsData.class);
-            TsData omhe = rslts.getData(ModellingDictionary.OMHE, TsData.class);
-            TsData cal = rslts.getData(ModellingDictionary.CAL, TsData.class);
-            TsData outs = rslts.getData(SaDictionary.OUT_S, TsData.class);
-            TsData regs = rslts.getData(SaDictionary.REG_S, TsData.class);
-            TsData outt = rslts.getData(SaDictionary.OUT_T, TsData.class);
-            TsData regt = rslts.getData(SaDictionary.REG_T, TsData.class);
-            TsData outi = rslts.getData(SaDictionary.OUT_I, TsData.class);
-            TsData regi = rslts.getData(SaDictionary.REG_I, TsData.class);
+            TsData regy = rslts.getData(SaDictionaries.REG_Y, TsData.class);
+            TsData regsa = rslts.getData(SaDictionaries.REG_SA, TsData.class);
+            TsData ct = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.T_CMP), TsData.class);
+            TsData cs = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.S_CMP), TsData.class);
+            TsData ci = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.I_CMP), TsData.class);
+            TsData csa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.SA_CMP), TsData.class);
+            TsData ly = rslts.getData(RegressionDictionaries.L, TsData.class);
+            TsData lt = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.T_LIN), TsData.class);
+            TsData ls = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.S_LIN), TsData.class);
+            TsData li = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.I_LIN), TsData.class);
+            TsData lsa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.SA_LIN), TsData.class);
+            TsData tde = rslts.getData(RegressionDictionaries.TDE, TsData.class);
+            TsData ee = rslts.getData(RegressionDictionaries.EE, TsData.class);
+            TsData omhe = rslts.getData(RegressionDictionaries.OMHE, TsData.class);
+            TsData cal = rslts.getData(RegressionDictionaries.CAL, TsData.class);
+            TsData outs = rslts.getData(SaDictionaries.OUT_S, TsData.class);
+            TsData regs = rslts.getData(SaDictionaries.REG_S, TsData.class);
+            TsData outt = rslts.getData(SaDictionaries.OUT_T, TsData.class);
+            TsData regt = rslts.getData(SaDictionaries.REG_T, TsData.class);
+            TsData outi = rslts.getData(SaDictionaries.OUT_I, TsData.class);
+            TsData regi = rslts.getData(SaDictionaries.REG_I, TsData.class);
 
             // main constraints
             yc = inv_op(y, regy);

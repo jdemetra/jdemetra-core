@@ -4,9 +4,8 @@
  */
 package demetra.toolkit.dictionaries;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.NonNull;
 
 /**
  *
@@ -37,4 +36,19 @@ public interface Dictionary {
                 .filter(item -> tclass.isAssignableFrom(item.getClass()))
                 .map(item -> item.getName());
     }
+
+    public static String concat(@NonNull String... st) {
+        if (st.length == 1) {
+            return st[0];
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(st[0]);
+        for (int i = 1; i < st.length; ++i) {
+            builder.append(SEP).append(st[i]);
+        }
+        return builder.toString();
+    }
+
+    public static final char SEP = '.';
+
 }

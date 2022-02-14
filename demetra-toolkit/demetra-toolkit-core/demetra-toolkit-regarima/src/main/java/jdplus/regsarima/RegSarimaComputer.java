@@ -17,7 +17,6 @@
 package jdplus.regsarima;
 
 import demetra.arima.SarimaOrders;
-import demetra.data.DoubleSeq;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.regarima.RegArimaEstimation;
@@ -28,8 +27,8 @@ import jdplus.regarima.estimation.RegArmaProcessor;
 import jdplus.data.DataBlock;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.regarima.RegArimaMapping;

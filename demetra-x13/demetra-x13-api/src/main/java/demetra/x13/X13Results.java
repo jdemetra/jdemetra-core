@@ -19,7 +19,7 @@ package demetra.x13;
 import demetra.arima.SarimaModel;
 import demetra.information.GenericExplorable;
 import demetra.processing.ProcessingLog;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import jdplus.modelling.GeneralLinearModel;
 import demetra.x11.X11Results;
 import java.util.List;
 import java.util.Map;

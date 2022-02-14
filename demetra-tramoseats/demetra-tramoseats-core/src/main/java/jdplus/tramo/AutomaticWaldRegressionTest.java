@@ -20,7 +20,7 @@ import nbbrd.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
 import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.likelihood.LikelihoodStatistics;
 import demetra.sa.ComponentType;
 import demetra.sa.SaVariable;
 import demetra.timeseries.regression.Variable;
