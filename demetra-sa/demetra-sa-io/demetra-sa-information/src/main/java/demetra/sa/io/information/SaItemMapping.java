@@ -136,7 +136,7 @@ public class SaItemMapping {
         }
         if (estimation != null) {
             info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), verbose, version));
-            info.set(QUALITY, estimation.getQuality().name());
+            // info.set(QUALITY, estimation.getQuality().name());
         }
         return info;
     }
