@@ -21,6 +21,7 @@
         <module>demetra-tsp-spreadsheet-core</module>
         <module>demetra-tsp-sql-core</module>
         <module>demetra-tsp-text-core</module>
+        <module>demetra-tsp-extra-core</module>
     </modules>
 	
 	<properties>
