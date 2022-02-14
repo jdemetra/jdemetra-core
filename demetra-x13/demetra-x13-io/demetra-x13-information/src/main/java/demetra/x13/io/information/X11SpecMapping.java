@@ -1,17 +1,17 @@
 /*
  * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * https://joinup.ec.europa.eu/software/page/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.x13.io.information;
@@ -99,74 +99,94 @@ public class X11SpecMapping {
         }
         return info;
     }
-    
+
+    public X11Spec readlegacy(InformationSet info, int defaultFcastHoizont) {
+
+        //Set the default value because it depends if it is with preprop or without
+        if (info.get(FCASTS, Integer.class) == null) {
+            info.add(FCASTS, defaultFcastHoizont);
+        }
+
+        if (info.get(CALENDARSIGMA, String.class) != null) {
+            String cs = info.get(CALENDARSIGMA, String.class);
+            if (cs != CalendarSigmaOption.Select.toString()) {
+                // With UI Version 2 it is possible to save select and sigmavec and then change Calendar sigma and Sigmaveg remains in the setting
+                if (info.get(SIGMAVEC, String[].class) != null) {
+                    info.remove(SIGMAVEC);
+                }
+            }
+        }
+        return read(info);
+    }
+
     public X11Spec read(InformationSet info) {
-        if (info == null)
+        if (info == null) {
             return X11Spec.DEFAULT_UNDEFINED;
+        }
         X11Spec.Builder builder = X11Spec.builder();
 
         String mode = info.get(MODE, String.class);
-             if (mode != null) {
-                builder.mode(DecompositionMode.valueOf(mode));
+        if (mode != null) {
+            builder.mode(DecompositionMode.valueOf(mode));
+        }
+        Boolean seasonal = info.get(SEASONAL, Boolean.class);
+        if (seasonal != null) {
+            builder.seasonal(seasonal);
+        }
+        Double lsig = info.get(LSIGMA, Double.class);
+        if (lsig != null) {
+            builder.lowerSigma(lsig);
+        }
+        Double usig = info.get(USIGMA, Double.class);
+        if (usig != null) {
+            builder.upperSigma(usig);
+        }
+        Integer trendma = info.get(TRENDMA, Integer.class);
+        if (trendma != null) {
+            builder.hendersonFilterLength(trendma);
+        }
+        Integer fcasts = info.get(FCASTS, Integer.class);
+        if (fcasts != null) {
+            builder.forecastHorizon(fcasts);
+        }
+        Integer bcasts = info.get(BCASTS, Integer.class);
+        if (bcasts != null) {
+            builder.backcastHorizon(bcasts);
+        }
+        String[] sfilters = info.get(SEASONALMA, String[].class);
+        if (sfilters != null) {
+            SeasonalFilterOption[] filters = new SeasonalFilterOption[sfilters.length];
+            for (int i = 0; i < sfilters.length; ++i) {
+                filters[i] = SeasonalFilterOption.valueOf(sfilters[i]);
             }
-            Boolean seasonal = info.get(SEASONAL, Boolean.class);
-            if (seasonal != null) {
-                builder.seasonal(seasonal);
-            }
-            Double lsig = info.get(LSIGMA, Double.class);
-            if (lsig != null) {
-                builder.lowerSigma(lsig);
-            }
-            Double usig = info.get(USIGMA, Double.class);
-            if (usig != null) {
-                builder.upperSigma(usig);
-            }
-            Integer trendma = info.get(TRENDMA, Integer.class);
-            if (trendma != null) {
-                builder.hendersonFilterLength(trendma);
-            }
-            Integer fcasts = info.get(FCASTS, Integer.class);
-            if (fcasts != null) {
-                builder.forecastHorizon(fcasts);
-            }
-            Integer bcasts = info.get(BCASTS, Integer.class);
-            if (bcasts != null) {
-                builder.backcastHorizon(bcasts);
-            }
-            String[] sfilters = info.get(SEASONALMA, String[].class);
-            if (sfilters != null) {
-                SeasonalFilterOption[] filters = new SeasonalFilterOption[sfilters.length];
-                for (int i = 0; i < sfilters.length; ++i) {
-                    filters[i] = SeasonalFilterOption.valueOf(sfilters[i]);
-                }
-                builder.filters(filters);
-            }
+            builder.filters(filters);
+        }
 
-            String calendarsigma = info.get(CALENDARSIGMA, String.class);
-            if (calendarsigma != null) {
-                builder.calendarSigma(CalendarSigmaOption.valueOf(calendarsigma));
+        String calendarsigma = info.get(CALENDARSIGMA, String.class);
+        if (calendarsigma != null) {
+            builder.calendarSigma(CalendarSigmaOption.valueOf(calendarsigma));
+        }
+
+        String[] sigmavec = info.get(SIGMAVEC, String[].class);
+        if (sigmavec != null) {
+            SigmaVecOption[] vsig = new SigmaVecOption[sigmavec.length];
+            for (int i = 0; i < sigmavec.length; ++i) {
+                vsig[i] = SigmaVecOption.valueOf(sigmavec[i]);
             }
+            builder.sigmaVec(vsig);
+        }
 
-            String[] sigmavec = info.get(SIGMAVEC, String[].class);
-            if (sigmavec != null) {
-                SigmaVecOption[] vsig = new SigmaVecOption[sigmavec.length];
-                for (int i = 0; i < sigmavec.length; ++i) {
-                    vsig[i] = SigmaVecOption.valueOf(sigmavec[i]);
-                }
-                builder.sigmaVec(vsig);
-            }
+        Boolean excludefcst = info.get(EXCLUDEFCAST, Boolean.class);
+        if (excludefcst != null) {
+            builder.excludeForecast(excludefcst);
+        }
 
-            Boolean excludefcst = info.get(EXCLUDEFCAST, Boolean.class);
-            if (excludefcst != null) {
-                builder.excludeForecast(excludefcst);
-            }
+        String sbias = info.get(BIAS, String.class);
+        if (sbias != null) {
+            builder.bias(BiasCorrection.valueOf(sbias));
+        }
+        return builder.build();
 
-            String sbias = info.get(BIAS, String.class);
-            if (sbias != null) {
-                builder.bias(BiasCorrection.valueOf(sbias));
-            } 
-            return builder.build();
-
-     }
+    }
 
 }
