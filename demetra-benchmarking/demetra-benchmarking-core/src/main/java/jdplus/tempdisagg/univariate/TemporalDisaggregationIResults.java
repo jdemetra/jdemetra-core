@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.tempdisagg.univariate;
+package jdplus.tempdisagg.univariate;
 
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.timeseries.TsData;
 

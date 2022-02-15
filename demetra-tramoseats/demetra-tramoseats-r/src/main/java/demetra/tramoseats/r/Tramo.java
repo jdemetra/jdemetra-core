@@ -26,7 +26,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
-import demetra.tramo.TramoOutput;
+import jdplus.tramo.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.util.r.Dictionary;

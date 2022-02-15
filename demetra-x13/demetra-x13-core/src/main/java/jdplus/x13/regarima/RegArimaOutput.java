@@ -14,10 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package jdplus.x13.regarima;
 
-import demetra.information.Explorable;
+import demetra.arima.SarimaSpec;
 import demetra.processing.ProcessingLog;
+import demetra.regarima.RegArimaSpec;
+import jdplus.modelling.GeneralLinearModel;
 import java.util.Map;
 
 /**
@@ -26,13 +28,13 @@ import java.util.Map;
  */
 @lombok.Value
 @lombok.Builder
-public class TramoOutput {
-    Explorable result;
+public class RegArimaOutput {
+    GeneralLinearModel<SarimaSpec> result;
 
     @lombok.NonNull
-    TramoSpec estimationSpec;
+    RegArimaSpec estimationSpec;
     
-    TramoSpec resultSpec;
+    RegArimaSpec resultSpec;
 
     @lombok.Singular
     Map<String, Object> details;

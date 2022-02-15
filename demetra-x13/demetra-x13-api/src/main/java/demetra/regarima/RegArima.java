@@ -16,12 +16,11 @@
  */
 package demetra.regarima;
 
-import demetra.arima.SarimaModel;
 import demetra.design.Algorithm;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
-import jdplus.modelling.GeneralLinearModel;
-import jdplus.modelling.LightweightRegSarimaModel;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
@@ -48,8 +47,8 @@ public class RegArima {
         return ENGINE.get();
     }
 
-    public LightweightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
-        return ENGINE.get().process(series, spec, context, addtionalItems);
+    public ProcResults process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> items) {
+        return ENGINE.get().process(series, spec, context, items);
     }
 
     public void setLegacyEngine(Processor algorithm) {
@@ -60,19 +59,27 @@ public class RegArima {
         return LEGACYENGINE.get();
     }
 
-    public LightweightRegSarimaModel  processLegacy(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public ProcResults  processLegacy(TsData series, RegArimaSpec spec, ModellingContext context, List<String> items) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new RegArimaException("No legacy engine");
-        return cp.process(series, spec, context, addtionalItems);
+        return cp.process(series, spec, context, items);
     }
 
-    @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    public final static class DefProcessor implements Processor{
+        
+        @Override
+        public ProcResults process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> items) {
+            return GenericResults.notImplemented();
+        }
+    }
+    
+   @Algorithm
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback=DefProcessor.class)
     @FunctionalInterface
     public static interface Processor {
 
-        public LightweightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems);
+        public ProcResults process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems);
 
     }
 }

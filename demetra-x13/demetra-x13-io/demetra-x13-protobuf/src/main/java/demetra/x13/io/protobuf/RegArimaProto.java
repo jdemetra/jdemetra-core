@@ -17,7 +17,7 @@
 package demetra.x13.io.protobuf;
 
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
-import demetra.regarima.RegArimaOutput;
+import jdplus.x13.regarima.RegArimaOutput;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;

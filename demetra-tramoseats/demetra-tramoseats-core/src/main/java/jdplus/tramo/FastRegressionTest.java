@@ -7,7 +7,7 @@ package jdplus.tramo;
 
 import demetra.timeseries.regression.Variable;
 import java.util.Optional;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.IRegressionModule;

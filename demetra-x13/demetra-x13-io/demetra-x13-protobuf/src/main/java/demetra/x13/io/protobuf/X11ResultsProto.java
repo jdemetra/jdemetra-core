@@ -17,7 +17,7 @@
 package demetra.x13.io.protobuf;
 
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import demetra.x11.X11Results;
+import jdplus.x11.X11Results;
 
 /**
  *

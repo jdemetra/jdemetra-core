@@ -17,8 +17,8 @@
 package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
-import demetra.highfreq.FractionalAirlineDecomposition;
-import demetra.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.math.matrices.Matrix;
 import jdplus.fractionalairline.FractionalAirlineKernel;

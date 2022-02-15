@@ -18,6 +18,8 @@ package demetra.seats;
 
 import demetra.design.Algorithm;
 import demetra.information.Explorable;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,8 +46,8 @@ public class Seats {
         return ENGINE.get();
     }
 
-    public Explorable process(SeatsSpec spec, List<String> addtionalItems) {
-        return ENGINE.get().process(spec, addtionalItems);
+    public ProcResults process(SeatsSpec spec, List<String> items) {
+        return ENGINE.get().process(spec, items);
     }
 
     public void setLegacyEngine(Processor algorithm) {
@@ -56,18 +58,26 @@ public class Seats {
         return LEGACYENGINE.get();
     }
 
-    public Explorable processLegacy(SeatsSpec spec, List<String> addtionalItems) {
+    public ProcResults processLegacy(SeatsSpec spec, List<String> items) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new SeatsException("No legacy engine");
-        return cp.process(spec, addtionalItems);
+        return cp.process(spec, items);
     }
  
+    public final static class DefProcessor implements Processor{
+
+        @Override
+        public ProcResults process(SeatsSpec spec, List<String> items) {
+             return GenericResults.notImplemented();
+       }
+    }
+    
     @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback=DefProcessor.class)
     public static interface Processor {
 
-        Explorable process(SeatsSpec spec, List<String> addtionalItems);
+        ProcResults process(SeatsSpec spec, List<String> items);
 
     }
 }

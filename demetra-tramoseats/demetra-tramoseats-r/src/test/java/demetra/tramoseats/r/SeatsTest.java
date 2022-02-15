@@ -16,13 +16,13 @@
  */
 package demetra.tramoseats.r;
 
-import demetra.arima.SarimaModel;
-import demetra.arima.UcarimaModel;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import java.util.Map;
+import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsResults;
+import jdplus.ucarima.UcarimaModel;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -63,12 +63,10 @@ public class SeatsTest {
     }
 
     public static UcarimaModel airline(int period, double th, double bth) {
-        SarimaModel sarima = demetra.arima.SarimaModel.builder()
-                .d(1)
-                .bd(1)
-                .period(period)
-                .theta(DoubleSeq.of(th))
-                .btheta(DoubleSeq.of(bth))
+        SarimaModel sarima = SarimaModel.builder(period)
+                .differencing(1, 1)
+                .theta(th)
+                .btheta(bth)
                 .build();
         return Seats.decompose(sarima, 2, 0.5, 0.8, 0.8, "None");
     }

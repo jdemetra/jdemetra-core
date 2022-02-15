@@ -11,8 +11,8 @@ import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import demetra.highfreq.FractionalAirlineDecomposition;
-import demetra.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.highfreq.SeriesComponent;
 import demetra.modelling.OutlierDescriptor;
@@ -26,7 +26,6 @@ import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.modelling.ApiUtility;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
@@ -138,18 +137,24 @@ public class FractionalAirlineKernel {
         LogLikelihoodFunction.Point<RegArimaModel<ArimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         UcarimaModel ucm = ucm(rslt.getModel().arima(), sn);
 
-        demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
-        demetra.arima.UcarimaModel ucmt;
+        IArimaModel sum = ucm.getModel();
+        UcarimaModel ucmt;
         if (sn) {
-            demetra.arima.ArimaModel mn = ApiUtility.toApi(ucm.getComponent(0), "noise");
-            demetra.arima.ArimaModel ms = ApiUtility.toApi(ucm.getComponent(1), "signal");
-            ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{ms, mn});
+            ArimaModel mn = ucm.getComponent(0);
+            ArimaModel ms = ucm.getComponent(1);
+            ucmt = UcarimaModel.builder()
+                    .model(sum)
+                    .add(ms, mn)
+                    .build();
 
         } else {
-            demetra.arima.ArimaModel mt = ApiUtility.toApi(ucm.getComponent(0), "trend");
-            demetra.arima.ArimaModel ms = ApiUtility.toApi(ucm.getComponent(1), "seasonal");
-            demetra.arima.ArimaModel mi = ApiUtility.toApi(ucm.getComponent(2), "irregular");
-            ucmt = new demetra.arima.UcarimaModel(sum, new demetra.arima.ArimaModel[]{mt, ms, mi});
+            ArimaModel mt = ucm.getComponent(0);
+            ArimaModel ms = ucm.getComponent(1);
+            ArimaModel mi = ucm.getComponent(2);
+            ucmt = UcarimaModel.builder()
+                    .model(sum)
+                    .add(mt, ms, mi)
+                    .build();
         }
         FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
                 .model(new demetra.highfreq.FractionalAirline(new double[]{period}, 2, 0, max.getParameters()))
@@ -278,14 +283,18 @@ public class FractionalAirlineKernel {
         }
         UcarimaModel ucm = ucm(rslt.getModel().arima(), ip);
 
-        demetra.arima.ArimaModel sum = ApiUtility.toApi(ucm.getModel(), "sum");
-        demetra.arima.UcarimaModel ucmt;
-        demetra.arima.ArimaModel[] all = new demetra.arima.ArimaModel[ucm.getComponentsCount()];
+        IArimaModel sum = ucm.getModel();
+        UcarimaModel ucmt;
+        ArimaModel[] all = new ArimaModel[ucm.getComponentsCount()];
         for (int i = 0; i < all.length; ++i) {
-            demetra.arima.ArimaModel m = ApiUtility.toApi(ucm.getComponent(i), "cmp" + (i + 1));
+            ArimaModel m = ucm.getComponent(i);
             all[i] = m;
         }
-        ucmt = new demetra.arima.UcarimaModel(sum, all);
+        ucmt = UcarimaModel.builder()
+                .model(sum)
+                .add(all)
+                .build();
+
         FractionalAirlineDecomposition.Builder dbuilder = FractionalAirlineDecomposition.builder()
                 .model(new demetra.highfreq.FractionalAirline(dp, ndiff, phi, theta))
                 .likelihood(rslt.statistics())

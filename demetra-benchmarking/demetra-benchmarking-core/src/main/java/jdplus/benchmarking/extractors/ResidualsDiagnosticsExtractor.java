@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.benchmarking.extractors;
+package jdplus.benchmarking.extractors;
 
 import demetra.information.InformationExtractor;
 import nbbrd.design.Development;

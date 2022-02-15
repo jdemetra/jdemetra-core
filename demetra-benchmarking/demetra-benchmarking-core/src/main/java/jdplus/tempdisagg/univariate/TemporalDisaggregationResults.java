@@ -14,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.tempdisagg.univariate;
+package jdplus.tempdisagg.univariate;
 
 import demetra.data.DoubleSeq;
 import demetra.information.GenericExplorable;
 import nbbrd.design.Development;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.Variable;
 import java.util.Map;
 import demetra.math.matrices.Matrix;
+import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 
 /**
  *

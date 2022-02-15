@@ -30,9 +30,9 @@ import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TsContextVariable;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.ArrayList;
 import java.util.List;
+import jdplus.modelling.GeneralLinearModel;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**

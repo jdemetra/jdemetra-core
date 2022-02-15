@@ -6,9 +6,12 @@
 package demetra.x11;
 
 import demetra.design.Algorithm;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceDefinition;
 import demetra.timeseries.TsData;
+import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 
@@ -20,14 +23,7 @@ import nbbrd.service.Quantifier;
 @lombok.experimental.UtilityClass
 public class X11 {
 
-    @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
-    public static interface Processor {
-
-        X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec);
-
-    }
-
+ 
     private final X11Loader.Processor PROCESSOR = new X11Loader.Processor();
 
     public void setProcessor(Processor algorithm) {
@@ -38,8 +34,25 @@ public class X11 {
         return PROCESSOR.get();
     }
 
-    public X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec) {
-        return PROCESSOR.get().process(timeSeries, spec);
+    public final static class DefProcessor implements Processor{
+
+        @Override
+        public ProcResults process(TsData timeSeries, X11Spec spec, List<String> items) {
+            return GenericResults.notImplemented();
+        }
+        
+     };
+    
+    public ProcResults process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec, List<String> items) {
+        return PROCESSOR.get().process(timeSeries, spec, items);
+    }
+    
+   @Algorithm
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback=DefProcessor.class)
+    public static interface Processor {
+
+        ProcResults process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec, @lombok.NonNull List<String> items);
+
     }
 
 }

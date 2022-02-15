@@ -69,8 +69,8 @@ public interface ProcessingLog {
         }
 
     }
-    
-    default List<Information> all(){
+
+    default List<Information> all() {
         return Collections.emptyList();
     }
 
@@ -140,11 +140,29 @@ public interface ProcessingLog {
     default void step(String msg, Object details) {
     }
 
-    
-    public static ProcessingLog dummy(){return DummyLog.DUMMY;}
+    public static ProcessingLog dummy() {
+        return DummyLog.DUMMY;
+    }
 
+    public static ProcessingLog notImplemented() {
+        return NotImplementedLog.NOTIMPL;
+    }
 }
- 
+
 class DummyLog implements ProcessingLog {
-        static final DummyLog DUMMY=new DummyLog();
+
+    static final DummyLog DUMMY = new DummyLog();
+}
+
+class NotImplementedLog implements ProcessingLog {
+
+    private static final List<Information> ALL = Collections.singletonList(
+            new Information("Processing", null, "not implemented", InformationType.Error, null));
+
+    @Override
+    public List<Information> all() {
+        return ALL;
+    }
+
+    static final NotImplementedLog NOTIMPL = new NotImplementedLog();
 }

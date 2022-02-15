@@ -16,7 +16,6 @@
  */
 package jdplus.ssf.extractors;
 
-import demetra.arima.UcarimaModel;
 import demetra.data.DoubleSeq;
 import demetra.information.InformationMapping;
 import jdplus.math.matrices.FastMatrix;
@@ -26,7 +25,6 @@ import java.util.Map;
 import demetra.information.GenericExplorable;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import jdplus.modelling.ApiUtility;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.DkToolkit;
@@ -36,6 +34,7 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.ssf.univariate.StateFilteringResults;
 import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.math.matrices.Matrix;
+import jdplus.ucarima.UcarimaModel;
 
 /**
  *
@@ -43,14 +42,14 @@ import demetra.math.matrices.Matrix;
  */
 public class SsfUcarimaEstimation implements GenericExplorable {
 
-    private demetra.arima.UcarimaModel ucarima;
+    private UcarimaModel ucarima;
     private final CompositeSsf ssf;
     private final SsfData data;
     private StateStorage smoothedStates, filteredStates, filteringStates;
 
     public SsfUcarimaEstimation(final UcarimaModel ucarima, final DoubleSeq data) {
         this.ucarima=ucarima;
-        this.ssf = SsfUcarima.of(ApiUtility.fromApi(ucarima));
+        this.ssf = SsfUcarima.of(ucarima);
         this.data = new SsfData(data);
     }
 

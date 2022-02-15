@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.fractionalairline;
+package jdplus.fractionalairline;
 
 import jdplus.fractionalairline.FractionalAirlineKernel;
 import demetra.data.Data;
@@ -21,7 +21,7 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
-import demetra.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import java.io.InputStream;
 import demetra.math.matrices.Matrix;

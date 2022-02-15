@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.highfreq;
+package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import jdplus.likelihood.LikelihoodStatistics;
+import demetra.highfreq.FractionalAirline;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.information.GenericExplorable;

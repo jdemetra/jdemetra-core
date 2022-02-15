@@ -14,12 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.sts;
+package jdplus.sts;
 
-import jdplus.likelihood.DiffuseLikelihoodStatistics;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.MissingValueEstimation;
-import demetra.likelihood.ParametersEstimation;
+import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.data.ParametersEstimation;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
 import demetra.stats.StatisticalTest;
@@ -29,6 +29,9 @@ import demetra.timeseries.regression.Variable;
 import java.util.List;
 import java.util.Map;
 import demetra.math.matrices.Matrix;
+import demetra.sts.BsmDecomposition;
+import demetra.sts.BsmDescription;
+import demetra.sts.BsmSpec;
 
 /**
  *

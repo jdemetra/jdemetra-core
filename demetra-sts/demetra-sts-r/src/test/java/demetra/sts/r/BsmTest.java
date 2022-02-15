@@ -7,7 +7,7 @@ package demetra.sts.r;
 
 import demetra.data.Data;
 import demetra.modelling.r.Variables;
-import demetra.sts.BasicStructuralModel;
+import jdplus.sts.BasicStructuralModel;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import static org.junit.Assert.*;

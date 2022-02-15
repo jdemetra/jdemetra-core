@@ -17,10 +17,12 @@
 package demetra.tempdisagg.univariate;
 
 import demetra.design.Algorithm;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceDefinition;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import java.util.List;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 
@@ -42,20 +44,20 @@ public class TemporalDisaggregation {
         return PROCESSOR.get();
     }
 
-    public TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec) {
-        return PROCESSOR.get().process(aggregatedSeries, indicators, spec);
+    public ProcResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec, List<String> items) {
+        return PROCESSOR.get().process(aggregatedSeries, indicators, spec, items);
     }
 
-    public TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec) {
-        return PROCESSOR.get().process(aggregatedSeries, domain, spec);
+    public ProcResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec, List<String> items) {
+        return PROCESSOR.get().process(aggregatedSeries, domain, spec, items);
     }
 
     @Algorithm
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public interface Processor {
 
-        TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec);
+        ProcResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec, List<String> items);
 
-        TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec);
+        ProcResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec, List<String> items);
     }
 }

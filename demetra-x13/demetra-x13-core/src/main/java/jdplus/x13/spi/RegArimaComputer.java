@@ -14,17 +14,15 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13.regarima.spi;
+package jdplus.x13.spi;
 
-import demetra.arima.SarimaModel;
 import demetra.processing.DefaultProcessingLog;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.regarima.RegArima;
 import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightweightLinearModel;
-import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
 import java.util.List;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.RegArimaKernel;
@@ -38,16 +36,11 @@ import nbbrd.service.ServiceProvider;
 public class RegArimaComputer implements RegArima.Processor{
 
     @Override
-    public LightweightRegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public ProcResults process(TsData series, RegArimaSpec spec, ModellingContext context, List<String> addtionalItems) {
         RegArimaKernel processor = RegArimaKernel.of(spec, context);
         DefaultProcessingLog log=new DefaultProcessingLog();
         RegSarimaModel rslt = processor.process(series, log);
-        // TODO: fill details
-        return LightweightRegSarimaModel.builder()
-//                .regarima(ApiUtility.toApi(rslt))
-//                .logs(log.all())
-//                .addtionalResults()
-                .build();
+        return GenericResults.of(rslt, addtionalItems, log);
     }
     
 }

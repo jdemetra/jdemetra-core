@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.x11;
+package jdplus.x11;
 
 import demetra.information.GenericExplorable;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
+import demetra.x11.MsrTable;
+import demetra.x11.SeasonalFilterOption;
 
 /**
  *

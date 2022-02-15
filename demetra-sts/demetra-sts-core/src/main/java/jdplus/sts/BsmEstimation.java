@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.sts;
+package jdplus.sts;
 
-import jdplus.likelihood.DiffuseLikelihoodStatistics;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.MissingValueEstimation;
-import demetra.likelihood.ParametersEstimation;
+import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.data.ParametersEstimation;
 import demetra.math.matrices.Matrix;
 
 /**

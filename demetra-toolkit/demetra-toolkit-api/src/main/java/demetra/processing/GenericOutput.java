@@ -1,21 +1,10 @@
 /*
- * Copyright 2021 National Bank of Belgium.
- *
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
- * by the European Commission - subsequent versions of the EUPL (the "Licence");
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
- *
- *      https://joinup.ec.europa.eu/software/page/eupl
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package demetra.information;
+package demetra.processing;
 
+import demetra.information.Explorable;
 import demetra.util.WildCards;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -24,13 +13,13 @@ import java.util.Map;
 
 /**
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author PALATEJ
  */
 @lombok.Getter
 @lombok.Builder
-public class GenericResults implements Explorable {
-
-    public static GenericResults of(Explorable explorable, List<String> items) {
+public class GenericOutput implements Explorable {
+       
+    public static GenericOutput of(Explorable explorable, List<String> items) {
 
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 
@@ -50,13 +39,13 @@ public class GenericResults implements Explorable {
                 }
             }
         }
-        return new GenericResults(Collections.unmodifiableMap(map));
+        return new GenericOutput(Collections.unmodifiableMap(map));
     }
 
     @lombok.NonNull
     @lombok.Singular("entry")
     private Map<String, Object> entries;
-
+    
     @Override
     public boolean contains(String id) {
         return entries.containsKey(id);

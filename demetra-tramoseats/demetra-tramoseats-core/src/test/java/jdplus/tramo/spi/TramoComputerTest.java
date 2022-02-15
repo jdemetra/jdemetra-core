@@ -5,12 +5,14 @@
  */
 package jdplus.tramo.spi;
 
-import demetra.arima.SarimaModel;
 import demetra.data.Data;
-import demetra.arima.SarimaSpec;
+import demetra.information.Explorable;
+import demetra.processing.ProcResults;
 import demetra.timeseries.regression.ModellingContext;
-import jdplus.modelling.GeneralLinearModel;
 import demetra.tramo.TramoSpec;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -24,7 +26,10 @@ public class TramoComputerTest {
 
     @Test
     public void testBasic() {
-        GeneralLinearModel<SarimaSpec> rslt = demetra.tramo.Tramo.process(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), null);
+        List<String> items=new ArrayList<>();
+        items.add("likelihoog.ll");
+        ProcResults rslt = demetra.tramo.Tramo.process(Data.TS_PROD, TramoSpec.TRfull, ModellingContext.getActiveContext(), items);
+        
 //        System.out.println(rslt.getEstimation().getStatistics());
 //        System.out.println(rslt.getDescription().getStochasticComponent());
     }

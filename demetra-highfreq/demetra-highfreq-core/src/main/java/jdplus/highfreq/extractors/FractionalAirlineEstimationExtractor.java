@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.highfreq.extractors;
+package jdplus.highfreq.extractors;
 
-import demetra.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import jdplus.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import nbbrd.service.ServiceProvider;

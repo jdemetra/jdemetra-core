@@ -19,7 +19,7 @@
 package jdplus.seats;
 
 import nbbrd.design.Development;
-import jdplus.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;

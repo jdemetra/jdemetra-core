@@ -4,7 +4,7 @@
  */
 package jdplus.x11;
 
-import demetra.x11.X11Results;
+import jdplus.x11.X11Results;
 
 /**
  *

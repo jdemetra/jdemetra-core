@@ -17,8 +17,9 @@
 package demetra.tramo;
 
 import demetra.design.Algorithm;
-import demetra.arima.SarimaSpec;
+import demetra.processing.GenericResults;
 import demetra.information.Explorable;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -47,8 +48,8 @@ public class Tramo {
         return ENGINE.get();
     }
 
-    public Explorable process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
-        return ENGINE.get().process(series, spec, context, addtionalItems);
+    public ProcResults process(TsData series, TramoSpec spec, ModellingContext context, List<String> items) {
+        return ENGINE.get().process(series, spec, context, items);
     }
 
     public void setLegacyEngine(Processor algorithm) {
@@ -59,19 +60,27 @@ public class Tramo {
         return LEGACYENGINE.get();
     }
 
-    public Explorable processLegacy(TsData series, TramoSpec spec, ModellingContext context, List<String> additionalItems) {
+    public Explorable processLegacy(TsData series, TramoSpec spec, ModellingContext context, List<String> items) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new TramoException("No legacy engine");
-        return cp.process(series, spec, context, additionalItems);
+        return cp.process(series, spec, context, items);
     }
-
+    
+    public final static class DefProcessor implements Processor{
+        
+        @Override
+        public ProcResults process(TsData series, TramoSpec spec, ModellingContext context, List<String> items) {
+            return GenericResults.notImplemented();
+        }
+    }
+    
     @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback=DefProcessor.class)
     @FunctionalInterface
     public static interface Processor {
 
-        public Explorable process(TsData series, TramoSpec spec, ModellingContext context, List<String> additionalItems);
+        public ProcResults process(TsData series, TramoSpec spec, ModellingContext context, List<String> items);
 
     }
 }

@@ -16,6 +16,7 @@
  */
 package jdplus.math.linearfilters;
 
+import java.util.concurrent.atomic.AtomicReference;
 import jdplus.data.DataBlock;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlockIterator;
@@ -231,50 +232,6 @@ public class LocalPolynomialFilters {
         return 2 * s + k.applyAsDouble(0);
     }
 
-//    private double S_h2(int h, IntToDoubleFunction k) {
-//        double s = 0;
-//        for (int i = 1; i <= h; ++i) {
-//            double j = i * i;
-//            s += j * k.applyAsDouble(i);
-//        }
-//        return 2 * s;
-//    }
-//
-//    private double S_h4(int h, IntToDoubleFunction k) {
-//        double s = 0;
-//        for (int i = 1; i <= h; ++i) {
-//            double j = i * i;
-//            j *= j;
-//            s += j * k.applyAsDouble(i);
-//        }
-//        return 2 * s;
-//    }
-//
-//    private double S_hd(int h, int d, IntToDoubleFunction k) {
-//        switch (d) {
-//            case 0:
-//                return S_h0(h, k);
-//            case 2:
-//                return S_h2(h, k);
-//            case 4:
-//                return S_h4(h, k);
-//        }
-//        if (d % 2 != 0) {
-//            return 0;
-//        }
-//        int hd = d / 2;
-//        double s = 0;
-//        for (int i = 1; i <= h; ++i) {
-//            double ii = i * i;
-//            double j = ii;
-//            for (int l = 2; l <= hd; ++l) {
-//                j *= ii;
-//            }
-//            s += j * k.applyAsDouble(i);
-//        }
-//        return 2 * s;
-//    }
-//
     private double S_hqd(int h, int q, long d, IntToDoubleFunction k) {
         if (d == 0) {
             return S_hq0(h, q, k);
@@ -322,15 +279,15 @@ public class LocalPolynomialFilters {
      * @param u included (positive)
      * @return
      */
-    synchronized FastMatrix z(int l, int u, int d0, int d1) {
+    FastMatrix z(FastMatrix Z, int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
-        if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
-            Z = createZ(nh, d1);
-        }
+//        if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
+//            Z = createZ(nh, d1);
+//        }
         return Z.extract(l + nh, u - l + 1, d0, d1 - d0 + 1);
     }
 
-    private FastMatrix createZ(int h, int d) {
+    public FastMatrix createZ(int h, int d) {
         FastMatrix M = FastMatrix.make(2 * h + 1, d + 1);
         M.column(0).set(1);
         if (d >= 1) {
@@ -343,5 +300,4 @@ public class LocalPolynomialFilters {
         return M;
     }
 
-    private FastMatrix Z;
 }

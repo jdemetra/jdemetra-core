@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.highfreq;
+package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.LikelihoodStatistics;
+import demetra.highfreq.FractionalAirline;
+import demetra.highfreq.SeriesComponent;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.information.GenericExplorable;
 import java.util.List;
+import jdplus.ucarima.UcarimaModel;
 
 /**
  * Low-level results. Should be refined
@@ -30,7 +33,7 @@ public class FractionalAirlineDecomposition implements GenericExplorable {
     @lombok.Singular
     List<SeriesComponent> components;
 
-    demetra.arima.UcarimaModel ucarima;
+    UcarimaModel ucarima;
 
     public SeriesComponent component(String name) {
         for (SeriesComponent cmp : components) {

@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.highfreq.extractors;
+package jdplus.highfreq.extractors;
 
-import demetra.arima.UcarimaModel;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import demetra.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.FractionalAirlineDecomposition;
 import demetra.highfreq.SeriesComponent;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import jdplus.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import java.util.List;
+import jdplus.ucarima.UcarimaModel;
 import nbbrd.service.ServiceProvider;
 
 /**

@@ -14,32 +14,33 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.x13;
+package jdplus.x13.spi;
 
-import demetra.arima.SarimaModel;
-import demetra.information.GenericExplorable;
+import demetra.processing.DefaultProcessingLog;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.processing.ProcessingLog;
-import jdplus.modelling.GeneralLinearModel;
-import demetra.x11.X11Results;
+import demetra.timeseries.TsData;
+import demetra.x11.X11;
+import demetra.x11.X11Spec;
 import java.util.List;
-import java.util.Map;
+import jdplus.x11.X11Kernel;
+import jdplus.x11.X11Results;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
  * @author palatej
  */
-@lombok.Value
-@lombok.Builder
-public class X13Results implements GenericExplorable{
-    private GeneralLinearModel<SarimaModel> preprocessing;
-    private X13Preadjustment preadjustment;
-    private X11Results decomposition;
-    private X13Finals finals;
+@ServiceProvider(X11.Processor.class)
+public class X11Computer implements X11.Processor {
 
-    @lombok.Singular
-    private Map<String, Object> addtionalResults;
-   
-    @lombok.Singular
-    private List<ProcessingLog.Information> logs;
+    @Override
+    public ProcResults process(TsData timeSeries, X11Spec spec, List<String> items) {
+        X11Kernel x11 = new X11Kernel();
+        DefaultProcessingLog log = new DefaultProcessingLog();
+        X11Results rslt = x11.process(timeSeries, spec);
+        return GenericResults.of(rslt, items, ProcessingLog.dummy()) ; 
+    }
     
 }

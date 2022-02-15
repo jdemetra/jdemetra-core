@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.sts;
+package jdplus.sts;
 
 import demetra.sa.SeriesDecomposition;
+import demetra.sts.BsmDecomposition;
+import demetra.sts.BsmDescription;
 
 /**
  *

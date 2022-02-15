@@ -18,7 +18,7 @@ package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.timeseries.TsData;
-import demetra.x11.X11Results;
+import jdplus.x11.X11Results;
 import demetra.x11.X11Spec;
 import demetra.x13.io.protobuf.X11Proto;
 import demetra.x13.io.protobuf.X11ResultsProto;

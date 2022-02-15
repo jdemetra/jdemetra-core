@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.benchmarking.extractors;
+package jdplus.benchmarking.extractors;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
-import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
+import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.Variable;
 import nbbrd.service.ServiceProvider;

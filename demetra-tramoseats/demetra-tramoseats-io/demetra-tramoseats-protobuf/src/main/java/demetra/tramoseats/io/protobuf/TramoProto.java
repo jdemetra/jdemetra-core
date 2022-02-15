@@ -8,7 +8,7 @@ package demetra.tramoseats.io.protobuf;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.tramo.TramoSpec;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
-import demetra.tramo.TramoOutput;
+import jdplus.tramo.TramoOutput;
 
 /**
  *

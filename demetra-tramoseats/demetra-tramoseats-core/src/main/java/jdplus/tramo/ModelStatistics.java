@@ -21,11 +21,10 @@ import demetra.stats.AutoCovariances;
 import jdplus.stats.samples.Sample;
 import jdplus.stats.tests.LjungBox;
 import jdplus.stats.tests.Skewness;
-import jdplus.tramo.internal.TramoUtility;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
-import jdplus.likelihood.ConcentratedLikelihood;
+import jdplus.stats.likelihood.ConcentratedLikelihood;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.ModelDescription;
 

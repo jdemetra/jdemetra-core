@@ -8,7 +8,7 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import jdplus.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
