@@ -175,7 +175,7 @@
             <properties>
                 <lombok.version>1.18.22</lombok.version>
                 <java-service.version>1.4.0</java-service.version>
-                <java-design.version>1.2.1</java-design.version>
+                <java-design.version>1.2.2</java-design.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -383,10 +383,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- Temp fix for binary incompatibility -->
+        <!-- assertj-core: temp fix for binary incompatibility -->
         <repository>
-            <id>ossrh-snapshots</id>
+            <id>ossrh-snapshots1</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- sdmx-dl: snapshots are located in another repository -->
+        <repository>
+            <id>ossrh-snapshots2</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

@@ -16,11 +16,11 @@
  */
 package internal.sql;
 
-import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesWithDataCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.ChildrenCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesWithDataCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.AllSeriesCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.AllSeriesWithDataCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.ChildrenCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.SeriesCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.SeriesWithDataCursor;
 import java.sql.ResultSet;
 import java.util.Date;
 

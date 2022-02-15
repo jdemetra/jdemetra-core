@@ -1,44 +1,46 @@
 /*
  * Copyright 2015 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.poc;
 
 import demetra.timeseries.TsData;
-import demetra.tsprovider.cube.CubeAccessor;
+import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeId;
+import demetra.tsprovider.cube.CubeSeries;
+import demetra.tsprovider.cube.CubeSeriesWithData;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import static demetra.timeseries.TsUnit.MONTH;
-import demetra.tsprovider.cube.CubeSeries;
-import demetra.tsprovider.cube.CubeSeriesWithData;
 import java.util.stream.Stream;
 
+import static demetra.timeseries.TsUnit.MONTH;
+
 /**
- *
  * @author Philippe Charles
  */
-final class FakeDbAccessor implements CubeAccessor {
+final class FakeDbConnection implements CubeConnection {
 
     private final CubeId root;
     private final Map<CubeId, TsData> data;
 
-    public FakeDbAccessor() {
+    public FakeDbConnection() {
         this.root = CubeId.root("REGION", "SECTOR");
         this.data = new HashMap<>();
         data.put(root.child("BE", "INDUSTRY"), TsData.random(MONTH, 1));
@@ -48,8 +50,8 @@ final class FakeDbAccessor implements CubeAccessor {
     }
 
     @Override
-    public IOException testConnection() {
-        return null;
+    public Optional<IOException> testConnection() {
+        return Optional.empty();
     }
 
     @Override
@@ -68,13 +70,13 @@ final class FakeDbAccessor implements CubeAccessor {
     }
 
     @Override
-    public CubeSeries getSeries(CubeId id) throws IOException {
-        return toSeriesStream(data).filter(ts -> id.isAncestorOf(ts.getId())).findFirst().orElse(null);
+    public Optional<CubeSeries> getSeries(CubeId id) throws IOException {
+        return toSeriesStream(data).filter(ts -> id.isAncestorOf(ts.getId())).findFirst();
     }
 
     @Override
-    public CubeSeriesWithData getSeriesWithData(CubeId id) throws IOException {
-        return toSeriesWithDataStream(data).filter(ts -> id.isAncestorOf(ts.getId())).findFirst().orElse(null);
+    public Optional<CubeSeriesWithData> getSeriesWithData(CubeId id) throws IOException {
+        return toSeriesWithDataStream(data).filter(ts -> id.isAncestorOf(ts.getId())).findFirst();
     }
 
     @Override
