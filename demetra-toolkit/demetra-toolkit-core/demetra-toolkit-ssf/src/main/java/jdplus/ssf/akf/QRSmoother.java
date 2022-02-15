@@ -6,8 +6,8 @@ package jdplus.ssf.akf;
 
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.StateStorage;
@@ -46,7 +46,7 @@ public class QRSmoother {
                 ++j;
             }
         }
-        QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, Xl);
         FastMatrix psi = ls.RtR();
         SymmetricMatrix.lcholesky(psi);
         DoubleSeq delta = ls.getB();

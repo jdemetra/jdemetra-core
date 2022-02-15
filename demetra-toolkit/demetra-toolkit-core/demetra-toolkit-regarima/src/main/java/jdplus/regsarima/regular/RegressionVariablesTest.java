@@ -21,7 +21,7 @@ import jdplus.regarima.DerivedRegressionTest;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import demetra.timeseries.regression.ITsVariable;
 import java.util.ArrayList;

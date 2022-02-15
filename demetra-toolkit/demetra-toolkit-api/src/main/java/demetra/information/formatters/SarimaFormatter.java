@@ -17,7 +17,6 @@
 
 package demetra.information.formatters;
 
-import demetra.arima.SarimaModel;
 import demetra.arima.SarimaOrders;
 
 /**
@@ -29,8 +28,7 @@ public class SarimaFormatter implements InformationFormatter {
     @Override
     public String format(Object obj, int item) {
 
-        SarimaModel model = (SarimaModel)obj;
-        SarimaOrders orders = model.orders();
+        SarimaOrders orders = (SarimaOrders) obj;
         switch (item) {
             case 0:
                 return orders.toString();

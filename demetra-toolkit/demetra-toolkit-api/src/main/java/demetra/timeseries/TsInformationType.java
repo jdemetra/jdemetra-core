@@ -88,6 +88,8 @@ public enum TsInformationType {
      * @return
      */
     public TsInformationType union(TsInformationType rtype) {
+        if (this == UserDefined)
+            return UserDefined;
         if (this == rtype) {
             return this;
         }
@@ -118,6 +120,8 @@ public enum TsInformationType {
      * @return True if the old type is larger than the new one
      */
     public boolean encompass(TsInformationType newtype) {
+        if (this == UserDefined)
+            return true;
         switch (newtype) {
             case All:
                 return this == All;

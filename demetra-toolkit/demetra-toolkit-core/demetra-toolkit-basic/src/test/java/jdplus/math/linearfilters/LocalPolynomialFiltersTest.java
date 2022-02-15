@@ -73,7 +73,8 @@ public class LocalPolynomialFiltersTest {
 
     @Test
     public void testZ() {
-        FastMatrix z = LocalPolynomialFilters.z(-12, 2, 0, 3);
+        FastMatrix Z = LocalPolynomialFilters.createZ(12, 3);
+        FastMatrix z = LocalPolynomialFilters.z(Z, -12, 2, 0, 3);
         assertTrue(z.sum() != 0);
     }
 

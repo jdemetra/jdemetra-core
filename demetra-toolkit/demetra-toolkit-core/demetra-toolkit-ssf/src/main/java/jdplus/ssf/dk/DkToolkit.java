@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.dk;
 
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
@@ -46,8 +46,8 @@ import jdplus.ssf.multivariate.IMultivariateSsfData;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.univariate.IFilteringResults;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -425,7 +425,7 @@ public class DkToolkit {
                         .scalingFactor(scaling)
                         .build();
             } else {
-                QRSolution ls = QRSolver.robustLeastSquares(yl, xl);
+                QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, xl);
                 DataBlock b = DataBlock.of(ls.getB());
                 DataBlock res = DataBlock.of(ls.getE());
                 double ssqerr = ls.getSsqErr();

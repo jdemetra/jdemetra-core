@@ -17,12 +17,13 @@
 package jdplus.tramoseats.spi;
 
 import demetra.processing.DefaultProcessingLog;
-import demetra.processing.ProcessingLog;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.seats.Seats;
-import demetra.seats.SeatsResults;
 import demetra.seats.SeatsSpec;
 import java.util.List;
 import jdplus.seats.SeatsKernel;
+import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
 import nbbrd.service.ServiceProvider;
 
@@ -34,13 +35,13 @@ import nbbrd.service.ServiceProvider;
 public class SeatsProcessor implements Seats.Processor{
 
     @Override
-    public SeatsResults process(SeatsSpec spec, List<String> addtionalItems) {
+    public ProcResults process(SeatsSpec spec, List<String> items) {
         // TODO Handling of additional items
         SeatsToolkit toolkit=SeatsToolkit.of(spec.getDecompositionSpec());
         SeatsKernel kernel=new SeatsKernel(toolkit);
         DefaultProcessingLog log =new DefaultProcessingLog();
-        jdplus.seats.SeatsResults rslts = kernel.process(spec.getModelSpec(), log);
-        return ApiUtility.toApi(rslts);
+        SeatsResults rslts = kernel.process(spec.getModelSpec(), log);
+        return GenericResults.of(rslts, items, log);
     }
 
 }

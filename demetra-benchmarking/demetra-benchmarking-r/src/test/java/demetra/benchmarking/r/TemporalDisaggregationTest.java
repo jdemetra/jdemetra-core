@@ -17,7 +17,7 @@
 package demetra.benchmarking.r;
 
 import demetra.data.Data;
-import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
+import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import org.junit.Test;

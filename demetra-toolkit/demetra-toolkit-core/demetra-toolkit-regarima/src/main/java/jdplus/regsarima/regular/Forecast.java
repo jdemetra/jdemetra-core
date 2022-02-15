@@ -6,10 +6,9 @@
 package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
-import demetra.modelling.implementations.RegSarimaProcessor;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
+import jdplus.modelling.GeneralLinearModel;
 
 /**
  *

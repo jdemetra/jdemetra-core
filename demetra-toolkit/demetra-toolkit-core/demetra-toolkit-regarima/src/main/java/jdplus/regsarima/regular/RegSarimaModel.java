@@ -17,16 +17,16 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.arima.SarimaSpec;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.information.GenericExplorable;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.likelihood.MissingValueEstimation;
-import demetra.likelihood.ParametersEstimation;
+import jdplus.stats.likelihood.LikelihoodStatistics;
+import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.data.ParametersEstimation;
 import demetra.math.matrices.Matrix;
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.stats.ProbabilityType;
 import demetra.timeseries.TsData;
@@ -36,10 +36,9 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightweightLinearModel;
-import demetra.timeseries.regression.modelling.RegressionItem;
-import demetra.timeseries.regression.modelling.Residuals;
+import demetra.timeseries.regression.RegressionItem;
+import demetra.timeseries.regression.ResidualsType;
+import demetra.toolkit.dictionaries.ResidualsDictionaries;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,11 +52,13 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.LogNormal;
 import jdplus.dstats.T;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.DefaultLikelihoodEvaluation;
-import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.IFunction;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.modelling.GeneralLinearModel;
+import jdplus.modelling.LightweightLinearModel;
+import jdplus.modelling.Residuals;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaForecasts;
@@ -69,6 +70,7 @@ import jdplus.regarima.estimation.RegArmaFunction;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
+import jdplus.stats.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 
@@ -202,23 +204,23 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                 .build();
 
         Residuals residuals = Residuals.builder()
-                .type(Residuals.Type.FullResiduals)
+                .type(ResidualsType.FullResiduals)
                 .res(fullRes)
                 .start(description.getEstimationDomain().getEndPeriod().plus(-fullRes.length()))
-                .test(Residuals.MEAN, niid.meanTest())
-                .test(Residuals.SKEW, niid.skewness())
-                .test(Residuals.KURT, niid.kurtosis())
-                .test(Residuals.DH, niid.normalityTest())
-                .test(Residuals.LB, niid.ljungBox())
-                .test(Residuals.BP, niid.boxPierce())
-                .test(Residuals.SEASLB, niid.seasonalLjungBox())
-                .test(Residuals.SEASBP, niid.seasonalBoxPierce())
-                .test(Residuals.LB2, niid.ljungBoxOnSquare())
-                .test(Residuals.BP2, niid.boxPierceOnSquare())
-                .test(Residuals.NRUNS, niid.runsNumber())
-                .test(Residuals.LRUNS, niid.runsLength())
-                .test(Residuals.NUDRUNS, niid.upAndDownRunsNumbber())
-                .test(Residuals.LUDRUNS, niid.upAndDownRunsLength())
+                .test(ResidualsDictionaries.MEAN, niid.meanTest())
+                .test(ResidualsDictionaries.SKEW, niid.skewness())
+                .test(ResidualsDictionaries.KURT, niid.kurtosis())
+                .test(ResidualsDictionaries.DH, niid.normalityTest())
+                .test(ResidualsDictionaries.LB, niid.ljungBox())
+                .test(ResidualsDictionaries.BP, niid.boxPierce())
+                .test(ResidualsDictionaries.SEASLB, niid.seasonalLjungBox())
+                .test(ResidualsDictionaries.SEASBP, niid.seasonalBoxPierce())
+                .test(ResidualsDictionaries.LB2, niid.ljungBoxOnSquare())
+                .test(ResidualsDictionaries.BP2, niid.boxPierceOnSquare())
+                .test(ResidualsDictionaries.NRUNS, niid.runsNumber())
+                .test(ResidualsDictionaries.LRUNS, niid.runsLength())
+                .test(ResidualsDictionaries.NUDRUNS, niid.upAndDownRunsNumbber())
+                .test(ResidualsDictionaries.LUDRUNS, niid.upAndDownRunsLength())
                 .build();
 
         return RegSarimaModel.builder()

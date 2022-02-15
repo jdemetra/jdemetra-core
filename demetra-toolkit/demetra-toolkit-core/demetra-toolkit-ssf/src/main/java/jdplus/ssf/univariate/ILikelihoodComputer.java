@@ -18,7 +18,7 @@
  */
 package jdplus.ssf.univariate;
 
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 
 /**
  *

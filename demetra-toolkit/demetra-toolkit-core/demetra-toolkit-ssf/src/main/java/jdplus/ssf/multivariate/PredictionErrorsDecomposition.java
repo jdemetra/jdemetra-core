@@ -20,10 +20,10 @@ import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import nbbrd.design.Development;
 import jdplus.ssf.IPredictionErrorDecomposition;
-import jdplus.likelihood.ResidualsCumulator;
+import jdplus.stats.likelihood.ResidualsCumulator;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 
 /**
  *

@@ -22,9 +22,9 @@ import demetra.math.Constants;
 import demetra.revisions.parametric.SignalNoise;
 import demetra.stats.ProbabilityType;
 import jdplus.dstats.F;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 
 /**
  *

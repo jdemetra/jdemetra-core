@@ -18,7 +18,7 @@ package jdplus.math.functions.ssq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import internal.jdplus.maths.functions.gsl.derivation.GslDerivation;
+import internal.jdplus.math.functions.gsl.derivation.GslDerivation;
 import java.util.function.DoubleFunction;
 import jdplus.data.DataBlock;
 import jdplus.math.functions.IFunction;

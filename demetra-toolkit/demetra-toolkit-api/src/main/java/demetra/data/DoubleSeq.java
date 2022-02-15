@@ -26,8 +26,6 @@ import internal.data.InternalDoubleSeqCursor;
 import internal.data.InternalDoubleVector;
 import internal.data.InternalDoubleVectorCursor;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;

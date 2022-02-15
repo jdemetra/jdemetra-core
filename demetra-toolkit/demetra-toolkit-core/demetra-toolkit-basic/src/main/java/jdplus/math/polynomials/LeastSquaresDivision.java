@@ -23,8 +23,8 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.matrices.decomposition.Householder;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 
@@ -56,7 +56,7 @@ public class LeastSquaresDivision {
                 ++c;
             }
             
-            QRSolution ls = QRSolver.fastLeastSquares(N, m);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(N, m);
             this.coeff=ls.getB().toArray();
             this.err = ls.getSsqErr() / d;
             return true;

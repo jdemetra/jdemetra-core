@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.util;
 
 /**
@@ -37,13 +36,14 @@ public class WildCards {
         wa = w.toCharArray();
         prepare();
     }
-    
+
     /**
      * Gets the original wild cards
-     * @return 
+     *
+     * @return
      */
     @Override
-    public String toString(){
+    public String toString() {
         return w;
     }
 
@@ -53,8 +53,9 @@ public class WildCards {
         if (lc < lmin) {
             return false;
         }
-        if (na == null && lc != lw)
+        if (na == null && lc != lw) {
             return false;
+        }
         initTest();
         do {
             if (test()) {
@@ -143,7 +144,7 @@ public class WildCards {
         }
         int ia = 0;
         int ir = la;
-        int il=na.length-1;
+        int il = na.length - 1;
         while (ia < il) {
             if (ir == na[ia]) {
                 break;
@@ -164,4 +165,9 @@ public class WildCards {
         na[il] = ir;
         return true;
     }
+
+    public static boolean hasWildCards(String str) {
+        return str.indexOf('*') >= 0 || str.indexOf('?') >= 0;
+    }
+
 }

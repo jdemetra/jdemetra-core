@@ -17,7 +17,7 @@
 package jdplus.regarima;
 
 import demetra.data.Data;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;

@@ -16,12 +16,10 @@
  */
 package jdplus.tramo;
 
-import demetra.sa.ComponentType;
-import demetra.sa.SaVariable;
 import nbbrd.design.BuilderPattern;
 import jdplus.dstats.F;
 import demetra.stats.ProbabilityType;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.IRegressionModule;

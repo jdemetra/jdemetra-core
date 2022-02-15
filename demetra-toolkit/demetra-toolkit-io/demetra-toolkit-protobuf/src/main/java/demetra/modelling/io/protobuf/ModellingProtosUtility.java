@@ -20,7 +20,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.Iterables;
 import demetra.data.Parameter;
 import demetra.data.Range;
-import demetra.modelling.StationaryTransformation;
+import jdplus.modelling.StationaryTransformation;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
@@ -241,14 +241,4 @@ public class ModellingProtosUtility {
                 
     }
 
-    public ModellingProtos.ArimaModel convert(demetra.arima.ArimaModel arima){
-        return ModellingProtos.ArimaModel.newBuilder()
-                .setName(arima.getName())
-                .addAllAr(Iterables.of(arima.getAr()))
-                .addAllDelta(Iterables.of(arima.getDelta()))
-                .addAllMa(Iterables.of(arima.getMa()))
-                .setInnovationVariance(arima.getInnovationVariance())
-                .build();
-                
-    }
 }

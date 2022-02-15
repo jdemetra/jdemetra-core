@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.math.Complex;
-import jdplus.math.linearfilters.internal.SymmetricFilterAlgorithms;
+import internal.jdplus.math.linearfilters.SymmetricFilterAlgorithms;
 import jdplus.math.polynomials.Polynomial;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntToDoubleFunction;
@@ -116,7 +116,7 @@ public final class SymmetricFilter implements IFiniteFilter {
     /**
      * Creates a symmetric filter using the given weights
      *
-     * @param w The full weights of the filter. The number ofFunction
+     * @param w The full weights of the filter. The number of
      * weights should be odd. moreover, they should be symmetric (w[i] ==
      * w[w.getDegree()-i]).
      * @return The corresponding

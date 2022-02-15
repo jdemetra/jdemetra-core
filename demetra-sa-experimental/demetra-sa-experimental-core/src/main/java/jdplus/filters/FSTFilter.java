@@ -7,12 +7,12 @@ package jdplus.filters;
 
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
-import internal.jdplus.maths.functions.gsl.integration.QAGS;
+import internal.jdplus.math.functions.gsl.integration.QAGS;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.data.DataBlock;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.functions.IFunctionPoint;

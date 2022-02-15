@@ -7,7 +7,7 @@ package jdplus.math.functions;
 
 import demetra.design.Algorithm;
 import nbbrd.design.Development;
-import internal.jdplus.maths.functions.gsl.integration.NumericalIntegrationProcessor;
+import internal.jdplus.math.functions.gsl.integration.NumericalIntegrationProcessor;
 import java.util.function.DoubleUnaryOperator;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;

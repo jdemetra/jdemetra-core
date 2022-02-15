@@ -21,19 +21,16 @@ import demetra.data.DoublesMath;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.x11.X11Results;
-import demetra.x13.X13Finals;
-import demetra.x13.X13Preadjustment;
 import demetra.x11.MsrTable;
 import demetra.x11.SeasonalFilterOption;
-import java.util.function.IntToDoubleFunction;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
 import demetra.stats.AutoCovariances;
+import java.util.function.IntToDoubleFunction;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.sa.tests.CombinedSeasonality;
 import jdplus.x11.X11Utility;
-import jdplus.x13.X13Results;
+import jdplus.x11.X11Results;
 
 /**
  * This class computes the M-Statistics

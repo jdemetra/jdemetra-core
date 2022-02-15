@@ -34,7 +34,7 @@ import jdplus.sarima.estimation.SarimaMapping;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
-import demetra.likelihood.DiffuseLikelihoodStatistics;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.univariate.Ssf;
 import demetra.information.GenericExplorable;

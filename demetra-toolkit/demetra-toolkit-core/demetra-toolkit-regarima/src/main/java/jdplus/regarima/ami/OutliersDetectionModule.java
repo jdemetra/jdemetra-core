@@ -19,7 +19,7 @@ package jdplus.regarima.ami;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import nbbrd.design.BuilderPattern;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;

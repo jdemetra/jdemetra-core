@@ -17,10 +17,9 @@
 package demetra.sa.csv;
 
 import demetra.information.Explorable;
-import demetra.information.InformationSet;
 import demetra.sa.SaDocument;
 import demetra.timeseries.TsData;
-import java.util.HashMap;
+import demetra.util.WildCards;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +43,7 @@ public class SeriesSummary {
             try {
                 item = item.toLowerCase();
                 if (results != null) {
-                    if (InformationSet.hasWildCards(item)) {
+                    if (WildCards.hasWildCards(item)) {
                         Map<String, TsData> all = results.searchAll(item, TsData.class);
                         all.keySet().forEach(s -> series.put(s, results.getData(s, TsData.class)));
                     } else {

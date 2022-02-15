@@ -17,9 +17,13 @@
 package demetra.tramoseats;
 
 import demetra.design.Algorithm;
+import demetra.information.Explorable;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,7 +40,7 @@ import nbbrd.service.ServiceDefinition;
 public class TramoSeats {
 
     private final TramoSeatsLoader.Processor ENGINE = new TramoSeatsLoader.Processor();
-    private final AtomicReference<Processor> LEGACYENGINE=new AtomicReference<Processor>();
+    private final AtomicReference<Processor> LEGACYENGINE = new AtomicReference<Processor>();
 
     public void setEngine(Processor algorithm) {
         ENGINE.set(algorithm);
@@ -46,11 +50,11 @@ public class TramoSeats {
         return ENGINE.get();
     }
 
-    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public ProcResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
         return ENGINE.get().process(series, spec, context, addtionalItems);
     }
-    
-    public  Map<String, Class> outputDictionary(boolean compact){
+
+    public Map<String, Class> outputDictionary(boolean compact) {
         return ENGINE.get().outputDictionary(compact);
     }
 
@@ -62,18 +66,34 @@ public class TramoSeats {
         return LEGACYENGINE.get();
     }
 
-    public TramoSeatsResults processLegacy(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public ProcResults processLegacy(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
         Processor cp = LEGACYENGINE.get();
-        if (cp == null)
+        if (cp == null) {
             throw new TramoSeatsException("No legacy engine");
+        }
         return cp.process(series, spec, context, addtionalItems);
     }
 
+    public final static class DefProcessor implements Processor {
+
+        @Override
+        public ProcResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems) {
+            return GenericResults.notImplemented();
+        }
+
+        @Override
+        public Map<String, Class> outputDictionary(boolean compact) {
+            return Collections.emptyMap();
+        }
+
+    };
+
     @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback = DefProcessor.class)
     public static interface Processor {
 
-        public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems);
+        public ProcResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> addtionalItems);
+
         public Map<String, Class> outputDictionary(boolean compact);
 
     }

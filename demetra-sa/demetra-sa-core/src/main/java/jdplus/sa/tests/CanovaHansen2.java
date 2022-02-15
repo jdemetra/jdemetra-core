@@ -7,11 +7,11 @@ package jdplus.sa.tests;
 
 import jdplus.data.analysis.TrigonometricSeries;
 import jdplus.data.analysis.WindowFunction;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.RobustCovarianceComputer;
 import demetra.data.DoubleSeq;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.math.matrices.FastMatrix;
 
 /**

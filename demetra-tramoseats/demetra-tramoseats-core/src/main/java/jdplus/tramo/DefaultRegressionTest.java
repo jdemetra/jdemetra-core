@@ -16,14 +16,12 @@
  */
 package jdplus.tramo;
 
-import demetra.sa.ComponentType;
-import demetra.sa.SaVariable;
 import jdplus.regsarima.regular.TRegressionTest;
 import jdplus.regarima.FRegressionTest;
 import jdplus.regsarima.regular.IRegressionTest;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.timeseries.regression.Variable;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -36,9 +34,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regarima.IRegArimaComputer;
 

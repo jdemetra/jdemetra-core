@@ -16,7 +16,7 @@
  */
 package demetra.x13;
 
-import demetra.sa.SaDictionary;
+import demetra.sa.SaDictionaries;
 
 /**
  *
@@ -32,7 +32,7 @@ public class X13Dictionary {
         "a7", "a8", "a8t", "a8s", "a8i", "a9", "a9u", "a9sa", "a9ser"};
 
     // Decomposition
-    public final String X11 = SaDictionary.DECOMPOSITION;
+    public final String X11 = SaDictionaries.DECOMPOSITION;
 
     public final String[] B_TABLE = new String[]{"b1", "b2", "b3", "b4", "b5",
         "b6", "b7", "b8", "b9", "b10", "b11", "b13", "b17", "b20"};

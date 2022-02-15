@@ -7,12 +7,12 @@ package demetra.sts.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
-import demetra.likelihood.ParametersEstimation;
-import demetra.sts.BasicStructuralModel;
-import demetra.sts.BsmEstimation;
+import demetra.data.ParametersEstimation;
+import jdplus.sts.BasicStructuralModel;
+import jdplus.sts.BsmEstimation;
 import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
-import demetra.sts.LightBasicStructuralModel;
+import jdplus.sts.LightBasicStructuralModel;
 import demetra.sts.SeasonalModel;
 import demetra.sts.io.protobuf.StsProtosUtility;
 import demetra.timeseries.TsData;

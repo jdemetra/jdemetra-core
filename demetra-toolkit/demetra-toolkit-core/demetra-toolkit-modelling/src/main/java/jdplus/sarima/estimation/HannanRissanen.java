@@ -23,12 +23,12 @@ import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.matrices.FastMatrix;
 import nbbrd.design.BuilderPattern;
-import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 
 /**
  * The Hannan-Rissanen procedure is performed as in TRAMO. See
@@ -126,7 +126,7 @@ public class HannanRissanen {
     }
     
     private double[] ls(FastMatrix mat, double[] y, boolean bbic) {
-        QRSolution rslt = QRSolver.fastLeastSquares(DataBlock.of(y), mat);
+        QRLeastSquaresSolution rslt = QRLeastSquaresSolver.fastLeastSquares(DataBlock.of(y), mat);
         DoubleSeq pi = rslt.getB();
         int n = y.length, m = pi.count(x -> x != 0);
         if (bbic) {

@@ -18,7 +18,7 @@ package jdplus.ssf.likelihood;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 import jdplus.math.matrices.FastMatrix;
 
 /**

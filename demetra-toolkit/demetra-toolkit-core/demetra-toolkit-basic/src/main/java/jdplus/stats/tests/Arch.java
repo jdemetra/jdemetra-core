@@ -20,9 +20,9 @@ import demetra.data.DoubleSeq;
 import nbbrd.design.BuilderPattern;
 import demetra.stats.StatException;
 import demetra.stats.StatisticalTest;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 
 /**
  *

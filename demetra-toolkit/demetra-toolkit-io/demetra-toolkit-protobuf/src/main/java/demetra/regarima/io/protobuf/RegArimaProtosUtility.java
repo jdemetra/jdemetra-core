@@ -16,8 +16,8 @@
  */
 package demetra.regarima.io.protobuf;
 
+import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 
 /**

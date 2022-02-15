@@ -6,12 +6,7 @@
 package jdplus.tramoseats.legacy;
 
 import demetra.data.DoubleSeq;
-import demetra.likelihood.ParametersEstimation;
-import demetra.modelling.implementations.SarimaSpec;
 import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.LightweightLinearModel;
-import demetra.timeseries.regression.modelling.LightweightRegSarimaModel;
-import demetra.timeseries.regression.modelling.Residuals;
 import demetra.tramo.TramoSpec;
 import ec.tstoolkit.arima.estimation.LikelihoodStatistics;
 import ec.tstoolkit.modelling.arima.PreprocessingModel;

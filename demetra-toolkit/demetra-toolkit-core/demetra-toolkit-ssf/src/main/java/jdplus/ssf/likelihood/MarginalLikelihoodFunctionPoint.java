@@ -26,7 +26,7 @@ import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.ISsf;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.stats.likelihood.LikelihoodFunctionPoint;
 import jdplus.ssf.SsfException;
 
 /**

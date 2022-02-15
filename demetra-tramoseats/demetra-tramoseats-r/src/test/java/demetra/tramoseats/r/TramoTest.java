@@ -16,17 +16,17 @@
  */
 package demetra.tramoseats.r;
 
-import demetra.arima.SarimaModel;
 import demetra.data.Data;
 import demetra.math.matrices.Matrix;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import demetra.tramo.TramoOutput;
+import jdplus.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
 import java.util.Arrays;
 import java.util.Map;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sarima.SarimaModel;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

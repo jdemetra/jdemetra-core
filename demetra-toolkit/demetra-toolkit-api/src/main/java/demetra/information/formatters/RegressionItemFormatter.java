@@ -16,7 +16,7 @@
  */
 package demetra.information.formatters;
 
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
 import java.text.DecimalFormat;
 
 /**

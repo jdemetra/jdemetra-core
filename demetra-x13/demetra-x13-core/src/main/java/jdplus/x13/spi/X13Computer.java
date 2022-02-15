@@ -18,16 +18,17 @@ package jdplus.x13.spi;
 
 import demetra.information.InformationExtractors;
 import demetra.processing.DefaultProcessingLog;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.X13;
-import demetra.x13.X13Results;
 import demetra.x13.X13Spec;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import jdplus.x13.X13Kernel;
-import jdplus.x13.extractors.X13Extractor;
+import jdplus.x13.X13Results;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -38,25 +39,12 @@ import nbbrd.service.ServiceProvider;
 public class X13Computer implements X13.Processor {
     
     @Override
-    public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> additionalItems) {
+    public ProcResults process(TsData series, X13Spec spec, ModellingContext context, List<String> items) {
         X13Kernel x13 = X13Kernel.of(spec, context);
         DefaultProcessingLog log = new DefaultProcessingLog();
-        jdplus.x13.X13Results rslt = x13.process(series, log);
-        // Handling of additional items
-        X13Results.Builder builder = X13Results.builder();
-        for (String key : additionalItems) {
-            Object data = rslt.getData(key, Object.class);
-            if (data != null) {
-                builder.addtionalResult(key, data);
-            }
-        }
-        return builder.preadjustment(rslt.getPreadjustment())
-//                .preprocessing(ApiUtility.toApi(rslt.getPreprocessing()))
-                .decomposition(rslt.getDecomposition())
-                .finals(rslt.getFinals())
-                .logs(log.all())
-                .build();
-    }
+        X13Results rslt = x13.process(series, log);
+        return GenericResults.of(rslt, items, log) ; 
+     }
     
     @Override
     public Map<String, Class> outputDictionary(boolean compact) {

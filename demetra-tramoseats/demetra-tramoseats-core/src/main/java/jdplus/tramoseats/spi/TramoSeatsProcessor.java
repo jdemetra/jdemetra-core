@@ -18,10 +18,11 @@ package jdplus.tramoseats.spi;
 
 import demetra.information.InformationExtractors;
 import demetra.processing.DefaultProcessingLog;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeats;
-import demetra.tramoseats.TramoSeatsResults;
 import demetra.tramoseats.TramoSeatsSpec;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,24 +38,11 @@ import nbbrd.service.ServiceProvider;
 public class TramoSeatsProcessor implements TramoSeats.Processor {
 
     @Override
-    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> additionalItems) {
+    public ProcResults process(TsData series, TramoSeatsSpec spec, ModellingContext context, List<String> items) {
         TramoSeatsKernel tramoseats = TramoSeatsKernel.of(spec, context);
         DefaultProcessingLog log = new DefaultProcessingLog();
         jdplus.tramoseats.TramoSeatsResults rslt = tramoseats.process(series, log);
-        // Handling of additional items
-        TramoSeatsResults.Builder builder = TramoSeatsResults.builder();
-        for (String key : additionalItems) {
-            Object data = rslt.getData(key, Object.class);
-            if (data != null) {
-                builder.addtionalResult(key, data);
-            }
-        }
-        return builder
-                //               .preprocessing(jdplus.regarima.ApiUtility.toApi(rslt.getPreprocessing()))
-                .decomposition(ApiUtility.toApi(rslt.getDecomposition()))
-                .finals(rslt.getFinals())
-                .logs(log.all())
-                .build();
+        return GenericResults.of(rslt, items, log);
     }
 
     @Override

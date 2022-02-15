@@ -18,7 +18,7 @@ package jdplus.x13.regarima;
 
 import demetra.arima.SarimaOrders;
 import demetra.math.Complex;
-import demetra.modelling.implementations.RegSarimaProcessor;
+import jdplus.regsarima.regular.RegSarimaProcessor;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.RegArimaException;
 import demetra.regarima.RegArimaSpec;

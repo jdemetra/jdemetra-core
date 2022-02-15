@@ -20,10 +20,10 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.revisions.parametric.AutoCorrelationTests;
 import demetra.stats.StatisticalTest;
-import jdplus.linearmodel.BreuschGodfrey;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.BreuschGodfrey;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.stats.tests.LjungBox;
 
 /**

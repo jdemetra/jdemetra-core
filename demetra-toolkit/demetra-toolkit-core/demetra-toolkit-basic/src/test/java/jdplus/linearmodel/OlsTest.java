@@ -16,6 +16,9 @@
  */
 package jdplus.linearmodel;
 
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.Ols;
 import demetra.data.DataSets;
 import org.junit.Test;
 import static org.junit.Assert.*;

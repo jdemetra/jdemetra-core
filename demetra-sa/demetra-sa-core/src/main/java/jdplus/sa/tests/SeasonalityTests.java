@@ -20,7 +20,7 @@ import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
 import demetra.timeseries.TsException;
 import demetra.data.DoubleSeq;
-import demetra.modelling.DifferencingResult;
+import jdplus.modelling.DifferencingResult;
 import demetra.stats.StatisticalTest;
 
 /**

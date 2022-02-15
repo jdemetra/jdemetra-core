@@ -204,7 +204,7 @@ public class X11KernelTest {
                 .forecastHorizon(forecastHorizon)
                 .build();
 
-        demetra.x11.X11Results x11Results = instanceKernel.process(tsData, spec);
+        jdplus.x11.X11Results x11Results = instanceKernel.process(tsData, spec);
 
         X11Specification oldSpec = new X11Specification();
         oldSpec.setMode(ec.satoolkit.DecompositionMode.valueOf(modeName));

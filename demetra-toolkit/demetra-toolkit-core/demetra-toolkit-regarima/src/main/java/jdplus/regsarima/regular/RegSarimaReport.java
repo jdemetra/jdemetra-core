@@ -18,7 +18,7 @@ package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleList;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.AdditiveOutlier;

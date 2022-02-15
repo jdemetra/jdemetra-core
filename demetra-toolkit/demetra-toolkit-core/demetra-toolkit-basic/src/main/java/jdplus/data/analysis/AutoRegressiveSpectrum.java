@@ -21,8 +21,8 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.DataWindow;
 import demetra.data.DoubleSeq;
 import nbbrd.design.Development;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
 
@@ -121,7 +121,7 @@ public class AutoRegressiveSpectrum {
                 cols.next().copy(rc.move(-1));
             }
 
-            QRSolution ls = QRSolver.fastLeastSquares(DataBlock.of(all, nar, n, 1), M);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(DataBlock.of(all, nar, n, 1), M);
             ar = new double[nar];
             DoubleSeq c = ls.getB();
             DataBlock D=DataBlock.of(c);

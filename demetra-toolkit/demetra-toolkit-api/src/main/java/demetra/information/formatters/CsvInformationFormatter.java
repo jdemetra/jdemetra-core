@@ -16,16 +16,19 @@
  */
 package demetra.information.formatters;
 
-import demetra.arima.SarimaModel;
+import demetra.arima.SarimaOrders;
 import demetra.data.Parameter;
+import demetra.information.Explorable;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.math.Complex;
 import demetra.processing.ProcDiagnostic;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
+import demetra.util.MultiLineNameUtil;
 import demetra.util.NamedObject;
+import demetra.util.WildCards;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Type;
@@ -38,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import demetra.information.Explorable;
-import demetra.util.MultiLineNameUtil;
 
 /**
  *
@@ -72,7 +73,7 @@ public class CsvInformationFormatter {
         DICTIONARY.put(Boolean.class, new BooleanFormatter("1", "0"));
         DICTIONARY.put(Complex.class, new ComplexFormatter());
         DICTIONARY.put(String.class, new StringFormatter());
-        DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
+        DICTIONARY.put(SarimaOrders.class, new SarimaFormatter());
         DICTIONARY.put(Parameter.class, new ParameterFormatter());
         DICTIONARY.put(TsPeriod.class, new PeriodFormatter());
         DICTIONARY.put(RegressionItem.class, new RegressionItemFormatter(true));
@@ -133,7 +134,7 @@ public class CsvInformationFormatter {
                     length = 1;
                 }
             }
-            if (InformationSet.hasWildCards(sid)) {
+            if (WildCards.hasWildCards(sid)) {
                 List<Information<Object>> sel = record.select(sid);
                 if (!sel.isEmpty()) {
                     int n = sel.size();
@@ -179,7 +180,7 @@ public class CsvInformationFormatter {
                 }
             }
             // request with wild cards
-            if (InformationSet.hasWildCards(sid)) {
+            if (WildCards.hasWildCards(sid)) {
                 try{
                 Map<String, Object> sel = record.searchAll(sid, Object.class);
                 if (!sel.isEmpty()) {

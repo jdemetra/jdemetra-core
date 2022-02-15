@@ -20,7 +20,7 @@ import demetra.html.AbstractHtmlElement;
 import demetra.html.HtmlStream;
 import demetra.html.HtmlTag;
 import demetra.html.modelling.HtmlRegSarima;
-import demetra.x11.X11Results;
+import jdplus.x11.X11Results;
 import java.io.IOException;
 import java.util.List;
 

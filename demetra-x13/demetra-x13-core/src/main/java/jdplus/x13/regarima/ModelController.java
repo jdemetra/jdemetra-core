@@ -20,7 +20,7 @@ package jdplus.x13.regarima;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
-import jdplus.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.LinearModel;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArmaModel;
 import jdplus.regsarima.regular.IAmiController;

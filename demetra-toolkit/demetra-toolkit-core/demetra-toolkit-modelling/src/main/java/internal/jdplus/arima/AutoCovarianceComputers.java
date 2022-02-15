@@ -21,10 +21,10 @@ import jdplus.arima.AutoCovarianceFunction;
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.RationalFunction;
-import jdplus.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.MatrixException;
 
 /**

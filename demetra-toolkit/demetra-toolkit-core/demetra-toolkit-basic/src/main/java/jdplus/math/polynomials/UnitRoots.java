@@ -23,7 +23,7 @@ import jdplus.math.ComplexUtility;
 import jdplus.math.Arithmetics;
 import jdplus.math.Simplifying;
 import demetra.util.IntList;
-import internal.jdplus.maths.polynomials.Coefficients;
+import internal.jdplus.math.polynomials.Coefficients;
 
 /**
  *

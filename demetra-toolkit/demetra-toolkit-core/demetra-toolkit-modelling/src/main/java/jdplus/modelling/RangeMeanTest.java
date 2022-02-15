@@ -17,9 +17,9 @@
 package jdplus.modelling;
 
 import nbbrd.design.Development;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import java.util.Arrays;
 import demetra.data.DoubleSeq;
 

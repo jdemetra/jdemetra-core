@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-public class UcarimaModel implements Cloneable {
+public class UcarimaModel {
 
     /**
      * Creates a new Ucarima model corresponding to a given aggregation model
@@ -93,7 +93,7 @@ public class UcarimaModel implements Cloneable {
          */
         public final ArimaModel sum() {
             if (components.isEmpty()) {
-                return ArimaModel.whiteNoise(0);
+                return ArimaModel.NULL;
             }
             ArimaModel sum = components.get(0);
 
@@ -112,6 +112,8 @@ public class UcarimaModel implements Cloneable {
     private static final double EPS = 1e-6;
     private final IArimaModel model;
     private final ArimaModel[] components;
+    private final ArimaModel[] complements;
+    private volatile ArimaModel sum;
 
     /**
      * Creates a new empty Ucarima model
@@ -119,6 +121,7 @@ public class UcarimaModel implements Cloneable {
     UcarimaModel(final IArimaModel model, final ArimaModel[] cmps) {
         this.model = model;
         this.components = cmps;
+        this.complements = new ArimaModel[cmps.length];
     }
 
     /**
@@ -163,25 +166,22 @@ public class UcarimaModel implements Cloneable {
         if (components.length <= 1) {
             return ArimaModel.NULL;
         }
-
-        ArimaModel sum = null;
-        for (int i = 0; i < components.length; ++i) {
-            if (cmp != i) {
-                ArimaModel cur = components[i];
-                if (!cur.isNull()) {
-                    if (sum == null) {
-                        sum = cur;
-                    } else {
-                        sum = sum.plus(cur, false);
+        ArimaModel m = complements[cmp];
+        if (m == null) {
+            synchronized (this) {
+                m = ArimaModel.NULL;
+                for (int i = 0; i < components.length; ++i) {
+                    if (cmp != i) {
+                        ArimaModel cur = components[i];
+                        if (!cur.isNull()) {
+                            m = m.plus(cur, false);
+                        }
                     }
                 }
+                complements[cmp] = m;
             }
         }
-        if (sum == null) {
-            return ArimaModel.NULL;
-        }
-        return sum;
-
+        return m;
     }
 
     /**
@@ -219,14 +219,18 @@ public class UcarimaModel implements Cloneable {
     }
 
     public ArimaModel sum() {
-        ArimaModel s = null;
-        for (int i = 0; i < components.length; ++i) {
-            if (!components[i].isNull()) {
-                if (s == null) {
-                    s = of(components[i]);
-                } else {
-                    s = s.plus(of(components[i]), false);
+        ArimaModel s = sum;
+        if (s == null)
+            synchronized (this) {
+            s = sum;
+            if (s == null) {
+                s = ArimaModel.NULL;
+                for (int i = 0; i < components.length; ++i) {
+                    if (!components[i].isNull()) {
+                        s = s.plus(of(components[i]), false);
+                    }
                 }
+                sum = s;
             }
         }
         return s;
@@ -287,7 +291,8 @@ public class UcarimaModel implements Cloneable {
      * @param adjustModel If the sum of the removed noises is negative and the
      * adjustModel parameter is true, the aggregated model is increased by the
      * opposite of that "negative noise". Otherwise, a null is returned.
-     * @return The new decomposition (or null if the decomposition cannot be done).
+     * @return The new decomposition (or null if the decomposition cannot be
+     * done).
      */
     public UcarimaModel setVarianceMax(int ncmp, boolean adjustModel) {
         double var = 0;

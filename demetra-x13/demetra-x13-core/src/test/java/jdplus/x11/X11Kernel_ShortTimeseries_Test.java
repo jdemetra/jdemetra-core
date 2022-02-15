@@ -558,7 +558,7 @@ public class X11Kernel_ShortTimeseries_Test {
                 .filters(getNewSeasonalFilter(seasonalFilterOptionName))
                 .buildWithoutValidation();//this has to be removed
 
-        demetra.x11.X11Results x11Results = instanceKernel.process(
+        jdplus.x11.X11Results x11Results = instanceKernel.process(
                 demetra.timeseries.TsData.of(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), LocalDate.of(1900, Month.JANUARY, 1)),
                         DoubleSeq.of(values)), spec);
 

@@ -25,7 +25,7 @@ import demetra.math.Complex;
 import jdplus.math.matrices.MatrixException;
 import jdplus.math.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.FastMatrix;
 
 /**
