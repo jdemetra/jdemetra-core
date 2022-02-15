@@ -18,8 +18,9 @@ package demetra.tsprovider;
 
 import demetra.util.UriBuilder;
 import internal.util.SortedMaps;
+import nbbrd.design.RepresentableAs;
+import nbbrd.design.RepresentableAsString;
 import nbbrd.design.StaticFactoryMethod;
-import nbbrd.design.StringValue;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -39,7 +40,8 @@ import java.util.SortedMap;
  *
  * @author Philippe Charles
  */
-@StringValue
+@RepresentableAsString
+@RepresentableAs(value = URI.class, parseMethodName = "parseURI")
 @lombok.Value
 @lombok.Builder(toBuilder = true)
 public class DataSource {
@@ -60,12 +62,21 @@ public class DataSource {
 
     @Override
     public String toString() {
-        return formatAsUri(this);
+        return formatAsUri(this).buildString();
+    }
+
+    public @NonNull URI toURI() {
+        return formatAsUri(this).build();
     }
 
     @StaticFactoryMethod
     public static @NonNull DataSource parse(@NonNull CharSequence input) throws IllegalArgumentException {
-        return parseAsUri(input);
+        return parseAsUri(URI.create(input.toString()));
+    }
+
+    @StaticFactoryMethod
+    public static @NonNull DataSource parseURI(@NonNull URI uri) throws IllegalArgumentException {
+        return parseAsUri(uri);
     }
 
     @StaticFactoryMethod
@@ -98,8 +109,7 @@ public class DataSource {
     private static final String SCHEME = "demetra";
     private static final String HOST = "tsprovider";
 
-    private static DataSource parseAsUri(CharSequence input) throws IllegalArgumentException {
-        URI uri = URI.create(input.toString());
+    private static DataSource parseAsUri(URI uri) throws IllegalArgumentException {
         if (!SCHEME.equals(uri.getScheme())) {
             throw new IllegalArgumentException("Invalid scheme: " + uri.getScheme());
         }
@@ -117,11 +127,10 @@ public class DataSource {
         return new DataSource(path[0], path[1], SortedMaps.immutableCopyOf(query));
     }
 
-    private static String formatAsUri(DataSource value) {
+    private static UriBuilder formatAsUri(DataSource value) {
         return new UriBuilder(SCHEME, HOST)
                 .path(value.getProviderName(), value.getVersion())
-                .query(value.getParameters())
-                .buildString();
+                .query(value.getParameters());
     }
 
     /**

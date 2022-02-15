@@ -51,8 +51,5 @@ public interface IMultivariateAugmentedFilteringResults {
      * @param info
      */
     void save(int t, AugmentedState state, StateInfo info);
-    
-    boolean canCollapse();
-    
-    boolean collapse(AugmentedState state);
+   
 }

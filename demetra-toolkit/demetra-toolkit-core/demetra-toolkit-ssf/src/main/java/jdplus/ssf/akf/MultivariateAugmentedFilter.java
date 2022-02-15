@@ -144,7 +144,7 @@ public class MultivariateAugmentedFilter {
      * @param rslts
      * @return
      */
-    public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateAugmentedFilteringResults rslts) {
+    public boolean process(final IMultivariateSsf ssf, final IMultivariateSsfData data, final IMultivariateQFilteringResults rslts) {
         this.ssf=ssf;
         measurements = ssf.measurements();
         dynamics = ssf.dynamics();
@@ -173,7 +173,7 @@ public class MultivariateAugmentedFilter {
         return true;
     }
 
-    protected boolean collapse(IMultivariateAugmentedFilteringResults decomp) {
+    protected boolean collapse(IMultivariateQFilteringResults decomp) {
         if (!collapsing) {
             return false;
         }

@@ -44,7 +44,7 @@ public class SmoothationsComputer {
     private ISsfLoading loading;
     private DataBlockStorage allR;
     private MatrixStorage allRvar;
-    private DefaultAugmentedFilteringResults frslts;
+    private DefaultQFilteringResults frslts;
 
     private double err, errVariance;
     private double u, uc, ucVariance;
@@ -56,7 +56,7 @@ public class SmoothationsComputer {
 
     public boolean process(ISsf ssf, final ISsfData data) {
         int n = data.length();
-        frslts = DefaultAugmentedFilteringResults.light();
+        frslts = DefaultQFilteringResults.light();
         frslts.prepare(ssf, 0, n);
         AugmentedFilter filter = new AugmentedFilter(false);
         filter.process(ssf, data, frslts);
@@ -253,7 +253,7 @@ public class SmoothationsComputer {
         loading = ssf.loading();
     }
 
-    public DefaultAugmentedFilteringResults getFilteringResults() {
+    public DefaultQFilteringResults getFilteringResults() {
         return frslts;
     }
     

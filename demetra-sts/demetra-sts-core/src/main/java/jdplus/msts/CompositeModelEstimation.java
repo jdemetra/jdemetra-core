@@ -69,7 +69,7 @@ public class CompositeModelEstimation {
         rslt.cmpName = mapping.parametersName();
         rslt.parametersName = mapping.parametersName();
         if (marginal) {
-            rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated).
+            rslt.likelihood = AkfToolkit.marginalLikelihoodComputer(concentrated, true).
                     compute(M2uAdapter.of(rslt.getSsf()), M2uAdapter.of(new SsfMatrix(data)));
         } else {
             rslt.likelihood = DkToolkit.likelihood(rslt.getSsf(), new SsfMatrix(data), true, false);
@@ -88,8 +88,7 @@ public class CompositeModelEstimation {
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
             try {
-                StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false, false);
-//            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+                StateStorage ss = AkfToolkit.robustSmooth(getSsf(),  new SsfMatrix(getData()), true, false);
                 if (likelihood.isScalingFactor()) {
                     ss.rescaleVariances(likelihood.sigma2());
                 }

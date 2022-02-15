@@ -19,7 +19,7 @@ package jdplus.x13.regarima;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDocument;
+import demetra.timeseries.AbstractTsDocument;
 import demetra.timeseries.regression.ModellingContext;
 import jdplus.regsarima.regular.RegSarimaModel;
 
@@ -27,7 +27,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
  *
  * @author PALATEJ
  */
-public class RegArimaDocument extends TsDocument<RegArimaSpec, RegSarimaModel> {
+public class RegArimaDocument extends AbstractTsDocument<RegArimaSpec, RegSarimaModel> {
 
     private final ModellingContext context;
 

@@ -7,11 +7,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8, 11 ]
+        java: [ 8, 17 ]
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
         experimental: [ false ]
         include:
-          - java: '>11'
+          - java: '-ea'
             os: ubuntu-latest
             experimental: true
 
@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
+          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v2
@@ -42,7 +43,7 @@ jobs:
     if: startsWith(github.repository, 'jdemetra/') && startsWith(github.ref, 'refs/tags/v')
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
         os: [ ubuntu-latest ]
 
     name: Release on tag
@@ -53,6 +54,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
+          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v2

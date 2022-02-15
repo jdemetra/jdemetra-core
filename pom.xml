@@ -39,7 +39,7 @@
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd2.version>2.2.4-SNAPSHOT</jd2.version>
-        <java-io-util.version>0.0.15</java-io-util.version>
+        <java-io-util.version>0.0.17</java-io-util.version>
     </properties>
 
     <modules>
@@ -68,7 +68,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.21.1</version>
+                <version>3.21.2</version>
             </dependency>
 
             <!-- test libraries -->
@@ -140,12 +140,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.8.1</version>
+                        <version>3.9.0</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.2.2</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -175,7 +175,7 @@
             <properties>
                 <lombok.version>1.18.22</lombok.version>
                 <java-service.version>1.4.0</java-service.version>
-                <java-design.version>1.1.3</java-design.version>
+                <java-design.version>1.2.2</java-design.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -207,7 +207,7 @@
                     <dependency>
                         <groupId>com.google.protobuf</groupId>
                         <artifactId>protobuf-java</artifactId>
-                        <version>3.19.2</version>
+                        <version>3.19.4</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>
@@ -271,6 +271,11 @@
                                 <artifactId>pomchecker-enforcer-rules</artifactId>
                                 <version>1.2.0</version>
                             </dependency>
+                            <dependency>
+                                <groupId>org.codehaus.mojo</groupId>
+                                <artifactId>extra-enforcer-rules</artifactId>
+                                <version>1.5.1</version>
+                            </dependency>
                         </dependencies>
                         <executions>
                             <execution>
@@ -292,6 +297,12 @@
                                             <release>false</release>
                                             <strict>false</strict>
                                         </CheckMavenCentral>
+                                        <enforceBytecodeVersion>
+                                            <maxJdkVersion>8</maxJdkVersion>
+                                            <ignoredScopes>
+                                                <ignoreScope>test</ignoreScope>
+                                            </ignoredScopes>
+                                        </enforceBytecodeVersion>
                                     </rules>
                                 </configuration>
                             </execution>
@@ -372,10 +383,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- Temp fix for binary incompatibility -->
+        <!-- assertj-core: temp fix for binary incompatibility -->
         <repository>
-            <id>ossrh-snapshots</id>
+            <id>ossrh-snapshots1</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <!-- sdmx-dl: snapshots are located in another repository -->
+        <repository>
+            <id>ossrh-snapshots2</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

@@ -19,7 +19,7 @@ package demetra.x13.html;
 import demetra.html.AbstractHtmlElement;
 import demetra.html.HtmlStream;
 import demetra.html.HtmlTag;
-import demetra.html.modelling.HtmlRegArima;
+import demetra.html.modelling.HtmlRegSarima;
 import demetra.x11.X11Results;
 import java.io.IOException;
 import java.util.List;
@@ -73,7 +73,7 @@ public class HtmlX13Summary extends AbstractHtmlElement  {
 //            stream.write(HtmlTag.HEADER2, "No pre-processing").newLine();
 //        } else {
 //            stream.write(HtmlTag.HEADER2, "Pre-processing (RegArima)").newLine();
-//            stream.write(new HtmlRegArima(preprocessing_, true));
+//            stream.write(new HtmlRegSarima(preprocessing_, true));
 //        }
 //    }
 //

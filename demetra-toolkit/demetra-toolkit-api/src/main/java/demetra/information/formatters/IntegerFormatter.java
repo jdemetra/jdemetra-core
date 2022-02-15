@@ -28,7 +28,7 @@ class IntegerFormatter implements InformationFormatter {
     @Override
     public String format(Object obj, int item) {
         if (item > 0)
-            return "";
+            return null;
         int i = (Integer)obj;
         NumberFormat ifmt = NumberFormat.getIntegerInstance();
         ifmt.setGroupingUsed(false);

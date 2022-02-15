@@ -21,8 +21,13 @@ import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import org.junit.Test;
 
+import java.net.URI;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.HamcrestCondition.matching;
+import static org.assertj.core.condition.MappedCondition.mappedCondition;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * @author Philippe Charles
@@ -130,6 +135,34 @@ public class DataSourceTest {
                 .isNotSameAs(builder.build());
         assertThat(builder.parameter(K1, "hello").build().getParameter(K1)).isEqualTo("hello");
         assertThat(builder.clearParameters().build().getParameters()).isEmpty();
+    }
+
+    @Test
+    public void testRepresentableAsString() {
+        DataSource dataSource = DataSource
+                .builder("ABC", "123")
+                .parameter("k1", "v1")
+                .build();
+
+        String expected = "demetra://tsprovider/ABC/123?k1=v1";
+
+        assertThat(dataSource)
+                .hasToString(expected)
+                .isEqualTo(DataSource.parse(expected));
+    }
+
+    @Test
+    public void testRepresentableAsURI() {
+        DataSource dataSource = DataSource
+                .builder("ABC", "123")
+                .parameter("k1", "v1")
+                .build();
+
+        URI expected = URI.create("demetra://tsprovider/ABC/123?k1=v1");
+
+        assertThat(dataSource)
+                .has(mappedCondition(DataSource::toURI, matching(equalTo(expected))))
+                .isEqualTo(DataSource.parseURI(expected));
     }
 
     @Test

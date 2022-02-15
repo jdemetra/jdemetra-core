@@ -27,12 +27,12 @@ import jdplus.ssf.univariate.PredictionErrorDecomposition;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
-public class AugmentedPredictionErrorDecomposition extends PredictionErrorDecomposition implements IAugmentedFilteringResults {
+public class QPredictionErrorDecomposition extends PredictionErrorDecomposition implements IQFilteringResults {
 
     private int nd, ncollapsed;
     private final QAugmentation Q = new QAugmentation();
 
-    public AugmentedPredictionErrorDecomposition(boolean res) {
+    public QPredictionErrorDecomposition(boolean res) {
         super(res);
     }
 

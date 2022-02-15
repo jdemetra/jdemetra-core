@@ -60,7 +60,7 @@ public class ModelStatistics {
     public static ModelStatistics of(ModelDescription m, ConcentratedLikelihood ll) {
         DoubleSeq e = ll.e();
         int p = m.getAnnualFrequency();
-        int n = TramoUtility.calcLBLength(p);
+        int n = LjungBox.defaultAutoCorrelationsCount(p);
         int nres = e.length();
         int nhp = m.getArimaSpec().freeParametersCount();
         IntToDoubleFunction acf = AutoCovariances.autoCorrelationFunction(e, 0);

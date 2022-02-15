@@ -237,7 +237,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         if (error != null) {
             f += error.at(t);
         }
-        if (Math.abs(f) < State.ZERO) {
+        if (Math.abs(f) < Constants.getEpsilon()) {
             f = 0;
         }
 
@@ -249,7 +249,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
                 return false;
             } else {
                 double e = y - loading.ZX(t, astate.a());
-                if (Math.abs(e) < scale * State.ZERO) {
+                if (Math.abs(e) < scale * Constants.getEpsilon()) {
                     e = 0;
                 }
                 if (fi == 0 && f == 0 && e != 0) {
@@ -265,7 +265,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             FastMatrix B = constraints();
             fn.transform(z, B);
             pe.Mi().setAY(z.get(0), B.column(0));
-            pe.Mi().apply(x->Math.abs(x)<1e-12 ? 0 : x);
+            pe.Mi().apply(x->Math.abs(x)<Constants.getEpsilon() ? 0 : x);
             // move right
             astate.dropDiffuseConstraint();
         }

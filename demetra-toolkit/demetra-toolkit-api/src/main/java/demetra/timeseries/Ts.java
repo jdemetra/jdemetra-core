@@ -157,4 +157,11 @@ public class Ts {
         }
     }
 
+    public boolean isFrozen() {
+        if (moniker.isProvided())
+            return false;
+        TsMoniker pmoniker = getFreezeMeta(meta);
+        return pmoniker != null;
+    }
+
 }

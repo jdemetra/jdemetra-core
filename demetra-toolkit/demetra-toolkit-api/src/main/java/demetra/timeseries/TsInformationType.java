@@ -16,13 +16,16 @@
  */
 package demetra.timeseries;
 
-import java.util.function.IntSupplier;
+import nbbrd.design.RepresentableAsInt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Jean Palate
  */
-public enum TsInformationType implements IntSupplier {
+@RepresentableAsInt
+@lombok.AllArgsConstructor
+public enum TsInformationType {
 
     /**
      * Information is not provided by a specific provider
@@ -52,20 +55,25 @@ public enum TsInformationType implements IntSupplier {
      * All information is loaded.
      */
     All(5);
-    private final int value;
 
-    TsInformationType(final int value) {
-        this.value = value;
-    }
+    private final int value;
 
     /**
      * Returns the value of this TsInformationType as an int.
      *
      * @return
      */
-    @Override
-    public int getAsInt() {
+    public int toInt() {
         return value;
+    }
+
+    public static @NonNull TsInformationType parse(int value) throws IllegalArgumentException {
+        for (TsInformationType o : values()) {
+            if (o.value == value) {
+                return o;
+            }
+        }
+        throw new IllegalArgumentException("Cannot parse " + value);
     }
 
     public boolean needsData() {

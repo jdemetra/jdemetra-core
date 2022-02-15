@@ -26,7 +26,7 @@ public class PeriodicComponent {
     }
 
     public ISsfLoading defaultLoading(int k) {
-        if (k == 0) {
+        if (k == 1) {
             return Loading.fromPosition(0);
         }
         int[] pos = new int[k];
@@ -59,7 +59,7 @@ public class PeriodicComponent {
 
         @Override
         public boolean isDiffuse() {
-            return false;
+            return true;
         }
 
         @Override
@@ -87,7 +87,7 @@ public class PeriodicComponent {
 
         @Override
         public void Pi0(FastMatrix p) {
-            p.set(1);
+            p.diagonal().set(1);
         }
     }
 

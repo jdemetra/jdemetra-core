@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 National Bank of Belgium
+ * Copyright 2018 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,34 +14,33 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package _util.tsproviders;
+package demetra.tsprovider.cube;
 
-import demetra.tsprovider.DataSet;
-import demetra.tsprovider.DataSource;
-import demetra.tsprovider.cube.CubeAccessor;
-import demetra.tsprovider.cube.CubeId;
-import demetra.tsprovider.cube.CubeSupport;
+import java.time.Duration;
+
+import lombok.Builder;
+import org.checkerframework.checker.index.qual.NonNegative;
+
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.AllArgsConstructor
-public final class XCubeSupportResource implements CubeSupport.Resource {
+@lombok.Value
+@lombok.Builder(toBuilder = true)
+public class BulkCube {
+
+    public static final BulkCube NONE = BulkCube.builder().build();
 
     @lombok.NonNull
-    private final CubeAccessor accessor;
+    @lombok.Builder.Default
+    private Duration ttl = Duration.ZERO;
 
-    @lombok.NonNull
-    private final DataSet.Converter<CubeId> param;
+    @NonNegative
+    @lombok.Builder.Default
+    private int depth = 0;
 
-    @Override
-    public CubeAccessor getAccessor(DataSource dataSource) {
-        return accessor;
-    }
-
-    @Override
-    public DataSet.Converter<CubeId> getIdParam(CubeId root) {
-        return param;
+    public boolean isCacheEnabled() {
+        return getDepth() > 0 && !getTtl().isZero();
     }
 }

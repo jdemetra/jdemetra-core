@@ -163,6 +163,15 @@ public class MstsMonitor {
                         .useCollapsing(false)
                         .residuals(needres)
                         .build();
+            case Augmented_Robust:
+                return AugmentedLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .useFastAlgorithm(false)
+                        .useParallelProcessing(true)
+                        .robust(true)
+                        .residuals(needres)
+                        .build();
             case Diffuse:
                 return SsfFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
                         .useParallelProcessing(true)
