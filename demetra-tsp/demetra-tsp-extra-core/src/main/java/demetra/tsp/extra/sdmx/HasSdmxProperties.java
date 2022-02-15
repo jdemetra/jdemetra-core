@@ -25,10 +25,10 @@ import sdmxdl.SdmxManager;
  * @author Philippe Charles
  */
 @ThreadSafe
-public interface HasSdmxProperties {
+public interface HasSdmxProperties<M extends SdmxManager> {
 
     @NonNull
-    SdmxManager getSdmxManager();
+    M getSdmxManager();
 
-    void setSdmxManager(@Nullable SdmxManager manager);
+    void setSdmxManager(@Nullable M manager);
 }

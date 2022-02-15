@@ -27,14 +27,12 @@ import demetra.tsprovider.util.ResourcePool;
 import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxCubeItems;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
-import nbbrd.design.MightBePromoted;
+import nbbrd.io.Resource;
 import nbbrd.service.ServiceProvider;
 import sdmxdl.DataflowRef;
 import sdmxdl.SdmxConnection;
-import sdmxdl.SdmxManager;
 import sdmxdl.file.SdmxFileManager;
 import sdmxdl.file.SdmxFileSource;
-import sdmxdl.xml.XmlFileSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,12 +42,12 @@ import java.io.IOException;
  * @since 2.2.0
  */
 @ServiceProvider(TsProvider.class)
-public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmxProperties {
+public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmxProperties<SdmxFileManager> {
 
     public static final String NAME = "sdmx-file";
 
     @lombok.experimental.Delegate
-    private final HasSdmxProperties properties;
+    private final HasSdmxProperties<SdmxFileManager> properties;
 
     @lombok.experimental.Delegate
     private final HasDataSourceMutableList mutableListSupport;
@@ -117,42 +115,22 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
         return cubeSupport.getDisplayNodeName(dataSet);
     }
 
-    private static CubeConnection openConnection(DataSource dataSource, HasSdmxProperties properties, HasFilePaths paths, SdmxFileParam param) throws IOException {
+    private static CubeConnection openConnection(DataSource dataSource, HasSdmxProperties<SdmxFileManager> properties, HasFilePaths paths, SdmxFileParam param) throws IOException {
         SdmxFileBean bean = param.get(dataSource);
         SdmxFileSource files = SdmxCubeItems.resolveFileSet(paths, bean);
 
         DataflowRef flow = files.asDataflowRef();
 
-        SdmxConnection conn = getConnection(properties, files);
+        SdmxConnection conn = properties.getSdmxManager().getConnection(files);
         try {
             return SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), getSourceLabel(bean));
         } catch (IOException ex) {
-            throw close(conn, ex);
+            Resource.ensureClosed(ex, conn);
+            throw ex;
         }
-    }
-
-    private static SdmxConnection getConnection(HasSdmxProperties properties, SdmxFileSource files) throws IOException {
-        SdmxManager supplier = properties.getSdmxManager();
-
-        if (supplier instanceof SdmxFileManager) {
-            return ((SdmxFileManager) supplier).getConnection(files);
-        }
-
-        String name = XmlFileSource.getFormatter().formatToString(files);
-        return supplier.getConnection(name);
     }
 
     private static String getSourceLabel(SdmxFileBean bean) {
         return bean.getFile().getPath();
-    }
-
-    @MightBePromoted
-    private static <EX extends Throwable> EX close(SdmxConnection conn, EX ex) {
-        try {
-            conn.close();
-        } catch (IOException other) {
-            ex.addSuppressed(other);
-        }
-        return ex;
     }
 }

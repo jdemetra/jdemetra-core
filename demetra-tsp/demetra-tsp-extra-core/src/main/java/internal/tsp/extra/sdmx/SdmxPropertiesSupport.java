@@ -27,27 +27,27 @@ import java.util.function.Supplier;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class SdmxPropertiesSupport implements HasSdmxProperties {
+public final class SdmxPropertiesSupport<M extends SdmxManager> implements HasSdmxProperties<M> {
 
-    public static HasSdmxProperties of(Supplier<SdmxManager> defaultManager, Runnable onManagerChange) {
+    public static <M extends SdmxManager> HasSdmxProperties<M> of(Supplier<M> defaultManager, Runnable onManagerChange) {
         return new SdmxPropertiesSupport(
                 defaultManager,
                 new AtomicReference<>(defaultManager.get()),
                 onManagerChange);
     }
 
-    private final Supplier<SdmxManager> defaultManager;
-    private final AtomicReference<SdmxManager> manager;
+    private final Supplier<M> defaultManager;
+    private final AtomicReference<M> manager;
     private final Runnable onManagerChange;
 
     @Override
-    public SdmxManager getSdmxManager() {
+    public M getSdmxManager() {
         return manager.get();
     }
 
     @Override
-    public void setSdmxManager(SdmxManager manager) {
-        SdmxManager old = this.manager.get();
+    public void setSdmxManager(M manager) {
+        M old = this.manager.get();
         if (this.manager.compareAndSet(old, manager != null ? manager : defaultManager.get())) {
             onManagerChange.run();
         }

@@ -30,7 +30,7 @@ import demetra.tsprovider.util.JCacheFactory;
 import demetra.tsprovider.util.ResourcePool;
 import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
-import nbbrd.design.MightBePromoted;
+import nbbrd.io.Resource;
 import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import sdmxdl.*;
@@ -48,14 +48,14 @@ import java.util.stream.IntStream;
  * @since 2.2.0
  */
 @ServiceProvider(TsProvider.class)
-public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, HasSdmxProperties {
+public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, HasSdmxProperties<SdmxWebManager> {
 
     private static final String NAME = "DOTSTAT";
 
     private final AtomicBoolean displayCodes;
 
     @lombok.experimental.Delegate
-    private final HasSdmxProperties properties;
+    private final HasSdmxProperties<SdmxWebManager> properties;
 
     @lombok.experimental.Delegate
     private final HasDataSourceMutableList mutableListSupport;
@@ -137,32 +137,18 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
         }
     }
 
-    private static CubeConnection openConnection(DataSource source, HasSdmxProperties properties, SdmxWebParam param) throws IOException {
+    private static CubeConnection openConnection(DataSource source, HasSdmxProperties<SdmxWebManager> properties, SdmxWebParam param) throws IOException {
         SdmxWebBean bean = param.get(source);
 
         DataflowRef flow = DataflowRef.parse(bean.getFlow());
 
-        SdmxConnection conn = getConnection(properties, bean.getSource());
+        SdmxConnection conn = properties.getSdmxManager().getConnection(bean.getSource());
         try {
             CubeConnection result = SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
             return BulkCubeConnection.of(result, bean.getCacheConfig(), JCacheFactory.bulkCubeCacheOf(source::toString));
         } catch (IOException ex) {
-            throw close(conn, ex);
+            Resource.ensureClosed(ex, conn);
+            throw ex;
         }
-    }
-
-    private static SdmxConnection getConnection(HasSdmxProperties properties, String name) throws IOException {
-        SdmxManager supplier = properties.getSdmxManager();
-        return supplier.getConnection(name);
-    }
-
-    @MightBePromoted
-    private static <EX extends Throwable> EX close(SdmxConnection conn, EX ex) {
-        try {
-            conn.close();
-        } catch (IOException other) {
-            ex.addSuppressed(other);
-        }
-        return ex;
     }
 }
