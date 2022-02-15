@@ -18,8 +18,7 @@ package demetra.x13.r;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.data.DoubleSeq;
-import jdplus.modelling.StationaryTransformation;
-import demetra.regarima.RegArimaOutput;
+import demetra.math.matrices.Matrix;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.sa.EstimationPolicyType;
@@ -30,12 +29,13 @@ import demetra.util.r.Dictionary;
 import demetra.x13.io.protobuf.RegArimaProto;
 import demetra.x13.io.protobuf.X13Protos;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.modelling.StationaryTransformation;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.DifferencingModule;
 import jdplus.x13.regarima.RegArimaFactory;
 import jdplus.x13.regarima.RegArimaKernel;
-import demetra.math.matrices.Matrix;
+import jdplus.x13.regarima.RegArimaOutput;
 
 /**
  *
