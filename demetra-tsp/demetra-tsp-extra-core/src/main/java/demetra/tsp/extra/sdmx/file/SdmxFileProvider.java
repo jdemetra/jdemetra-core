@@ -68,7 +68,7 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
     private final TsProvider tsSupport;
 
     public SdmxFileProvider() {
-        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        ResourcePool<CubeConnection> pool = CubeSupport.newConnectionPool();
         SdmxFileParam param = new SdmxFileParam.V1();
 
         this.properties = SdmxPropertiesSupport.of(SdmxFileManager::ofServiceLoader, pool::clear);
@@ -76,7 +76,7 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
         this.filePathSupport = HasFilePaths.of(pool::clear);
-        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, filePathSupport, param)), param::getCubeIdParam);
+        this.cubeSupport = CubeSupport.of(NAME, pool.asFactory(o -> openConnection(o, properties, filePathSupport, param)), param::getCubeIdParam);
         this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 

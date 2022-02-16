@@ -58,14 +58,14 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
     private final TsProvider tsSupport;
 
     public JdbcProvider() {
-        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        ResourcePool<CubeConnection> pool = CubeSupport.newConnectionPool();
         JdbcParam param = new JdbcParam.V1();
 
         this.properties = HasSqlProperties.of(SqlConnectionSupplier::ofJndi, pool::clear);
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, param)), param::getCubeIdParam);
+        this.cubeSupport = CubeSupport.of(NAME, pool.asFactory(o -> openConnection(o, properties, param)), param::getCubeIdParam);
         this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 

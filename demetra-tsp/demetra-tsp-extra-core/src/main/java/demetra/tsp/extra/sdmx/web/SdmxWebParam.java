@@ -19,6 +19,7 @@ package demetra.tsp.extra.sdmx.web;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.BulkCube;
+import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.util.TsProviders;
@@ -27,6 +28,7 @@ import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import nbbrd.io.text.Property;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +44,7 @@ interface SdmxWebParam extends DataSource.Converter<SdmxWebBean> {
 
     String getVersion();
 
-    DataSet.Converter<CubeId> getCubeIdParam(CubeId root);
+    DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) throws IOException;
 
     final class V1 implements SdmxWebParam {
 
@@ -94,8 +96,8 @@ interface SdmxWebParam extends DataSource.Converter<SdmxWebBean> {
         }
 
         @Override
-        public DataSet.Converter<CubeId> getCubeIdParam(CubeId root) {
-            return CubeSupport.idByName(root);
+        public DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) throws IOException {
+            return CubeSupport.idByName(connection.getRoot());
         }
     }
 }

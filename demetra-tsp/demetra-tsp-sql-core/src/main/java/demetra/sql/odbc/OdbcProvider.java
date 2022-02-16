@@ -61,14 +61,14 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
     private final TsProvider tsSupport;
 
     public OdbcProvider() {
-        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        ResourcePool<CubeConnection> pool = CubeSupport.newConnectionPool();
         OdbcParam param = new OdbcParam.V1();
 
         this.properties = HasSqlProperties.of(OdbcProvider::lookupDefaultSupplier, pool::clear);
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacyOdbcMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, param)), param::getIdParam);
+        this.cubeSupport = CubeSupport.of(NAME, pool.asFactory(o -> openConnection(o, properties, param)), param::getIdParam);
         this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 

@@ -18,6 +18,7 @@ package demetra.tsp.extra.sdmx.file;
 
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import internal.util.Strings;
@@ -26,6 +27,7 @@ import nbbrd.io.text.Parser;
 import nbbrd.io.text.Property;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -40,7 +42,7 @@ interface SdmxFileParam extends DataSource.Converter<SdmxFileBean> {
 
     String getVersion();
 
-    DataSet.Converter<CubeId> getCubeIdParam(CubeId root);
+    DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) throws IOException;
 
     final class V1 implements SdmxFileParam {
 
@@ -92,8 +94,8 @@ interface SdmxFileParam extends DataSource.Converter<SdmxFileBean> {
         }
 
         @Override
-        public DataSet.Converter<CubeId> getCubeIdParam(CubeId root) {
-            return CubeSupport.idBySeparator(root, ".", "k");
+        public DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) throws IOException {
+            return CubeSupport.idBySeparator(connection.getRoot(), ".", "k");
         }
     }
 }

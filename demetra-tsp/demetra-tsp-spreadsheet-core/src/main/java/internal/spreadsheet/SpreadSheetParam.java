@@ -36,9 +36,9 @@ public interface SpreadSheetParam extends DataSource.Converter<SpreadSheetBean> 
 
     @NonNull String getVersion();
 
-    DataSet.@NonNull Converter<String> getSheetParam(DataSource dataSource);
+    DataSet.@NonNull Converter<String> getSheetParam();
 
-    DataSet.@NonNull Converter<String> getSeriesParam(DataSource dataSource);
+    DataSet.@NonNull Converter<String> getSeriesParam();
 
     final class V1 implements SpreadSheetParam {
 
@@ -84,12 +84,12 @@ public interface SpreadSheetParam extends DataSource.Converter<SpreadSheetBean> 
         }
 
         @Override
-        public DataSet.Converter<String> getSheetParam(DataSource dataSource) {
+        public DataSet.Converter<String> getSheetParam() {
             return TsProviders.dataSetConverterOf(sheet);
         }
 
         @Override
-        public DataSet.Converter<String> getSeriesParam(DataSource dataSource) {
+        public DataSet.Converter<String> getSeriesParam() {
             return TsProviders.dataSetConverterOf(series);
         }
     }

@@ -78,7 +78,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
         this.filePathSupport = HasFilePaths.of(pool::clear);
         this.displayNameSupport = SpreadSheetDataDisplayName.of(NAME, param);
-        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, SpreadSheetSupport.asConnectionSupplier(pool, key -> openConnection(key, filePathSupport, param, bookSupplier)), param::getSheetParam, param::getSeriesParam);
+        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, pool.asFactory(dataSource -> openConnection(dataSource, filePathSupport, param, bookSupplier)), ignore -> param.getSheetParam(), ignore -> param.getSeriesParam());
         this.tsSupport = TsStreamAsProvider.of(NAME, spreadSheetSupport, monikerSupport, pool::clear);
     }
 

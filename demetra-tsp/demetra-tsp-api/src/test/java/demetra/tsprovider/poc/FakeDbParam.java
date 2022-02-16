@@ -18,6 +18,7 @@ package demetra.tsprovider.poc;
 
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeId;
 import demetra.tsprovider.cube.CubeSupport;
 import nbbrd.io.text.Formatter;
@@ -32,7 +33,7 @@ interface FakeDbParam extends DataSource.Converter<FakeDbBean> {
 
     String getVersion();
 
-    DataSet.@NonNull Converter<CubeId> getCubeIdParam(@NonNull CubeId root);
+    DataSet.@NonNull Converter<CubeId> getCubeIdParam(@NonNull CubeConnection connection);
 
     final class V1 implements FakeDbParam {
 
@@ -69,7 +70,7 @@ interface FakeDbParam extends DataSource.Converter<FakeDbBean> {
         }
 
         @Override
-        public DataSet.Converter<CubeId> getCubeIdParam(CubeId root) {
+        public DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) {
             return dimValues;
         }
     }

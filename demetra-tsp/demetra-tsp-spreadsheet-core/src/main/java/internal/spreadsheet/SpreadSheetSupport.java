@@ -27,6 +27,8 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
+import demetra.tsprovider.util.ResourceConversion;
+import demetra.tsprovider.util.ResourceFactory;
 import demetra.tsprovider.util.ResourcePool;
 import demetra.util.MultiLineNameUtil;
 import nbbrd.design.ThreadSafe;
@@ -49,41 +51,29 @@ import java.util.stream.Stream;
 @lombok.AllArgsConstructor(staticName = "of")
 public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
 
-    @FunctionalInterface
-    public interface SpreadSheetConnectionSupplier {
-
-        @NonNull SpreadSheetConnection openConnection(@NonNull DataSource dataSource) throws IOException;
-    }
-
-    @FunctionalInterface
-    public interface SpreadSheetConverterSupplier {
-
-        DataSet.@NonNull Converter<String> getConverter(@NonNull DataSource dataSource) throws IOException;
-    }
-
     @lombok.NonNull
     private final String providerName;
 
     @lombok.NonNull
-    private final SpreadSheetConnectionSupplier spreadsheet;
+    private final ResourceFactory<SpreadSheetConnection> spreadsheet;
 
     @lombok.NonNull
-    private final SpreadSheetConverterSupplier sheetConversion;
+    private final ResourceConversion<SpreadSheetConnection, String> sheetName;
 
     @lombok.NonNull
-    private final SpreadSheetConverterSupplier seriesConversion;
+    private final ResourceConversion<SpreadSheetConnection, String> seriesName;
 
     @Override
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        try (SpreadSheetConnection connection = spreadsheet.openConnection(dataSource)) {
-            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(dataSource);
+        try (SpreadSheetConnection connection = spreadsheet.open(dataSource)) {
+            DataSet.Converter<String> sheetNameConverter = sheetName.getConverter(connection);
 
             return connection
                     .getSheetNames()
                     .stream()
-                    .map(childrenMapper(dataSource, sheetParam))
+                    .map(childrenMapper(dataSource, sheetNameConverter))
                     .collect(Collectors.toList());
         }
     }
@@ -92,15 +82,15 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, parent);
 
-        try (SpreadSheetConnection connection = spreadsheet.openConnection(parent.getDataSource())) {
-            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(parent.getDataSource());
-            DataSet.Converter<String> seriesParam = seriesConversion.getConverter(parent.getDataSource());
+        try (SpreadSheetConnection connection = spreadsheet.open(parent.getDataSource())) {
+            DataSet.Converter<String> sheetNameConverter = sheetName.getConverter(connection);
+            DataSet.Converter<String> seriesNameConverter = seriesName.getConverter(connection);
 
             return connection
-                    .getSheetByName(sheetParam.get(parent))
+                    .getSheetByName(sheetNameConverter.get(parent))
                     .orElseThrow(() -> sheetNotFound(parent))
                     .stream()
-                    .map(childrenMapper(parent, seriesParam))
+                    .map(childrenMapper(parent, seriesNameConverter))
                     .collect(Collectors.toList());
         }
     }
@@ -109,16 +99,16 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        try (SpreadSheetConnection connection = spreadsheet.openConnection(dataSource)) {
-            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(dataSource);
-            DataSet.Converter<String> seriesParam = seriesConversion.getConverter(dataSource);
+        try (SpreadSheetConnection connection = spreadsheet.open(dataSource)) {
+            DataSet.Converter<String> sheetNameConverter = sheetName.getConverter(connection);
+            DataSet.Converter<String> seriesNameConverter = seriesName.getConverter(connection);
 
             Stream<SheetTs> data = connection
                     .getSheets()
                     .stream()
                     .flatMap(SheetTs::allOf);
-            
-            return streamOf(data, dataSource, sheetParam, seriesParam);
+
+            return streamOf(data, dataSource, sheetNameConverter, seriesNameConverter);
         }
     }
 
@@ -126,17 +116,17 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
-        try (SpreadSheetConnection connection = spreadsheet.openConnection(dataSet.getDataSource())) {
-            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(dataSet.getDataSource());
-            DataSet.Converter<String> seriesParam = seriesConversion.getConverter(dataSet.getDataSource());
+        try (SpreadSheetConnection connection = spreadsheet.open(dataSet.getDataSource())) {
+            DataSet.Converter<String> sheetNameConverter = sheetName.getConverter(connection);
+            DataSet.Converter<String> seriesNameConverter = seriesName.getConverter(connection);
 
             Stream<SheetTs> data = connection
-                    .getSheetByName(sheetParam.get(dataSet))
+                    .getSheetByName(sheetNameConverter.get(dataSet))
                     .map(SheetTs::allOf)
                     .orElseThrow(() -> sheetNotFound(dataSet))
-                    .filter(getSeriesFilter(dataSet, seriesParam));
+                    .filter(getSeriesFilter(dataSet, seriesNameConverter));
 
-            return streamOf(data, dataSet.getDataSource(), sheetParam, seriesParam);
+            return streamOf(data, dataSet.getDataSource(), sheetNameConverter, seriesNameConverter);
         }
     }
 
@@ -224,12 +214,7 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
 
     @NonNull
     public static ResourcePool<SpreadSheetConnection> newConnectionPool() {
-        return ResourcePool.of(SpreadSheetSupport.PooledSpreadSheetConnection::new);
-    }
-
-    @NonNull
-    public static SpreadSheetConnectionSupplier asConnectionSupplier(@NonNull ResourcePool<SpreadSheetConnection> pool, ResourcePool.@NonNull Factory<SpreadSheetConnection> delegate) {
-        return dataSource -> pool.get(dataSource, delegate);
+        return ResourcePool.of(PooledSpreadSheetConnection::new);
     }
 
     @lombok.RequiredArgsConstructor

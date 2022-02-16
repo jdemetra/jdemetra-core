@@ -75,14 +75,14 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
     public SdmxWebProvider() {
         this.displayCodes = new AtomicBoolean(false);
 
-        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        ResourcePool<CubeConnection> pool = CubeSupport.newConnectionPool();
         SdmxWebParam param = new SdmxWebParam.V1();
 
         this.properties = SdmxPropertiesSupport.of(SdmxWebManager::ofServiceLoader, pool::clear);
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, param)), param::getCubeIdParam);
+        this.cubeSupport = CubeSupport.of(NAME, pool.asFactory(o -> openConnection(o, properties, param)), param::getCubeIdParam);
         this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 
