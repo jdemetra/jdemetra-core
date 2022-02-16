@@ -32,13 +32,13 @@ import demetra.tsprovider.util.JCacheFactory;
  *
  * @author Philippe Charles
  */
-public class SpreadSheetAccessorTest {
+public class SpreadSheetConnectionTest {
 
     @Test
     public void testWithCache() throws IOException {
         SheetGrid grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridReader.DEFAULT);
         try (Cache<String, Object> cache = JCacheFactory.getTtlCacheByRef(Duration.ofHours(1))) {
-            SpreadSheetAccessor accessor = new CachedSpreadSheetAccessor(cache, grid);
+            SpreadSheetConnection accessor = new CachedSpreadSheetConnection(cache, grid);
 
             cache.clear();
             assertThat(accessor.getSheetByName("s1")).map(TsCollection::getName).contains("s1");

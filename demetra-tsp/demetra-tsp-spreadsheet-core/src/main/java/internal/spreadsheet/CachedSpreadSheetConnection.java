@@ -31,13 +31,13 @@ import nbbrd.io.function.IOSupplier;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor
-public final class CachedSpreadSheetAccessor implements SpreadSheetAccessor {
+public final class CachedSpreadSheetConnection implements SpreadSheetConnection {
 
     @lombok.NonNull
     private final Cache<String, Object> cache;
 
     @lombok.NonNull
-    private final SpreadSheetAccessor delegate;
+    private final SpreadSheetConnection delegate;
 
     @Override
     public Optional<TsCollection> getSheetByName(String name) throws IOException {

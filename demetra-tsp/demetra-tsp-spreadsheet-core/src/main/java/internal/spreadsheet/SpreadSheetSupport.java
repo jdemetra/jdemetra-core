@@ -27,10 +27,12 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
+import demetra.tsprovider.util.ResourcePool;
 import demetra.util.MultiLineNameUtil;
 import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -47,83 +49,95 @@ import java.util.stream.Stream;
 @lombok.AllArgsConstructor(staticName = "of")
 public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
 
-    @ThreadSafe
-    public interface Resource {
+    @FunctionalInterface
+    public interface SpreadSheetConnectionSupplier {
 
-        @NonNull SpreadSheetAccessor getAccessor(@NonNull DataSource dataSource) throws IOException;
+        @NonNull SpreadSheetConnection openConnection(@NonNull DataSource dataSource) throws IOException;
+    }
 
-        DataSet.@NonNull Converter<String> getSheetParam(@NonNull DataSource dataSource);
+    @FunctionalInterface
+    public interface SpreadSheetConverterSupplier {
 
-        DataSet.@NonNull Converter<String> getSeriesParam(@NonNull DataSource dataSource);
+        DataSet.@NonNull Converter<String> getConverter(@NonNull DataSource dataSource) throws IOException;
     }
 
     @lombok.NonNull
     private final String providerName;
 
     @lombok.NonNull
-    private final Resource resource;
+    private final SpreadSheetConnectionSupplier spreadsheet;
+
+    @lombok.NonNull
+    private final SpreadSheetConverterSupplier sheetConversion;
+
+    @lombok.NonNull
+    private final SpreadSheetConverterSupplier seriesConversion;
 
     @Override
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
-        DataSet.Converter<String> sheetParam = resource.getSheetParam(dataSource);
+        try (SpreadSheetConnection connection = spreadsheet.openConnection(dataSource)) {
+            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(dataSource);
 
-        return accessor
-                .getSheetNames()
-                .stream()
-                .map(childrenMapper(dataSource, sheetParam))
-                .collect(Collectors.toList());
+            return connection
+                    .getSheetNames()
+                    .stream()
+                    .map(childrenMapper(dataSource, sheetParam))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
     public List<DataSet> children(DataSet parent) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, parent);
 
-        SpreadSheetAccessor accessor = resource.getAccessor(parent.getDataSource());
-        DataSet.Converter<String> sheetParam = resource.getSheetParam(parent.getDataSource());
-        DataSet.Converter<String> seriesParam = resource.getSeriesParam(parent.getDataSource());
+        try (SpreadSheetConnection connection = spreadsheet.openConnection(parent.getDataSource())) {
+            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(parent.getDataSource());
+            DataSet.Converter<String> seriesParam = seriesConversion.getConverter(parent.getDataSource());
 
-        return accessor
-                .getSheetByName(sheetParam.get(parent))
-                .orElseThrow(() -> sheetNotFound(parent))
-                .stream()
-                .map(childrenMapper(parent, seriesParam))
-                .collect(Collectors.toList());
+            return connection
+                    .getSheetByName(sheetParam.get(parent))
+                    .orElseThrow(() -> sheetNotFound(parent))
+                    .stream()
+                    .map(childrenMapper(parent, seriesParam))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
     public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        SpreadSheetAccessor accessor = resource.getAccessor(dataSource);
-        DataSet.Converter<String> sheetParam = resource.getSheetParam(dataSource);
-        DataSet.Converter<String> seriesParam = resource.getSeriesParam(dataSource);
+        try (SpreadSheetConnection connection = spreadsheet.openConnection(dataSource)) {
+            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(dataSource);
+            DataSet.Converter<String> seriesParam = seriesConversion.getConverter(dataSource);
 
-        Stream<SheetTs> data = accessor
-                .getSheets()
-                .stream()
-                .flatMap(SheetTs::allOf);
-
-        return streamOf(data, dataSource, sheetParam, seriesParam);
+            Stream<SheetTs> data = connection
+                    .getSheets()
+                    .stream()
+                    .flatMap(SheetTs::allOf);
+            
+            return streamOf(data, dataSource, sheetParam, seriesParam);
+        }
     }
 
     @Override
     public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
-        SpreadSheetAccessor accessor = resource.getAccessor(dataSet.getDataSource());
-        DataSet.Converter<String> sheetParam = resource.getSheetParam(dataSet.getDataSource());
-        DataSet.Converter<String> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+        try (SpreadSheetConnection connection = spreadsheet.openConnection(dataSet.getDataSource())) {
+            DataSet.Converter<String> sheetParam = sheetConversion.getConverter(dataSet.getDataSource());
+            DataSet.Converter<String> seriesParam = seriesConversion.getConverter(dataSet.getDataSource());
 
-        Stream<SheetTs> data = accessor
-                .getSheetByName(sheetParam.get(dataSet))
-                .map(SheetTs::allOf)
-                .orElseThrow(() -> sheetNotFound(dataSet))
-                .filter(getSeriesFilter(dataSet, seriesParam));
+            Stream<SheetTs> data = connection
+                    .getSheetByName(sheetParam.get(dataSet))
+                    .map(SheetTs::allOf)
+                    .orElseThrow(() -> sheetNotFound(dataSet))
+                    .filter(getSeriesFilter(dataSet, seriesParam));
 
-        return streamOf(data, dataSet.getDataSource(), sheetParam, seriesParam);
+            return streamOf(data, dataSet.getDataSource(), sheetParam, seriesParam);
+        }
     }
 
     private static IOException sheetNotFound(DataSet dataSet) {
@@ -207,4 +221,26 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     public static final String SHEET_NAME_META = "sheet.name";
     public static final String SHEET_GRID_LAYOUT_META = "sheet.gridLayout";
     public static final String SERIES_NAME_META = "series.name";
+
+    @NonNull
+    public static ResourcePool<SpreadSheetConnection> newConnectionPool() {
+        return ResourcePool.of(SpreadSheetSupport.PooledSpreadSheetConnection::new);
+    }
+
+    @NonNull
+    public static SpreadSheetConnectionSupplier asConnectionSupplier(@NonNull ResourcePool<SpreadSheetConnection> pool, ResourcePool.@NonNull Factory<SpreadSheetConnection> delegate) {
+        return dataSource -> pool.get(dataSource, delegate);
+    }
+
+    @lombok.RequiredArgsConstructor
+    private static final class PooledSpreadSheetConnection implements SpreadSheetConnection {
+
+        @lombok.NonNull
+        @lombok.experimental.Delegate(excludes = Closeable.class)
+        private final SpreadSheetConnection delegate;
+
+        @lombok.NonNull
+        @lombok.experimental.Delegate
+        private final Closeable onClose;
+    }
 }

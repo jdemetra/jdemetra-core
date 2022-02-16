@@ -1,17 +1,17 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.spreadsheet;
@@ -23,7 +23,7 @@ import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
 import demetra.tsprovider.util.JCacheFactory;
-import demetra.tsprovider.util.ResourceMap;
+import demetra.tsprovider.util.ResourcePool;
 import ec.util.spreadsheet.Book;
 import internal.spreadsheet.*;
 import internal.spreadsheet.grid.SheetGrid;
@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.time.Duration;
 
 /**
- *
  * @author Philippe Charles
  */
 @DirectImpl
@@ -71,16 +70,16 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     public SpreadSheetProvider() {
         this.bookSupplier = BookSupplier.usingServiceLoader();
 
-        ResourceMap<SpreadSheetAccessor> accessors = ResourceMap.newInstance();
+        ResourcePool<SpreadSheetConnection> pool = SpreadSheetSupport.newConnectionPool();
         SpreadSheetParam param = new SpreadSheetParam.V1();
 
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, accessors::remove);
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), LegacySpreadSheetMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.filePathSupport = HasFilePaths.of(accessors::clear);
+        this.filePathSupport = HasFilePaths.of(pool::clear);
         this.displayNameSupport = SpreadSheetDataDisplayName.of(NAME, param);
-        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, new SpreadSheetResource(accessors, filePathSupport, param, bookSupplier));
-        this.tsSupport = TsStreamAsProvider.of(NAME, spreadSheetSupport, monikerSupport, accessors::clear);
+        this.spreadSheetSupport = SpreadSheetSupport.of(NAME, SpreadSheetSupport.asConnectionSupplier(pool, key -> openConnection(key, filePathSupport, param, bookSupplier)), param::getSheetParam, param::getSeriesParam);
+        this.tsSupport = TsStreamAsProvider.of(NAME, spreadSheetSupport, monikerSupport, pool::clear);
     }
 
     @Override
@@ -98,46 +97,22 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
         return bookSupplier.hasFactory(pathname);
     }
 
-    @lombok.AllArgsConstructor
-    private static final class SpreadSheetResource implements SpreadSheetSupport.Resource {
-
-        private final ResourceMap<SpreadSheetAccessor> accessors;
-        private final HasFilePaths filePathSupport;
-        private final SpreadSheetParam param;
-        private final BookSupplier bookSupplier;
-
-        @Override
-        public SpreadSheetAccessor getAccessor(DataSource dataSource) throws IOException {
-            return accessors.computeIfAbsent(dataSource, this::load);
+    private static SpreadSheetConnection openConnection(DataSource key, HasFilePaths paths, SpreadSheetParam param, BookSupplier books) throws IOException {
+        SpreadSheetBean bean = param.get(key);
+        File file = paths.resolveFilePath(bean.getFile());
+        Book.Factory factory = books.getFactory(file);
+        if (factory == null) {
+            throw new IOException("File type not supported");
         }
+        SheetGrid result = SheetGrid.of(file, factory, getReader(bean));
+        return new CachedSpreadSheetConnection(JCacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)), result);
+    }
 
-        @Override
-        public DataSet.Converter<String> getSheetParam(DataSource dataSource) {
-            return param.getSheetParam(dataSource);
-        }
-
-        @Override
-        public DataSet.Converter<String> getSeriesParam(DataSource dataSource) {
-            return param.getSeriesParam(dataSource);
-        }
-
-        private SpreadSheetAccessor load(DataSource key) throws IOException {
-            SpreadSheetBean bean = param.get(key);
-            File file = filePathSupport.resolveFilePath(bean.getFile());
-            Book.Factory factory = bookSupplier.getFactory(file);
-            if (factory == null) {
-                throw new IOException("File type not supported");
-            }
-            SheetGrid result = SheetGrid.of(file, factory, getReader(bean));
-            return new CachedSpreadSheetAccessor(JCacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)), result);
-        }
-
-        private GridReader getReader(SpreadSheetBean bean) {
-            return GridReader
-                    .builder()
-                    .format(bean.getObsFormat())
-                    .gathering(bean.getObsGathering())
-                    .build();
-        }
+    private static GridReader getReader(SpreadSheetBean bean) {
+        return GridReader
+                .builder()
+                .format(bean.getObsFormat())
+                .gathering(bean.getObsGathering())
+                .build();
     }
 }
