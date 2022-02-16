@@ -24,7 +24,8 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.ResourceMap;
+
+import java.util.function.Function;
 
 /**
  * @author Philippe Charles
@@ -34,7 +35,7 @@ public final class TxtDataDisplayName implements HasDataDisplayName {
 
     private final String providerName;
     private final TxtParam param;
-    private final ResourceMap<TsCollection> resources;
+    private final Function<DataSource, TsCollection> data;
 
     @Override
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
@@ -46,9 +47,9 @@ public final class TxtDataDisplayName implements HasDataDisplayName {
     @Override
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
-        Integer index = param.getSeriesParam(dataSet.getDataSource()).get(dataSet);
+        Integer index = param.getSeriesParam().get(dataSet);
 
-        TsCollection data = resources.peek(dataSet.getDataSource());
+        TsCollection data = this.data.apply(dataSet.getDataSource());
         return data != null ? data.get(index).getName() : "Column " + index;
     }
 

@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.IOException;
 
 @FunctionalInterface
-public interface ResourceConversion<RESOURCE, ID> {
+public interface DataSetConversion<T, ID> {
 
-    DataSet.@NonNull Converter<ID> getConverter(@NonNull RESOURCE resource) throws IOException;
+    DataSet.@NonNull Converter<ID> getConverter(@NonNull T obj) throws IOException;
 }

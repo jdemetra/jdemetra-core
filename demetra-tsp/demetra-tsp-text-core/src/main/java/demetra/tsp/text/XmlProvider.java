@@ -6,11 +6,10 @@ import demetra.tsprovider.*;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
-import demetra.tsprovider.util.ResourceMap;
+import demetra.tsprovider.util.ImmutableValuePool;
 import internal.demetra.tsp.text.*;
 import nbbrd.design.DirectImpl;
 import nbbrd.service.ServiceProvider;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,15 +47,15 @@ public final class XmlProvider implements FileLoader<XmlBean> {
     public XmlProvider() {
         XmlParam param = new XmlParam.V1();
 
-        ResourceMap<List<TsCollection>> resources = ResourceMap.newInstance();
+        ImmutableValuePool<List<TsCollection>> pool = ImmutableValuePool.of();
 
-        this.mutableListSupport = HasDataSourceMutableList.of(NAME, resources::remove);
+        this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = FallbackDataMoniker.of(HasDataMoniker.usingUri(NAME), XmlLegacyMoniker.of(NAME, param));
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.filePathSupport = HasFilePaths.of(resources::clear);
-        this.displayNameSupport = XmlDataDisplayName.of(NAME, param, resources);
-        this.xmlSupport = XmlSupport.of(NAME, new XmlResource(resources, filePathSupport, param));
-        this.tsSupport = TsStreamAsProvider.of(NAME, xmlSupport, monikerSupport, resources::clear);
+        this.filePathSupport = HasFilePaths.of(pool::clear);
+        this.displayNameSupport = XmlDataDisplayName.of(NAME, param, pool::peek);
+        this.xmlSupport = XmlSupport.of(NAME, pool.asFactory(dataSource -> load(dataSource, filePathSupport, param)), ignore -> param.getCollectionParam(), ignore -> param.getSeriesParam());
+        this.tsSupport = TsStreamAsProvider.of(NAME, xmlSupport, monikerSupport, pool::clear);
         this.fileFilter = new XmlFileFilter();
     }
 
@@ -65,35 +64,7 @@ public final class XmlProvider implements FileLoader<XmlBean> {
         return "Xml files";
     }
 
-    @lombok.AllArgsConstructor
-    private static final class XmlResource implements XmlSupport.Resource {
-
-        @lombok.NonNull
-        final ResourceMap<List<TsCollection>> resources;
-
-        @lombok.NonNull
-        final HasFilePaths filePathSupport;
-
-        @lombok.NonNull
-        final XmlParam param;
-
-        @Override
-        public @NonNull List<TsCollection> getData(@NonNull DataSource dataSource) throws IOException {
-            return resources.computeIfAbsent(dataSource, this::load);
-        }
-
-        @Override
-        public DataSet.@NonNull Converter<Integer> getCollectionParam(@NonNull DataSource dataSource) {
-            return param.getCollectionParam(dataSource);
-        }
-
-        @Override
-        public DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource) {
-            return param.getSeriesParam(dataSource);
-        }
-
-        private List<TsCollection> load(DataSource dataSource) throws IOException {
-            return new XmlLoader(filePathSupport).load(param.get(dataSource));
-        }
+    private static List<TsCollection> load(DataSource dataSource, HasFilePaths paths, XmlParam param) throws IOException {
+        return new XmlLoader(paths).load(param.get(dataSource));
     }
 }

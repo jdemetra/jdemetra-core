@@ -74,6 +74,6 @@ public interface HasDataSourceBean<T> {
      */
     @NonNull
     static <T> HasDataSourceBean<T> of(@NonNull String providerName, DataSource.@NonNull Converter<T> param, @NonNull String version) {
-        return new InternalTsProvider.DataSourceBeanSupport(providerName, param, version);
+        return new InternalTsProvider.DataSourceBeanSupport<>(providerName, param, version);
     }
 }

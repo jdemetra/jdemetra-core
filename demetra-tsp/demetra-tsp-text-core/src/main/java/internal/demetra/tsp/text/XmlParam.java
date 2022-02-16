@@ -19,9 +19,9 @@ public interface XmlParam extends DataSource.Converter<XmlBean> {
     @NonNull
     String getVersion();
 
-    DataSet.@NonNull Converter<Integer> getCollectionParam(@NonNull DataSource dataSource);
+    DataSet.@NonNull Converter<Integer> getCollectionParam();
 
-    DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource);
+    DataSet.@NonNull Converter<Integer> getSeriesParam();
 
     final class V1 implements XmlParam {
 
@@ -36,12 +36,12 @@ public interface XmlParam extends DataSource.Converter<XmlBean> {
         }
 
         @Override
-        public DataSet.@NonNull Converter<Integer> getCollectionParam(@NonNull DataSource dataSource) {
+        public DataSet.@NonNull Converter<Integer> getCollectionParam() {
             return TsProviders.dataSetConverterOf(collectionIndex);
         }
 
         @Override
-        public DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource) {
+        public DataSet.@NonNull Converter<Integer> getSeriesParam() {
             return TsProviders.dataSetConverterOf(seriesIndex);
         }
 

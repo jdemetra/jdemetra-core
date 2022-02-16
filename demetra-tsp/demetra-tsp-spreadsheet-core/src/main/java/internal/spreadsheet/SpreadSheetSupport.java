@@ -27,7 +27,7 @@ import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.ResourceConversion;
+import demetra.tsprovider.util.DataSetConversion;
 import demetra.tsprovider.util.ResourceFactory;
 import demetra.tsprovider.util.ResourcePool;
 import demetra.util.MultiLineNameUtil;
@@ -58,10 +58,10 @@ public final class SpreadSheetSupport implements HasDataHierarchy, HasTsStream {
     private final ResourceFactory<SpreadSheetConnection> spreadsheet;
 
     @lombok.NonNull
-    private final ResourceConversion<SpreadSheetConnection, String> sheetName;
+    private final DataSetConversion<SpreadSheetConnection, String> sheetName;
 
     @lombok.NonNull
-    private final ResourceConversion<SpreadSheetConnection, String> seriesName;
+    private final DataSetConversion<SpreadSheetConnection, String> seriesName;
 
     @Override
     public List<DataSet> children(DataSource dataSource) throws IllegalArgumentException, IOException {

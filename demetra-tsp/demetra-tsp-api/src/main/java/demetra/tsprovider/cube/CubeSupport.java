@@ -24,7 +24,7 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.ResourceConversion;
+import demetra.tsprovider.util.DataSetConversion;
 import demetra.tsprovider.util.ResourceFactory;
 import demetra.tsprovider.util.ResourcePool;
 import internal.util.Strings;
@@ -59,7 +59,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     private final ResourceFactory<CubeConnection> cube;
 
     @lombok.NonNull
-    private final ResourceConversion<CubeConnection, CubeId> cubeId;
+    private final DataSetConversion<CubeConnection, CubeId> cubeId;
 
     //<editor-fold defaultstate="collapsed" desc="HasDataHierarchy">
     @Override

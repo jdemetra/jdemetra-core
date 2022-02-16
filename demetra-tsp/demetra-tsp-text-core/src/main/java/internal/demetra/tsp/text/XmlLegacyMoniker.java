@@ -70,12 +70,12 @@ public final class XmlLegacyMoniker implements HasDataMoniker {
         DataSource source = toDataSource(new File(id.getFile()));
         if (!id.isSeries()) {
             DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
-            param.getCollectionParam(source).set(result, id.getCollectionIndex());
+            param.getCollectionParam().set(result, id.getCollectionIndex());
             return result.build();
         }
         DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
-        param.getCollectionParam(source).set(result, id.getCollectionIndex());
-        param.getSeriesParam(source).set(result, id.getSeriesIndex());
+        param.getCollectionParam().set(result, id.getCollectionIndex());
+        param.getSeriesParam().set(result, id.getSeriesIndex());
         return result.build();
     }
 

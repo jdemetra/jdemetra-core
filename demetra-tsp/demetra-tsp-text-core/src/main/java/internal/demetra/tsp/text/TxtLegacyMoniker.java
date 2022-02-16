@@ -72,7 +72,7 @@ public final class TxtLegacyMoniker implements HasDataMoniker {
             return DataSet.of(source, DataSet.Kind.COLLECTION);
         }
         DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
-        param.getSeriesParam(source).set(result, id.getSeriesIndex());
+        param.getSeriesParam().set(result, id.getSeriesIndex());
         return result.build();
     }
 
