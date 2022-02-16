@@ -22,7 +22,6 @@ import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
-import demetra.tsprovider.util.JCacheFactory;
 import demetra.tsprovider.util.ResourcePool;
 import ec.util.spreadsheet.Book;
 import internal.spreadsheet.*;
@@ -33,7 +32,7 @@ import nbbrd.service.ServiceProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
+import java.util.HashMap;
 
 /**
  * @author Philippe Charles
@@ -105,7 +104,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
             throw new IOException("File type not supported");
         }
         SheetGrid result = SheetGrid.of(file, factory, getReader(bean));
-        return new CachedSpreadSheetConnection(JCacheFactory.getTtlCacheByRef(key::toString, Duration.ofMinutes(5)), result);
+        return new CachedSpreadSheetConnection(result, new HashMap<>());
     }
 
     private static GridReader getReader(SpreadSheetBean bean) {
