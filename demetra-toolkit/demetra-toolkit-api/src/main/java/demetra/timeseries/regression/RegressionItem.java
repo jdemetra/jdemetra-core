@@ -15,8 +15,8 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Exploratory)
 public class RegressionItem {
  
-    String description;
     double coefficient;
     double stdError;
     double pvalue;
+    String description;
 }

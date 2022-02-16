@@ -42,8 +42,6 @@ public interface GeneralLinearModel<M> extends Explorable{
     
     Residuals getResiduals();
     
-    Map<String, Object> getAdditionalResults();
-
     interface Description<M> {
 
         /**

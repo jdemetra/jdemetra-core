@@ -722,7 +722,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         for (RegressionDesc desc : items) {
             if (pred.test(desc.getCore())) {
                 if (item == curitem) {
-                    return new RegressionItem(desc.core.description(desc.item, details.estimationDomain), desc.coef, desc.stderr, desc.pvalue);
+                    return new RegressionItem(desc.coef, desc.stderr, desc.pvalue, desc.core.description(desc.item, details.estimationDomain));
                 } else {
                     ++curitem;
                 }

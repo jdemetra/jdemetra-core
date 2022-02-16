@@ -29,6 +29,7 @@ import java.util.List;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.information.Explorable;
 import demetra.processing.Diagnostics;
+import demetra.toolkit.dictionaries.Dictionary;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
 
 /**
@@ -104,7 +105,7 @@ public final class CoherenceDiagnostics implements Diagnostics {
             TsData ci = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.I_CMP), TsData.class);
             TsData csa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.SA_CMP), TsData.class);
             TsData ly = rslts.getData(RegressionDictionaries.L, TsData.class);
-            TsData lt = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.T_LIN), TsData.class);
+            TsData lt = rslts.getData(Dictionary.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.T_LIN), TsData.class);
             TsData ls = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.S_LIN), TsData.class);
             TsData li = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.I_LIN), TsData.class);
             TsData lsa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.SA_LIN), TsData.class);

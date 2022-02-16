@@ -120,20 +120,20 @@ public class SaRegarimaExtractor extends InformationMapping<RegSarimaModel> {
                 (source, i) -> det(source, ComponentType.Seasonal, source.forecastDomain(i), true));
         setArray(SaDictionaries.DET_S + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.Seasonal, source.backcastDomain(i), true));
-        set(SaDictionaries.DET_SA, TsData.class, source -> det(source, ComponentType.SeasonallyAdjusted, null, false));
-        setArray(SaDictionaries.DET_SA + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+        set(SaDictionaries.REG_SA, TsData.class, source -> det(source, ComponentType.SeasonallyAdjusted, null, false));
+        setArray(SaDictionaries.REG_SA + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.SeasonallyAdjusted, source.forecastDomain(i), false));
-        setArray(SaDictionaries.DET_SA + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+        setArray(SaDictionaries.REG_SA + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.SeasonallyAdjusted, source.backcastDomain(i), false));
-        set(SaDictionaries.DET_Y, TsData.class, source -> det(source, ComponentType.Series, null, false));
-        setArray(SaDictionaries.DET_Y + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+        set(SaDictionaries.REG_Y, TsData.class, source -> det(source, ComponentType.Series, null, false));
+        setArray(SaDictionaries.REG_Y + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.Series, source.forecastDomain(i), false));
-        setArray(SaDictionaries.DET_Y + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+        setArray(SaDictionaries.REG_Y + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.Series, source.backcastDomain(i), false));
-        set(SaDictionaries.DET_U, TsData.class, source -> det(source, ComponentType.Undefined, null, false));
-        setArray(SaDictionaries.DET_U + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+        set(SaDictionaries.REG_U, TsData.class, source -> det(source, ComponentType.Undefined, null, false));
+        setArray(SaDictionaries.REG_U + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.Undefined, source.forecastDomain(i), false));
-        setArray(SaDictionaries.DET_U + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+        setArray(SaDictionaries.REG_U + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                 (source, i) -> det(source, ComponentType.Undefined, source.backcastDomain(i), false));
     }
 }

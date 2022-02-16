@@ -17,16 +17,8 @@ public class ArimaDictionariesTest {
     }
 
     public static void ucarima() {
-        ArimaDictionaries.UCARIMA.entries().forEach(entry
-                -> {
-            System.out.print(entry.getName());
-            System.out.print('\t');
-            System.out.print(entry.getDescription());
-            System.out.print('\t');
-            System.out.println(entry.getType().getCanonicalName());
-        }
-        );
-    }
+       ArimaDictionaries.UCARIMA.entries().forEach(entry-> System.out.println(entry.display()));
+     }
     
     public static void main(String[] arg){
         ucarima();

@@ -16,22 +16,26 @@ import lombok.NonNull;
 @lombok.AllArgsConstructor
 public class PrefixedDictionary implements Dictionary {
 
-
     String path;
 
-    @lombok.experimental.Delegate
     Dictionary core;
+    
+    EntryType type; 
+    
+    public PrefixedDictionary(String path, Dictionary core){
+        this(path, core, EntryType.Normal);
+    }
 
     @Override
     public Stream<? extends Entry> entries() {
         return path == null || path.length() == 0 ? core.entries()
-                : core.entries().map(entry -> new DerivedItem(path, entry));
+                : core.entries().map(entry -> new DerivedItem(entry));
     }
-
+    
     @Override
     public Stream<String> keys() {
         return path == null || path.length() == 0 ? core.keys()
-                : core.keys().map(keyitem -> derivedName(path, keyitem));
+                : core.keys().map(keyitem -> derivedName(Dictionary.fullName(path, type), keyitem));
     }
 
     @Override
@@ -39,22 +43,33 @@ public class PrefixedDictionary implements Dictionary {
         return path == null || path.length() == 0 ? core.keys(tclass)
                 : core.keys()
                         .filter(item -> tclass.isAssignableFrom(item.getClass()))
-                        .map(keyitem -> derivedName(path, keyitem));
+                        .map(keyitem -> derivedName(Dictionary.fullName(path, type), keyitem));
     }
 
     @lombok.Getter
     @lombok.AllArgsConstructor
-    public static class DerivedItem implements Entry {
+    public class DerivedItem implements Entry {
 
-        @NonNull
-        String path;
-
-        @lombok.experimental.Delegate
         Entry core;
 
         @Override
         public String getName() {
-            return derivedName(path, core.getName());
+            return derivedName(Dictionary.fullName(path, type), core.getName());
+        }
+
+        @Override
+        public String getDescription() {
+            return core.getDescription();
+        }
+
+        @Override
+        public Class getOutputClass() {
+            return core.getOutputClass();
+        }
+
+        @Override
+        public EntryType getType() {
+            return core.getType();
         }
 
     }

@@ -273,13 +273,14 @@ public class LocalPolynomialFilters {
     }
 
     /**
+     * @param Z
      * @param d0 included
      * @param d1 included
      * @param l included (negative)
      * @param u included (positive)
      * @return
      */
-    FastMatrix z(FastMatrix Z, int l, int u, int d0, int d1) {
+    public FastMatrix z(FastMatrix Z, int l, int u, int d0, int d1) {
         int nh = Math.max(Math.abs(l), Math.abs(u));
 //        if (Z == null || Z.getRowsCount() / 2 < nh || Z.getColumnsCount() < d1 + 1) {
 //            Z = createZ(nh, d1);

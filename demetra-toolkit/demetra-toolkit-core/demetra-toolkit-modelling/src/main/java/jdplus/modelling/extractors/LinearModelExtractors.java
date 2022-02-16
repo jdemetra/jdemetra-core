@@ -5,8 +5,6 @@
  */
 package jdplus.modelling.extractors;
 
-import demetra.information.BasicInformationExtractor;
-import demetra.information.DynamicMapping;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.timeseries.TsData;
@@ -31,62 +29,55 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import nbbrd.service.ServiceProvider;
 import demetra.math.matrices.Matrix;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
+import demetra.toolkit.dictionaries.UtilityDictionaries;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import jdplus.modelling.GeneralLinearModel;
 
 /**
  *
- * Contains all the descriptors of a linear model, except additional information
- * and information related to the (generic) stochastic model
+ * Contains all the descriptors of a linear model, except information related to the stochastic model
  *
  * @author palatej
  */
 @lombok.experimental.UtilityClass
 public class LinearModelExtractors {
+    
 
     @ServiceProvider(InformationExtractor.class)
-    public static class Specific extends InformationMapping<GeneralLinearModel> {
+    public static class Default extends InformationMapping<GeneralLinearModel> {
 
         public static final int IMEAN = 0, ITD = 10, ILP = 11, IEASTER = 12,
                 AO = 20, LS = 21, TC = 22, SO = 23, IOUTLIER = 29,
                 IIV = 30, IRAMP = 40, IOTHER = 50;
 
-        public final String LOG = "log",
-                ADJUST = "adjust", MEAN = "mean",
-                SPAN = "span", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
-                REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max", RESIDUALS = "residuals",
-                NTD = "ntd", NLP = "nlp", NMH = "nmh", NEASTER = "neaster",
-                NOUT = "nout", NOUTAO = "noutao", NOUTLS = "noutls", NOUTTC = "nouttc", NOUTSO = "noutso",
-                COEFF = "coefficients", COVAR = "covar", COVAR_ML = "covar-ml", COEFFDESC = "description", REGTYPE = "type",
-                P = "parameters", PCOVAR = "pcovar", PCOVAR_ML = "pcovar-ml", PCORR = "pcorr", SCORE = "pscore";
 
-        public Specific() {
+        private String regressionItem(String key){
+            return Dictionary.concatenate(RegArimaDictionaries.REGRESSION, key);
+        }
+
+        private String advancedItem(String key){
+            return Dictionary.concatenate(RegArimaDictionaries.ADVANCED, key);
+        }
+
+        private String mlItem(String key){
+            return Dictionary.concatenate(RegArimaDictionaries.MAX, key);
+        }
+
+        public Default() {
             set(RegressionDictionaries.Y, TsData.class, source -> source.getDescription().getSeries());
-            set(PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
-            set(BasicInformationExtractor.concatenate(SPAN, START), TsPeriod.class, source -> source.getDescription().getSeries().getStart());
-            set(BasicInformationExtractor.concatenate(SPAN, END), TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
-            set(BasicInformationExtractor.concatenate(SPAN, N), Integer.class, source -> source.getDescription().getSeries().length());
-            set(BasicInformationExtractor.concatenate(SPAN, NM), Integer.class, source -> source.getEstimation().getMissing().length);
+            set(RegressionDictionaries.PERIOD, Integer.class, source -> source.getDescription().getSeries().getAnnualFrequency());
+            set(RegressionDictionaries.SPAN_START, TsPeriod.class, source -> source.getDescription().getSeries().getStart());
+            set(RegressionDictionaries.SPAN_END, TsPeriod.class, source -> source.getDescription().getSeries().getDomain().getLastPeriod());
+            set(RegressionDictionaries.SPAN_N, Integer.class, source -> source.getDescription().getSeries().length());
+            set(RegressionDictionaries.SPAN_MISSING, Integer.class, source -> source.getEstimation().getMissing().length);
 
-            set(LOG, Boolean.class, source -> source.getDescription().isLogTransformation());
-            set(ADJUST, String.class, source -> source.getDescription().getLengthOfPeriodTransformation().name());
-            set(BasicInformationExtractor.concatenate(REGRESSION, MEAN), Boolean.class,
-                    source -> count(source, v -> v instanceof TrendConstant) == 1);
-            set(BasicInformationExtractor.concatenate(REGRESSION, NLP), Integer.class,
-                    source -> count(source, v -> v instanceof ILengthOfPeriodVariable));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NTD), Integer.class,
-                    source -> count(source, v -> v instanceof ITradingDaysVariable));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NEASTER), Integer.class,
-                    source -> count(source, v -> v instanceof IEasterVariable));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NMH), Integer.class, source -> count(source, v -> v instanceof IMovingHolidayVariable));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NOUT), Integer.class, source -> count(source, v -> v instanceof IOutlier));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTAO), Integer.class, source -> count(source, v -> v instanceof AdditiveOutlier));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTLS), Integer.class, source -> count(source, v -> v instanceof LevelShift));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTTC), Integer.class, source -> count(source, v -> v instanceof TransitoryChange));
-            set(BasicInformationExtractor.concatenate(REGRESSION, NOUTSO), Integer.class, source -> count(source, v -> v instanceof PeriodicOutlier));
+            set(RegressionDictionaries.LOG, Integer.class, source -> source.getDescription().isLogTransformation()? 1 : 0);
+            set(RegressionDictionaries.ADJUST, String.class, source -> source.getDescription().getLengthOfPeriodTransformation().name());
 
-            set(BasicInformationExtractor.concatenate(REGRESSION, COEFFDESC), String[].class, source -> {
+            set(regressionItem(RegressionDictionaries.COEFFDESC), String[].class, source -> {
                 TsDomain domain = source.getDescription().getSeries().getDomain();
                 Variable[] vars = source.getDescription().getVariables();
                 if (vars.length == 0) {
@@ -106,7 +97,7 @@ public class LinearModelExtractors {
                 }
                 return nvars;
             });
-            set(BasicInformationExtractor.concatenate(REGRESSION, REGTYPE), int[].class, (GeneralLinearModel source) -> {
+            set(regressionItem(RegressionDictionaries.REGTYPE), int[].class, (GeneralLinearModel source) -> {
                 Variable[] vars = source.getDescription().getVariables();
                 if (vars.length == 0) {
                     return null;
@@ -123,17 +114,17 @@ public class LinearModelExtractors {
                 return tvars;
             });
  
-            set(BasicInformationExtractor.concatenate(REGRESSION, COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
-            set(BasicInformationExtractor.concatenate(REGRESSION, COVAR), Matrix.class, source -> source.getEstimation().getCoefficientsCovariance());
-            set(BasicInformationExtractor.concatenate(REGRESSION, COVAR_ML), Matrix.class, source
+            set(advancedItem(RegressionDictionaries.COEFF), double[].class, source -> source.getEstimation().getCoefficients().toArray());
+            set(advancedItem(RegressionDictionaries.COVAR), Matrix.class, source -> source.getEstimation().getCoefficientsCovariance());
+            set(advancedItem(RegressionDictionaries.COVAR_ML), Matrix.class, source
                     -> mul(source.getEstimation().getCoefficientsCovariance(), mlcorrection(source.getEstimation().getStatistics())));
-            set(BasicInformationExtractor.concatenate(MAX, P), double[].class, source -> source.getEstimation().getParameters().getValues().toArray());
-            set(BasicInformationExtractor.concatenate(MAX, PCOVAR), Matrix.class, source -> source.getEstimation().getParameters().getCovariance());
-            set(BasicInformationExtractor.concatenate(MAX, PCOVAR_ML), Matrix.class, source
+            set(mlItem(UtilityDictionaries.P), double[].class, source -> source.getEstimation().getParameters().getValues().toArray());
+            set(mlItem(UtilityDictionaries.PCOVAR), Matrix.class, source -> source.getEstimation().getParameters().getCovariance());
+            set(mlItem(UtilityDictionaries.PCOVAR_ML), Matrix.class, source
                     -> mul(source.getEstimation().getParameters().getCovariance(), mlcorrection(source.getEstimation().getStatistics())));
-            set(BasicInformationExtractor.concatenate(MAX, SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
-            delegate(LIKELIHOOD, LikelihoodStatistics.class, source -> source.getEstimation().getStatistics());
-            delegate(RESIDUALS, Residuals.class, source -> source.getResiduals());
+            set(mlItem(UtilityDictionaries.SCORE), double[].class, source -> source.getEstimation().getParameters().getScores().toArray());
+            delegate(RegArimaDictionaries.LIKELIHOOD, LikelihoodStatistics.class, source -> source.getEstimation().getStatistics());
+            delegate(RegArimaDictionaries.RESIDUALS, Residuals.class, source -> source.getResiduals());
         }
 
         private double mlcorrection(LikelihoodStatistics ll) {
@@ -220,24 +211,6 @@ public class LinearModelExtractors {
             return n;
         }
 
-    }
-
-    @ServiceProvider(InformationExtractor.class)
-    public static class Dynamic extends DynamicMapping<GeneralLinearModel, Object> {
-
-        public Dynamic() {
-            super(null, v -> v.getAdditionalResults());
-        }
-
-        @Override
-        public Class<GeneralLinearModel> getSourceClass() {
-            return GeneralLinearModel.class;
-        }
-
-        @Override
-        public int getPriority() {
-            return 0;
-        }
     }
 
 }

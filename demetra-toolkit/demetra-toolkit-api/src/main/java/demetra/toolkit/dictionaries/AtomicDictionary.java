@@ -14,25 +14,28 @@ import java.util.stream.Stream;
 @lombok.Value
 @lombok.Builder
 public class AtomicDictionary implements Dictionary {
-    
+
     @lombok.Value
     @lombok.Builder
-    public static class Item implements Dictionary.Entry{
-        
+    public static class Item implements Dictionary.Entry {
+
         String name;
         String description;
-        Class type;
-        boolean list;
+        Class outputClass;
+        
+        @lombok.Builder.Default
+        EntryType type=EntryType.Normal;
+        
     }
 
     public String name;
-    
+
     @lombok.Getter(lombok.AccessLevel.PRIVATE)
     @lombok.Singular("item")
     List<Item> items;
-    
+
     @Override
-    public Stream<? extends Entry> entries(){
+    public Stream<? extends Entry> entries() {
         return items.stream();
     }
 }

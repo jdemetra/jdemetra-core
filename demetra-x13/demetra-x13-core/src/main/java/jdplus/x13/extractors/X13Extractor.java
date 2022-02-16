@@ -5,19 +5,18 @@
  */
 package jdplus.x13.extractors;
 
-import nbbrd.design.Development;
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import demetra.modelling.SeriesInfo;
 import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
-import jdplus.x13.X13Results;
-import demetra.information.BasicInformationExtractor;
-import demetra.information.InformationExtractor;
-import demetra.modelling.SeriesInfo;
-import demetra.sa.StationaryVarianceDecomposition;
-import demetra.x13.X13Dictionary;
-import jdplus.x11.X11Results;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.x13.X13Dictionaries;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x11.X11Results;
 import jdplus.x13.X13Diagnostics;
+import jdplus.x13.X13Results;
+import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -53,31 +52,31 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //        MAPPING.set(FINAL + SaDictionaries.T + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 //
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a1"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.X11, X13Dictionaries.A1), TsData.class, source
                 -> source.getPreadjustment().getA1());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a1a"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a1a"), TsData.class, source
                 -> source.getPreadjustment().getA1a());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a1b"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a1b"), TsData.class, source
                 -> source.getPreadjustment().getA1b());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a6"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a6"), TsData.class, source
                 -> source.getPreadjustment().getA6());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a7"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a7"), TsData.class, source
                 -> source.getPreadjustment().getA7());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a8"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8"), TsData.class, source
                 -> source.getPreadjustment().getA8());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a8i"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8i"), TsData.class, source
                 -> source.getPreadjustment().getA8i());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a8s"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8s"), TsData.class, source
                 -> source.getPreadjustment().getA8s());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a8t"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8t"), TsData.class, source
                 -> source.getPreadjustment().getA8t());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a9"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9"), TsData.class, source
                 -> source.getPreadjustment().getA9());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a9sa"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9sa"), TsData.class, source
                 -> source.getPreadjustment().getA9sa());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a9u"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9u"), TsData.class, source
                 -> source.getPreadjustment().getA9u());
-        set(BasicInformationExtractor.concatenate(X13Dictionary.PREADJUST, "a9ser"), TsData.class, source
+        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9ser"), TsData.class, source
                 -> source.getPreadjustment().getA9ser());
 
         set(SaDictionaries.S, TsData.class, source
