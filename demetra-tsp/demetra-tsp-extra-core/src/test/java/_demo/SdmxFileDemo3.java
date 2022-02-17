@@ -68,7 +68,7 @@ final class SdmxFileDemo3 {
         }
     }
 
-    private static SdmxManager getCustomManager() {
+    private static SdmxFileManager getCustomManager() {
         return SdmxFileManager
                 .ofServiceLoader()
                 .toBuilder()

@@ -21,7 +21,7 @@ public interface TxtParam extends DataSource.Converter<TxtBean> {
 
     @NonNull String getVersion();
 
-    DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource);
+    DataSet.@NonNull Converter<Integer> getSeriesParam();
 
     class V1 implements TxtParam {
 
@@ -81,7 +81,7 @@ public interface TxtParam extends DataSource.Converter<TxtBean> {
         }
 
         @Override
-        public DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource) {
+        public DataSet.@NonNull Converter<Integer> getSeriesParam() {
             return TsProviders.dataSetConverterOf(series);
         }
     }

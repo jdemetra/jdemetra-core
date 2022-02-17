@@ -71,7 +71,7 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
         DataSource source = toDataSource(new File(id.getFile()));
         if (id.isCollection()) {
             DataSet.Builder result = DataSet.builder(source, DataSet.Kind.COLLECTION);
-            param.getSheetParam(source).set(result, cleanSheetName(id.getSheetName()));
+            param.getSheetParam().set(result, cleanSheetName(id.getSheetName()));
             return result.build();
         }
         if (id.isSeriesByIndex()) {
@@ -79,8 +79,8 @@ public final class LegacySpreadSheetMoniker implements HasDataMoniker {
             return null;
         }
         DataSet.Builder result = DataSet.builder(source, DataSet.Kind.SERIES);
-        param.getSheetParam(source).set(result, cleanSheetName(id.getSheetName()));
-        param.getSeriesParam(source).set(result, id.getSeriesName());
+        param.getSheetParam().set(result, cleanSheetName(id.getSheetName()));
+        param.getSeriesParam().set(result, id.getSeriesName());
         return result.build();
     }
 

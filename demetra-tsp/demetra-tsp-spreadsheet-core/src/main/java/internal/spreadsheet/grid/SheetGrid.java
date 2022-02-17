@@ -20,7 +20,7 @@ import demetra.timeseries.TsCollection;
 import ec.util.spreadsheet.Book;
 import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.Sheet;
-import internal.spreadsheet.SpreadSheetAccessor;
+import internal.spreadsheet.SpreadSheetConnection;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -36,7 +36,7 @@ import java.util.Optional;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(staticName = "of")
-public final class SheetGrid implements SpreadSheetAccessor {
+public final class SheetGrid implements SpreadSheetConnection {
 
     @lombok.NonNull
     private final File file;

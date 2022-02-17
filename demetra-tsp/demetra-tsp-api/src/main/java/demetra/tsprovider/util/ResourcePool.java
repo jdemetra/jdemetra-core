@@ -6,6 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
@@ -15,13 +16,6 @@ import java.util.logging.Level;
 @lombok.AllArgsConstructor
 @lombok.extern.java.Log
 public final class ResourcePool<RESOURCE extends Closeable> {
-
-    @FunctionalInterface
-    public interface Factory<T extends Closeable> {
-
-        @NonNull
-        T create(@NonNull DataSource dataSource) throws IOException;
-    }
 
     @FunctionalInterface
     public interface Wrapper<T extends Closeable> {
@@ -44,10 +38,10 @@ public final class ResourcePool<RESOURCE extends Closeable> {
     @lombok.NonNull
     private final Consumer<IOException> onCloseError;
 
-    public @NonNull RESOURCE get(@NonNull DataSource dataSource, @NonNull Factory<RESOURCE> delegate) throws IOException {
+    public @NonNull RESOURCE get(@NonNull DataSource dataSource, @NonNull ResourceFactory<RESOURCE> delegate) throws IOException {
         RESOURCE result = resources.remove(dataSource);
         if (result == null) {
-            result = delegate.create(dataSource);
+            result = delegate.open(dataSource);
         }
         RESOURCE finalResult = result;
         return wrapper.wrap(finalResult, () -> recycle(dataSource, finalResult));
@@ -63,6 +57,11 @@ public final class ResourcePool<RESOURCE extends Closeable> {
     public void clear() {
         resources.values().forEach(this::closeSilently);
         resources.clear();
+    }
+
+    public @NonNull ResourceFactory<RESOURCE> asFactory(@NonNull ResourceFactory<RESOURCE> delegate) {
+        Objects.requireNonNull(delegate);
+        return dataSource -> get(dataSource, delegate);
     }
 
     private void recycle(DataSource dataSource, RESOURCE resource) throws IOException {

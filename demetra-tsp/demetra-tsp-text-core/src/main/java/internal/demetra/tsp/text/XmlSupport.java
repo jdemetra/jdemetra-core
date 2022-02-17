@@ -10,7 +10,8 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import nbbrd.design.ThreadSafe;
+import demetra.tsprovider.util.ImmutableValueFactory;
+import demetra.tsprovider.util.DataSetConversion;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
@@ -23,31 +24,26 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @lombok.AllArgsConstructor(staticName = "of")
-public class XmlSupport implements HasDataHierarchy, HasTsStream {
-
-    @ThreadSafe
-    public interface Resource {
-
-        @NonNull List<TsCollection> getData(@NonNull DataSource dataSource) throws IOException;
-
-        DataSet.@NonNull Converter<Integer> getCollectionParam(@NonNull DataSource dataSource);
-
-        DataSet.@NonNull Converter<Integer> getSeriesParam(@NonNull DataSource dataSource);
-    }
+public final class XmlSupport implements HasDataHierarchy, HasTsStream {
 
     @lombok.NonNull
     private final String providerName;
 
     @lombok.NonNull
-    private final XmlSupport.Resource resource;
+    private final ImmutableValueFactory<List<TsCollection>> xml;
+
+    @lombok.NonNull
+    private final DataSetConversion<List<TsCollection>, Integer> collectionIndex;
+
+    @lombok.NonNull
+    private final DataSetConversion<List<TsCollection>, Integer> seriesIndex;
 
     @Override
     public @NonNull List<DataSet> children(@NonNull DataSource dataSource) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        DataSet.Converter<Integer> collectionParam = resource.getCollectionParam(dataSource);
-
-        List<TsCollection> data = resource.getData(dataSource);
+        List<TsCollection> data = xml.load(dataSource);
+        DataSet.Converter<Integer> collectionParam = collectionIndex.getConverter(data);
 
         DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
 
@@ -63,11 +59,12 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull List<DataSet> children(@NonNull DataSet parent) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, parent);
 
-        DataSet.Converter<Integer> collectionParam = resource.getCollectionParam(parent.getDataSource());
-        DataSet.Converter<Integer> seriesParam = resource.getSeriesParam(parent.getDataSource());
+        List<TsCollection> list = xml.load(parent.getDataSource());
+        DataSet.Converter<Integer> collectionParam = collectionIndex.getConverter(list);
+        DataSet.Converter<Integer> seriesParam = seriesIndex.getConverter(list);
 
         int collection = collectionParam.get(parent);
-        TsCollection data = resource.getData(parent.getDataSource()).get(collection);
+        TsCollection data = list.get(collection);
 
         DataSet.Builder builder = DataSet.builder(parent.getDataSource(), DataSet.Kind.SERIES);
         collectionParam.set(builder, collection);
@@ -84,10 +81,9 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull Stream<DataSetTs> getData(@NonNull DataSource dataSource, @NonNull TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        DataSet.Converter<Integer> collectionParam = resource.getCollectionParam(dataSource);
-        DataSet.Converter<Integer> seriesParam = resource.getSeriesParam(dataSource);
-
-        List<TsCollection> data = resource.getData(dataSource);
+        List<TsCollection> data = xml.load(dataSource);
+        DataSet.Converter<Integer> collectionParam = collectionIndex.getConverter(data);
+        DataSet.Converter<Integer> seriesParam = seriesIndex.getConverter(data);
 
         Stream<XmlSeries> result = IntStream.range(0, data.size())
                 .mapToObj(Integer::valueOf)
@@ -100,11 +96,11 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     public @NonNull Stream<DataSetTs> getData(@NonNull DataSet dataSet, @NonNull TsInformationType type) throws IllegalArgumentException, IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet.getDataSource());
 
-        DataSet.Converter<Integer> collectionParam = resource.getCollectionParam(dataSet.getDataSource());
-        DataSet.Converter<Integer> seriesParam = resource.getSeriesParam(dataSet.getDataSource());
+        List<TsCollection> data = xml.load(dataSet.getDataSource());
+        DataSet.Converter<Integer> collectionParam = collectionIndex.getConverter(data);
+        DataSet.Converter<Integer> seriesParam = seriesIndex.getConverter(data);
 
         int collection = collectionParam.get(dataSet);
-        List<TsCollection> data = resource.getData(dataSet.getDataSource());
 
         Stream<XmlSeries> result = IntStream.range(0, data.get(collection).size())
                 .filter(getFilter(dataSet, seriesParam))
@@ -137,7 +133,7 @@ public class XmlSupport implements HasDataHierarchy, HasTsStream {
     }
 
     @lombok.Value
-    private final static class XmlSeries {
+    private static class XmlSeries {
 
         int collection;
         int series;

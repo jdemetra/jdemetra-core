@@ -24,11 +24,14 @@ import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.util.DataSourcePreconditions;
+import demetra.tsprovider.util.DataSetConversion;
+import demetra.tsprovider.util.ResourceFactory;
 import demetra.tsprovider.util.ResourcePool;
 import internal.util.Strings;
 import lombok.AllArgsConstructor;
 import nbbrd.design.MightBePromoted;
 import nbbrd.design.ThreadSafe;
+import nbbrd.io.Resource;
 import nbbrd.io.function.IOFunction;
 import nbbrd.io.function.IORunnable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -49,38 +52,26 @@ import java.util.stream.Stream;
 @lombok.AllArgsConstructor(staticName = "of")
 public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasDataDisplayName {
 
-    @FunctionalInterface
-    public interface CubeConnectionSupplier {
-
-        @NonNull CubeConnection openConnection(@NonNull DataSource dataSource) throws IOException;
-    }
-
-    @FunctionalInterface
-    public interface CubeConverterSupplier {
-
-        DataSet.@NonNull Converter<CubeId> getConverter(@NonNull CubeId root) throws IOException;
-    }
-
     @lombok.NonNull
     private final String providerName;
 
     @lombok.NonNull
-    private final CubeSupport.CubeConnectionSupplier connectionSupplier;
+    private final ResourceFactory<CubeConnection> cube;
 
     @lombok.NonNull
-    private final CubeConverterSupplier converterSupplier;
+    private final DataSetConversion<CubeConnection, CubeId> cubeId;
 
     //<editor-fold defaultstate="collapsed" desc="HasDataHierarchy">
     @Override
     public List<DataSet> children(DataSource dataSource) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        try (CubeConnection conn = connectionSupplier.openConnection(dataSource)) {
-            CubeId parentId = conn.getRoot();
+        try (CubeConnection connection = cube.open(dataSource)) {
+            CubeId root = connection.getRoot();
 
             // special case: we return a fake dataset if no dimColumns
-            if (parentId.isVoid()) {
-                Optional<IOException> ex = conn.testConnection();
+            if (root.isVoid()) {
+                Optional<IOException> ex = connection.testConnection();
                 if (ex.isPresent()) {
                     throw ex.get();
                 }
@@ -88,10 +79,10 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
                 return Collections.singletonList(fake);
             }
 
-            try (Stream<CubeId> children = conn.getChildren(parentId)) {
+            try (Stream<CubeId> children = connection.getChildren(root)) {
                 DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
                 return children
-                        .map(toDataSetFunc(builder, converterSupplier.getConverter(parentId)))
+                        .map(toDataSetFunc(builder, cubeId.getConverter(connection)))
                         .collect(Collectors.toList());
             } catch (UncheckedIOException ex) {
                 throw ex.getCause();
@@ -107,15 +98,15 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
             throw new IllegalArgumentException("Not a collection");
         }
 
-        try (CubeConnection conn = connectionSupplier.openConnection(parent.getDataSource())) {
-            DataSet.Converter<CubeId> converter = converterSupplier.getConverter(conn.getRoot());
+        try (CubeConnection connection = cube.open(parent.getDataSource())) {
+            DataSet.Converter<CubeId> cubeIdConverter = cubeId.getConverter(connection);
 
-            CubeId parentId = converter.get(parent);
+            CubeId parentId = cubeIdConverter.get(parent);
 
-            try (Stream<CubeId> children = conn.getChildren(parentId)) {
+            try (Stream<CubeId> children = connection.getChildren(parentId)) {
                 DataSet.Builder builder = parent.toBuilder(parentId.getDepth() > 1 ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
                 return children
-                        .map(toDataSetFunc(builder, converter))
+                        .map(toDataSetFunc(builder, cubeIdConverter))
                         .collect(Collectors.toList());
             } catch (UncheckedIOException ex) {
                 throw ex.getCause();
@@ -129,19 +120,20 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     public Stream<DataSetTs> getData(DataSource dataSource, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        CubeConnection conn = connectionSupplier.openConnection(dataSource);
+        CubeConnection connection = cube.open(dataSource);
         try {
-            CubeId parentId = conn.getRoot();
+            CubeId root = connection.getRoot();
 
-            Function<CubeId, DataSet> toDataSet = toDataSetFunc(DataSet.builder(dataSource, DataSet.Kind.SERIES), converterSupplier.getConverter(parentId));
+            Function<CubeId, DataSet> toDataSet = toDataSetFunc(DataSet.builder(dataSource, DataSet.Kind.SERIES), cubeId.getConverter(connection));
 
             return (
                     type.encompass(TsInformationType.Data)
-                            ? conn.getAllSeriesWithData(parentId).map(getSeriesWithDataFunc(toDataSet, conn::getDisplayName))
-                            : conn.getAllSeries(parentId).map(getSeriesFunc(toDataSet, conn::getDisplayName))
-            ).onClose(IORunnable.unchecked(conn::close));
+                            ? connection.getAllSeriesWithData(root).map(getSeriesWithDataFunc(toDataSet, connection::getDisplayName))
+                            : connection.getAllSeries(root).map(getSeriesFunc(toDataSet, connection::getDisplayName))
+            ).onClose(IORunnable.unchecked(connection::close));
         } catch (IOException ex) {
-            throw close(conn, ex);
+            Resource.ensureClosed(ex, connection);
+            throw ex;
         }
     }
 
@@ -149,22 +141,23 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     public Stream<DataSetTs> getData(DataSet dataSet, TsInformationType type) throws IOException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
-        CubeConnection conn = connectionSupplier.openConnection(dataSet.getDataSource());
+        CubeConnection connection = cube.open(dataSet.getDataSource());
         try {
-            DataSet.Converter<CubeId> converter = converterSupplier.getConverter(conn.getRoot());
+            DataSet.Converter<CubeId> cubeIdConverter = cubeId.getConverter(connection);
 
-            CubeId id = converter.get(dataSet);
+            CubeId id = cubeIdConverter.get(dataSet);
 
-            Function<CubeId, DataSet> toDataSet = toDataSetFunc(dataSet.toBuilder(DataSet.Kind.SERIES), converter);
+            Function<CubeId, DataSet> toDataSet = toDataSetFunc(dataSet.toBuilder(DataSet.Kind.SERIES), cubeIdConverter);
 
             boolean collection = DataSet.Kind.COLLECTION.equals(dataSet.getKind());
             return (
                     type.encompass(TsInformationType.Data)
-                            ? (collection ? conn.getAllSeriesWithData(id) : stream(conn.getSeriesWithData(id))).map(getSeriesWithDataFunc(toDataSet, conn::getDisplayName))
-                            : (collection ? conn.getAllSeries(id) : stream(conn.getSeries(id))).map(getSeriesFunc(toDataSet, conn::getDisplayName))
-            ).onClose(IORunnable.unchecked(conn::close));
+                            ? (collection ? connection.getAllSeriesWithData(id) : stream(connection.getSeriesWithData(id))).map(getSeriesWithDataFunc(toDataSet, connection::getDisplayName))
+                            : (collection ? connection.getAllSeries(id) : stream(connection.getSeries(id))).map(getSeriesFunc(toDataSet, connection::getDisplayName))
+            ).onClose(IORunnable.unchecked(connection::close));
         } catch (IOException ex) {
-            throw close(conn, ex);
+            Resource.ensureClosed(ex, connection);
+            throw ex;
         }
     }
     //</editor-fold>
@@ -174,8 +167,8 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
 
-        try (CubeConnection conn = connectionSupplier.openConnection(dataSource)) {
-            return conn.getDisplayName();
+        try (CubeConnection connection = cube.open(dataSource)) {
+            return connection.getDisplayName();
         } catch (IOException ex) {
             return ex.getMessage();
         }
@@ -185,9 +178,9 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
-        try (CubeConnection conn = connectionSupplier.openConnection(dataSet.getDataSource())) {
-            CubeId id = converterSupplier.getConverter(conn.getRoot()).get(dataSet);
-            return conn.getDisplayName(id);
+        try (CubeConnection connection = cube.open(dataSet.getDataSource())) {
+            CubeId id = cubeId.getConverter(connection).get(dataSet);
+            return connection.getDisplayName(id);
         } catch (IOException ex) {
             return ex.getMessage();
         }
@@ -197,9 +190,9 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     public String getDisplayNodeName(DataSet dataSet) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
 
-        try (CubeConnection conn = connectionSupplier.openConnection(dataSet.getDataSource())) {
-            CubeId id = converterSupplier.getConverter(conn.getRoot()).get(dataSet);
-            return conn.getDisplayNodeName(id);
+        try (CubeConnection connection = cube.open(dataSet.getDataSource())) {
+            CubeId id = cubeId.getConverter(connection).get(dataSet);
+            return connection.getDisplayNodeName(id);
         } catch (IOException ex) {
             return ex.getMessage();
         }
@@ -320,26 +313,11 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
     private static <T> Stream<T> stream(Optional<T> optional) {
         return optional.map(Stream::of).orElseGet(Stream::empty);
     }
-
-    @MightBePromoted
-    private static <EX extends Throwable> EX close(Closeable conn, EX ex) {
-        try {
-            conn.close();
-        } catch (IOException other) {
-            ex.addSuppressed(other);
-        }
-        return ex;
-    }
     //</editor-fold>
 
     @NonNull
-    public static ResourcePool<CubeConnection> newCubeConnectionPool() {
+    public static ResourcePool<CubeConnection> newConnectionPool() {
         return ResourcePool.of(PooledCubeConnection::new);
-    }
-
-    @NonNull
-    public static CubeConnectionSupplier asCubeConnectionSupplier(@NonNull ResourcePool<CubeConnection> pool, ResourcePool.@NonNull Factory<CubeConnection> delegate) {
-        return dataSource -> pool.get(dataSource, delegate);
     }
 
     @lombok.RequiredArgsConstructor

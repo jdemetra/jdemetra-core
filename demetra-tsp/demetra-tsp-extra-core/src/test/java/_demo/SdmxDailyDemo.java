@@ -23,7 +23,6 @@ import demetra.tsp.extra.sdmx.web.SdmxWebBean;
 import demetra.tsp.extra.sdmx.web.SdmxWebProvider;
 import demetra.tsprovider.cube.BulkCube;
 import sdmxdl.Key;
-import sdmxdl.SdmxManager;
 import sdmxdl.util.ext.MapCache;
 import sdmxdl.web.SdmxWebListener;
 import sdmxdl.web.SdmxWebManager;
@@ -53,7 +52,7 @@ final class SdmxDailyDemo {
         }
     }
 
-    private static SdmxManager getCustomManager() {
+    private static SdmxWebManager getCustomManager() {
         return SdmxWebManager
                 .ofServiceLoader()
                 .toBuilder()

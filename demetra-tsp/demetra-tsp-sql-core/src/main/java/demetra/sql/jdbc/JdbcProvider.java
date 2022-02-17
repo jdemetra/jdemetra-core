@@ -23,7 +23,7 @@ import demetra.tsprovider.*;
 import demetra.tsprovider.cube.*;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
-import demetra.tsprovider.util.JCacheFactory;
+import demetra.tsprovider.util.IOCacheFactoryLoader;
 import demetra.tsprovider.util.ResourcePool;
 import internal.sql.jdbc.JdbcParam;
 import nbbrd.design.DirectImpl;
@@ -58,14 +58,14 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
     private final TsProvider tsSupport;
 
     public JdbcProvider() {
-        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        ResourcePool<CubeConnection> pool = CubeSupport.newConnectionPool();
         JdbcParam param = new JdbcParam.V1();
 
         this.properties = HasSqlProperties.of(SqlConnectionSupplier::ofJndi, pool::clear);
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> openConnection(o, properties, param)), param::getCubeIdParam);
+        this.cubeSupport = CubeSupport.of(NAME, pool.asFactory(o -> openConnection(o, properties, param)), param::getCubeIdParam);
         this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 
@@ -80,7 +80,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
         SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDatabase(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getCube().getObsGathering(), bean.getCube().getLabel());
 
         CubeConnection result = TableAsCubeConnection.of(sqlResource);
-        return BulkCubeConnection.of(result, bean.getCache(), JCacheFactory.bulkCubeCacheOf(key::toString));
+        return BulkCubeConnection.of(result, bean.getCache(), IOCacheFactoryLoader.get());
     }
 
     private static CubeId toRoot(JdbcBean bean) {

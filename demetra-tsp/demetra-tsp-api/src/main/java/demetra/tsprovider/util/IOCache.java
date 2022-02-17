@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,21 +14,19 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.tsp.extra.sdmx;
+package demetra.tsprovider.util;
 
-import nbbrd.design.ThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import sdmxdl.SdmxManager;
+
+import java.io.Closeable;
 
 /**
  * @author Philippe Charles
  */
-@ThreadSafe
-public interface HasSdmxProperties<M extends SdmxManager> {
+public interface IOCache<K, V> extends Closeable {
 
-    @NonNull
-    M getSdmxManager();
+    void put(@NonNull K key, @NonNull V value);
 
-    void setSdmxManager(@Nullable M manager);
+    @Nullable V get(@NonNull K key);
 }

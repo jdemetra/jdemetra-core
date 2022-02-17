@@ -30,7 +30,7 @@ import demetra.tsprovider.util.ResourcePool;
 /**
  * @author Philippe Charles
  */
-public final class FakeDbProvider implements DataSourceLoader {
+public final class FakeDbProvider implements DataSourceLoader<FakeDbBean> {
 
     private static final String NAME = "FakeDbProvider";
 
@@ -50,13 +50,13 @@ public final class FakeDbProvider implements DataSourceLoader {
     private final TsProvider tsSupport;
 
     public FakeDbProvider() {
-        ResourcePool<CubeConnection> pool = CubeSupport.newCubeConnectionPool();
+        ResourcePool<CubeConnection> pool = CubeSupport.newConnectionPool();
         FakeDbParam param = new FakeDbParam.V1();
 
         this.mutableListSupport = HasDataSourceMutableList.of(NAME, pool::remove);
         this.monikerSupport = HasDataMoniker.usingUri(NAME);
         this.beanSupport = HasDataSourceBean.of(NAME, param, param.getVersion());
-        this.cubeSupport = CubeSupport.of(NAME, CubeSupport.asCubeConnectionSupplier(pool, o -> new FakeDbConnection()), param::getCubeIdParam);
+        this.cubeSupport = CubeSupport.of(NAME, pool.asFactory(o -> new FakeDbConnection()), param::getCubeIdParam);
         this.tsSupport = TsStreamAsProvider.of(NAME, cubeSupport, monikerSupport, pool::clear);
     }
 }

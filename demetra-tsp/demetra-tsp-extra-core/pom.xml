@@ -14,9 +14,17 @@
 
     <name>JD3 - TSP - Extra</name>
 
-    <properties>
-        <sdmx-dl.version>3.0.0-beta.6-SNAPSHOT</sdmx-dl.version>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.nbbrd.sdmx-dl</groupId>
+                <artifactId>sdmx-dl-bom</artifactId>
+                <version>3.0.0-beta.6-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- compile and runtime -->
@@ -27,24 +35,16 @@
         <dependency>
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-api</artifactId>
-            <version>${sdmx-dl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.sdmx-dl</groupId>
-            <artifactId>sdmx-dl-format-xml</artifactId>
-            <version>${sdmx-dl.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-provider-util</artifactId>
-            <version>${sdmx-dl.version}</version>
         </dependency>
 
         <!-- runtime only -->
         <dependency>
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-provider-ri</artifactId>
-            <version>${sdmx-dl.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -63,7 +63,6 @@
         <dependency>
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-tck</artifactId>
-            <version>${sdmx-dl.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

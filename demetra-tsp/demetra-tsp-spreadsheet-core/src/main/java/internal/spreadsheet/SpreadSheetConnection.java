@@ -21,13 +21,16 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import nbbrd.design.NotThreadSafe;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface SpreadSheetAccessor extends Closeable {
+@NotThreadSafe
+public interface SpreadSheetConnection extends Closeable {
 
     @NonNull
     Optional<TsCollection> getSheetByName(@NonNull String name) throws IOException;

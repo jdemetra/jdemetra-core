@@ -1,37 +1,40 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.cube;
 
-import demetra.io.ResourceWatcher;
 import _util.tsproviders.XCubeConnection;
-import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
-import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
-import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
+import demetra.io.ResourceWatcher;
+import demetra.tsprovider.util.IOCache;
+import demetra.tsprovider.util.IOCacheFactory;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.Test;
+
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.IntFunction;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+
+import static demetra.tsprovider.cube.CubeIdTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- *
  * @author Philippe Charles
  */
 public class BulkCubeConnectionTest {
@@ -42,7 +45,7 @@ public class BulkCubeConnectionTest {
 
     @Test
     public void testBulkApi() throws IOException {
-        CubeConnection accessor = BulkCubeConnection.of(newSample(), BulkCube.NONE, ttl -> new FakeCache(new ConcurrentHashMap<>()));
+        CubeConnection accessor = BulkCubeConnection.of(newSample(), BulkCube.NONE, new FakeCacheFactory());
         assertThatThrownBy(() -> accessor.getAllSeriesWithData(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> accessor.getSeriesWithData(null)).isInstanceOf(NullPointerException.class);
     }
@@ -50,7 +53,7 @@ public class BulkCubeConnectionTest {
     @Test
     public void testBulkDepth() throws IOException {
         ConcurrentMap x = new ConcurrentHashMap<>();
-        try (BulkCubeCache cache = new FakeCache(x)) {
+        try (IOCache cache = new FakeCache(x)) {
             IntFunction<BulkCubeConnection> factory = o -> {
                 x.clear();
                 return new BulkCubeConnection(newSample(), o, cache);
@@ -89,7 +92,7 @@ public class BulkCubeConnectionTest {
     public void testResourceLeak() throws IOException {
         ResourceWatcher watcher = new ResourceWatcher();
         ConcurrentMap x = new ConcurrentHashMap<>();
-        try (BulkCubeCache cache = new FakeCache(x)) {
+        try (IOCache cache = new FakeCache(x)) {
             BulkCubeConnection accessor = new BulkCubeConnection(new XCubeConnection(SECTOR_REGION, watcher), 1, cache);
             accessor.getSeriesWithData(INDUSTRY_BE);
             assertThat(x).isNotEmpty();
@@ -97,19 +100,32 @@ public class BulkCubeConnectionTest {
         }
     }
 
-    @lombok.AllArgsConstructor
-    private static final class FakeCache implements BulkCubeCache {
-
-        @lombok.NonNull
-        private final ConcurrentMap<CubeId, List<CubeSeriesWithData>> delegate;
+    private static final class FakeCacheFactory implements IOCacheFactory {
 
         @Override
-        public void put(CubeId key, List<CubeSeriesWithData> value) {
+        public @NonNull <K, V> IOCache<K, V> ofTtl(@NonNull Duration ttl) {
+            return new FakeCache<>(new ConcurrentHashMap<>());
+        }
+
+        @Override
+        public @NonNull <K, V> IOCache<K, V> ofFile(@NonNull File file) {
+            return new FakeCache<>(new ConcurrentHashMap<>());
+        }
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class FakeCache<K, V> implements IOCache<K, V> {
+
+        @lombok.NonNull
+        private final ConcurrentMap<K, V> delegate;
+
+        @Override
+        public void put(K key, V value) {
             delegate.put(key, value);
         }
 
         @Override
-        public List<CubeSeriesWithData> get(CubeId key) {
+        public V get(K key) {
             return delegate.get(key);
         }
 

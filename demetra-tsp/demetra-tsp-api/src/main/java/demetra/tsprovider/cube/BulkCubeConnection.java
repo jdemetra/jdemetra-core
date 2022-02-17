@@ -16,6 +16,8 @@
  */
 package demetra.tsprovider.cube;
 
+import demetra.tsprovider.util.IOCache;
+import demetra.tsprovider.util.IOCacheFactory;
 import lombok.AccessLevel;
 import nbbrd.io.IOIterator;
 import nbbrd.io.Resource;
@@ -41,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 public final class BulkCubeConnection implements CubeConnection {
 
     @NonNull
-    public static CubeConnection of(@NonNull CubeConnection delegate, @NonNull BulkCube options, BulkCubeCache.@NonNull Factory cacheFactory) {
+    public static CubeConnection of(@NonNull CubeConnection delegate, @NonNull BulkCube options, @NonNull IOCacheFactory cacheFactory) {
         return options.isCacheEnabled()
                 ? new BulkCubeConnection(delegate, options.getDepth(), cacheFactory.ofTtl(options.getTtl()))
                 : delegate;
@@ -54,7 +56,7 @@ public final class BulkCubeConnection implements CubeConnection {
     private final int depth;
 
     @lombok.NonNull
-    private final BulkCubeCache cache;
+    private final IOCache<CubeId, List<CubeSeriesWithData>> cache;
 
     private int getCacheLevel() throws IOException {
         return Math.max(0, delegate.getRoot().getMaxLevel() - depth);
@@ -137,7 +139,7 @@ public final class BulkCubeConnection implements CubeConnection {
 
     @NonNull
     private static Stream<CubeSeriesWithData> getOrLoad(
-            @NonNull BulkCubeCache cache,
+            @NonNull IOCache<CubeId, List<CubeSeriesWithData>> cache,
             @NonNull CubeId key,
             @NonNull IOFunction<CubeId, Stream<CubeSeriesWithData>> loader) throws IOException {
 
@@ -158,7 +160,7 @@ public final class BulkCubeConnection implements CubeConnection {
     private static final class CachingIterator implements IOIterator<CubeSeriesWithData>, Closeable {
 
         private final CubeId key;
-        private final BulkCubeCache cache;
+        private final IOCache cache;
         private final IOIterator<CubeSeriesWithData> delegate;
         private final Closeable closeable;
 

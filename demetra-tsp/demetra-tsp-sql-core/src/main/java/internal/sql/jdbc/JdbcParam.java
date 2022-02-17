@@ -20,10 +20,7 @@ import demetra.sql.jdbc.JdbcBean;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.tsprovider.cube.BulkCube;
-import demetra.tsprovider.cube.CubeId;
-import demetra.tsprovider.cube.CubeSupport;
-import demetra.tsprovider.cube.TableAsCube;
+import demetra.tsprovider.cube.*;
 import demetra.tsprovider.util.ObsFormat;
 import demetra.tsprovider.util.TsProviders;
 import demetra.util.List2;
@@ -33,6 +30,7 @@ import nbbrd.io.text.Parser;
 import nbbrd.io.text.Property;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +46,7 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
 
     String getVersion();
 
-    DataSet.@NonNull Converter<CubeId> getCubeIdParam(@NonNull CubeId root);
+    DataSet.@NonNull Converter<CubeId> getCubeIdParam(@NonNull CubeConnection connection) throws IOException;
 
     final class V1 implements JdbcParam {
 
@@ -126,8 +124,8 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
         }
 
         @Override
-        public DataSet.Converter<CubeId> getCubeIdParam(CubeId root) {
-            return CubeSupport.idByName(root);
+        public DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) throws IOException {
+            return CubeSupport.idByName(connection.getRoot());
         }
     }
 }
