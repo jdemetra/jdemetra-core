@@ -14,34 +14,19 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package demetra.tsprovider.cube;
+package demetra.tsprovider.util;
 
-import nbbrd.service.Quantifier;
-import nbbrd.service.ServiceDefinition;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Closeable;
-import java.time.Duration;
-import java.util.List;
 
 /**
  * @author Philippe Charles
  */
-public interface BulkCubeCache extends Closeable {
+public interface IOCache<K, V> extends Closeable {
 
-    void put(@NonNull CubeId key, @NonNull List<CubeSeriesWithData> value);
+    void put(@NonNull K key, @NonNull V value);
 
-    @Nullable
-    List<CubeSeriesWithData> get(@NonNull CubeId key);
-
-    @ServiceDefinition(
-            quantifier = Quantifier.SINGLE,
-            singleton = true
-    )
-    interface Factory {
-
-        @NonNull
-        BulkCubeCache ofTtl(@NonNull Duration ttl);
-    }
+    @Nullable V get(@NonNull K key);
 }

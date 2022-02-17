@@ -21,12 +21,12 @@ import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsProvider;
 import demetra.tsp.extra.sdmx.HasSdmxProperties;
 import demetra.tsprovider.*;
-import demetra.tsprovider.cube.BulkCubeCacheLoader;
 import demetra.tsprovider.cube.BulkCubeConnection;
 import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeSupport;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
+import demetra.tsprovider.util.IOCacheFactoryLoader;
 import demetra.tsprovider.util.ResourcePool;
 import internal.tsp.extra.sdmx.SdmxCubeConnection;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
@@ -145,7 +145,7 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
         SdmxConnection conn = properties.getSdmxManager().getConnection(bean.getSource());
         try {
             CubeConnection result = SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
-            return BulkCubeConnection.of(result, bean.getCacheConfig(), BulkCubeCacheLoader.Factory.get());
+            return BulkCubeConnection.of(result, bean.getCacheConfig(), IOCacheFactoryLoader.get());
         } catch (IOException ex) {
             Resource.ensureClosed(ex, conn);
             throw ex;

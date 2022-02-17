@@ -19,13 +19,14 @@ package internal.spreadsheet;
 import _test.DataForTest;
 import demetra.timeseries.TsCollection;
 import demetra.tsprovider.grid.GridReader;
+import demetra.tsprovider.util.IOCache;
 import internal.spreadsheet.grid.SheetGrid;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,8 +38,8 @@ public class SpreadSheetConnectionTest {
     @Test
     public void testWithCache() throws IOException {
         SheetGrid grid = SheetGrid.of(new File(""), DataForTest.FACTORY, GridReader.DEFAULT);
-        Map<String, Object> cache = new HashMap<>();
-        SpreadSheetConnection accessor = new CachedSpreadSheetConnection(grid, cache);
+        ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
+        SpreadSheetConnection accessor = new CachedSpreadSheetConnection(grid, new FakeCache<>(cache));
 
         cache.clear();
         assertThat(accessor.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
@@ -61,5 +62,26 @@ public class SpreadSheetConnectionTest {
         assertThat(accessor.getSheetByName("s1")).map(TsCollection::getName).contains("s1");
         assertThat(accessor.getSheetNames()).containsExactly("s1", "s2");
         assertThat(cache).containsKeys("getSheets");
+    }
+
+    @lombok.AllArgsConstructor
+    private static final class FakeCache<K, V> implements IOCache<K, V> {
+
+        @lombok.NonNull
+        private final ConcurrentMap<K, V> delegate;
+
+        @Override
+        public void put(K key, V value) {
+            delegate.put(key, value);
+        }
+
+        @Override
+        public V get(K key) {
+            return delegate.get(key);
+        }
+
+        @Override
+        public void close() throws IOException {
+        }
     }
 }

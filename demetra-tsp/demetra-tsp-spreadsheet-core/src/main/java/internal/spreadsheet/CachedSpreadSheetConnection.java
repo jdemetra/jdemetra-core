@@ -17,12 +17,16 @@
 package internal.spreadsheet;
 
 import demetra.timeseries.TsCollection;
+import demetra.tsprovider.util.IOCache;
+import demetra.tsprovider.util.IOCacheFactory;
+import lombok.AccessLevel;
 import nbbrd.io.Resource;
 import nbbrd.io.function.IOSupplier;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,14 +34,18 @@ import java.util.stream.Collectors;
 /**
  * @author Philippe Charles
  */
-@lombok.AllArgsConstructor
+@lombok.AllArgsConstructor(access = AccessLevel.PACKAGE)
 public final class CachedSpreadSheetConnection implements SpreadSheetConnection {
+
+    public static @NonNull SpreadSheetConnection of(@NonNull SpreadSheetConnection delegate, @NonNull File target, @NonNull IOCacheFactory cacheFactory) {
+        return new CachedSpreadSheetConnection(delegate, cacheFactory.ofFile(target));
+    }
 
     @lombok.NonNull
     private final SpreadSheetConnection delegate;
 
     @lombok.NonNull
-    private final Map<String, Object> cache;
+    private final IOCache<String, Object> cache;
 
     @Override
     public Optional<TsCollection> getSheetByName(String name) throws IOException {
@@ -68,7 +76,7 @@ public final class CachedSpreadSheetConnection implements SpreadSheetConnection 
 
     @Override
     public void close() throws IOException {
-        Resource.closeBoth(cache::clear, delegate);
+        Resource.closeBoth(cache, delegate);
     }
 
     private <T> T peek(String key) {

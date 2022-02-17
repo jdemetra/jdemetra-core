@@ -24,6 +24,7 @@ import demetra.tsprovider.cube.*;
 import demetra.tsprovider.stream.HasTsStream;
 import demetra.tsprovider.stream.TsStreamAsProvider;
 import demetra.tsprovider.util.FallbackDataMoniker;
+import demetra.tsprovider.util.IOCacheFactoryLoader;
 import demetra.tsprovider.util.ResourcePool;
 import internal.sql.odbc.OdbcParam;
 import internal.sql.odbc.legacy.LegacyOdbcMoniker;
@@ -88,7 +89,7 @@ public final class OdbcProvider implements DataSourceLoader<OdbcBean>, HasSqlPro
         SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDsn(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getCube().getObsGathering(), bean.getCube().getLabel());
 
         CubeConnection result = TableAsCubeConnection.of(sqlResource);
-        return BulkCubeConnection.of(result, bean.getCache(), BulkCubeCacheLoader.Factory.get());
+        return BulkCubeConnection.of(result, bean.getCache(), IOCacheFactoryLoader.get());
     }
 
     private static CubeId toRoot(OdbcBean bean) {
