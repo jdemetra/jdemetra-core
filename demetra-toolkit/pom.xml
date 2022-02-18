@@ -20,6 +20,7 @@
         <module>demetra-toolkit-r</module>
         <module>demetra-toolkit-api-advanced</module>
         <module>demetra-toolkit-io</module>
+        <module>demetra-toolkit-spi</module>
     </modules>
   
     <properties>

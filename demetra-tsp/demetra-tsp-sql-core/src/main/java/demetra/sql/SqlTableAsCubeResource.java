@@ -27,17 +27,17 @@ import static internal.sql.ResultSetFunc.onGetStringArray;
 import static internal.sql.ResultSetFunc.onNull;
 import static internal.sql.ResultSetFunc.onNumber;
 import demetra.tsprovider.cube.CubeId;
-import demetra.tsprovider.cube.TableAsCubeAccessor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.AllSeriesWithDataCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.ChildrenCursor;
-import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesWithDataCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection;
+import demetra.tsprovider.cube.TableAsCubeConnection.AllSeriesCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.AllSeriesWithDataCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.ChildrenCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.SeriesWithDataCursor;
 import demetra.tsprovider.cube.TableAsCubeUtil;
 import demetra.tsprovider.cube.TableDataParams;
 import demetra.timeseries.util.ObsCharacteristics;
 import demetra.timeseries.util.ObsGathering;
 import demetra.timeseries.util.TsDataBuilder;
-import demetra.tsprovider.cube.TableAsCubeAccessor.SeriesCursor;
+import demetra.tsprovider.cube.TableAsCubeConnection.SeriesCursor;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -58,7 +58,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @ThreadSafe
 @lombok.AllArgsConstructor(staticName = "of")
-public final class SqlTableAsCubeResource implements TableAsCubeAccessor.Resource<java.util.Date> {
+public final class SqlTableAsCubeResource implements TableAsCubeConnection.Resource<java.util.Date> {
 
     @lombok.NonNull
     private final SqlConnectionSupplier supplier;

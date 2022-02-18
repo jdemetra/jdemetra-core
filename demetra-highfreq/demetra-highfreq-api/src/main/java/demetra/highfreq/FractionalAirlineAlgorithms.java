@@ -6,6 +6,7 @@
 package demetra.highfreq;
 
 import demetra.design.Algorithm;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
@@ -37,11 +38,11 @@ public class FractionalAirlineAlgorithms {
      *
      * @return
      */
-    public FractionalAirlineDecomposition process(double[] s, FractionalAirline airline, boolean var) {
+    public ProcResults process(double[] s, FractionalAirline airline, boolean var) {
         return PROCESSOR.get().process(s, airline, var);
     }
 
-    public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
+    public ProcResults process(FractionalAirlineSpec spec) {
         return PROCESSOR.get().process(spec);
     }
 
@@ -49,9 +50,9 @@ public class FractionalAirlineAlgorithms {
     @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
     public interface Processor {
 
-        FractionalAirlineDecomposition process(double[] s, FractionalAirline airline, boolean var);
+        ProcResults process(double[] s, FractionalAirline airline, boolean var);
 
-        FractionalAirlineEstimation process(FractionalAirlineSpec spec);
+        ProcResults process(FractionalAirlineSpec spec);
     }
 
 }

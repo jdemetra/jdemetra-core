@@ -24,10 +24,10 @@ import demetra.revisions.parametric.OlsTests;
 import demetra.revisions.parametric.RegressionTests;
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
-import jdplus.linearmodel.HeteroskedasticityTest;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.HeteroskedasticityTest;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.stats.tests.Arch;
 import jdplus.stats.tests.JarqueBera;
 

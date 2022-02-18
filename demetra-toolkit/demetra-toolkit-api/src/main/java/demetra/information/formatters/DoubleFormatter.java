@@ -44,10 +44,10 @@ class DoubleFormatter implements InformationFormatter {
     @Override
     public String format(Object obj, int item) {
         if (item > 0)
-            return "";
+            return null;
         double val=(Double) obj;
         if (! Double.isFinite(val))
-            return "";
+            return null;
         return fmt.format(val);
     }
 }

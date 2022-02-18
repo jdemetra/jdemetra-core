@@ -18,7 +18,7 @@ package demetra.sa.csv;
 
 import demetra.information.Explorable;
 import demetra.modelling.ModellingDictionary;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaDictionaries;
 import demetra.sa.SaDocument;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -53,29 +53,29 @@ public class CsvSummary {
             } else if (item.equalsIgnoreCase("yl")) {
                 series_.put("yl", results.getData(ModellingDictionary.L, TsData.class));
             } else if (item.equalsIgnoreCase("t")) {
-                series_.put("t", results.getData(SaDictionary.T, TsData.class));
+                series_.put("t", results.getData(SaDictionaries.T, TsData.class));
             } else if (item.equalsIgnoreCase("sa")) {
-                series_.put("sa", results.getData(SaDictionary.SA, TsData.class));
+                series_.put("sa", results.getData(SaDictionaries.SA, TsData.class));
             } else if (item.equalsIgnoreCase("s")) {
-                series_.put("s", results.getData(SaDictionary.S, TsData.class));
+                series_.put("s", results.getData(SaDictionaries.S, TsData.class));
             } else if (item.equalsIgnoreCase("i")) {
-                series_.put("i", results.getData(SaDictionary.I, TsData.class));
+                series_.put("i", results.getData(SaDictionaries.I, TsData.class));
             } else if (item.equalsIgnoreCase("tc")) {
-                series_.put("tc", results.getData(SaDictionary.T_CMP, TsData.class));
+                series_.put("tc", results.getData(SaDictionaries.T_CMP, TsData.class));
             } else if (item.equalsIgnoreCase("sac")) {
-                series_.put("sac", results.getData(SaDictionary.SA_CMP, TsData.class));
+                series_.put("sac", results.getData(SaDictionaries.SA_CMP, TsData.class));
             } else if (item.equalsIgnoreCase("sc")) {
-                series_.put("sc", results.getData(SaDictionary.S_CMP, TsData.class));
+                series_.put("sc", results.getData(SaDictionaries.S_CMP, TsData.class));
             } else if (item.equalsIgnoreCase("ic")) {
-                series_.put("ic", results.getData(SaDictionary.I_CMP, TsData.class));
+                series_.put("ic", results.getData(SaDictionaries.I_CMP, TsData.class));
             } else if (item.equalsIgnoreCase("tl")) {
-                series_.put("tc", results.getData(SaDictionary.T_LIN, TsData.class));
+                series_.put("tc", results.getData(SaDictionaries.T_LIN, TsData.class));
             } else if (item.equalsIgnoreCase("sal")) {
-                series_.put("sac", results.getData(SaDictionary.SA_LIN, TsData.class));
+                series_.put("sac", results.getData(SaDictionaries.SA_LIN, TsData.class));
             } else if (item.equalsIgnoreCase("sl")) {
-                series_.put("sc", results.getData(SaDictionary.S_LIN, TsData.class));
+                series_.put("sc", results.getData(SaDictionaries.S_LIN, TsData.class));
             } else if (item.equalsIgnoreCase("il")) {
-                series_.put("ic", results.getData(SaDictionary.I_LIN, TsData.class));
+                series_.put("ic", results.getData(SaDictionaries.I_LIN, TsData.class));
             } else if (item.equalsIgnoreCase("ycal")) {
                 series_.put("ycal", results.getData(ModellingDictionary.YCAL, TsData.class));
             }

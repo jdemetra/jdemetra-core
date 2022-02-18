@@ -26,7 +26,7 @@ import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsMoniker;
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
 import demetra.toolkit.io.xml.legacy.DummyAdapter;
 import demetra.toolkit.io.xml.legacy.XmlConverterAdapter;
 import java.lang.reflect.Type;

@@ -55,9 +55,6 @@ class SeasonalityController extends ModelController {
     private void computeSTests() {
         RegSarimaModelling refestimation = getReferenceModel();
         DoubleSeq lin = refestimation.getEstimation().linearizedSeries();
-        SarimaOrders spec = refestimation.getDescription().specification();
-//        int del = spec.getD() + spec.getBD();
-//        del = Math.max(Math.min(2, del), 1);
         int del = 1;
         stests = new SeasonalityTests();
         stests.test(lin, refestimation.getDescription().getAnnualFrequency(), del, true);

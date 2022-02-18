@@ -6,7 +6,7 @@
 package jdplus.basic;
 
 import demetra.data.DoubleSeq;
-import jdplus.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.LinearModel;
 import jdplus.math.matrices.FastMatrix;
 
 /**

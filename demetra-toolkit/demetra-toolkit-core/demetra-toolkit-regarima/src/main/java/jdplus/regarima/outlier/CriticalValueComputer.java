@@ -21,7 +21,7 @@ import jdplus.dstats.Normal;
 import demetra.stats.ProbabilityType;
 import jdplus.math.matrices.FastMatrix;
 import java.util.function.IntToDoubleFunction;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 
 /**
  * Computation of critical values for outliers detection.

@@ -20,19 +20,18 @@ import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
+import demetra.information.GenericExplorable;
 import demetra.information.InformationMapping;
-import demetra.likelihood.LikelihoodStatistics;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.timeseries.TsData;
-import demetra.toolkit.extractors.LikelihoodStatisticsExtractor;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.modelling.extractors.SarimaExtractor;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
@@ -49,9 +48,8 @@ import jdplus.regsarima.ami.ExactOutliersDetector;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.stats.RobustStandardDeviationComputer;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import jdplus.x13.regarima.X13Utility;
-import demetra.information.GenericExplorable;
-import demetra.math.matrices.Matrix;
 
 /**
  *

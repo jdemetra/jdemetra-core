@@ -16,7 +16,7 @@
  */
 package jdplus.ssf.univariate;
 
-import jdplus.likelihood.ConcentratedLikelihood;
+import jdplus.stats.likelihood.ConcentratedLikelihood;
 
 /**
  *

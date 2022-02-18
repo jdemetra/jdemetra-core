@@ -27,6 +27,7 @@ import nbbrd.design.Development;
 public class MathException extends DemetraException {
 
     public final static String OVERFLOW = "overflow";
+    public final static String DIVBYZERO = "division by 0";
 
     /**
      *

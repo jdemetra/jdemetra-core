@@ -24,8 +24,10 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.random.JdkRNG;
 import demetra.dstats.RandomNumberGenerator;
+import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.akf.AugmentedSmoother;
 import jdplus.ssf.akf.SmoothationsComputer;
+import jdplus.ssf.akf.SmoothingOutput;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.RandomSsfGenerator;
 import jdplus.ssf.implementations.RegSsf;
@@ -182,12 +184,9 @@ public class OutliersDetectionTest {
                     DataBlock y = cols.next();
                     Ssf ssf = SsfBsm.of(models[k]);
                     SsfData data = new SsfData(y);
-                    AugmentedSmoother smoother = new AugmentedSmoother();
-                    smoother.setCalcVariances(true);
-                    DefaultSmoothingResults sd = DefaultSmoothingResults.full();
-                    sd.prepare(ssf.getStateDim(), 0, data.length());
-                    smoother.process(ssf, data, sd);
-                    double sig2 = DkToolkit.likelihood(ssf, data, true, false).sigma2();
+                    SmoothingOutput output = AkfToolkit.robustSmooth(ssf, data, true, false);
+                    DefaultSmoothingResults sd = output.getSmoothing();
+                    double sig2 = output.getSig2();
                     double saomax = 0, slsmax = 0, ssomax = 0, smax = 0;
                     for (int i = 4; i < N - 4; ++i) {
                         DataBlock R = DataBlock.of(sd.R(i));

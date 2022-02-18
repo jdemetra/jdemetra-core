@@ -10,7 +10,7 @@ import jdplus.arima.StationaryTransformation;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.eco.EcoException;
-import jdplus.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.LinearModel;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.matrices.FastMatrix;
 import java.util.List;

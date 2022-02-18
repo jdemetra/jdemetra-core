@@ -19,17 +19,14 @@
 package jdplus.sa;
 
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.timeseries.TsData;
-import demetra.util.Validatable.Builder;
-import java.text.DecimalFormat;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;

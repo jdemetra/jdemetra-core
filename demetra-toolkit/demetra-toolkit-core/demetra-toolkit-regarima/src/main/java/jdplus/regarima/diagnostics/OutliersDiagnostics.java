@@ -17,14 +17,13 @@
 package jdplus.regarima.diagnostics;
 
 import demetra.processing.ProcQuality;
-import demetra.timeseries.TsData;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.processing.Diagnostics;
+import jdplus.modelling.GeneralLinearModel;
 
 /**
  *

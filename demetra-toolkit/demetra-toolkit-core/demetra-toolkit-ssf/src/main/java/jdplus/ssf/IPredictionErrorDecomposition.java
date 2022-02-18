@@ -16,7 +16,7 @@
  */
 package jdplus.ssf;
 
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 
 /**
  *

@@ -6,16 +6,15 @@
 package jdplus.regsarima.regular;
 
 import demetra.data.DoubleSeq;
-import demetra.likelihood.LikelihoodStatistics;
-import demetra.modelling.implementations.RegSarimaProcessor;
-import demetra.modelling.implementations.SarimaSpec;
+import jdplus.stats.likelihood.LikelihoodStatistics;
+import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.Variable;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.Arrays;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.modelling.GeneralLinearModel;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaForecasts;
 

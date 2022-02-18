@@ -22,7 +22,12 @@ import nbbrd.io.text.Parser;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.net.URI;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.HamcrestCondition.matching;
+import static org.assertj.core.condition.MappedCondition.mappedCondition;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * @author Philippe Charles
@@ -74,6 +79,44 @@ public class DataSetTest {
     @Test
     public void testGetParams() {
         assertThat(newSample().getParameters()).containsAllEntriesOf(content);
+    }
+
+    @Test
+    public void testRepresentableAsString() {
+        DataSource dataSource = DataSource
+                .builder("ABC", "123")
+                .parameter("k1", "v1")
+                .build();
+
+        DataSet dataSet = DataSet
+                .builder(dataSource, DataSet.Kind.COLLECTION)
+                .parameter("k2", "v2")
+                .build();
+
+        String expected = "demetra://tsprovider/ABC/123/COLLECTION?k1=v1#k2=v2";
+
+        assertThat(dataSet)
+                .hasToString(expected)
+                .isEqualTo(DataSet.parse(expected));
+    }
+
+    @Test
+    public void testRepresentableAsURI() {
+        DataSource dataSource = DataSource
+                .builder("ABC", "123")
+                .parameter("k1", "v1")
+                .build();
+
+        DataSet dataSet = DataSet
+                .builder(dataSource, DataSet.Kind.COLLECTION)
+                .parameter("k2", "v2")
+                .build();
+
+        URI expected = URI.create("demetra://tsprovider/ABC/123/COLLECTION?k1=v1#k2=v2");
+
+        assertThat(dataSet)
+                .has(mappedCondition(DataSet::toURI, matching(equalTo(expected))))
+                .isEqualTo(DataSet.parseURI(expected));
     }
 
     @Test

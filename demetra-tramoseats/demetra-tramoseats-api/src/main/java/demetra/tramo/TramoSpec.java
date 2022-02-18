@@ -19,7 +19,7 @@ package demetra.tramo;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;

@@ -21,7 +21,12 @@ public class UcarimaModelTest {
 
     @Test
     public void testAirline() {
-        assertTrue(ucmAirline(-.6, -.6).isValid());
+        UcarimaModel ucm = ucmAirline(-.6, -.6);
+        assertTrue(ucm.isValid());
+        for (int i = 0; i < 3; ++i) {
+            assertTrue(!ucm.getComplement(i).isNull());
+        }
+        assertEquals(ucm.sum().getInnovationVariance(),1, 1e-6);
     }
 
     public static void testAirline2(double th, double bth) {

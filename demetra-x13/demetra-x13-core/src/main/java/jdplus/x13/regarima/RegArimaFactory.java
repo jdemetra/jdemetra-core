@@ -7,7 +7,7 @@ package jdplus.x13.regarima;
 
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.OutlierSpec;
@@ -28,11 +28,11 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import jdplus.modelling.GeneralLinearModel;
 import jdplus.regarima.ami.ModellingUtility;
 
 /**

@@ -18,9 +18,7 @@ package jdplus.x13;
 
 import demetra.sa.StationaryVarianceDecomposition;
 import demetra.timeseries.TsData;
-import demetra.x11.X11Results;
-import demetra.x13.X13Finals;
-import demetra.x13.X13Preadjustment;
+import jdplus.x11.X11Results;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.diagnostics.GenericSaTests;
 

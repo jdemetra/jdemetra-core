@@ -17,7 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.processing.ProcQuality;
-import demetra.sa.SaDictionary;
+import demetra.sa.SaDictionaries;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
@@ -65,7 +65,7 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
             return false;
         }
         // computes the differences
-        TsData s = rslts.getData(SaDictionary.SA, TsData.class);
+        TsData s = rslts.getData(SaDictionaries.SA, TsData.class);
         if (s != null) {
             int freq = s.getAnnualFrequency();
             s = s.delta(Math.max(1, freq / 4));
@@ -74,7 +74,7 @@ public class ResidualSeasonalityDiagnostics implements Diagnostics {
             TimeSelector sel = TimeSelector.last(freq * 3);
             lastSaFTest = TestsUtility.ofAnova(StableSeasonality.of(s.select(sel).getValues(),freq));
         }
-        s = rslts.getData(SaDictionary.I, TsData.class);
+        s = rslts.getData(SaDictionaries.I, TsData.class);
         if (s != null) {
             int freq = s.getAnnualFrequency();
             irregularFTest = TestsUtility.ofAnova(StableSeasonality.of(s.getValues(), freq));

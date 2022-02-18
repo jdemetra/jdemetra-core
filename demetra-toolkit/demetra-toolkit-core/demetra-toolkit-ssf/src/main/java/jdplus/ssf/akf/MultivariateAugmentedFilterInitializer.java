@@ -27,9 +27,9 @@ import jdplus.ssf.multivariate.MultivariateOrdinaryFilter;
  */
 public class MultivariateAugmentedFilterInitializer implements MultivariateOrdinaryFilter.Initializer{
     
-    private final IMultivariateAugmentedFilteringResults results;
+    private final IMultivariateQFilteringResults results;
     
-    public MultivariateAugmentedFilterInitializer(IMultivariateAugmentedFilteringResults results){
+    public MultivariateAugmentedFilterInitializer(IMultivariateQFilteringResults results){
         this.results=results;
     }
 

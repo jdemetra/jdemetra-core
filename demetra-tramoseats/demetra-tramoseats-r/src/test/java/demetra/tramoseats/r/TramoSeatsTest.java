@@ -7,9 +7,7 @@ package demetra.tramoseats.r;
 
 import demetra.data.Data;
 import demetra.data.Parameter;
-import demetra.modelling.ComponentInformation;
-import demetra.modelling.implementations.SarimaSpec;
-import demetra.sa.ComponentType;
+import demetra.arima.SarimaSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.protobuf.TramoSeatsOutput;

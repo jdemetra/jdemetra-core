@@ -21,9 +21,8 @@ import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.linearfilters.SymmetricFrequencyResponse;
 import jdplus.math.polynomials.Polynomial;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 import jdplus.math.matrices.FastMatrix;
 
 /**

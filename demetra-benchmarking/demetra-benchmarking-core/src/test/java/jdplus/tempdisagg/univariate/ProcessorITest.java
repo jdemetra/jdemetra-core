@@ -9,9 +9,7 @@ import demetra.data.AggregationType;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
-import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -38,7 +36,7 @@ public class ProcessorITest {
         TsData y = TsData.ofInternal(TsPeriod.yearly(1978), Data.PCRA);
         TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1), Data.IND_PCR);
 
-        TemporalDisaggregationIResults rslti = new ProcessorI().process(y, q, speci);
+        TemporalDisaggregationIResults rslti = ProcessorI.process(y, q, speci);
 //        System.out.println(rslti.getDisaggregatedSeries());
         TemporalDisaggregationSpec spec = TemporalDisaggregationSpec.builder()
                 .aggregationType(AggregationType.Sum)
@@ -46,7 +44,7 @@ public class ProcessorITest {
                 .constant(true)
                 .build();
 
-        TemporalDisaggregationResults rslt = new TemporalDisaggregationProcessor().process(y, new TsData[]{q}, spec);
+        TemporalDisaggregationResults rslt = TemporalDisaggregationProcessor.process(y, new TsData[]{q}, spec);
 //        System.out.println(rslt.getDisaggregatedSeries());
     }
 
@@ -62,7 +60,7 @@ public class ProcessorITest {
         TsData y = TsData.ofInternal(TsPeriod.yearly(1978), Data.PCRA);
         TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1), Data.IND_PCR);
 
-        TemporalDisaggregationIResults rslti = new ProcessorI().process(y, q, speci);
+        TemporalDisaggregationIResults rslti = ProcessorI.process(y, q, speci);
 //        System.out.println(rslti.getDisaggregatedSeries());
     }
 
@@ -77,7 +75,7 @@ public class ProcessorITest {
         TsData y = TsData.ofInternal(TsPeriod.yearly(1978), Data.PCRA);
         TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1), Data.IND_PCR);
 
-        TemporalDisaggregationIResults rslti = new ProcessorI().process(y, q, speci);
+        TemporalDisaggregationIResults rslti = ProcessorI.process(y, q, speci);
 //        System.out.println(rslti.getDisaggregatedSeries());
     }
 }

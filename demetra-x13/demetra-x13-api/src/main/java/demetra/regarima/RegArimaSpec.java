@@ -17,7 +17,7 @@
 package demetra.regarima;
 
 import demetra.modelling.TransformationType;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.timeseries.calendars.LengthOfPeriodType;

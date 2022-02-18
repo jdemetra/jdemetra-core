@@ -19,7 +19,7 @@ package jdplus.regarima.estimation;
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.ssq.ISsqFunction;

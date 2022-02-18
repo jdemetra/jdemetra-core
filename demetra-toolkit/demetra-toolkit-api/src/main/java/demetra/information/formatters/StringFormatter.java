@@ -26,7 +26,7 @@ public class StringFormatter implements InformationFormatter {
     @Override
     public String format(Object obj, int item) {
         if (item > 0)
-            return "";
+            return null;
         return obj.toString();
     }
     

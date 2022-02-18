@@ -1,41 +1,37 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.cube;
 
+import _util.tsproviders.XCubeConnection;
 import demetra.io.ResourceWatcher;
-import _util.tsproviders.XCubeAccessor;
-import _util.tsproviders.XCubeSupportResource;
+import demetra.timeseries.TsInformationType;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
-import demetra.timeseries.TsInformationType;
-import static demetra.tsprovider.cube.CubeIdTest.EMPTY;
-import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY;
-import static demetra.tsprovider.cube.CubeIdTest.INDUSTRY_BE;
-import static demetra.tsprovider.cube.CubeIdTest.SECTOR_REGION;
 import demetra.tsprovider.stream.DataSetTs;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.stream.Stream;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+
+import static demetra.tsprovider.cube.CubeIdTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- *
  * @author Philippe Charles
  */
 public class CubeSupportTest {
@@ -49,8 +45,8 @@ public class CubeSupportTest {
     @Test
     @SuppressWarnings("null")
     public void testFactories() {
-        assertThatThrownBy(() -> CubeSupport.of(null, null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> CubeSupport.of(providerName, null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> CubeSupport.of(null, null, null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> CubeSupport.of(providerName, null, null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> CubeSupport.idByName(null)).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> CubeSupport.idBySeparator(null, ",", "name")).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> CubeSupport.idBySeparator(EMPTY, null, "name")).isInstanceOf(NullPointerException.class);
@@ -61,7 +57,7 @@ public class CubeSupportTest {
     public void testResourceLeak() throws IOException {
         ResourceWatcher watcher = new ResourceWatcher();
 
-        CubeSupport support = CubeSupport.of(providerName, new XCubeSupportResource(new XCubeAccessor(SECTOR_REGION, watcher), cubeIdParam));
+        CubeSupport support = CubeSupport.of(providerName, dataSource1 -> new XCubeConnection(SECTOR_REGION, watcher), o -> cubeIdParam);
         support.children(dataSource);
         support.children(col);
         readAllAndClose(support.getData(dataSource, TsInformationType.All));

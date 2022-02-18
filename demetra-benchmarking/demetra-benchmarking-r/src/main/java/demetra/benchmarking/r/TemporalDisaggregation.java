@@ -19,9 +19,9 @@ package demetra.benchmarking.r;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
 import demetra.ssf.SsfInitialization;
-import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
+import jdplus.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
-import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
+import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec.Model;
 import demetra.timeseries.TsData;
@@ -29,6 +29,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import jdplus.tempdisagg.univariate.ProcessorI;
+import jdplus.tempdisagg.univariate.TemporalDisaggregationProcessor;
 
 /**
  *
@@ -48,7 +49,7 @@ public class TemporalDisaggregation {
                 .parameter(fixedrho ? Parameter.fixed(rho) : Parameter.initial(rho))
                 .truncatedRho(truncatedRho)
                 .build();
-        TemporalDisaggregationIResults rslt = new ProcessorI().process(y, indicator, spec);
+        TemporalDisaggregationIResults rslt = ProcessorI.process(y, indicator, spec);
         return rslt.getDisaggregatedSeries();
     }
 
@@ -75,12 +76,12 @@ public class TemporalDisaggregation {
             TsPeriod start = TsPeriod.of(unit, y.getStart().start());
             TsPeriod end = TsPeriod.of(unit, y.getDomain().end());
             TsDomain all = TsDomain.of(start, start.until(end) + 2 * freq);
-            return demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, all, builder.build());
+            return TemporalDisaggregationProcessor.process(y, all, builder.build());
         } else {
             for (int i = 0; i < indicators.length; ++i) {
                 indicators[i] = indicators[i].cleanExtremities();
             }
-            return demetra.tempdisagg.univariate.TemporalDisaggregation.process(y, indicators, builder.build());
+            return TemporalDisaggregationProcessor.process(y, indicators, builder.build());
         }
     }
 

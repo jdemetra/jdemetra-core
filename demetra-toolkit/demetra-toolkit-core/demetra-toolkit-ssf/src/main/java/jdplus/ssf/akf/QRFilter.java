@@ -20,10 +20,9 @@ import jdplus.ssf.likelihood.ProfileLikelihood;
 import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
-import jdplus.likelihood.DeterminantalTerm;
+import jdplus.stats.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
-import jdplus.math.matrices.decomposition.Householder;
 import jdplus.ssf.ResultsRange;
 import jdplus.ssf.univariate.DefaultFilteringResults;
 import jdplus.ssf.univariate.FastFilter;
@@ -32,8 +31,8 @@ import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
@@ -46,13 +45,10 @@ import jdplus.math.matrices.decomposition.QRDecomposition;
  */
 public class QRFilter {
 
-    private ProfileLikelihood pll;
-    private MarginalLikelihood mll;
-    private DiffuseLikelihood dll;
     private ISsfData o;
-    private FastMatrix R, X, Xl;
-    private DataBlock yl, b, e;
-    private double ldet, ssq, dcorr, pcorr, mcorr;
+    private FastMatrix X, Xl;
+    private DataBlock yl;
+    private double ldet;
 
     private static final double EPS = 1e-12;
 
@@ -101,45 +97,8 @@ public class QRFilter {
         return true;
     }
 
-    public static MarginalLikelihood ml(final ISsf ssf, final ISsfData data, boolean scalingfactor) {
-        AugmentedPredictionErrorDecomposition pe = new AugmentedPredictionErrorDecomposition(true);
-        pe.prepare(ssf, data.length());
-        AugmentedFilterInitializer initializer = new AugmentedFilterInitializer(pe);
-        OrdinaryFilter filter = new OrdinaryFilter(initializer);
-        if (!filter.process(ssf, data, pe)) {
-            return null;
-        }
-        int collapsing = pe.getCollapsingPosition();
-        DiffuseLikelihood likelihood = pe.likelihood(scalingfactor);
-        FastMatrix M = FastMatrix.make(collapsing, ssf.getDiffuseDim());
-        ssf.diffuseEffects(M);
-        int j = 0;
-        for (int i = 0; i < collapsing; ++i) {
-            if (!data.isMissing(i)) {
-                if (i > j) {
-                    M.row(j).copy(M.row(i));
-                }
-                j++;
-            }
-        }
-        QRDecomposition qr = new Householder2().decompose(M.extract(0, j, 0, M.getColumnsCount()));
-        double mc = 2 * LogSign.of(qr.rawRdiagonal()).getValue();
-        return MarginalLikelihood.builder(likelihood.dim(), likelihood.getD())
-                .concentratedScalingFactor(scalingfactor)
-                .diffuseCorrection(likelihood.getDiffuseCorrection())
-                .legacy(false)
-                .logDeterminant(likelihood.logDeterminant())
-                .ssqErr(likelihood.ssq())
-                .residuals(pe.errors(true, true))
-                .marginalCorrection(mc)
-                .build();
-    }
-
-    private void calcMLL() {
-        if (dll == null) {
-            calcDLL();
-        }
-
+    public MarginalLikelihood marginalLikelihood(boolean scalingFactor, boolean res) {
+        DiffuseLikelihood dll = diffuseLikelihood(false, res);
         FastMatrix Q = X;
         if (X.getRowsCount() != Xl.getRowsCount()) {
             Q = FastMatrix.make(Xl.getRowsCount(), X.getColumnsCount());
@@ -150,81 +109,59 @@ public class QRFilter {
             }
         }
         QRDecomposition qrx = new Householder2().decompose(Q);
-        mcorr = 2 * LogSign.of(qrx.rawRdiagonal()).getValue();
+        double mcorr = 2 * LogSign.of(qrx.rawRdiagonal()).getValue();
         int nd = UpperTriangularMatrix.rank(qrx.rawR(), EPS), n = Xl.getRowsCount();
 
-        mll = MarginalLikelihood.builder(n, nd)
-                .ssqErr(ssq)
+        return MarginalLikelihood.builder(n, nd)
+                .ssqErr(dll.ssq())
                 .logDeterminant(ldet)
-                .diffuseCorrection(dcorr)
+                .diffuseCorrection(dll.getDiffuseCorrection())
                 .marginalCorrection(mcorr)
-                .residuals(e)
+                .residuals(dll.e())
+                .concentratedScalingFactor(scalingFactor)
                 .build();
+
     }
 
-    private void calcDLL() {
-        QRSolution ls = QRSolver.robustLeastSquares(yl, Xl);
-        b = DataBlock.of(ls.getB());
-        e = DataBlock.of(ls.getE());
+    public DiffuseLikelihood diffuseLikelihood(boolean scalingFactor, boolean res) {
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, Xl);
+        DataBlock b = DataBlock.of(ls.getB());
+        DataBlock e = DataBlock.of(ls.getE());
         int nd = b.length(), n = Xl.getRowsCount();
-        ssq = ls.getSsqErr();
-        dcorr = 2 * LogSign.of(ls.rawRDiagonal()).getValue();
-        R = ls.rawR();
-        dll = DiffuseLikelihood.builder(n, nd)
+        double ssq = ls.getSsqErr();
+        double dcorr = 2 * LogSign.of(ls.rawRDiagonal()).getValue();
+        return DiffuseLikelihood.builder(n, nd)
                 .ssqErr(ssq)
                 .logDeterminant(ldet)
                 .diffuseCorrection(dcorr)
+                .concentratedScalingFactor(scalingFactor)
+                .residuals(res ? e : null)
                 .build();
+
     }
 
-    private void calcPLL() {
-        if (dll == null) {
-            calcDLL();
-        }
-
-        int n = Xl.getRowsCount();
+    public ProfileLikelihood profileLikelihood() {
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, Xl);
+        DataBlock b = DataBlock.of(ls.getB());
+        DataBlock e = DataBlock.of(ls.getE());
+        int nd = b.length(), n = Xl.getRowsCount();
+        double ssq = ls.getSsqErr();
+        double dcorr = 2 * LogSign.of(ls.rawRDiagonal()).getValue();
+        FastMatrix R = ls.rawR();
         FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));
         bvar.mul(ssq / n);
-        pll = new ProfileLikelihood();
+        ProfileLikelihood pll = new ProfileLikelihood();
         pll.set(ssq, ldet, b, bvar, n);
-
+        return pll;
     }
 
     private void clear() {
         o = null;
-        ssq = 0;
         ldet = 0;
-        dcorr = 0;
-        pcorr = 0;
-        mcorr = 0;
-        mll = null;
-        dll = null;
-        pll = null;
         X = null;
         Xl = null;
         yl = null;
-        R = null;
     }
 
-    public ProfileLikelihood getProfileLikelihood() {
-        if (pll == null) {
-            calcPLL();
-        }
-        return pll;
-    }
-
-    public MarginalLikelihood getMarginalLikelihood() {
-        if (mll == null) {
-            calcMLL();
-        }
-        return mll;
-    }
-
-    public DiffuseLikelihood getDiffuseLikelihood() {
-        if (dll == null) {
-            calcDLL();
-        }
-        return dll;
-    }
 }

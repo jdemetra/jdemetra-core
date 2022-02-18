@@ -22,6 +22,7 @@ import demetra.timeseries.TsMoniker;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataMoniker;
+import demetra.tsprovider.cube.TableAsCube;
 import demetra.tsprovider.util.DataSourcePreconditions;
 import internal.sql.odbc.OdbcParam;
 
@@ -76,9 +77,12 @@ public final class LegacyOdbcMoniker implements HasDataMoniker {
         OdbcBean result = new OdbcBean();
         result.setDsn(id.getDbName());
         result.setTable(id.getTable());
-        result.setDimColumns(Arrays.asList(id.getDomainColumn(), id.getSeriesColumn()));
-        result.setPeriodColumn(id.getPeriodColumn());
-        result.setValueColumn(id.getValueColumn());
+        result.setCube(TableAsCube
+                .builder()
+                .dimensions(Arrays.asList(id.getDomainColumn(), id.getSeriesColumn()))
+                .timeDimension(id.getPeriodColumn())
+                .measure(id.getValueColumn())
+                .build());
         return result;
     }
 

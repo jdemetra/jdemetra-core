@@ -79,6 +79,7 @@ public class Variables {
             return m.unmodifiable();
         }
     }
+    
     public Matrix htd(Calendar calendar, TsDomain domain, int[] groups, int dw, boolean contrasts, boolean meanCorrection) {
         DayClustering dc = DayClustering.of(groups);
         if (contrasts) {

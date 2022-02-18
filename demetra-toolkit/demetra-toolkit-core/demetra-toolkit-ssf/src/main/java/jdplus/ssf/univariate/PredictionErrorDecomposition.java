@@ -19,13 +19,13 @@ package jdplus.ssf.univariate;
 import jdplus.ssf.UpdateInformation;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 import jdplus.ssf.IPredictionErrorDecomposition;
-import jdplus.likelihood.ResidualsCumulator;
+import jdplus.stats.likelihood.ResidualsCumulator;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 
 /**
  *

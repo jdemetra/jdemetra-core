@@ -17,18 +17,18 @@
 package jdplus.seats;
 
 import demetra.arima.SarimaOrders;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.sa.ComponentType;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import jdplus.ucarima.UcarimaModel;
 import demetra.data.Parameter;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import jdplus.arima.ArimaModel;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.linearfilters.BackFilter;
 import static jdplus.math.linearfilters.BackFilter.D1;
 import jdplus.regarima.RegArimaEstimation;
@@ -73,7 +73,7 @@ public class SeatsModel {
                 .build();
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
-        SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.getAsInt() > 1);
+        SeatsModel seatsModel = new SeatsModel(series, nseries, log, sarima, seas.toInt() > 1);
         seatsModel.meanCorrection = mean;
         double var = spec.getInnovationVariance();
         if (var == 0) {
@@ -118,7 +118,7 @@ public class SeatsModel {
         SeasonalityDetector detector = new TramoSeasonalityDetector();
         SeasonalityDetector.Seasonality seas = detector.hasSeasonality(nseries.getValues(), period);
 
-        SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.getAsInt() > 1);
+        SeatsModel seatsModel = new SeatsModel(series, nseries, log, arima, seas.toInt() > 1);
         seatsModel.meanCorrection = mean;
         seatsModel.innovationVariance = var;
         return seatsModel;

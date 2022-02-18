@@ -183,4 +183,5 @@ public class DefaultProcessingLog implements ProcessingLog{
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
     }
+    
 }

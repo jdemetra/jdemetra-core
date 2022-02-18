@@ -19,7 +19,7 @@ package jdplus.ssf;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.linearsystem.LinearSystemSolver;
+import jdplus.math.linearsystem.LinearSystemSolver;
 
 /**
  *

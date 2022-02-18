@@ -19,9 +19,9 @@ package _test;
 import demetra.demo.ProviderResources;
 import demetra.sql.odbc.OdbcBean;
 import demetra.sql.odbc.OdbcProvider;
+import demetra.tsprovider.cube.TableAsCube;
 import ec.tss.tsproviders.odbc.OdbcProviderX;
 import java.sql.DriverManager;
-import java.util.Arrays;
 
 /**
  *
@@ -58,9 +58,13 @@ public enum OdbcSamples implements ProviderResources.Loader2<ec.tss.tsproviders.
         OdbcBean bean = provider.newBean();
         bean.setDsn("mydb");
         bean.setTable("Table2");
-        bean.setDimColumns(Arrays.asList("Sector", "Region"));
-        bean.setPeriodColumn("Period");
-        bean.setValueColumn("Rate");
+        bean.setCube(TableAsCube
+                .builder()
+                .dimension("Sector")
+                .dimension("Region")
+                .timeDimension("Period")
+                .measure("Rate")
+                .build());
         return bean;
     }
 }

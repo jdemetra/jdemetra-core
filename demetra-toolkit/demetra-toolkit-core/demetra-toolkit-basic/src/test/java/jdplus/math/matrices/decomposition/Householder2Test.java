@@ -10,8 +10,8 @@ import static demetra.data.DataSets.lre;
 import demetra.data.DoubleSeq;
 import java.util.Random;
 import jdplus.data.DataBlock;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,7 +37,7 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(A);
-        QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, Y, 1e-15);
 //        System.out.println(ls.getB());
 //        assertTrue(B.distance(B2) < 1e-9);
     }
@@ -61,7 +61,7 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(M);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
 //        System.out.println("Filip");
 //        System.out.println(beta);
@@ -86,7 +86,7 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(M);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
 //        System.out.println("Wampler4");
 //        System.out.println(beta);
@@ -111,7 +111,7 @@ public class Householder2Test {
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(M);
-        QRSolution ls = QRSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, DoubleSeq.of(y), 1e-15);
         DoubleSeq beta = ls.getB();
 //        System.out.println("Wampler5");
 //        System.out.println(beta);
@@ -144,7 +144,7 @@ public class Householder2Test {
         for (int i = 0; i < K; ++i) {
             Householder2 H2 = new Householder2();
             QRDecomposition qr = H2.decompose(A);
-            QRSolution ls = QRSolver.leastSquares(qr, Y, 1e-15);
+            QRLeastSquaresSolution ls = QRLeastSquaresSolver.leastSquares(qr, Y, 1e-15);
             DoubleSeq beta = ls.getB();
         }
         t1 = System.currentTimeMillis();

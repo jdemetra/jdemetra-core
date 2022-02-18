@@ -27,7 +27,7 @@ public class LongFormatter implements InformationFormatter {
     @Override
     public String format(Object obj, int item) {
         if (item > 0) {
-            return "";
+            return null;
         }
         long l = (Long) obj;
         NumberFormat ifmt = NumberFormat.getIntegerInstance();

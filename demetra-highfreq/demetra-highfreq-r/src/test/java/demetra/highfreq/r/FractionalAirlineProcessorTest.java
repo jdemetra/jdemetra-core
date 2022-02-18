@@ -7,8 +7,8 @@ package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.WeeklyData;
-import demetra.highfreq.FractionalAirlineDecomposition;
-import demetra.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.math.matrices.Matrix;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
 import static org.junit.Assert.*;
@@ -38,15 +38,15 @@ public class FractionalAirlineProcessorTest {
 
     @Test
     public void testWeeklyEstimation() {
-        FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25 / 7}, -1, new String[]{"ao", "wo"}, 5, 1e-12, true);
+        FractionalAirlineEstimation rslt = FractionalAirlineProcessor.estimate(WeeklyData.US_CLAIMS2, null, false, new double[]{365.25 / 7}, -1, false, new String[]{"ao", "wo"}, 5, 1e-12, true);
 //        System.out.println(rslt.getLikelihood());
 //        System.out.println();
     }
 
     @Test
     public void testWeeklySsf() {
-        FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(WeeklyData.US_CLAIMS2, new double[]{365.25 / 7}, -1,false,  true, 7,7);
+        FractionalAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(WeeklyData.US_CLAIMS2, new double[]{365.25 / 7}, -1, false, true, 7, 7);
         SsfUcarimaEstimation details = FractionalAirlineProcessor.ssfDetails(rslt);
-        assertTrue(null !=details.getData("smoothing.states", Matrix.class));
-     }
+        assertTrue(null != details.getData("smoothing.states", Matrix.class));
+    }
 }

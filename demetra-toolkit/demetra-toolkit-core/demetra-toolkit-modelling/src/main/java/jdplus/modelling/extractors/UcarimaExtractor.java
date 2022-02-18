@@ -16,11 +16,11 @@
  */
 package jdplus.modelling.extractors;
 
-import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
+import demetra.information.InformationExtractor;
+import demetra.toolkit.dictionaries.ArimaDictionaries;
 import jdplus.arima.IArimaModel;
-import jdplus.modelling.ApiUtility;
 import jdplus.ucarima.UcarimaModel;
 import nbbrd.service.ServiceProvider;
 
@@ -32,22 +32,15 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class UcarimaExtractor extends InformationMapping<UcarimaModel> {
 
-    public final static String COMPONENT = "component", COMPLEMENT = "complement", MODEL = "model", MODELC = "modelc", REDUCEDMODEL = "reducedmodel", // Component
-            SUM = "sum", // Reduced model
-            SIZE = "size";  // Number of components
 
     public UcarimaExtractor() {
-        set(SIZE, Integer.class, source -> source.getComponentsCount());
-        set(REDUCEDMODEL, demetra.arima.ArimaModel.class, source -> ApiUtility.toApi(source.getModel(), "reducedmodel"));
-        delegate(SUM, IArimaModel.class, source -> source.getModel());
-        delegateArray(COMPONENT, 1, 6, IArimaModel.class, (source, i)
+        set(ArimaDictionaries.SIZE, Integer.class, source -> source.getComponentsCount());
+        delegate(ArimaDictionaries.MODEL, IArimaModel.class, source -> source.getModel());
+        delegateArray(ArimaDictionaries.COMPONENT, 1, 20, IArimaModel.class, (source, i)
                 -> (i <= 0 || i > source.getComponentsCount()) ? null : source.getComponent(i - 1));
-        setArray(MODEL, 1, 6, demetra.arima.ArimaModel.class, (source, i)
-                -> (i <= 0 || i > source.getComponentsCount()) ? null : ApiUtility.toApi(source.getComponent(i - 1), "cmp" + (i + 1)));
-        delegateArray(COMPLEMENT, 1, 6, IArimaModel.class, (source, i)
+        delegateArray(ArimaDictionaries.COMPONENTC, 1, 20, IArimaModel.class, (source, i)
                 -> (i <= 0 || i > source.getComponentsCount()) ? null : source.getComplement(i - 1));
-        setArray(MODELC, 1, 6, demetra.arima.ArimaModel.class, (source, i)
-                -> (i <= 0 || i > source.getComponentsCount()) ? null : ApiUtility.toApi(source.getComplement(i - 1), "cmpc" + (i + 1)));
+        delegate(ArimaDictionaries.SUM, IArimaModel.class, source -> source.sum());
     }
 
     @Override

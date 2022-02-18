@@ -18,8 +18,8 @@ package jdplus.regarima;
 
 import demetra.stats.StatisticalTest;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.linearmodel.JointTest;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.linearmodel.JointTest;
 import jdplus.regsarima.regular.IRegressionTest;
 
 

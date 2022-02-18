@@ -21,7 +21,7 @@ import demetra.dstats.ContinuousDistribution;
 import demetra.dstats.DStatException;
 import demetra.stats.ProbabilityType;
 import java.util.Formatter;
-import jdplus.dstats.internal.SpecialFunctions;
+import internal.jdplus.dstats.SpecialFunctions;
 import demetra.dstats.RandomNumberGenerator;
 
 /**

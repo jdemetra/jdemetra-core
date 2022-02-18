@@ -18,8 +18,8 @@
 package jdplus.stats.tests;
 
 import demetra.stats.TestType;
-import jdplus.likelihood.ConcentratedLikelihood;
-import jdplus.linearmodel.LinearModel;
+import jdplus.stats.likelihood.ConcentratedLikelihood;
+import jdplus.stats.linearmodel.LinearModel;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;

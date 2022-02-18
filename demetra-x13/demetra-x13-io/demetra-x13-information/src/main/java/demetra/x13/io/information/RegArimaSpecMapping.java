@@ -19,7 +19,7 @@ package demetra.x13.io.information;
 import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.regarima.RegArimaSpec;

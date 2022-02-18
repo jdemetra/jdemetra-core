@@ -19,10 +19,6 @@ package jdplus.regsarima.ami;
 import jdplus.data.DataBlock;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -45,6 +41,10 @@ import demetra.data.Doubles;
 import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.ami.GenericOutliersDetection;
 import jdplus.regarima.IRegArimaComputer;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 
 /**
  *

@@ -291,7 +291,7 @@ public class X11Kernel_MixedFilters_Test {
                 .buildWithoutValidation();//this has to be removed
 
         jdplus.x11.X11Kernel instanceKernel = new X11Kernel();
-        demetra.x11.X11Results x11Results = instanceKernel.process(
+        jdplus.x11.X11Results x11Results = instanceKernel.process(
                 demetra.timeseries.TsData.of(TsPeriod.of(TsUnit.ofAnnualFrequency(frequency), LocalDate.of(1900, Month.of(start), 1)),
                         DoubleSeq.of(values)), spec);
 

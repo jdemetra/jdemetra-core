@@ -16,14 +16,13 @@
  */
 package jdplus.sarima;
 
-import demetra.arima.ISarimaModel;
 import demetra.arima.SarimaOrders;
 import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import java.util.Arrays;
 import jdplus.arima.AbstractArimaModel;
 import jdplus.arima.StationaryTransformation;
@@ -48,7 +47,7 @@ import nbbrd.design.Immutable;
  */
 @Development(status = Development.Status.Alpha)
 @Immutable
-public final class SarimaModel extends AbstractArimaModel implements ISarimaModel {
+public final class SarimaModel extends AbstractArimaModel {
 
     @BuilderPattern(SarimaModel.class)
     public static class Builder {
@@ -317,7 +316,6 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
      *
      * @return
      */
-    @Override
     public DoubleSeq parameters() {
         double[] p = new double[phi.length + bphi.length + th.length + bth.length];
         int pos = 0;
@@ -352,7 +350,6 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         return x.length == 0 ? DoubleSeq.empty() : DoubleSeq.of(x.clone());
     }
 
-    @Override
     public DoubleSeq getPhi() {
         return clone(phi);
     }
@@ -366,7 +363,6 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         return bphi[lag - 1];
     }
 
-    @Override
     public DoubleSeq getBphi() {
         return clone(bphi);
     }
@@ -380,7 +376,6 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         return th[lag - 1];
     }
 
-    @Override
     public DoubleSeq getTheta() {
         return clone(th);
     }
@@ -394,7 +389,6 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
         return bth[lag - 1];
     }
 
-    @Override
     public DoubleSeq getBtheta() {
         return clone(bth);
     }
@@ -435,7 +429,6 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
      *
      * @return
      */
-    @Override
     public int getPeriod() {
         return s;
     }
@@ -513,17 +506,14 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
      *
      * @return
      */
-    @Override
     public int getD() {
         return d;
     }
 
-    @Override
     public int getP() {
         return phi.length;
     }
 
-    @Override
     public int getQ() {
         return th.length;
     }
@@ -592,17 +582,14 @@ public final class SarimaModel extends AbstractArimaModel implements ISarimaMode
      *
      * @return
      */
-    @Override
     public int getBd() {
         return bd;
     }
 
-    @Override
     public int getBp() {
         return bphi.length;
     }
 
-    @Override
     public int getBq() {
         return bth.length;
     }

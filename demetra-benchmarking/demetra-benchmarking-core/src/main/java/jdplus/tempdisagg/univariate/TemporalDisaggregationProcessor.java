@@ -12,8 +12,8 @@ import jdplus.benchmarking.ssf.SsfCumulator;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import demetra.data.ParameterType;
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
-import demetra.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
@@ -47,7 +47,6 @@ import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.tempdisagg.univariate.TemporalDisaggregation;
-import demetra.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
 import jdplus.math.matrices.FastMatrix;
@@ -58,18 +57,14 @@ import jdplus.ssf.implementations.Noise;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-@ServiceProvider(TemporalDisaggregation.Processor.class)
-public class TemporalDisaggregationProcessor implements TemporalDisaggregation.Processor {
+@lombok.experimental.UtilityClass
+public class TemporalDisaggregationProcessor {
 
-    public static final TemporalDisaggregationProcessor PROCESSOR = new TemporalDisaggregationProcessor();
-
-    @Override
     public TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec) {
         DisaggregationModel model = createModel(aggregatedSeries, indicators, spec);
         return compute(model, spec);
     }
 
-    @Override
     public TemporalDisaggregationResults process(TsData aggregatedSeries, TsDomain domain, TemporalDisaggregationSpec spec) {
         DisaggregationModel model = createModel(aggregatedSeries, domain, spec);
         return compute(model, spec);

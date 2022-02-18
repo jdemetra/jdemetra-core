@@ -6,8 +6,8 @@
 package demetra.modelling.r;
 
 import demetra.data.DoubleSeq;
-import demetra.modelling.DifferencingResult;
-import demetra.modelling.StationaryTransformation;
+import jdplus.modelling.DifferencingResult;
+import jdplus.modelling.StationaryTransformation;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import jdplus.data.DataBlock;
 import jdplus.modelling.FastDifferencingModule;

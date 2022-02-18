@@ -9,7 +9,7 @@ import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regarima.estimation.ConcentratedLikelihoodComputer;
 import jdplus.sarima.SarimaModel;

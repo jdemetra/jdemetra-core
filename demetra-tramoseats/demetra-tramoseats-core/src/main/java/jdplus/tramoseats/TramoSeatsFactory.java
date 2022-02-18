@@ -5,7 +5,7 @@
  */
 package jdplus.tramoseats;
 
-import demetra.modelling.implementations.SarimaSpec;
+import demetra.arima.SarimaSpec;
 import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
@@ -16,11 +16,11 @@ import demetra.tramoseats.TramoSeatsSpec;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import jdplus.modelling.GeneralLinearModel;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
 import jdplus.sa.diagnostics.CoherenceDiagnostics;

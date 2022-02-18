@@ -74,7 +74,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     /**
-     * Usual corrections: the holidays are considered as Sundays
+     * Usual corrections: the holidays are considered as the specified day
      *
      * @param calendar
      * @param hol

@@ -20,10 +20,10 @@ import jdplus.data.DataBlockIterator;
 import demetra.design.AlgorithmImplementation;
 import jdplus.math.matrices.FastMatrix;
 import nbbrd.service.ServiceProvider;
-import jdplus.leastsquares.QRSolver;
 import jdplus.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
-import jdplus.leastsquares.QRSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 
 /**
  *
@@ -47,7 +47,7 @@ public class OlsAlgorithm implements AutoRegressiveEstimation {
         }
         
         DoubleSeq yc = Y.drop(nar, 0);
-        QRSolution rslt = QRSolver.fastLeastSquares(yc, M);
+        QRLeastSquaresSolution rslt = QRLeastSquaresSolver.fastLeastSquares(yc, M);
         if (rslt == null) {
             return false;
         }

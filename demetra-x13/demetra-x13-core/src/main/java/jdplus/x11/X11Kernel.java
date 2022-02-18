@@ -9,9 +9,7 @@ import demetra.data.DoubleSeq;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import demetra.x11.X11;
 import demetra.x11.X11Exception;
-import demetra.x11.X11Results;
 import demetra.x11.X11Spec;
 import jdplus.x11.filter.MusgraveFilterFactory;
 import jdplus.x11.filter.endpoints.AsymmetricEndPoints;
@@ -28,7 +26,7 @@ import jdplus.math.linearfilters.SymmetricFilter;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @lombok.Getter
-public class X11Kernel implements X11.Processor {
+public class X11Kernel {
 
     private X11BStep bstep;
     private X11CStep cstep;
@@ -43,8 +41,6 @@ public class X11Kernel implements X11.Processor {
         return x;
     }
 
-    
-    @Override
     public X11Results process(@lombok.NonNull TsData timeSeries, @lombok.NonNull X11Spec spec) {
         clear();
         check(timeSeries, spec);
@@ -180,7 +176,7 @@ public class X11Kernel implements X11.Processor {
         double issq = i.log().ssq();
         double sig = Math.exp(issq / (2 * i.length()));
         int ifreq = context.getPeriod();
-        int length = (ifreq == 2) ? 5 : 2 * ifreq - 1;;
+        int length = (ifreq == 2) ? 5 : 2 * ifreq - 1;
 
         double[] x = table(s.length(), Double.NaN);
         int ndrop = length / 2;

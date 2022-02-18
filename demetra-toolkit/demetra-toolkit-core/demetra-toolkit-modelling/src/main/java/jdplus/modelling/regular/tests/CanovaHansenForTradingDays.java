@@ -7,9 +7,8 @@ package jdplus.modelling.regular.tests;
 
 import jdplus.data.analysis.WindowFunction;
 import nbbrd.design.BuilderPattern;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.RobustCovarianceComputer;
@@ -20,6 +19,7 @@ import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
+import jdplus.stats.linearmodel.LeastSquaresResults;
 
 /**
  *

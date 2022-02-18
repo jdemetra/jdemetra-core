@@ -21,7 +21,7 @@ import jdplus.arima.estimation.IArimaMapping;
 import jdplus.arima.IArimaModel;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import jdplus.likelihood.LogLikelihoodFunction;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import demetra.data.DoubleSeq;

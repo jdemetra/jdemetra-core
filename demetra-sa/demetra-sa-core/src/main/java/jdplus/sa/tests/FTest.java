@@ -21,10 +21,10 @@ import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.PeriodicContrasts;
-import jdplus.linearmodel.JointTest;
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.JointTest;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.PeriodicContrastsFactory;
 

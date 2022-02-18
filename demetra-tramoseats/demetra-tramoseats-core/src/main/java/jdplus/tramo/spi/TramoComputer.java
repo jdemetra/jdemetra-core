@@ -16,12 +16,11 @@
  */
 package jdplus.tramo.spi;
 
-import demetra.arima.SarimaModel;
 import demetra.processing.DefaultProcessingLog;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.modelling.GeneralLinearModel;
-import demetra.timeseries.regression.modelling.LightweightLinearModel;
 import demetra.tramo.Tramo;
 import demetra.tramo.TramoSpec;
 import java.util.List;
@@ -36,12 +35,11 @@ import nbbrd.service.ServiceProvider;
 public class TramoComputer implements Tramo.Processor{
 
     @Override
-    public RegSarimaModel process(TsData series, TramoSpec spec, ModellingContext context, List<String> addtionalItems) {
+    public ProcResults process(TsData series, TramoSpec spec, ModellingContext context, List<String> items) {
         jdplus.tramo.TramoKernel processor = jdplus.tramo.TramoKernel.of(spec, context);
         DefaultProcessingLog log=new DefaultProcessingLog();
         RegSarimaModel rslt = processor.process(series, log);
-        // TODO: fill details
-        return rslt;
+        return GenericResults.of(rslt, items, log);
     }
     
 }

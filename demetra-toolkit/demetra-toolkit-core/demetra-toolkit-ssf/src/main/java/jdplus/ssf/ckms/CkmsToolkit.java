@@ -17,7 +17,7 @@
 package jdplus.ssf.ckms;
 
 import jdplus.ssf.akf.AugmentedFilterInitializer;
-import jdplus.ssf.akf.AugmentedPredictionErrorDecomposition;
+import jdplus.ssf.akf.QPredictionErrorDecomposition;
 import jdplus.ssf.dk.DiffusePredictionErrorDecomposition;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;

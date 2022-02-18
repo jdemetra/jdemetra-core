@@ -26,7 +26,7 @@ import jdplus.regsarima.regular.SeasonalityDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-import demetra.modelling.implementations.RegSarimaProcessor;
+import jdplus.regsarima.regular.RegSarimaProcessor;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.ProcessingResult;
@@ -666,7 +666,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
             TramoSeasonalityDetector seas = new TramoSeasonalityDetector();
             SeasonalityDetector.Seasonality s = seas.hasSeasonality(model.getTransformedSeries().getValues(), period);
-            context.originalSeasonalityTest = s.getAsInt();
+            context.originalSeasonalityTest = s.toInt();
             if (context.originalSeasonalityTest < 2) {
                 SarimaOrders nspec = SarimaOrders.m011(period);
                 model.setSpecification(nspec);

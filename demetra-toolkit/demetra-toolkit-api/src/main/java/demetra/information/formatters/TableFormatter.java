@@ -16,20 +16,20 @@
  */
 package demetra.information.formatters;
 
-import demetra.arima.SarimaModel;
+import demetra.arima.SarimaOrders;
 import demetra.data.Parameter;
+import demetra.information.Explorable;
 import demetra.information.InformationSet;
 import demetra.math.Complex;
 import demetra.processing.ProcDiagnostic;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.modelling.RegressionItem;
+import demetra.timeseries.regression.RegressionItem;
 import demetra.util.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import demetra.information.Explorable;
 
 /**
  *
@@ -51,7 +51,7 @@ public class TableFormatter {
         DICTIONARY.put(Boolean.class, new BooleanFormatter("1", "0"));
         DICTIONARY.put(Complex.class, new ComplexFormatter());
         DICTIONARY.put(String.class, new StringFormatter());
-        DICTIONARY.put(SarimaModel.class, new SarimaFormatter());
+        DICTIONARY.put(SarimaOrders.class, new SarimaFormatter());
         DICTIONARY.put(Parameter.class, new ParameterFormatter());
 //        DICTIONARY.put(ParameterInfo.class, new ParameterInfoFormatter());
 //        DICTIONARY.put(TsMoniker.class, new MonikerFormatter());

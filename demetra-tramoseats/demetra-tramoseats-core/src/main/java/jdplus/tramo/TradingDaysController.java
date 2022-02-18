@@ -5,9 +5,9 @@
  */
 package jdplus.tramo;
 
-import jdplus.linearmodel.LeastSquaresResults;
-import jdplus.linearmodel.LinearModel;
-import jdplus.linearmodel.Ols;
+import jdplus.stats.linearmodel.LeastSquaresResults;
+import jdplus.stats.linearmodel.LinearModel;
+import jdplus.stats.linearmodel.Ols;
 import demetra.timeseries.regression.Variable;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;

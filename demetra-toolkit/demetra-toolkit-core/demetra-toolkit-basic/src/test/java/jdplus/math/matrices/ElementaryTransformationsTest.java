@@ -18,8 +18,8 @@ package jdplus.math.matrices;
 
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.data.DataBlock;
-import jdplus.leastsquares.QRSolution;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.random.JdkRNG;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class ElementaryTransformationsTest {
         M = FastMatrix.make(20, 5);
         MatrixUtility.randomize(M, rng);
 
-        QRSolution ls = QRSolver.fastLeastSquares(M.column(4), M.extract(0, 20, 0, 4));
+        QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(M.column(4), M.extract(0, 20, 0, 4));
         DataBlock b2 = DataBlock.of(ls.getB());
 //        System.out.println(b2);
     }

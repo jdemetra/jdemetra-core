@@ -17,8 +17,8 @@
 package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
-import demetra.highfreq.FractionalAirlineDecomposition;
-import demetra.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.math.matrices.Matrix;
 import jdplus.fractionalairline.FractionalAirlineKernel;
@@ -40,20 +40,21 @@ public class FractionalAirlineProcessor {
     }
 
     public FractionalAirlineDecomposition decompose(double[] s, double[] periods, int ndiff, boolean ar, boolean cov, int nb, int nf) {
-        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), periods, ndiff, cov, ar, nb, nf);
+        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), periods, ndiff, ar, cov, nb, nf);
     }
 
-    public FractionalAirlineEstimation estimate(double[] y, Matrix x, boolean mean, double[] periods, int ndiff, String[] outliers, double cv, double precision, boolean approximateHessian) {
+    public FractionalAirlineEstimation estimate(double[] y, Matrix x, boolean mean, double[] periods, int ndiff, boolean ar, String[] outliers, double cv, double precision, boolean approximateHessian) {
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
                 .y(y)
                 .X(x)
                 .meanCorrection(mean)
                 .periodicities(periods)
+                .differencingOrder(ndiff)
+                .ar(ar)
                 .outliers(outliers)
                 .criticalValue(cv)
                 .adjustToInt(false)
                 .precision(precision)
-                .differencingOrder(ndiff)
                 .approximateHessian(approximateHessian)
                 .build();
         return FractionalAirlineKernel.process(spec);

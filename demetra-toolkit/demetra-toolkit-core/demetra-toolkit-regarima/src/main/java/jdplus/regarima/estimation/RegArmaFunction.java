@@ -19,8 +19,8 @@ package jdplus.regarima.estimation;
 import jdplus.regarima.RegArmaModel;
 import jdplus.arima.IArimaModel;
 import nbbrd.design.BuilderPattern;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.DefaultLikelihoodEvaluation;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.DefaultLikelihoodEvaluation;
 import jdplus.math.functions.IFunction;
 import jdplus.math.functions.IFunctionPoint;
 import jdplus.math.functions.IParametersDomain;
@@ -28,7 +28,7 @@ import jdplus.math.functions.IParametricMapping;
 import java.util.function.ToDoubleFunction;
 import demetra.data.DoubleSeq;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 import jdplus.math.matrices.FastMatrix;
 
 /**

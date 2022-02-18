@@ -25,7 +25,7 @@ import jdplus.math.functions.NumericalDerivatives;
 import jdplus.math.functions.ssq.ISsqFunctionDerivatives;
 import jdplus.math.functions.ssq.SsqNumericalDerivatives;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.stats.likelihood.LikelihoodFunctionPoint;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.akf.AkfToolkit;
 
@@ -66,10 +66,14 @@ public class AugmentedLikelihoodFunctionPoint<S, F extends ISsf> implements
         DiffuseLikelihood dl = null;
         DoubleSeq e = null;
         try {
-            if (fastcomputer) {
-                dl = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+            if (fn.isRobust()) {
+                dl=AkfToolkit.robustLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
             } else {
-                dl = AkfToolkit.likelihoodComputer(fn.isCollapsing(), fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                if (fastcomputer) {
+                    dl = AkfToolkit.fastLikelihoodComputer(fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                } else {
+                    dl = AkfToolkit.likelihoodComputer(fn.isCollapsing(), fn.isScalingFactor(), fn.isResiduals()).compute(currentSsf, fn.getData());
+                }
             }
             if (fn.isScalingFactor()) {
                 DoubleSeq res = dl.e();

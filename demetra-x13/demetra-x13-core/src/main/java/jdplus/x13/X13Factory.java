@@ -12,7 +12,7 @@ import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaProcessor;
 import demetra.sa.SaSpecification;
-import demetra.x11.X11Results;
+import jdplus.x11.X11Results;
 import demetra.x11.X11Spec;
 import demetra.x13.X13Spec;
 import nbbrd.service.ServiceProvider;

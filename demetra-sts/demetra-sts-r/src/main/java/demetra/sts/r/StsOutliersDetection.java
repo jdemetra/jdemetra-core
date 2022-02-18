@@ -9,8 +9,10 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Iterables;
 import demetra.data.Parameter;
+import demetra.information.GenericExplorable;
 import demetra.information.InformationMapping;
-import demetra.likelihood.DiffuseLikelihoodStatistics;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.outliers.io.protobuf.OutliersProtos;
 import demetra.sts.BsmEstimationSpec;
@@ -23,11 +25,14 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.data.DataBlock;
-import jdplus.likelihood.DiffuseConcentratedLikelihood;
-import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.akf.AugmentedSmoother;
+import jdplus.ssf.akf.DefaultQFilteringResults;
+import jdplus.ssf.akf.SmoothingOutput;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
@@ -35,11 +40,8 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
-import jdplus.sts.internal.BsmMapping;
 import jdplus.sts.internal.BsmKernel;
-import demetra.information.GenericExplorable;
-import jdplus.ssf.akf.AkfToolkit;
-import demetra.math.matrices.Matrix;
+import jdplus.sts.internal.BsmMapping;
 
 /**
  *
@@ -240,20 +242,17 @@ public class StsOutliersDetection {
         for (int i = 0, j = ao.length + ls.length; i < so.length; ++i, ++j) {
             outliers[j] = new OutlierDescriptor("SO", so[i]);
         }
-        AugmentedSmoother smoother = new AugmentedSmoother();
-        smoother.setCalcVariances(true);
         SsfData data = new SsfData(y);
 
         DiffuseConcentratedLikelihood ll0 = od.getInitialLikelihood();
         BsmData model0 = od.getInitialModel();
         SsfBsm ssf0 = SsfBsm.of(model0);
         Ssf xssf = x == null ? ssf0 : RegSsf.ssf(ssf0, FastMatrix.of(x));
-        DefaultSmoothingResults sd0 = DefaultSmoothingResults.full();
         int n = data.length();
-        sd0.prepare(xssf.getStateDim(), 0, data.length());
-        smoother.process(xssf, data, sd0);
+        SmoothingOutput output = AkfToolkit.robustSmooth(xssf, data, true, false);
+        DefaultSmoothingResults sd0=output.getSmoothing();
+        double sig2 = output.getSig2();
 
-        double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
         FastMatrix tau0 = tau(n, ssf0.getStateDim(), model0, sd0, sig2);
 
         FastMatrix W = od.getRegressors();
@@ -261,15 +260,14 @@ public class StsOutliersDetection {
         BsmData model = od.getModel();
         SsfBsm ssf = SsfBsm.of(model);
         Ssf wssf = W == null ? ssf : RegSsf.ssf(ssf, W);
-        DefaultSmoothingResults sd = DefaultSmoothingResults.full();
-        sd.prepare(wssf.getStateDim(), 0, data.length());
-        smoother.process(wssf, data, sd);
+        output = AkfToolkit.robustSmooth(wssf, data, true, false);
+        DefaultSmoothingResults sd=output.getSmoothing();
+        sig2 = output.getSig2();
         FastMatrix cmps = components(n, model, sd);
         DataBlock lin = cmps.column(0).deepClone();
         lin.add(cmps.column(1));
         lin.add(cmps.column(3));
 
-        sig2=AkfToolkit.var(n, smoother.getFilteringResults());
         FastMatrix tau1 = tau(n, ssf.getStateDim(), model, sd, sig2);
 
         int np = spec.getFreeParametersCount();
@@ -399,16 +397,12 @@ public class StsOutliersDetection {
             ssf = RegSsf.ssf(ssf, X);
             nx = X.getColumnsCount();
         }
-        AugmentedSmoother smoother = new AugmentedSmoother();
-        smoother.setCalcVariances(true);
         SsfData data = new SsfData(DoubleSeq.of(y));
-        DefaultSmoothingResults sd = DefaultSmoothingResults.full();
         int n = data.length();
-//        double sig2 = monitor.getLikelihood().sigma2();
-        sd.prepare(ssf.getStateDim(), 0, data.length());
-        smoother.process(ssf, data, sd);
-        double sig2=AkfToolkit.var(n, smoother.getFilteringResults());
-
+        SmoothingOutput output = AkfToolkit.robustSmooth(ssf, data, true, false);
+        DefaultSmoothingResults sd=output.getSmoothing();
+        double sig2 = output.getSig2();
+ 
         int spos = 0;
         if (bsm.getNoiseVar() != 0) {
             ++spos;

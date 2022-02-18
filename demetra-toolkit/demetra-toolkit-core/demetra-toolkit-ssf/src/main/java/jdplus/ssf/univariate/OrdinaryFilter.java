@@ -17,13 +17,13 @@
 package jdplus.ssf.univariate;
 
 import demetra.math.Constants;
-import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.UpdateInformation;
 import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
+import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.SsfException;
 import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
+import jdplus.ssf.UpdateInformation;
 
 /**
  * Ordinary Kalman filter for univariate time series
@@ -86,7 +86,7 @@ public class OrdinaryFilter {
             double y = data.get(t);
             double e=y - loading.ZX(t, state.a());
             if (v == 0){
-                if (Math.abs(e)<State.ZERO)
+                if (Math.abs(e)< State.ZERO)
                     e=0;
                 else
                     throw new SsfException(SsfException.INCONSISTENT);

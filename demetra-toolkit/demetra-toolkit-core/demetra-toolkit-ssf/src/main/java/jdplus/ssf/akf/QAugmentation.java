@@ -18,7 +18,7 @@ package jdplus.ssf.akf;
 
 import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
-import jdplus.likelihood.DeterminantalTerm;
+import jdplus.stats.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.ssf.State;

@@ -20,8 +20,8 @@ import nbbrd.design.Immutable;
 import nbbrd.design.BuilderPattern;
 import demetra.math.Constants;
 import demetra.data.DoubleSeq;
-import demetra.likelihood.LikelihoodStatistics;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.Likelihood;
 
 /**
  * The diffuse likelihood follows the definition provided in the paper:

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -9,7 +10,7 @@
     </parent>
 
     <artifactId>demetra-tsp-api</artifactId>
-	
+
     <name>JD3 - TSP - API</name>
 
     <dependencies>
@@ -24,25 +25,6 @@
             <artifactId>java-io-base</artifactId>
             <version>${java-io-util.version}</version>
         </dependency>
-        <dependency> 
-            <groupId>javax.cache</groupId> 
-            <artifactId>cache-api</artifactId> 
-            <version>1.1.1</version> 
-        </dependency>
-        
-        <!-- runtime only -->
-        <dependency> 
-            <groupId>org.jsr107.ri</groupId> 
-            <artifactId>cache-ri-impl</artifactId> 
-            <version>1.1.1</version> 
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.enterprise</groupId>
-                    <artifactId>cdi-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency> 
 
         <!-- test only -->
         <dependency>
@@ -62,6 +44,6 @@
                     <artifactId>guava</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>        
+        </dependency>
     </dependencies>
 </project>

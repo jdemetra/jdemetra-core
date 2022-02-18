@@ -21,14 +21,14 @@ import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import nbbrd.design.Development;
-import jdplus.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.likelihood.DeterminantalTerm;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.DeterminantalTerm;
 import jdplus.math.matrices.FastMatrix;
 import demetra.util.SubArrayOfInt;
-import jdplus.leastsquares.QRSolver;
+import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.Likelihood;
-import jdplus.leastsquares.QRSolution;
+import jdplus.stats.likelihood.Likelihood;
+import jdplus.math.linearsystem.QRLeastSquaresSolution;
 
 /**
  * The FastKalmanFilter class provides fast computation of Regression models
@@ -272,10 +272,7 @@ public class FastKalmanFilter {
      * (residuals) are returned along with the likelihood
      *
      * @param y The data that have to be filtered
-     * @param ll The likelihood that will contain the results. Must be
-     * uninitialised on entry. The likelihood is completed if the processing is
-     * successful.
-     * @return True if the processing is successful, false otherwise.
+     * @return The likelihood.    
      */
     public Likelihood process(final DoubleSeq y) {
         fast = false;
@@ -440,7 +437,7 @@ public class FastKalmanFilter {
             xrows.next();
         }
 
-        QRSolution qr = QRSolver.fastLeastSquares(DataBlock.of(yl), xl);
+        QRLeastSquaresSolution qr = QRLeastSquaresSolver.fastLeastSquares(DataBlock.of(yl), xl);
         double ssqerr = qr.getSsqErr();
         FastMatrix bvar = qr.unscaledCovariance();
 

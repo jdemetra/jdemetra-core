@@ -23,7 +23,7 @@ import jdplus.math.ComplexUtility;
 import jdplus.math.Arithmetics;
 import jdplus.math.Simplifying;
 import demetra.util.IntList;
-import internal.jdplus.maths.polynomials.Coefficients;
+import internal.jdplus.math.polynomials.Coefficients;
 
 /**
  *
@@ -163,6 +163,10 @@ public class UnitRoots implements Cloneable {
      * 1 - x
      */
     public static final Polynomial D1 = Polynomial.valueOf(1, -1);
+    
+    public static Polynomial forFrequency(double f){
+        return Polynomial.valueOf(1, -2*Math.cos(f), 1);
+    }
 
     static {
         D1.setRoots(new Complex[]{Complex.ONE});

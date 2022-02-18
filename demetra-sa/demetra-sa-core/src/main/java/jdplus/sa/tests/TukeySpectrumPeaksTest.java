@@ -18,8 +18,7 @@ package jdplus.sa.tests;
 
 import jdplus.data.analysis.DiscreteWindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
-import jdplus.dstats.internal.SpecialFunctions;
-import demetra.timeseries.TsData;
+import internal.jdplus.dstats.SpecialFunctions;
 import demetra.data.DoubleSeq;
 
 

@@ -8,7 +8,7 @@ package jdplus.msts;
 import jdplus.math.functions.bfgs.Bfgs;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.minpack.MinPackMinimizer;
-import jdplus.math.functions.riso.LbfgsMinimizer;
+import internal.jdplus.math.functions.riso.LbfgsMinimizer;
 import jdplus.ssf.likelihood.MarginalLikelihoodFunction;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import demetra.data.DoubleSeq;
-import jdplus.likelihood.Likelihood;
+import jdplus.stats.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.likelihood.LikelihoodFunction;
-import jdplus.likelihood.LikelihoodFunctionPoint;
+import jdplus.stats.likelihood.LikelihoodFunction;
+import jdplus.stats.likelihood.LikelihoodFunctionPoint;
 import jdplus.math.functions.FunctionMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.ssf.likelihood.AugmentedLikelihoodFunction;
@@ -161,6 +161,15 @@ public class MstsMonitor {
                         .useFastAlgorithm(false)
                         .useParallelProcessing(true)
                         .useCollapsing(false)
+                        .residuals(needres)
+                        .build();
+            case Augmented_Robust:
+                return AugmentedLikelihoodFunction.builder(M2uAdapter.of(s), model, m -> M2uAdapter.of(m))
+                        .useMaximumLikelihood(true)
+                        .useScalingFactor(concentrated)
+                        .useFastAlgorithm(false)
+                        .useParallelProcessing(true)
+                        .robust(true)
                         .residuals(needres)
                         .build();
             case Diffuse:

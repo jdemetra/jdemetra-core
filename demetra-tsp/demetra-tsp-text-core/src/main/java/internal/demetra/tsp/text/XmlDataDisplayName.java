@@ -22,9 +22,9 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.util.DataSourcePreconditions;
-import demetra.tsprovider.util.ResourceMap;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author Philippe Charles
@@ -34,7 +34,7 @@ public final class XmlDataDisplayName implements HasDataDisplayName {
 
     private final String providerName;
     private final XmlParam param;
-    private final ResourceMap<List<TsCollection>> resources;
+    private final Function<DataSource, List<TsCollection>> resources;
 
     @Override
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
@@ -46,10 +46,10 @@ public final class XmlDataDisplayName implements HasDataDisplayName {
     @Override
     public String getDisplayName(DataSet dataSet) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
-        Integer collectionIndex = param.getCollectionParam(dataSet.getDataSource()).get(dataSet);
-        Integer seriesIndex = param.getSeriesParam(dataSet.getDataSource()).get(dataSet);
+        Integer collectionIndex = param.getCollectionParam().get(dataSet);
+        Integer seriesIndex = param.getSeriesParam().get(dataSet);
 
-        List<TsCollection> data = resources.peek(dataSet.getDataSource());
+        List<TsCollection> data = resources.apply(dataSet.getDataSource());
         if (data != null) {
             TsCollection col = data.get(collectionIndex);
             switch (dataSet.getKind()) {
@@ -72,10 +72,10 @@ public final class XmlDataDisplayName implements HasDataDisplayName {
     @Override
     public String getDisplayNodeName(DataSet dataSet) {
         DataSourcePreconditions.checkProvider(providerName, dataSet);
-        Integer collectionIndex = param.getCollectionParam(dataSet.getDataSource()).get(dataSet);
-        Integer seriesIndex = param.getSeriesParam(dataSet.getDataSource()).get(dataSet);
+        Integer collectionIndex = param.getCollectionParam().get(dataSet);
+        Integer seriesIndex = param.getSeriesParam().get(dataSet);
 
-        List<TsCollection> data = resources.peek(dataSet.getDataSource());
+        List<TsCollection> data = resources.apply(dataSet.getDataSource());
         if (data != null) {
             TsCollection col = data.get(collectionIndex);
             switch (dataSet.getKind()) {

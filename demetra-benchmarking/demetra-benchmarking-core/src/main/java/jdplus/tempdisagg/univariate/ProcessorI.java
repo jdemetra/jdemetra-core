@@ -7,10 +7,8 @@ package jdplus.tempdisagg.univariate;
 
 import demetra.data.AggregationType;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.math.functions.ObjectiveFunctionPoint;
-import demetra.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsException;
@@ -45,6 +43,7 @@ import jdplus.ssf.univariate.SsfData;
  *
  * @author palatej
  */
+@lombok.experimental.UtilityClass
 public class ProcessorI {
 
     public TemporalDisaggregationIResults process(TsData aggregatedSeries, TsData indicator, TemporalDisaggregationISpec spec) {

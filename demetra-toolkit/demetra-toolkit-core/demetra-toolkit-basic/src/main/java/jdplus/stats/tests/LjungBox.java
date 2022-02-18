@@ -33,6 +33,16 @@ import demetra.stats.StatisticalTest;
 @BuilderPattern(StatisticalTest.class)
 public class LjungBox {
 
+    public static int defaultAutoCorrelationsCount(int period) {
+        if (period >= 12) {
+            return 2 * period;
+        } else if (period == 1) {
+            return 8;
+        } else {
+            return 4 * period;
+        }
+    }
+
     private int lag = 1;
     private int k = 12;
     private int nhp;
@@ -106,9 +116,10 @@ public class LjungBox {
     }
 
     /**
-     * 
-     * @param s s=1: positive autocorr, s=-1: negative autocorr, s=0: all autocorr
-     * @return 
+     *
+     * @param s s=1: positive autocorr, s=-1: negative autocorr, s=0: all
+     * autocorr
+     * @return
      */
     public LjungBox sign(int s) {
         this.sign = s;

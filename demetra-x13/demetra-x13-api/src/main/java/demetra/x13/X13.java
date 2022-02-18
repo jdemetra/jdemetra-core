@@ -17,9 +17,12 @@
 package demetra.x13;
 
 import demetra.design.Algorithm;
+import demetra.processing.GenericResults;
+import demetra.processing.ProcResults;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,8 +49,8 @@ public class X13 {
         return ENGINE.get();
     }
 
-    public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> addtionalItems) {
-        return ENGINE.get().process(series, spec, context, addtionalItems);
+    public ProcResults process(TsData series, X13Spec spec, ModellingContext context, List<String> items) {
+        return ENGINE.get().process(series, spec, context, items);
     }
 
     public  Map<String, Class> outputDictionary(boolean compact){
@@ -62,18 +65,33 @@ public class X13 {
         return LEGACYENGINE.get();
     }
 
-    public X13Results processLegacy(TsData series, X13Spec spec, ModellingContext context, List<String> addtionalItems) {
+    public ProcResults processLegacy(TsData series, X13Spec spec, ModellingContext context, List<String> items) {
         Processor cp = LEGACYENGINE.get();
         if (cp == null)
             throw new X13Exception("No legacy engine");
-        return cp.process(series, spec, context, addtionalItems);
+        return cp.process(series, spec, context, items);
     }
+    
+    public final static class DefProcessor implements Processor{
+
+        @Override
+        public ProcResults process(TsData series, X13Spec spec, ModellingContext context, List<String> items) {
+           return GenericResults.notImplemented();
+        }
+
+        @Override
+        public Map<String, Class> outputDictionary(boolean compact) {
+            return Collections.emptyMap();
+        }
+        
+    }
+    
 
     @Algorithm
-    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT)
+    @ServiceDefinition(quantifier = Quantifier.SINGLE, mutability = Mutability.CONCURRENT, fallback = DefProcessor.class)
     public static interface Processor {
 
-        public X13Results process(TsData series, X13Spec spec, ModellingContext context, List<String> addtionalItems);
+        public ProcResults process(TsData series, X13Spec spec, ModellingContext context, List<String> items);
         public Map<String, Class> outputDictionary(boolean compact);
 
     }
