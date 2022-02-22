@@ -18,7 +18,6 @@ package demetra.x11;
 
 import demetra.sa.DecompositionMode;
 import demetra.util.Validatable;
-import java.util.List;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 
@@ -49,8 +48,7 @@ public final class X11Spec implements Validatable<X11Spec> {
      * X12-arima].
      *
      * @param lowerSigma Lower sigma value for extreme values detection.
-     * lowerSigma
-     * should be lower than upperSigma and higher than .5.
+     * lowerSigma should be lower than upperSigma and higher than .5.
      */
     private double lowerSigma;
 
@@ -65,8 +63,8 @@ public final class X11Spec implements Validatable<X11Spec> {
     /**
      * Length of the Henderson filter [trendma option in X12-Arima]. When the
      * length is 0, an automatic estimation of the length of the Henderson
-     * filter is computed by the algorithm. Otherwise, the length should
-     * be an odd number in the range [1, 101].
+     * filter is computed by the algorithm. Otherwise, the length should be an
+     * odd number in the range [1, 101].
      */
     private int hendersonFilterLength;
 
@@ -83,8 +81,7 @@ public final class X11Spec implements Validatable<X11Spec> {
     private int forecastHorizon;
 
     /**
-     * Number of backcasts used in X11. By default, 0. When pre-processing is
-     * used, the number of backcasts corresponds usually to 1 year.
+     * Number of backcasts used in X11. By default, 0.
      *
      * @param backcastHorizon The backcasts horizon to set. When
      * backcastsHorizon is negative, its absolute value corresponds to the
@@ -141,11 +138,11 @@ public final class X11Spec implements Validatable<X11Spec> {
                 || (hendersonFilterLength != 0 && hendersonFilterLength % 2 == 0)) {
             throw new IllegalArgumentException("Invalid henderson length");
         }
-        if (!calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec != null) {
-            throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Signif");
+        if (!calendarSigma.equals(CalendarSigmaOption.Select) && sigmaVec != null) {
+            throw new X11Exception("Sigmavec mustn't be used without CalendarSigmaOption Select");
         }
-        if (calendarSigma.equals(CalendarSigmaOption.Signif) && sigmaVec == null) {
-            throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Signif");
+        if (calendarSigma.equals(CalendarSigmaOption.Select) && sigmaVec == null) {
+            throw new X11Exception("SigmavecOptions not set for CalendarSigmaOption Select");
         }
         return this;
     }

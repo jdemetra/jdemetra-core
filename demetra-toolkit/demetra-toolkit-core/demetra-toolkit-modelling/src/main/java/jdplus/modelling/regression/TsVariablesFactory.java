@@ -16,14 +16,14 @@
  */
 package jdplus.modelling.regression;
 
-import nbbrd.design.Development;
-import demetra.timeseries.regression.TsVariables;
 import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.regression.TsVariables;
 import jdplus.math.matrices.FastMatrix;
-import demetra.timeseries.TimeSeriesInterval;
+import nbbrd.design.Development;
 
 /**
  *
@@ -39,9 +39,9 @@ class TsVariablesFactory implements RegressionVariableFactory<TsVariables> {
 
     @Override
     public boolean fill(TsVariables var, TsPeriod start, FastMatrix buffer) {
-        int nvars=var.dim();
+        int nvars = var.dim();
         for (int i = 0; i < nvars; ++i) {
-            TsData v=var.getData(i);
+            TsData v = var.getData(i);
             TsDomain curdom = v.getDomain();
             // position of the first data (in m_ts)
             int istart = curdom.getStartPeriod().until(start);
@@ -49,7 +49,7 @@ class TsVariablesFactory implements RegressionVariableFactory<TsVariables> {
             int n = buffer.getRowsCount();
             int iend = istart + n;
 
-            // indexes in data
+            // indexes in data //in buffer
             int jstart = 0, jend = n;
             // not enough data at the beginning
             if (istart < 0) {
@@ -57,9 +57,11 @@ class TsVariablesFactory implements RegressionVariableFactory<TsVariables> {
                 istart = 0;
             }
             // not enough data at the end
-            if (iend > n) {
-                jend = jend - iend + n;
-                iend = n;
+            //          if (iend > n) {
+            if (iend > v.getValues().length()) {
+                // iend = v.getValues().length();
+                jend = v.getValues().length() - istart;
+                iend = v.getValues().length();
             }
             buffer.column(i).range(jstart, jend).copy(v.getValues().range(istart, iend));
         }
@@ -67,7 +69,7 @@ class TsVariablesFactory implements RegressionVariableFactory<TsVariables> {
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TsVariables var, D domain, FastMatrix buffer) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(TsVariables var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

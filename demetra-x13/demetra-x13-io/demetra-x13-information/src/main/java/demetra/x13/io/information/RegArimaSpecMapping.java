@@ -1,17 +1,17 @@
 /*
  * Copyright 2020 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
  *
  * https://joinup.ec.europa.eu/software/page/eupl
  *
- * Unless required by applicable law or agreed to in writing, software 
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.x13.io.information;
@@ -33,7 +33,7 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class RegArimaSpecMapping {
 
-    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_V3=new InformationSetSerializer<RegArimaSpec>() {
+    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_V3 = new InformationSetSerializer<RegArimaSpec>() {
         @Override
         public InformationSet write(RegArimaSpec object, boolean verbose) {
             return RegArimaSpecMapping.write(object, verbose);
@@ -43,14 +43,14 @@ public class RegArimaSpecMapping {
         public RegArimaSpec read(InformationSet info) {
             return RegArimaSpecMapping.read(info);
         }
-        
+
         @Override
-        public boolean match(DemetraVersion version){
+        public boolean match(DemetraVersion version) {
             return version == DemetraVersion.JD3;
         }
     };
 
-    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_LEGACY=new InformationSetSerializer<RegArimaSpec>() {
+    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_LEGACY = new InformationSetSerializer<RegArimaSpec>() {
         @Override
         public InformationSet write(RegArimaSpec object, boolean verbose) {
             return RegArimaSpecMapping.writeLegacy(object, verbose);
@@ -60,14 +60,13 @@ public class RegArimaSpecMapping {
         public RegArimaSpec read(InformationSet info) {
             return RegArimaSpecMapping.readLegacy(info);
         }
-        
+
         @Override
-        public boolean match(DemetraVersion version){
+        public boolean match(DemetraVersion version) {
             return version == DemetraVersion.JD3;
         }
     };
-    
-    
+
     public static final String METHOD = "tramo";
     public static final String FAMILY = "Modelling";
     public static final String VERSION_LEGACY = "0.1.0.0";
@@ -90,7 +89,7 @@ public class RegArimaSpecMapping {
         RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
     }
 
-   public RegArimaSpec read(InformationSet info) {
+    public RegArimaSpec read(InformationSet info) {
         if (info == null) {
             return RegArimaSpec.DEFAULT_ENABLED;
         }
@@ -158,7 +157,7 @@ public class RegArimaSpecMapping {
         InformationSet einfo = info.getSubSet(ESTIMATE);
         InformationSet rinfo = info.getSubSet(REGRESSION);
         if (binfo != null) {
-            builder.basic(BasicSpecMapping.read(tinfo));
+            builder.basic(BasicSpecMapping.read(binfo));
         }
         if (tinfo != null) {
             builder.transform(TransformSpecMapping.read(tinfo));
@@ -166,8 +165,7 @@ public class RegArimaSpecMapping {
         if (oinfo != null) {
             builder.outliers(OutlierSpecMapping.read(oinfo));
         }
-        SarimaSpec.Builder ab = SarimaSpec.builder()
-//                .validator(SarimaValidator.VALIDATOR)
+        SarimaSpec.Builder ab = SarimaSpec.builder() //                .validator(SarimaValidator.VALIDATOR)
                 ;
         RegressionSpec.Builder rb = RegressionSpec.builder();
         if (ainfo != null) {
