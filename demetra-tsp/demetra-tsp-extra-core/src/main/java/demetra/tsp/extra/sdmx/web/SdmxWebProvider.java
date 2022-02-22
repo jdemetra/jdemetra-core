@@ -21,6 +21,7 @@ import demetra.timeseries.TsInformationType;
 import demetra.timeseries.TsProvider;
 import demetra.tsp.extra.sdmx.HasSdmxProperties;
 import demetra.tsprovider.*;
+import demetra.tsprovider.DataSet;
 import demetra.tsprovider.cube.BulkCubeConnection;
 import demetra.tsprovider.cube.CubeConnection;
 import demetra.tsprovider.cube.CubeSupport;

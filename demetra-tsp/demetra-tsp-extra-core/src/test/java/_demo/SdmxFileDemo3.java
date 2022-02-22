@@ -20,11 +20,10 @@ import demetra.demo.ProviderDemo;
 import demetra.tsp.extra.sdmx.file.SdmxFileBean;
 import demetra.tsp.extra.sdmx.file.SdmxFileProvider;
 import demetra.tsprovider.DataSource;
-import sdmxdl.SdmxManager;
 import sdmxdl.file.SdmxFileListener;
 import sdmxdl.file.SdmxFileManager;
-import sdmxdl.samples.SdmxSource;
 import sdmxdl.util.ext.MapCache;
+import tests.sdmxdl.xml.SdmxXmlSources;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,10 +36,10 @@ final class SdmxFileDemo3 {
 
     public static void main(String[] args) throws IllegalArgumentException, IOException {
         File file = Files.createTempFile("data_", ".xml").toFile();
-        SdmxSource.ECB_DATA.copyTo(file);
+        SdmxXmlSources.ECB_DATA.copyTo(file);
 
         File struct = Files.createTempFile("struct_", ".xml").toFile();
-        SdmxSource.ECB_DATA_STRUCTURE.copyTo(struct);
+        SdmxXmlSources.ECB_DATA_STRUCTURE.copyTo(struct);
 
         // 1. create the provider
         try (SdmxFileProvider provider = new SdmxFileProvider()) {
