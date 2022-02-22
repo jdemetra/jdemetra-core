@@ -20,11 +20,11 @@ import demetra.demo.ProviderDemo;
 import demetra.tsp.extra.sdmx.web.SdmxWebBean;
 import demetra.tsp.extra.sdmx.web.SdmxWebProvider;
 import demetra.tsprovider.DataSource;
-import sdmxdl.samples.RepoSamples;
-import sdmxdl.tck.web.MockedWebDriver;
 import sdmxdl.web.SdmxWebManager;
 import sdmxdl.web.SdmxWebSource;
 import sdmxdl.web.spi.SdmxWebDriver;
+import tests.sdmxdl.api.RepoSamples;
+import tests.sdmxdl.web.MockedWebDriver;
 
 import java.io.IOException;
 import java.net.URI;
