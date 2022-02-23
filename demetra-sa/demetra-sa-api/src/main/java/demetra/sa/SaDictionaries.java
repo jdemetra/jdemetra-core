@@ -70,7 +70,8 @@ public final class SaDictionaries {
      */
     public final String MODE = "mode";
 
-    public final String Y_CMP = "y_cmp", T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
+    public final String Y_CMP = "y_cmp", Y_CMP_F = "y_cmp_f", Y_CMP_B = "y_cmp_b",
+            T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
 
     public final String Y_LIN = "y_lin", T_LIN = "t_lin", S_LIN = "s_lin", SA_LIN = "sa_lin", I_LIN = "i_lin", SI_LIN = "si_lin";
     public final String Y_LIN_F = "y_lin_f", T_LIN_F = "t_lin_f", S_LIN_F = "s_lin_f", SA_LIN_F = "sa_lin_f", I_LIN_F = "i_lin_f";
@@ -145,10 +146,13 @@ public final class SaDictionaries {
 
     public final Dictionary CMPDECOMPOSITION = AtomicDictionary.builder()
             .name("components")
-            .item(Item.builder().name(SA_CMP).description("seasonal adjusted component (without regression effects)").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(T_CMP).description("trend component (without regression effects)").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(S_CMP).description("seasonal component (without regression effects)").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(I_CMP).description("irregular component (without regression effects)").outputClass(TsData.class).type(EntryType.Parametric).build())
+            .item(Item.builder().name(Y_CMP).description("series (without regression effects other than trend-constant and regression effects linked to the series)").outputClass(TsData.class).build())
+            .item(Item.builder().name(Y_CMP_F).description("forecasts of the series").outputClass(TsData.class).build())
+            .item(Item.builder().name(Y_CMP_B).description("backcasts of the series").outputClass(TsData.class).build())
+            .item(Item.builder().name(SA_CMP).description("seasonal adjusted component (without regression effects)").outputClass(TsData.class).build())
+            .item(Item.builder().name(T_CMP).description("trend component (without regression effects)").outputClass(TsData.class).build())
+            .item(Item.builder().name(S_CMP).description("seasonal component (without regression effects)").outputClass(TsData.class).build())
+            .item(Item.builder().name(I_CMP).description("irregular component (without regression effects)").outputClass(TsData.class).build())
             .build();
 
     public final Dictionary SADECOMPOSITION_F = AtomicDictionary.builder()
@@ -279,6 +283,7 @@ public final class SaDictionaries {
             .item(Item.builder().name(SEAS_I_KW).description("kruskal-wallis seasonality test on irregular").outputClass(StatisticalTest.class).build())
             .item(Item.builder().name(SEAS_I_PERIODOGRAM).description("periodogram test on irregular").outputClass(StatisticalTest.class).build())
             .item(Item.builder().name(SEAS_I_SP).description("spectral peaks on irregular").outputClass(String.class).build())
+            .item(Item.builder().name(SEAS_SA_AC1).description("autocorrelation(1) of the differenced sa component").outputClass(Double.class).build())
             .build();
     
     /*

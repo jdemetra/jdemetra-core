@@ -17,15 +17,13 @@
 package jdplus.regarima.diagnostics;
 
 import demetra.data.DoubleSeq;
+import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
-import jdplus.data.analysis.Periodogram;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regarima.tests.OneStepAheadForecastingTest;
 import jdplus.regsarima.RegSarimaComputer;
-import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
 import jdplus.stats.tests.NiidTests;
 

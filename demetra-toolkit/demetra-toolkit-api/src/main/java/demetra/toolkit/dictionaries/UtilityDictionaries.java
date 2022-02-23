@@ -21,8 +21,8 @@ public class UtilityDictionaries {
             .name("span")
             .item(Item.builder().name(START).description("start").outputClass(TsPeriod.class).build())
             .item(Item.builder().name(END).description("end").outputClass(TsPeriod.class).build())
-            .item(Item.builder().name(N).description("number of obs").outputClass(int.class).build())
-            .item(Item.builder().name(NM).description("number of missing").outputClass(int.class).build())
+            .item(Item.builder().name(N).description("number of obs").outputClass(Integer.class).build())
+            .item(Item.builder().name(NM).description("number of missing").outputClass(Integer.class).build())
             .build();
 
     public final String P = "parameters", PCOVAR = "pcovar", PCOVAR_ML = "pcovar-ml", PCORR = "pcorr", SCORE = "pscore";

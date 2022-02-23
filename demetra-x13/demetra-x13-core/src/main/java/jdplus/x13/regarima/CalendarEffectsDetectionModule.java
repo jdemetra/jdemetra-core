@@ -23,7 +23,7 @@ import demetra.timeseries.regression.Variable;
 import jdplus.regarima.AICcComparator;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.IModelComparator;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;

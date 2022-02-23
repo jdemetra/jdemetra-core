@@ -34,59 +34,59 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
     public TramoSeatsExtractor() {
         set(SaDictionaries.MODE, DecompositionMode.class, source -> source.getFinals().getMode());
 
-        set(FINAL + ModellingDictionary.Y, TsData.class, source
+        set(ModellingDictionary.Y, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
-        set(FINAL + ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source
-                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Forecast));
-        set(FINAL + ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, TsData.class, source
-                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
-        set(FINAL + ModellingDictionary.Y + SeriesInfo.B_SUFFIX, TsData.class, source
-                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Backcast));
-        set(FINAL + ModellingDictionary.Y + SeriesInfo.EB_SUFFIX, TsData.class, source
-                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
+//        set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source
+//                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Forecast));
+//        set(ModellingDictionary.Y + SeriesInfo.EF_SUFFIX, TsData.class, source
+//                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
+//        set(ModellingDictionary.Y + SeriesInfo.B_SUFFIX, TsData.class, source
+//                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Backcast));
+//        set(ModellingDictionary.Y + SeriesInfo.EB_SUFFIX, TsData.class, source
+//                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
 
-        set(FINAL + SaDictionaries.T, TsData.class, source
+        set(SaDictionaries.T, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Value));
-        set(FINAL + SaDictionaries.T + SeriesInfo.F_SUFFIX, TsData.class, source
+        set(SaDictionaries.T + SeriesInfo.F_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Forecast));
-        set(FINAL + SaDictionaries.T + SeriesInfo.EF_SUFFIX, TsData.class, source
+        set(SaDictionaries.T + SeriesInfo.EF_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevForecast));
-        set(FINAL + SaDictionaries.T + SeriesInfo.B_SUFFIX, TsData.class, source
+        set(SaDictionaries.T + SeriesInfo.B_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Backcast));
-        set(FINAL + SaDictionaries.T + SeriesInfo.EB_SUFFIX, TsData.class, source
+        set(SaDictionaries.T + SeriesInfo.EB_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 
-        set(FINAL + SaDictionaries.SA, TsData.class, source
+        set(SaDictionaries.SA, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
-        set(FINAL + SaDictionaries.SA + SeriesInfo.F_SUFFIX, TsData.class, source
+        set(SaDictionaries.SA + SeriesInfo.F_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
-        set(FINAL + SaDictionaries.SA + SeriesInfo.EF_SUFFIX, TsData.class, source
+        set(SaDictionaries.SA + SeriesInfo.EF_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast));
-        set(FINAL + SaDictionaries.SA + SeriesInfo.B_SUFFIX, TsData.class, source
+        set(SaDictionaries.SA + SeriesInfo.B_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
-        set(FINAL + SaDictionaries.SA + SeriesInfo.EB_SUFFIX, TsData.class, source
+        set(SaDictionaries.SA + SeriesInfo.EB_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast));
 
-        set(FINAL + SaDictionaries.S, TsData.class, source
+        set(SaDictionaries.S, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
-        set(FINAL + SaDictionaries.S + SeriesInfo.F_SUFFIX, TsData.class, source
+        set(SaDictionaries.S + SeriesInfo.F_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
-        set(FINAL + SaDictionaries.S + SeriesInfo.EF_SUFFIX, TsData.class, source
+        set(SaDictionaries.S + SeriesInfo.EF_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast));
-        set(FINAL + SaDictionaries.S + SeriesInfo.B_SUFFIX, TsData.class, source
+        set(SaDictionaries.S + SeriesInfo.B_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
-        set(FINAL + SaDictionaries.S + SeriesInfo.EB_SUFFIX, TsData.class, source
+        set(SaDictionaries.S + SeriesInfo.EB_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast));
 
-        set(FINAL + SaDictionaries.I, TsData.class, source
+        set(SaDictionaries.I, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Value));
-        set(FINAL + SaDictionaries.I + SeriesInfo.F_SUFFIX, TsData.class, source
+        set(SaDictionaries.I + SeriesInfo.F_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
-        set(FINAL + SaDictionaries.I + SeriesInfo.EF_SUFFIX, TsData.class, source
+        set(SaDictionaries.I + SeriesInfo.EF_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast));
-        set(FINAL + SaDictionaries.I + SeriesInfo.B_SUFFIX, TsData.class, source
+        set(SaDictionaries.I + SeriesInfo.B_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
-        set(FINAL + SaDictionaries.I + SeriesInfo.EB_SUFFIX, TsData.class, source
+        set(SaDictionaries.I + SeriesInfo.EB_SUFFIX, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
 
         delegate(SaDictionaries.DECOMPOSITION, SeatsResults.class, source -> source.getDecomposition());

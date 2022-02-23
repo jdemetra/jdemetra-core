@@ -18,12 +18,10 @@ package jdplus.tramo;
 
 import nbbrd.design.Development;
 import jdplus.regsarima.regular.ModelDescription;
-import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-import demetra.processing.ProcessingLog;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 
 /**
  *

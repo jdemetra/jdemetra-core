@@ -25,7 +25,7 @@ import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
 import jdplus.stats.likelihood.ConcentratedLikelihood;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.ModelDescription;
 
 /**

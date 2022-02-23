@@ -11,6 +11,7 @@ import demetra.modelling.SeriesInfo;
 import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
 import demetra.toolkit.dictionaries.Dictionary;
+import demetra.x11.X11Dictionaries;
 import demetra.x13.X13Dictionaries;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x11.X11Results;
@@ -28,7 +29,18 @@ import nbbrd.service.ServiceProvider;
 public class X13Extractor extends InformationMapping<X13Results> {
 
     public static final String FINAL = "";
+    
+    private String decompositionItem(String key){
+        return Dictionary.concatenate(SaDictionaries.DECOMPOSITION, key);
+    }
 
+    private String preadjustItem(String key){
+        return Dictionary.concatenate(X13Dictionaries.PREADJUST, key);
+    }
+    
+    private String finalItem(String key){
+        return Dictionary.concatenate(X13Dictionaries.FINAL, key);
+    }
     public X13Extractor() {
 //         MAPPING.set(FINAL + ModellingDictionary.Y, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
@@ -52,31 +64,33 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //        MAPPING.set(FINAL + SaDictionaries.T + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 //
-        set(Dictionary.concatenate(X13Dictionaries.X11, X13Dictionaries.A1), TsData.class, source
+    
+
+        set(preadjustItem(X13Dictionaries.A1), TsData.class, source
                 -> source.getPreadjustment().getA1());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a1a"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A1A), TsData.class, source
                 -> source.getPreadjustment().getA1a());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a1b"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A1B), TsData.class, source
                 -> source.getPreadjustment().getA1b());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a6"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A6), TsData.class, source
                 -> source.getPreadjustment().getA6());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a7"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A7), TsData.class, source
                 -> source.getPreadjustment().getA7());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A8), TsData.class, source
                 -> source.getPreadjustment().getA8());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8i"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A8I), TsData.class, source
                 -> source.getPreadjustment().getA8i());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8s"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A8S), TsData.class, source
                 -> source.getPreadjustment().getA8s());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a8t"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A8T), TsData.class, source
                 -> source.getPreadjustment().getA8t());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A9), TsData.class, source
                 -> source.getPreadjustment().getA9());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9sa"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A9SA), TsData.class, source
                 -> source.getPreadjustment().getA9sa());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9u"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A9U), TsData.class, source
                 -> source.getPreadjustment().getA9u());
-        set(Dictionary.concatenate(X13Dictionaries.PREADJUST, "a9ser"), TsData.class, source
+        set(preadjustItem(X13Dictionaries.A9SER), TsData.class, source
                 -> source.getPreadjustment().getA9ser());
 
         set(SaDictionaries.S, TsData.class, source
@@ -85,64 +99,64 @@ public class X13Extractor extends InformationMapping<X13Results> {
                 -> source.getFinals().getD16a());
         set(SaDictionaries.SA, TsData.class, source
                 -> source.getFinals().getD11final());
+        set(SaDictionaries.SA + SeriesInfo.F_SUFFIX, TsData.class, source
+                -> source.getFinals().getD11a());
         set(SaDictionaries.T, TsData.class, source
                 -> source.getFinals().getD12final());
+        set(SaDictionaries.T + SeriesInfo.F_SUFFIX, TsData.class, source
+                -> source.getFinals().getD12a());
         set(SaDictionaries.I, TsData.class, source
                 -> source.getFinals().getD13final());
-        set("d10final", TsData.class, source
-                -> source.getFinals().getD10final());
-        set("d11final", TsData.class, source
-                -> source.getFinals().getD11final());
-        set("d12final", TsData.class, source
-                -> source.getFinals().getD12final());
-        set("d13final", TsData.class, source
-                -> source.getFinals().getD13final());
         
-        set("e1", TsData.class, source
+        set(decompositionItem(SaDictionaries.Y_CMP), TsData.class, source
+                -> source.getDecomposition().getB1());
+        set(decompositionItem(SaDictionaries.Y_CMP_F), TsData.class, source
+                -> source.getDecomposition().getB1());
+        set(decompositionItem(SaDictionaries.Y_CMP_B), TsData.class, source
+                -> source.getDecomposition().getB1());
+        set(decompositionItem(SaDictionaries.S_CMP), TsData.class, source
+                -> source.getDecomposition().getD10());
+        set(decompositionItem(SaDictionaries.SA_CMP), TsData.class, source
+                -> source.getDecomposition().getD11());
+        set(decompositionItem(SaDictionaries.T_CMP), TsData.class, source
+                -> source.getDecomposition().getD12());
+        set(decompositionItem(SaDictionaries.I_CMP), TsData.class, source
+                -> source.getDecomposition().getD13());
+
+        set(finalItem(X13Dictionaries.D11), TsData.class, source
+                -> source.getFinals().getD11final());
+        set(finalItem(X13Dictionaries.D12), TsData.class, source
+                -> source.getFinals().getD12final());
+        set(finalItem(X13Dictionaries.D13), TsData.class, source
+                -> source.getFinals().getD13final());
+        set(finalItem(X13Dictionaries.D16), TsData.class, source
+                -> source.getFinals().getD16());
+        set(finalItem(X13Dictionaries.D18), TsData.class, source
+                -> source.getFinals().getD18());
+        set(finalItem(X13Dictionaries.D11A), TsData.class, source
+                -> source.getFinals().getD11a());
+        set(finalItem(X13Dictionaries.D12A), TsData.class, source
+                -> source.getFinals().getD12a());
+        set(finalItem(X13Dictionaries.D16A), TsData.class, source
+                -> source.getFinals().getD16a());
+        set(finalItem(X13Dictionaries.D18A), TsData.class, source
+                -> source.getFinals().getD18a());
+
+        set(finalItem(X13Dictionaries.E1), TsData.class, source
                 -> source.getFinals().getE1());
-        set("e2", TsData.class, source
+        set(finalItem(X13Dictionaries.E2), TsData.class, source
                 -> source.getFinals().getE2());
-        set("e3", TsData.class, source
+        set(finalItem(X13Dictionaries.E3), TsData.class, source
                 -> source.getFinals().getE3());
-        set("e11", TsData.class, source
+        set(finalItem(X13Dictionaries.E11), TsData.class, source
                 -> source.getFinals().getE11());
         
-//        MAPPING.set(FINAL + SaDictionaries.SA + SeriesInfo.F_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
-//        MAPPING.set(FINAL + SaDictionaries.SA + SeriesInfo.EF_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast));
-//        MAPPING.set(FINAL + SaDictionaries.SA + SeriesInfo.B_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
-//        MAPPING.set(FINAL + SaDictionaries.SA + SeriesInfo.EB_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast));
-//
-//        MAPPING.set(FINAL + SaDictionaries.S, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
-//        MAPPING.set(FINAL + SaDictionaries.S + SeriesInfo.F_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
-//        MAPPING.set(FINAL + SaDictionaries.S + SeriesInfo.EF_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast));
-//        MAPPING.set(FINAL + SaDictionaries.S + SeriesInfo.B_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
-//        MAPPING.set(FINAL + SaDictionaries.S + SeriesInfo.EB_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast));
-//
-//        MAPPING.set(FINAL + SaDictionaries.I, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Value));
-//        MAPPING.set(FINAL + SaDictionaries.I + SeriesInfo.F_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
-//        MAPPING.set(FINAL + SaDictionaries.I + SeriesInfo.EF_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast));
-//        MAPPING.set(FINAL + SaDictionaries.I + SeriesInfo.B_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
-//        MAPPING.set(FINAL + SaDictionaries.I + SeriesInfo.EB_SUFFIX, TsData.class, source
-//                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
 
         delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
+         
+        delegate(SaDictionaries.DECOMPOSITION, X11Results.class, source -> source.getDecomposition());
         
         delegate(null, X13Diagnostics.class, source -> source.getDiagnostics());
-        
-        delegate(SaDictionaries.DECOMPOSITION, X11Results.class, source -> source.getDecomposition());
     }
 
     @Override

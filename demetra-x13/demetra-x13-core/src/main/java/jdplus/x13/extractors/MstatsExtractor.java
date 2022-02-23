@@ -19,6 +19,7 @@ package jdplus.x13.extractors;
 import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
+import demetra.x13.X13Dictionaries;
 import jdplus.x13.Mstatistics;
 import nbbrd.service.ServiceProvider;
 
@@ -30,38 +31,34 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class MstatsExtractor extends InformationMapping<Mstatistics> {
 
-    public final String M1 = "m1", M2 = "m2", M3 = "m3", M4 = "m4";
-    public final String M5 = "m5", M6 = "m6", M7 = "m7", M8 = "m8";
-    public final String M9 = "m9", M10 = "m10", M11 = "m11";
-    public final String Q = "q", Q2 = "q-m2";
 
     // MAPPING
     public MstatsExtractor() {
-        set(M1, Double.class,
+        set(X13Dictionaries.M1, Double.class,
                 source -> source.getM(1));
-        set(M2, Double.class,
+        set(X13Dictionaries.M2, Double.class,
                 source -> source.getM(2));
-        set(M3, Double.class,
+        set(X13Dictionaries.M3, Double.class,
                 source -> source.getM(3));
-        set(M4, Double.class,
+        set(X13Dictionaries.M4, Double.class,
                 source -> source.getM(4));
-        set(M5, Double.class,
+        set(X13Dictionaries.M5, Double.class,
                 source -> source.getM(5));
-        set(M6, Double.class,
+        set(X13Dictionaries.M6, Double.class,
                 source -> source.getM(6));
-        set(M7, Double.class,
+        set(X13Dictionaries.M7, Double.class,
                 source -> source.getM(7));
-        set(M8, Double.class,
+        set(X13Dictionaries.M8, Double.class,
                 source -> source.getM(8));
-        set(M9, Double.class,
+        set(X13Dictionaries.M9, Double.class,
                 source -> source.getM(9));
-        set(M10, Double.class,
+        set(X13Dictionaries.M10, Double.class,
                 source -> source.getM(10));
-        set(M11, Double.class,
+        set(X13Dictionaries.M11, Double.class,
                 source -> source.getM(11));
-        set(Q, Double.class,
+        set(X13Dictionaries.Q, Double.class,
                 source -> source.getQ());
-        set(Q2, Double.class,
+        set(X13Dictionaries.Q2, Double.class,
                 source -> source.getQm2());
     }
 

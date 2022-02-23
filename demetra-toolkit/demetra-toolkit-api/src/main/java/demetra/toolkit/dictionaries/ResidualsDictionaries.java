@@ -25,7 +25,7 @@ public class ResidualsDictionaries {
             .name("residuals")
             .item(Item.builder().name(RES).description("residuals").outputClass(double[].class).build())
             .item(Item.builder().name(TSRES).description("timeseries residuals").outputClass(TsData.class).build())
-            .item(Item.builder().name(SER).description("standard error of the residuals").outputClass(double.class).build())
+            .item(Item.builder().name(SER).description("standard error of the residuals").outputClass(Double.class).build())
             .item(Item.builder().name(TYPE).description("outputClass of residuals").outputClass(String.class).build())
             .build();
     

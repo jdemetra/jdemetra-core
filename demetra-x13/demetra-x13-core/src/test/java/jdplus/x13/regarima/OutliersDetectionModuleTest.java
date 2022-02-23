@@ -25,7 +25,7 @@ import static jdplus.x13.regarima.OutliersDetectionModule.EPS;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regarima.outlier.ExactSingleOutlierDetector;
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.regarima.outlier.SingleOutlierDetector;

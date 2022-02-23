@@ -12,9 +12,10 @@ import demetra.sa.SaDefinition;
 import demetra.sa.SaItem;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsMoniker;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.tramoseats.TramoSeats;
+import demetra.tramoseats.TramoSeatsDictionaries;
 import demetra.tramoseats.TramoSeatsSpec;
-import ec.satoolkit.tramoseats.TramoSeatsSpecification;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -50,7 +51,6 @@ public class TramoSeatsFactoryTest {
     public void testProcessor(){
         ProcessingLog log=ProcessingLog.dummy();
         TramoSeatsResults rslts = (TramoSeatsResults) TramoSeatsFactory.INSTANCE.processor(TramoSeatsSpec.RSAfull).process(Data.TS_PROD, null, log);
-        
     }
     
     @Test
@@ -74,13 +74,24 @@ public class TramoSeatsFactoryTest {
         assertTrue(item.getEstimation().getQuality() == ProcQuality.Good);
     }
 
-    //@Test
-    public void testDictionary() {
-         Map<String, Class> dic = new LinkedHashMap<>();
-        TramoSeatsSpecification.fillDictionary(null, dic);
-        String[] arr = dic.keySet().toArray(new String[dic.size()]);
-        for (String s : arr) {
-            System.out.println(s);
+    public static void main(String[] args){
+        testDictionaries();
+    }
+
+    static void testDictionaries() {
+        Dictionary dic = TramoSeatsDictionaries.TRAMOSEATSDICTIONARY;
+        Map<String, Class> xdic = TramoSeats.outputDictionary(true);
+        dic.entries().forEach(entry -> {
+            System.out.print(entry.display());
+            System.out.print('\t');
+            if (xdic.containsKey(entry.fullName())) {
+                System.out.println(1);
+            } else {
+                System.out.println(0);
+            }
+
         }
+        );
+
     }
 }

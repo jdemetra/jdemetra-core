@@ -20,9 +20,9 @@ import demetra.processing.ProcQuality;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.processing.Diagnostics;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.modelling.GeneralLinearModel;
 
 /**

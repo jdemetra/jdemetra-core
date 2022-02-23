@@ -25,12 +25,12 @@ public class RegressionDictionaries {
 
     public final Dictionary BASIC = AtomicDictionary.builder()
             .name("basic")
-            .item(Item.builder().name(PERIOD).description("period of the series").outputClass(int.class).build())
+            .item(Item.builder().name(PERIOD).description("period of the series").outputClass(Integer.class).build())
             .item(Item.builder().name(SPAN_START).description("start of the considered (partial) series").outputClass(TsPeriod.class).build())
             .item(Item.builder().name(SPAN_END).description("end of the considered (partial) series").outputClass(TsPeriod.class).build())
-            .item(Item.builder().name(SPAN_N).description("number of periods in the considered (partial) series").outputClass(int.class).build())
-            .item(Item.builder().name(SPAN_MISSING).description("number of missing values in the considered (partial) series").outputClass(int.class).build())
-            .item(Item.builder().name(LOG).description("log-transformtion").outputClass(int.class).build())
+            .item(Item.builder().name(SPAN_N).description("number of periods in the considered (partial) series").outputClass(Integer.class).build())
+            .item(Item.builder().name(SPAN_MISSING).description("number of missing values in the considered (partial) series").outputClass(Integer.class).build())
+            .item(Item.builder().name(LOG).description("log-transformtion").outputClass(Integer.class).build())
             .item(Item.builder().name(ADJUST).description("pre-adjustment for leap year").outputClass(String.class).build())
             .build();
 
@@ -40,21 +40,21 @@ public class RegressionDictionaries {
 
     public final Dictionary REGRESSION_DESC = AtomicDictionary.builder()
             .name("regression")
-            .item(Item.builder().name(ESPAN_START).description("start of the considered span in the estimation").outputClass(int.class).build())
-            .item(Item.builder().name(ESPAN_END).description("end of the considered span in the estimation").outputClass(int.class).build())
-            .item(Item.builder().name(ESPAN_N).description("number of periods in the considered span for estimation").outputClass(int.class).build())
-            .item(Item.builder().name(ESPAN_MISSING).description("number of missing values in the considered span for estimation").outputClass(int.class).build())
-            .item(Item.builder().name(MEAN).description("is trend constant").outputClass(int.class).build())
-            .item(Item.builder().name(NLP).description("is leap year").outputClass(int.class).build())
-            .item(Item.builder().name(NTD).description("number of trading days (outside lp)").outputClass(int.class).build())
-            .item(Item.builder().name(LEASTER).description("length of the easter effect").outputClass(int.class).build())
-            .item(Item.builder().name(NMH).description("number of moving holidays").outputClass(int.class).build())
-            .item(Item.builder().name(NOUT).description("number of outliers").outputClass(int.class).build())
-            .item(Item.builder().name(NAO).description("number of additive outliers").outputClass(int.class).build())
-            .item(Item.builder().name(NLS).description("number of level shifts").outputClass(int.class).build())
-            .item(Item.builder().name(NTC).description("number of transitory changes").outputClass(int.class).build())
-            .item(Item.builder().name(NSO).description("number of seasonal outliers").outputClass(int.class).build())
-            .item(Item.builder().name(NUSERS).description("number of user-defined variables").outputClass(int.class).build())
+            .item(Item.builder().name(ESPAN_START).description("start of the considered span in the estimation").outputClass(Integer.class).build())
+            .item(Item.builder().name(ESPAN_END).description("end of the considered span in the estimation").outputClass(Integer.class).build())
+            .item(Item.builder().name(ESPAN_N).description("number of periods in the considered span for estimation").outputClass(Integer.class).build())
+            .item(Item.builder().name(ESPAN_MISSING).description("number of missing values in the considered span for estimation").outputClass(Integer.class).build())
+            .item(Item.builder().name(MEAN).description("is trend constant").outputClass(Integer.class).build())
+            .item(Item.builder().name(NLP).description("is leap year").outputClass(Integer.class).build())
+            .item(Item.builder().name(NTD).description("number of trading days (outside lp)").outputClass(Integer.class).build())
+            .item(Item.builder().name(LEASTER).description("length of the easter effect").outputClass(Integer.class).build())
+            .item(Item.builder().name(NMH).description("number of moving holidays").outputClass(Integer.class).build())
+            .item(Item.builder().name(NOUT).description("number of outliers").outputClass(Integer.class).build())
+            .item(Item.builder().name(NAO).description("number of additive outliers").outputClass(Integer.class).build())
+            .item(Item.builder().name(NLS).description("number of level shifts").outputClass(Integer.class).build())
+            .item(Item.builder().name(NTC).description("number of transitory changes").outputClass(Integer.class).build())
+            .item(Item.builder().name(NSO).description("number of seasonal outliers").outputClass(Integer.class).build())
+            .item(Item.builder().name(NUSERS).description("number of user-defined variables").outputClass(Integer.class).build())
             .build();
 
     public final Dictionary REGRESSION_EST = AtomicDictionary.builder()
@@ -76,15 +76,15 @@ public class RegressionDictionaries {
             Y_EF = "y_ef",
             Y_B = "y_b",
             Y_EB = "y_eb",
-            Y_LIN = "y_lin", // linearized series (transformed series without pre-adjustment and regression effects). Untransformed
-            Y_LIN_F = "y_lin_f",
-            Y_LIN_B = "y_lin_b",
+//            Y_LIN = "y_lin", // linearized series (transformed series without pre-adjustment and regression effects). Untransformed
+//            Y_LIN_F = "y_lin_f",
+//            Y_LIN_B = "y_lin_b",
             CAL = "cal", // all calendar effects (including pre-adjustments). cal=tde+*mhe. Untransformed       
             CAL_F = "cal_f",
             CAL_B = "cal_b",
             YCAL = "ycal", // series corrected for calendar effects: y_cal = yc-/cal. Untransformed
-            YCAL_F = "ycal_f",
-            YCAL_B = "ycal_b",
+//            YCAL_F = "ycal_f",
+//            YCAL_B = "ycal_b",
             DET = "det", // all deterministic effects (including pre-adjustment). Untransformed
             DET_F = "det_f",
             DET_B = "det_b",
@@ -109,23 +109,24 @@ public class RegressionDictionaries {
             REG = "reg", // All other regression effects (outside outliers and calendars). Untransformed
             REG_F = "reg_f",
             REG_B = "reg_b",
-            L = "l", // linearized series (series without pre-adjustment and regression effects). l=yc-/det. Transformed
-            L_F = "l_f",
-            L_EF = "l_ef",
-            L_B = "l_b",
-            L_EB = "l_eb";
+            L = "l" // linearized series (series without pre-adjustment and regression effects). l=yc-/det. Transformed
+//            L_F = "l_f",
+//            L_EF = "l_ef",
+//            L_B = "l_b",
+//            L_EB = "l_eb"
+            ;
 
     public final Dictionary REGRESSION_EFFECTS = AtomicDictionary.builder()
             .name("regression estimation")
             .item(Item.builder().name(Y).description("original series").outputClass(TsData.class).build())
             .item(Item.builder().name(Y_F).description("forecasts of the original series").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(Y_EF).description("forecasts errors of the original series (def length)").outputClass(TsData.class).type(EntryType.Parametric).build())
+            .item(Item.builder().name(Y_EF).description("forecasts errors of the original series").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(Y_B).description("backcasts of the original series").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(Y_EB).description("backcasts errors of the original series (def length)").outputClass(TsData.class).type(EntryType.Parametric).build())
+            .item(Item.builder().name(Y_EB).description("backcasts errors of the original series").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(YC).description("interpolated series. Untransformed").outputClass(TsData.class).build())
-            .item(Item.builder().name(Y_LIN).description("linearized series (series without pre-adjustment and regression effects). l=yc-/det. Untransformed").outputClass(TsData.class).build())
-            .item(Item.builder().name(Y_LIN_F).description("forcasts of the linearized series. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(Y_LIN_B).description("backcasts of the linearized series. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(Y_LIN).description("linearized series (series without pre-adjustment and regression effects). l=yc-/det. Untransformed").outputClass(TsData.class).build())
+//            .item(Item.builder().name(Y_LIN_F).description("forcasts of the linearized series. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(Y_LIN_B).description("backcasts of the linearized series. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(DET).description("all deterministic effects (including pre-adjustment). Untransformed").outputClass(TsData.class).build())
             .item(Item.builder().name(DET_F).description("forcasts of all deterministic effects (including pre-adjustment). Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(DET_B).description("backcasts of all deterministic effects (including pre-adjustment). Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
@@ -133,8 +134,8 @@ public class RegressionDictionaries {
             .item(Item.builder().name(CAL_F).description("forecasts of all calendar effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(CAL_B).description("backcasts of all calendar effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(YCAL).description("series corrected for calendar effects: y_cal = yc-/cal. Untransformed").outputClass(TsData.class).build())
-            .item(Item.builder().name(YCAL_F).description("forecasts of the series corrected for calendar effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(YCAL_B).description("backcasts of the series corrected for calendar effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(YCAL_F).description("forecasts of the series corrected for calendar effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(YCAL_B).description("backcasts of the series corrected for calendar effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(TDE).description("trading days effects (including leap year/length of period, including pre-adjustments). Untransformed").outputClass(TsData.class).build())
             .item(Item.builder().name(TDE_F).description("forecasts of the trading days effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(TDE_B).description("backcasts of the trading days effects. Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
@@ -154,10 +155,10 @@ public class RegressionDictionaries {
             .item(Item.builder().name(REG_F).description("forecasts of all other regression effects (outside outliers and calendars). Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(REG_B).description("backcasts of all other regression effects (outside outliers and calendars). Untransformed").outputClass(TsData.class).type(EntryType.Parametric).build())
             .item(Item.builder().name(L).description("linearized series (transformed series without pre-adjustment and regression effects). Transformed)").outputClass(TsData.class).build())
-            .item(Item.builder().name(L_F).description("forecasts of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(L_B).description("backcasts of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(L_EF).description("forecast errors of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
-            .item(Item.builder().name(L_EB).description("backcast errors of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(L_F).description("forecasts of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(L_B).description("backcasts of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(L_EF).description("forecast errors of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
+//            .item(Item.builder().name(L_EB).description("backcast errors of the linearized. Transformed)").outputClass(TsData.class).type(EntryType.Parametric).build())
             .build();
 
     public final String COEFFDESC = "description", REGTYPE = "type", COEFF = "coefficients", COVAR = "covar", COVAR_ML = "covar-ml";

@@ -26,6 +26,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Variable;
 import java.util.List;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.TsDomain;
 
 /**
  *
@@ -68,6 +69,8 @@ public class LightweightLinearModel{
     @lombok.Builder(builderClassName="Builder")
     public static class Estimation implements GeneralLinearModel.Estimation {
 
+        @lombok.NonNull
+        private TsDomain domain;
         /**
          * The linear model is composed of the transformed series (corrected for
          * fixed regression variables)
@@ -88,6 +91,9 @@ public class LightweightLinearModel{
         @lombok.NonNull
         private Matrix coefficientsCovariance;
 
+        /**
+         * Positions corresponding to the estimation domain
+         */
         @lombok.NonNull
         private MissingValueEstimation[] missing;
         /**

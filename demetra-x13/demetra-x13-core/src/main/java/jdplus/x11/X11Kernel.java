@@ -8,6 +8,7 @@ package jdplus.x11;
 import demetra.data.DoubleSeq;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.x11.X11Exception;
 import demetra.x11.X11Spec;
@@ -97,6 +98,8 @@ public class X11Kernel {
 
     private X11Results buildResults(TsPeriod start, X11Spec spec) {
         return X11Results.builder()
+                .nbackcasts(spec.getBackcastHorizon()>=0 ? spec.getBackcastHorizon() : -spec.getBackcastHorizon()*start.annualFrequency())
+                .nforecasts(spec.getForecastHorizon()>=0 ? spec.getForecastHorizon(): -spec.getForecastHorizon()*start.annualFrequency())
                 //B-Tables
                 .b1(input)
                 .b2(TsData.of(start.plus(bstep.getB2drop()), prepare(bstep.getB2())))

@@ -43,7 +43,7 @@ import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
 import jdplus.regarima.IRegArimaComputer;
@@ -54,7 +54,6 @@ import jdplus.regarima.IRegArimaComputer;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@Deprecated
 public final class ModelEstimation {
 
     private static final boolean[] EB = new boolean[0];

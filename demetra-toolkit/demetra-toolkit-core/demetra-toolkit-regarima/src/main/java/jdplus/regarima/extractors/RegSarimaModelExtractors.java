@@ -6,29 +6,35 @@
 package jdplus.regarima.extractors;
 
 import demetra.information.InformationMapping;
-import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.information.BasicInformationExtractor;
 import demetra.information.InformationDelegate;
 import demetra.information.InformationExtractor;
 import demetra.modelling.SeriesInfo;
 import demetra.arima.SarimaSpec;
+import demetra.data.Parameter;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.RegressionItem;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.timeseries.regression.UserVariable;
+import demetra.toolkit.dictionaries.ArimaDictionaries;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
+import demetra.toolkit.dictionaries.UtilityDictionaries;
+import jdplus.dstats.T;
 import jdplus.modelling.GeneralLinearModel;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 
 /**
  *
@@ -41,44 +47,182 @@ import jdplus.modelling.GeneralLinearModel;
 @lombok.experimental.UtilityClass
 public class RegSarimaModelExtractors {
 
-    public final int NFCAST = -2, NBCAST = -2;
+    public final int NFCAST = -2, NBCAST = 0;
 
     @ServiceProvider(InformationExtractor.class)
     public static class Specific extends InformationMapping<RegSarimaModel> {
 
-        public final String SARIMA = "arima",
-                ESPAN = "espan", START = "start", END = "end", N = "n", NM = "missing", PERIOD = "period",
-                REGRESSION = "regression", LIKELIHOOD = "likelihood", MAX = "max",
-                OUTLIERS = "outlier(*)",
-                CALENDAR = "calendar(*)",
-                EASTER = "easter",
-                TD = "td", TD1 = "td(1)", TD2 = "td(2)", TD3 = "td(3)", TD4 = "td(4)", TD5 = "td(5)", TD6 = "td(6)", TD7 = "td(7)",
-                TD8 = "td(8)", TD9 = "td(9)", TD10 = "td(10)", TD11 = "td(11)", TD12 = "td(12)", TD13 = "td(13)", TD14 = "td(14)",
-                MU = "mu", LP = "lp", OUT = "out", OUT1 = "out(1)", OUT2 = "out(2)", OUT3 = "out(3)", OUT4 = "out(4)", OUT5 = "out(5)", OUT6 = "out(6)", OUT7 = "out(7)",
-                OUT8 = "out(8)", OUT9 = "out(9)", OUT10 = "out(10)", OUT11 = "out(11)", OUT12 = "out(12)", OUT13 = "out(13)", OUT14 = "out(14)",
-                OUT15 = "out(15)", OUT16 = "out(16)", OUT17 = "out(17)", OUT18 = "out(18)", OUT19 = "out(19)", OUT20 = "out(20)",
-                OUT21 = "out(21)", OUT22 = "out(22)", OUT23 = "out(23)", OUT24 = "out(24)", OUT25 = "out(25)", OUT26 = "out(26)",
-                OUT27 = "out(27)", OUT28 = "out(28)", OUT29 = "out(29)", OUT30 = "out(30)", RAMP = "ramp",
-                PCORR = "pcorr";
+        private String arimaItem(String key) {
+            return Dictionary.concatenate(RegArimaDictionaries.ARIMA, key);
+        }
+
+        private String regressionItem(String key) {
+            return Dictionary.concatenate(RegArimaDictionaries.REGRESSION, key);
+        }
+
+        private String advancedItem(String key) {
+            return Dictionary.concatenate(RegArimaDictionaries.ADVANCED, key);
+        }
+
+        private String mlItem(String key) {
+            return Dictionary.concatenate(RegArimaDictionaries.MAX, key);
+        }
+
+        private RegressionItem phi(RegSarimaModel model, int lag) {
+            if (lag <= 0) {
+                return null;
+            }
+            SarimaSpec arima = model.getDescription().getStochasticComponent();
+            Parameter[] p = arima.getPhi();
+            if (lag > p.length) {
+                return null;
+            }
+            Parameter phi = p[lag - 1];
+            if (phi.isFixed()) {
+                return new RegressionItem(phi.getValue(), 0, Double.NaN, null);
+            }
+            int pos = 0;
+            for (int i = 0; i < p.length; ++i) {
+                if (lag == i + 1) {
+                    break;
+                }
+                if (!p[i].isFixed()) {
+                    ++pos;
+                }
+            }
+            return pt(model, phi.getValue(), pos, null);
+        }
+
+        private RegressionItem bphi(RegSarimaModel model, int lag) {
+            if (lag <= 0) {
+                return null;
+            }
+            SarimaSpec arima = model.getDescription().getStochasticComponent();
+            Parameter[] p = arima.getBphi();
+            if (lag > p.length) {
+                return null;
+            }
+            Parameter bphi = p[lag - 1];
+            if (bphi.isFixed()) {
+                return new RegressionItem(bphi.getValue(), 0, Double.NaN, null);
+            }
+            int pos = Parameter.freeParametersCount(arima.getPhi());
+            for (int i = 0; i < p.length; ++i) {
+                if (lag == i + 1) {
+                    break;
+                }
+                if (!p[i].isFixed()) {
+                    ++pos;
+                }
+            }
+            return pt(model, bphi.getValue(), pos, null);
+        }
+
+        private RegressionItem theta(RegSarimaModel model, int lag) {
+            if (lag <= 0) {
+                return null;
+            }
+            SarimaSpec arima = model.getDescription().getStochasticComponent();
+            Parameter[] p = arima.getTheta();
+            if (lag > p.length) {
+                return null;
+            }
+            Parameter theta = p[lag - 1];
+            if (theta.isFixed()) {
+                return new RegressionItem(theta.getValue(), 0, Double.NaN, null);
+            }
+            int pos = Parameter.freeParametersCount(arima.getPhi()) + Parameter.freeParametersCount(arima.getBphi());
+            for (int i = 0; i < p.length; ++i) {
+                if (lag == i + 1) {
+                    break;
+                }
+                if (!p[i].isFixed()) {
+                    ++pos;
+                }
+            }
+            return pt(model, theta.getValue(), pos, null);
+        }
+
+        private RegressionItem btheta(RegSarimaModel model, int lag) {
+            if (lag <= 0) {
+                return null;
+            }
+            SarimaSpec arima = model.getDescription().getStochasticComponent();
+            Parameter[] p = arima.getBtheta();
+            if (lag > p.length) {
+                return null;
+            }
+            Parameter btheta = p[lag - 1];
+            if (btheta.isFixed()) {
+                return new RegressionItem(btheta.getValue(), 0, Double.NaN, null);
+            }
+            int pos = Parameter.freeParametersCount(arima.getPhi())
+                    + Parameter.freeParametersCount(arima.getBphi())
+                    + Parameter.freeParametersCount(arima.getTheta());
+            for (int i = 0; i < p.length; ++i) {
+                if (lag == i + 1) {
+                    break;
+                }
+                if (!p[i].isFixed()) {
+                    ++pos;
+                }
+            }
+            return pt(model, btheta.getValue(), pos, null);
+        }
+
+        RegressionItem pt(RegSarimaModel model, double val, int pos, String name) {
+            GeneralLinearModel.Estimation estimation = model.getEstimation();
+            LikelihoodStatistics ll = estimation.getStatistics();
+            int nobs = ll.getEffectiveObservationsCount(), nparams = ll.getEstimatedParametersCount();
+            int nhp = model.freeArimaParametersCount();
+            double ndf = nobs - nparams;
+            double vcorr = ndf / (ndf + nhp);
+            T t = new T(nobs - nparams);
+            double stde = Math.sqrt(estimation.getParameters().getCovariance().get(pos, pos) * vcorr);
+            double tval = val / stde;
+            double prob = 1 - t.getProbabilityForInterval(-tval, tval);
+            return new RegressionItem(val, stde, prob, name);
+        }
 
         public Specific() {
-            delegate(SARIMA, SarimaSpec.class, source
+            // ARIMA related
+            delegate(RegArimaDictionaries.ARIMA, SarimaSpec.class, source
                     -> source.getDescription().getStochasticComponent());
 
-            set(BasicInformationExtractor.concatenate(ESPAN, START), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getStartPeriod());
-            set(BasicInformationExtractor.concatenate(ESPAN, END), TsPeriod.class, source -> source.getDetails().getEstimationDomain().getLastPeriod());
-            set(BasicInformationExtractor.concatenate(ESPAN, N), Integer.class, source -> source.getDetails().getEstimationDomain().getLength());
+            setArray(arimaItem(ArimaDictionaries.PHI), 1, 12, RegressionItem.class, (source, i) -> {
+                return phi(source, i);
+            });
+            setArray(arimaItem(ArimaDictionaries.BPHI), 1, 12, RegressionItem.class, (source, i) -> {
+                return bphi(source, i);
+            });
+            setArray(arimaItem(ArimaDictionaries.THETA), 1, 12, RegressionItem.class, (source, i) -> {
+                return theta(source, i);
+            });
+            setArray(arimaItem(ArimaDictionaries.BTHETA), 1, 12, RegressionItem.class, (source, i) -> {
+                return btheta(source, i);
+            });
 
-        set(RegressionDictionaries.Y + SeriesInfo.F_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecasts());
-        set(RegressionDictionaries.Y + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.forecasts(NFCAST).getForecastsStdev());
+            //*********************
+
+            setArray(RegressionDictionaries.Y_F, NFCAST, TsData.class, (source, i) -> source.forecasts(i).getForecasts());
+            setArray(RegressionDictionaries.Y_B, NBCAST, TsData.class, (source, i) -> source.backcasts(i).getForecasts());
+            setArray(RegressionDictionaries.Y_EF, NFCAST, TsData.class, (source,i) -> source.forecasts(i).getForecastsStdev());
+            setArray(RegressionDictionaries.Y_EB, NBCAST, TsData.class, (source,i) -> source.backcasts(i).getForecastsStdev());
+
+
             set(RegressionDictionaries.YC, TsData.class, source -> source.interpolatedSeries(false));
+            
+            set(RegressionDictionaries.L, TsData.class, source -> source.linearizedSeries());
+//            set(RegressionDictionaries.Y_LIN, TsData.class, source -> {
+//                TsData lin = source.linearizedSeries();
+//                return source.backTransform(lin, false);
+//            });
+            
+            //********************
+            
+            
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
-            set(RegressionDictionaries.L, TsData.class, source -> source.linearizedSeries());
-            set(RegressionDictionaries.Y_LIN, TsData.class, source -> {
-                TsData lin = source.linearizedSeries();
-                return source.backTransform(lin, false);
-            });
 //        MAPPING.set(RegressionDictionaries.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
 //        MAPPING.set(RegressionDictionaries.L + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.getForecastCount()));
 //        MAPPING.set(RegressionDictionaries.L + SeriesInfo.B_SUFFIX, source -> source.linearizedBackcast(source.description.getFrequency()));
@@ -92,19 +236,19 @@ public class RegSarimaModelExtractors {
 
 // All determinsitic effects
             set(RegressionDictionaries.DET, TsData.class, (RegSarimaModel source) -> {
-                TsData det=source.deterministicEffect(null, v-> ! (v.getCore() instanceof TrendConstant));
+                TsData det = source.deterministicEffect(null, v -> !(v.getCore() instanceof TrendConstant));
                 return source.backTransform(det, true);
             });
             setArray(RegressionDictionaries.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> {
-                TsData det=source.deterministicEffect(source.forecastDomain(i), v-> ! (v.getCore() instanceof TrendConstant));
-                return source.backTransform(det, true);
-            });
+                        TsData det = source.deterministicEffect(source.forecastDomain(i), v -> !(v.getCore() instanceof TrendConstant));
+                        return source.backTransform(det, true);
+                    });
             setArray(RegressionDictionaries.DET + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> {
-                TsData det=source.deterministicEffect(source.backcastDomain(i), v-> ! (v.getCore() instanceof TrendConstant));
-                return source.backTransform(det, true);
-            });
+                        TsData det = source.deterministicEffect(source.backcastDomain(i), v -> !(v.getCore() instanceof TrendConstant));
+                        return source.backTransform(det, true);
+                    });
 
 // All calendar effects
             set(RegressionDictionaries.CAL, TsData.class, source -> source.getCalendarEffect(null));
@@ -115,24 +259,31 @@ public class RegSarimaModelExtractors {
 
 // Trading days effects
             set(RegressionDictionaries.TDE, TsData.class, source -> source.getTradingDaysEffect(null));
-            setArray(RegressionDictionaries.TDE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            setArray(RegressionDictionaries.TDE_F, NFCAST, TsData.class,
                     (source, i) -> source.getTradingDaysEffect(source.forecastDomain(i)));
-            setArray(RegressionDictionaries.TDE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.TDE_B, NBCAST, TsData.class,
                     (source, i) -> source.getTradingDaysEffect(source.backcastDomain(i)));
 
 // All moving holidays effects
             set(RegressionDictionaries.MHE, TsData.class, source -> source.getMovingHolidayEffect(null));
-            setArray(RegressionDictionaries.MHE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            setArray(RegressionDictionaries.MHE_F, NFCAST, TsData.class,
                     (source, i) -> source.getMovingHolidayEffect(source.forecastDomain(i)));
-            setArray(RegressionDictionaries.MHE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.MHE_B, NBCAST, TsData.class,
                     (source, i) -> source.getMovingHolidayEffect(source.backcastDomain(i)));
-
+            
 // Easter effect
             set(RegressionDictionaries.EE, TsData.class, source -> source.getEasterEffect(null));
-            setArray(RegressionDictionaries.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+            setArray(RegressionDictionaries.EE_F, NFCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.forecastDomain(i)));
-            setArray(RegressionDictionaries.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
+            setArray(RegressionDictionaries.EE_B, NBCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.backcastDomain(i)));
+
+// Other moving holidays effects
+            set(RegressionDictionaries.OMHE, TsData.class, source -> source.getOtherMovingHolidayEffect(null));
+            setArray(RegressionDictionaries.OMHE_F, NFCAST, TsData.class,
+                    (source, i) -> source.getOtherMovingHolidayEffect(source.forecastDomain(i)));
+            setArray(RegressionDictionaries.OMHE_B, NBCAST, TsData.class,
+                    (source, i) -> source.getOtherMovingHolidayEffect(source.backcastDomain(i)));
 
 // All Outliers effect
             set(RegressionDictionaries.OUT, TsData.class, source -> source.getOutliersEffect(null));
@@ -141,25 +292,32 @@ public class RegSarimaModelExtractors {
             setArray(RegressionDictionaries.OUT + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getOutliersEffect(source.backcastDomain(i)));
 
-            set(BasicInformationExtractor.concatenate(REGRESSION, MU), RegressionItem.class,
+            set(regressionItem(RegressionDictionaries.MU), RegressionItem.class,
                     source -> source.regressionItem(v -> v instanceof TrendConstant, 0));
-            set(BasicInformationExtractor.concatenate(REGRESSION, LP), RegressionItem.class,
+            set(regressionItem(RegressionDictionaries.LP), RegressionItem.class,
                     source -> source.regressionItem(v -> v instanceof ILengthOfPeriodVariable, 0));
-            set(BasicInformationExtractor.concatenate(REGRESSION, EASTER), RegressionItem.class,
+            set(regressionItem(RegressionDictionaries.EASTER), RegressionItem.class,
                     source -> source.regressionItem(v -> v instanceof IEasterVariable, 0));
-            setArray(BasicInformationExtractor.concatenate(REGRESSION, OUT), 1, 31, RegressionItem.class,
+            setArray(regressionItem(RegressionDictionaries.OUTLIERS), 1, 31, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof IOutlier, i - 1));
-            setArray(BasicInformationExtractor.concatenate(REGRESSION, TD), 1, 7, RegressionItem.class,
+            setArray(regressionItem(RegressionDictionaries.TD), 1, 7, RegressionItem.class,
                     (source, i) -> source.regressionItem(v -> v instanceof ITradingDaysVariable, i - 1));
-            setArray(BasicInformationExtractor.concatenate(REGRESSION, RAMP), 1, 31, RegressionItem.class,
-                    (source, i) -> source.regressionItem(v -> v instanceof Ramp, i - 1));
+            setArray(regressionItem(RegressionDictionaries.USER), 1, 30, RegressionItem.class,
+                    (source, i) -> source.regressionItem(v -> v instanceof UserVariable, i - 1));
+            setArray(regressionItem(RegressionDictionaries.OUT), 1, 30, RegressionItem.class,
+                    (source, i) -> source.regressionItem(v -> v instanceof IOutlier, i - 1));
+            setArray(regressionItem(RegressionDictionaries.MISSING), 1, 100, MissingValueEstimation.class,
+                    (source, i) -> {
+                        MissingValueEstimation[] missing = source.getEstimation().getMissing();
+                        return i <= 0 || i > missing.length ? null : missing[i - 1];
+                    });
 
             set(RegressionDictionaries.EE, TsData.class, source -> source.getEasterEffect(null));
             setArray(RegressionDictionaries.EE + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.forecastDomain(i)));
             setArray(RegressionDictionaries.EE + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> source.getEasterEffect(source.backcastDomain(i)));
-            
+
 //        MAPPING.set(FULLRES, source -> source.getFullResiduals());
 //        MAPPING.setList(InformationSet.item(REGRESSION, TD), 1, 15, RegressionItem.class, (source, i) -> source.getRegressionItem(ITradingDaysVariable.class, i - 1));
 //        MAPPING.set(InformationSet.item(REGRESSION, TD_DERIVED), RegressionItem.class, source -> {
@@ -210,7 +368,7 @@ public class RegSarimaModelExtractors {
 //        });
 // 
 //        MAPPING.setList(InformationSet.item(REGRESSION, USER), 1, 31, RegressionItem.class, (source, i) -> source.getRegressionItem(IUserTsVariable.class, i - 1));
-            set(BasicInformationExtractor.concatenate(MAX, PCORR), Matrix.class, source -> {
+            set(mlItem(UtilityDictionaries.PCORR), Matrix.class, source -> {
                 FastMatrix cov = FastMatrix.of(source.getEstimation().getParameters().getCovariance());
                 DataBlock diag = cov.diagonal();
                 for (int i = 0; i < cov.getRowsCount(); ++i) {

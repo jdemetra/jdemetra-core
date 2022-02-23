@@ -8,6 +8,7 @@ package jdplus.x11;
 import demetra.information.GenericExplorable;
 import demetra.sa.DecompositionMode;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.x11.MsrTable;
 import demetra.x11.SeasonalFilterOption;
 
@@ -17,7 +18,9 @@ import demetra.x11.SeasonalFilterOption;
  */
 @lombok.Value
 @lombok.Builder
-public class X11Results implements GenericExplorable{
+public class X11Results implements GenericExplorable {
+
+    int nbackcasts, nforecasts;
 
     TsData b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b13, b17, b20;
     TsData c1, c2, c4, c5, c6, c7, c9, c10, c11, c13, c17, c20;
@@ -31,11 +34,30 @@ public class X11Results implements GenericExplorable{
      * I/C-Ratio on D1 !o D10 (D11bis)
      */
     double iCRatio;
-    
+
     /**
      * MSR (moving seasonality ratio) table on D9 and related
      */
     MsrTable d9Msr;
     SeasonalFilterOption d9filter;
     boolean d9default;
+
+    public TsDomain getFullDomain() {
+        return b1.getDomain();
+    }
+
+    public TsDomain getBackcastDomain() {
+        return b1.getDomain().range(0, nbackcasts);
+    }
+
+    public TsDomain getForecastDomain() {
+        TsDomain domain = b1.getDomain();
+        int n = domain.getLength();
+        return domain.range(n - nforecasts, n);
+    }
+
+    public TsDomain getActualDomain() {
+        TsDomain domain = b1.getDomain();
+        return domain.range(nbackcasts, domain.getLength() - nforecasts);
+    }
 }

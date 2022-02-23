@@ -24,7 +24,7 @@ import demetra.sa.SaDictionaries;
 import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NBCAST;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NFCAST;
 import jdplus.regsarima.regular.RegSarimaModel;

@@ -43,7 +43,7 @@ import jdplus.tramo.internal.DifferencingModule;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import java.util.ArrayList;
 import java.util.List;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 
 /**

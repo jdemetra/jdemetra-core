@@ -29,10 +29,13 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import nbbrd.service.ServiceProvider;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.regression.EasterVariable;
+import demetra.timeseries.regression.IUserVariable;
 import demetra.toolkit.dictionaries.Dictionary;
 import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
 import demetra.toolkit.dictionaries.UtilityDictionaries;
+import java.util.Optional;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import jdplus.modelling.GeneralLinearModel;
 
@@ -77,6 +80,31 @@ public class LinearModelExtractors {
             set(RegressionDictionaries.LOG, Integer.class, source -> source.getDescription().isLogTransformation()? 1 : 0);
             set(RegressionDictionaries.ADJUST, String.class, source -> source.getDescription().getLengthOfPeriodTransformation().name());
 
+            set(regressionItem(RegressionDictionaries.ESPAN_START), TsPeriod.class, source -> source.getEstimation().getDomain().getStartPeriod());
+            set(regressionItem(RegressionDictionaries.ESPAN_END), TsPeriod.class, source -> source.getEstimation().getDomain().getLastPeriod());
+            set(regressionItem(RegressionDictionaries.ESPAN_N), Integer.class, source -> source.getEstimation().getDomain().length());
+            set(regressionItem(RegressionDictionaries.ESPAN_MISSING), Integer.class, source -> source.getEstimation().getMissing().length);
+           
+            set(regressionItem(RegressionDictionaries.MEAN), Integer.class, source -> source.isMeanCorrection() ? 1 : 0);
+            set(regressionItem(RegressionDictionaries.NLP), Integer.class, source -> count( source, var->var instanceof ILengthOfPeriodVariable));
+            set(regressionItem(RegressionDictionaries.NTD), Integer.class, source -> count( source, var->var instanceof ITradingDaysVariable));
+            set(regressionItem(RegressionDictionaries.NMH), Integer.class, source -> count( source, var->var instanceof IMovingHolidayVariable));
+            set(regressionItem(RegressionDictionaries.NOUT), Integer.class, source -> count( source, var->var instanceof IOutlier));
+            set(regressionItem(RegressionDictionaries.NAO), Integer.class, source -> count( source, var->var instanceof AdditiveOutlier));
+            set(regressionItem(RegressionDictionaries.NLS), Integer.class, source -> count( source, var->var instanceof LevelShift));
+            set(regressionItem(RegressionDictionaries.NTC), Integer.class, source -> count( source, var->var instanceof TransitoryChange));
+            set(regressionItem(RegressionDictionaries.NSO), Integer.class, source -> count( source, var->var instanceof PeriodicOutlier));
+            set(regressionItem(RegressionDictionaries.NUSERS), Integer.class, source -> count( source, var->var instanceof IUserVariable));
+            set(regressionItem(RegressionDictionaries.LEASTER), Integer.class, source ->{
+                Variable[] variables = source.getDescription().getVariables();
+                Optional<Variable> found = Arrays.stream(variables).filter(var->var.getCore() instanceof EasterVariable).findAny();
+                if (found.isPresent()){
+                    EasterVariable ev=(EasterVariable) found.get().getCore();
+                    return ev.getDuration();
+                }else
+                return 0;
+            });
+
             set(regressionItem(RegressionDictionaries.COEFFDESC), String[].class, source -> {
                 TsDomain domain = source.getDescription().getSeries().getDomain();
                 Variable[] vars = source.getDescription().getVariables();
@@ -97,6 +125,7 @@ public class LinearModelExtractors {
                 }
                 return nvars;
             });
+            
             set(regressionItem(RegressionDictionaries.REGTYPE), int[].class, (GeneralLinearModel source) -> {
                 Variable[] vars = source.getDescription().getVariables();
                 if (vars.length == 0) {

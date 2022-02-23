@@ -58,11 +58,11 @@ public class SeatsExtractor extends InformationMapping<SeatsResults>{
         set(SaDictionaries.I_LIN + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
         set(SaDictionaries.I_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevBackcast));
 
-        set(ModellingDictionary.L, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Value));
-        set(ModellingDictionary.L + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Forecast));
-        set(ModellingDictionary.L + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
-        set(ModellingDictionary.L + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Backcast));
-        set(ModellingDictionary.L + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
+        set(SaDictionaries.Y_CMP, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Value));
+        set(SaDictionaries.Y_CMP + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Forecast));
+        set(SaDictionaries.Y_CMP + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevForecast));
+        set(SaDictionaries.Y_CMP + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.Backcast));
+        set(SaDictionaries.Y_CMP + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
 
         set(SaDictionaries.T_CMP, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Value));
         set(SaDictionaries.T_CMP + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getFinalComponents().getSeries(ComponentType.Trend, ComponentInformation.Forecast));

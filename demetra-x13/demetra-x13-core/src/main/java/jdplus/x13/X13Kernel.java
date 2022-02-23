@@ -25,9 +25,9 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.ModellingUtility;
 import demetra.x11.X11Spec;
 import demetra.x13.X13Spec;
-import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
@@ -287,13 +287,27 @@ public class X13Kernel {
         TsDomain fd = a1a == null ? null : a1a.getDomain();
         TsDomain d = a1.getDomain();
         // add ps to d10
-
+//
+        TsData a6=astep.getA6(), a7=astep.getA7();
+        TsData d18=invOp(mode, a6, a7);
         TsData d10c = invOp(mode, d10, a8s);
+        TsData d16=invOp(mode, d10c, d18);
+//        if (fd != null) {
+//            decomp.d10a(TsData.fitToDomain(d10c, fd));
+//            d10c = TsData.fitToDomain(d10c, d);
+//        }
+//        decomp.d10final(d10c);
         if (fd != null) {
-            decomp.d10a(TsData.fitToDomain(d10c, fd));
-            d10c = TsData.fitToDomain(d10c, d);
+            decomp.d16a(TsData.fitToDomain(d16, fd));
+            d16 = TsData.fitToDomain(d16, d);
         }
-        decomp.d10final(d10c);
+        decomp.d16(d16);
+//        TsData d18=op(mode, d16, d10c);
+        if (fd != null) {
+            decomp.d18a(TsData.fitToDomain(d18, fd));
+            d18= TsData.fitToDomain(d18, d);
+        }
+        decomp.d18(d18);
 
         // add pt to trend
         TsData d12c = invOp(mode, d12, a8t);
@@ -322,10 +336,7 @@ public class X13Kernel {
         }
         decomp.d11final(d11c);
 
-        TsData a6 = astep.getA6(), a7 = astep.getA7();
-        TsData d18 = invOp(mode, a6, a7);
 
-        TsData d16 = invOp(mode, d10c, d18);
 //        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
 //            TsData tmp = TsData.divide(a1, d12);
 //            tmp = TsData.subtract(tmp, d13);
@@ -333,17 +344,6 @@ public class X13Kernel {
 //        } else {
 //            d16 = op(mode, a1, d11c);
 //        }
-        if (fd != null) {
-            decomp.d16a(TsData.fitToDomain(d16, fd));
-            d16 = TsData.fitToDomain(d16, d);
-        }
-        decomp.d16(d16);
-//        TsData d18=op(mode, d16, d10c);
-        if (fd != null) {
-            decomp.d18a(TsData.fitToDomain(d18, fd));
-            d18 = TsData.fitToDomain(d18, d);
-        }
-        decomp.d18(d18);
 
         // remove pre-specified outliers
         TsData a1c = op(mode, a1, a8i);
