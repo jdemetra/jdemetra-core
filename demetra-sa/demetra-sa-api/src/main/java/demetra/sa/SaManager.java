@@ -78,7 +78,28 @@ public class SaManager {
                             .log(verbose ? log : ProcessingLog.dummy())
                             .quality(ProcQuality.Undefined)
                             .build();
-               }
+                }
+            }
+        }
+        return null;
+    }
+
+    public SaEstimation fill(SaSpecification spec, Explorable rslt, ProcessingLog log) {
+        List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
+        for (SaProcessingFactory fac : all) {
+            SaSpecification dspec = fac.decode(spec);
+            if (dspec != null) {
+                List<ProcDiagnostic> tests = new ArrayList<>();
+                fac.fillDiagnostics(tests, rslt);
+                SaSpecification pspec = fac.generateSpec(spec, rslt);
+                ProcQuality quality = ProcDiagnostic.summary(tests);
+                return SaEstimation.builder()
+                        .results(rslt)
+                        .log(log)
+                        .diagnostics(tests)
+                        .quality(quality)
+                        .pointSpec(pspec)
+                        .build();
             }
         }
         return null;

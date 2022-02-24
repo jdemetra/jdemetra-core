@@ -20,6 +20,7 @@ import jdplus.seats.SeatsResults;
 import demetra.sa.SeriesDecomposition;
 import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.information.GenericExplorable;
+import demetra.processing.HasLog;
 import demetra.processing.ProcessingLog;
 import jdplus.sa.modelling.HasRegSarimaPreprocessing;
 import jdplus.seats.HasCanonicalDecomposition;
@@ -30,7 +31,7 @@ import jdplus.seats.HasCanonicalDecomposition;
  */
 @lombok.Value
 @lombok.Builder
-public class TramoSeatsResults implements GenericExplorable, HasRegSarimaPreprocessing, HasCanonicalDecomposition {
+public class TramoSeatsResults implements GenericExplorable, HasLog, HasRegSarimaPreprocessing, HasCanonicalDecomposition {
 
     private RegSarimaModel preprocessing;
     private SeatsResults decomposition;

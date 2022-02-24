@@ -26,8 +26,6 @@ import demetra.timeseries.TsInformationType;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *

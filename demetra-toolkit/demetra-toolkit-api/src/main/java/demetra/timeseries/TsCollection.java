@@ -103,11 +103,11 @@ public class TsCollection implements Seq<Ts>, HasEmptyCause {
         Objects.requireNonNull(info);
         Objects.requireNonNull(factory);
 
-        if (type.encompass(info)) {
-            return this;
-        }
         if (!moniker.isProvided()) {
             return stream().map(ts -> ts.load(info, factory)).collect(toTsCollection());
+        }
+        if (type.encompass(info)) {
+            return this;
         }
         return factory.makeTsCollection(moniker, info);
     }

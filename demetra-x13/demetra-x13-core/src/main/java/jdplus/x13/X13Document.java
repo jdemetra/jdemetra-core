@@ -17,6 +17,7 @@
 package jdplus.x13;
 
 import demetra.processing.ProcessingLog;
+import demetra.processing.ProcessingStatus;
 import demetra.timeseries.AbstractTsDocument;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
@@ -26,20 +27,19 @@ import demetra.x13.X13Spec;
  *
  * @author PALATEJ
  */
-public class X13Document extends AbstractTsDocument<X13Spec, X13Results>{
-    
-     private final ModellingContext context;
-    
-    public X13Document(){
+public class X13Document extends AbstractTsDocument<X13Spec, X13Results> {
+
+    private final ModellingContext context;
+
+    public X13Document() {
         super(X13Spec.RSA4);
-        context=ModellingContext.getActiveContext();
+        context = ModellingContext.getActiveContext();
     }
-    
-   public X13Document(ModellingContext context){
+
+    public X13Document(ModellingContext context) {
         super(X13Spec.RSA4);
-        this.context=context;
+        this.context = context;
     }
-    
 
     @Override
     protected X13Results internalProcess(X13Spec spec, TsData data) {

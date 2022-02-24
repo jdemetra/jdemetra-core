@@ -21,17 +21,21 @@ import jdplus.sa.modelling.HasRegSarimaPreprocessing;
 import jdplus.x11.HasX11Decomposition;
 import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.information.GenericExplorable;
+import demetra.processing.HasLog;
+import demetra.processing.ProcessingLog;
 
 /**
  *
  * @author palatej
  */
 @lombok.Value
-public class X13Results implements GenericExplorable , HasRegSarimaPreprocessing, HasX11Decomposition{
+@lombok.Builder
+public class X13Results implements GenericExplorable , HasLog, HasRegSarimaPreprocessing, HasX11Decomposition{
 
     private RegSarimaModel preprocessing;
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;
     private X13Diagnostics diagnostics;
+    private ProcessingLog log;
 }
