@@ -20,7 +20,6 @@ import demetra.demo.ProviderDemo;
 import demetra.tsp.extra.sdmx.file.SdmxFileBean;
 import demetra.tsp.extra.sdmx.file.SdmxFileProvider;
 import demetra.tsprovider.DataSource;
-import sdmxdl.file.SdmxFileListener;
 import sdmxdl.file.SdmxFileManager;
 import sdmxdl.util.ext.MapCache;
 import tests.sdmxdl.xml.SdmxXmlSources;
@@ -72,7 +71,7 @@ final class SdmxFileDemo3 {
                 .ofServiceLoader()
                 .toBuilder()
                 .cache(MapCache.of())
-                .eventListener(SdmxFileListener.of((source, event) -> System.out.println("FILE: " + event)))
+                .eventListener((source, event) -> System.out.println("FILE: " + event))
                 .build();
     }
 }

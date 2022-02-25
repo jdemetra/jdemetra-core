@@ -128,8 +128,8 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
         return getTs(toMoniker(b.build()), type);
     }
 
-    private static String[] dimsInNaturalOrder(SdmxManager supplier, String source, DataflowRef flow) throws IOException {
-        try (SdmxConnection c = supplier.getConnection(source)) {
+    private static String[] dimsInNaturalOrder(SdmxWebManager supplier, String source, DataflowRef flow) throws IOException {
+        try (Connection c = supplier.getConnection(source)) {
             return c.getStructure(flow)
                     .getDimensions()
                     .stream()
@@ -143,7 +143,7 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
 
         DataflowRef flow = DataflowRef.parse(bean.getFlow());
 
-        SdmxConnection conn = properties.getSdmxManager().getConnection(bean.getSource());
+        Connection conn = properties.getSdmxManager().getConnection(bean.getSource());
         try {
             CubeConnection result = SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
             return BulkCubeConnection.of(result, bean.getCacheConfig(), IOCacheFactoryLoader.get());
