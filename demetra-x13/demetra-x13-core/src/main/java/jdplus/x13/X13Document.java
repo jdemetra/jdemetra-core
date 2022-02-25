@@ -16,18 +16,25 @@
  */
 package jdplus.x13;
 
+import demetra.processing.ProcDiagnostic;
+import demetra.processing.ProcQuality;
 import demetra.processing.ProcessingLog;
 import demetra.processing.ProcessingStatus;
+import demetra.sa.HasSaEstimation;
+import demetra.sa.SaEstimation;
+import demetra.sa.SaSpecification;
 import demetra.timeseries.AbstractTsDocument;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.X13Spec;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author PALATEJ
  */
-public class X13Document extends AbstractTsDocument<X13Spec, X13Results> {
+public class X13Document extends AbstractTsDocument<X13Spec, X13Results> implements HasSaEstimation {
 
     private final ModellingContext context;
 
@@ -46,4 +53,21 @@ public class X13Document extends AbstractTsDocument<X13Spec, X13Results> {
         return X13Kernel.of(spec, context).process(data, ProcessingLog.dummy());
     }
 
+    @Override
+    public SaEstimation getEstimation() {
+        if (getStatus() != ProcessingStatus.Valid) {
+            return null;
+        }
+        List<ProcDiagnostic> tests = new ArrayList<>();
+        X13Results result = getResult();
+        SaSpecification pspec = X13Factory.INSTANCE.generateSpec(getSpecification(), result);
+        ProcQuality quality = ProcDiagnostic.summary(tests);
+        return SaEstimation.builder()
+                .results(result)
+                .log(result.getLog())
+                .diagnostics(tests)
+                .quality(quality)
+                .pointSpec(pspec)
+                .build();
+    }
 }

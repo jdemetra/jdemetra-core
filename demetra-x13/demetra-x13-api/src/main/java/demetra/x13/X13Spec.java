@@ -186,6 +186,6 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
         return SMETHOD;
     }
 
-    private static final String SMETHOD = "TS";
+    private static final String SMETHOD = "X13";
 
 }
