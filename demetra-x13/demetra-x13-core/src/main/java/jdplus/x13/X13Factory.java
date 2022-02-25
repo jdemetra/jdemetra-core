@@ -109,6 +109,8 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     @Override
     public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, EstimationPolicyType policy, TsDomain frozen) {
+        if (policy == policy.None)
+            return currentSpec;
         RegArimaSpec nrspec = RegArimaFactory.INSTANCE.refreshSpec(currentSpec.getRegArima(), domainSpec.getRegArima(), policy, frozen);
         X11Spec x11 = currentSpec.getX11();
         if (nrspec.getTransform().getFunction() == TransformationType.Auto){

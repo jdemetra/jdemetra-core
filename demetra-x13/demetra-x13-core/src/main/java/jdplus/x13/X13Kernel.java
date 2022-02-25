@@ -97,6 +97,7 @@ public class X13Kernel {
                 .preprocessing(preprocessing)
                 .preadjustment(preadjustment)
                 .decomposition(xr)
+                .finals(finals)
                 .diagnostics(X13Diagnostics.of(preprocessing, preadjustment, xr, finals))
                 .log(log)
                 .build();

@@ -175,7 +175,7 @@ public final class SaItem {
     public SaItem refresh(EstimationPolicy policy, TsInformationType type) {
         TsData oldData = definition.getTs().getData();
         Ts nts = type != TsInformationType.None ? definition.getTs().unfreeze(TsFactory.getDefault(), type) : definition.getTs();
-        if (!isProcessed()) {
+        if (estimation == null) {
             SaSpecification dspec = definition.getDomainSpec();
             SaDefinition ndef = SaDefinition.builder()
                     .ts(nts)
