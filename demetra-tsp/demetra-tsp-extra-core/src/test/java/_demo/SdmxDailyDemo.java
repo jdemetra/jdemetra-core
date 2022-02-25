@@ -24,7 +24,6 @@ import demetra.tsp.extra.sdmx.web.SdmxWebProvider;
 import demetra.tsprovider.cube.BulkCube;
 import sdmxdl.Key;
 import sdmxdl.util.ext.MapCache;
-import sdmxdl.web.SdmxWebListener;
 import sdmxdl.web.SdmxWebManager;
 
 import java.io.IOException;
@@ -57,7 +56,7 @@ final class SdmxDailyDemo {
                 .ofServiceLoader()
                 .toBuilder()
                 .cache(MapCache.of())
-                .eventListener(SdmxWebListener.of((source, event) -> System.out.println("WEB: " + event)))
+                .eventListener((source, event) -> System.out.println("WEB: " + event))
                 .build();
     }
 }

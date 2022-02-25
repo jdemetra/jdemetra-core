@@ -44,14 +44,14 @@ import java.util.stream.Stream;
 @lombok.RequiredArgsConstructor
 public final class SdmxCubeConnection implements CubeConnection {
 
-    public static SdmxCubeConnection of(SdmxConnection connection, DataflowRef ref, List<String> dimensions, String labelAttribute, String sourceLabel) throws IOException {
+    public static SdmxCubeConnection of(Connection connection, DataflowRef ref, List<String> dimensions, String labelAttribute, String sourceLabel) throws IOException {
         Dataflow flow = connection.getFlow(ref);
         DataStructure dsd = connection.getStructure(ref);
         CubeId root = getOrLoadRoot(dimensions, dsd);
         return new SdmxCubeConnection(connection, flow, dsd, root, labelAttribute, sourceLabel);
     }
 
-    private final SdmxConnection connection;
+    private final Connection connection;
     private final Dataflow flow;
     private final DataStructure dsd;
     private final CubeId root;
@@ -60,7 +60,12 @@ public final class SdmxCubeConnection implements CubeConnection {
 
     @Override
     public Optional<IOException> testConnection() {
-        return Optional.empty();
+        try {
+            connection.testConnection();
+            return Optional.empty();
+        } catch (IOException ex) {
+            return Optional.of(ex);
+        }
     }
 
     @Override

@@ -20,14 +20,13 @@ import demetra.demo.ProviderDemo;
 import demetra.tsp.extra.sdmx.web.SdmxWebBean;
 import demetra.tsp.extra.sdmx.web.SdmxWebProvider;
 import demetra.tsprovider.DataSource;
+import sdmxdl.Feature;
 import sdmxdl.web.SdmxWebManager;
-import sdmxdl.web.SdmxWebSource;
-import sdmxdl.web.spi.SdmxWebDriver;
 import tests.sdmxdl.api.RepoSamples;
-import tests.sdmxdl.web.MockedWebDriver;
+import tests.sdmxdl.web.MockedDriver;
 
 import java.io.IOException;
-import java.net.URI;
+import java.util.EnumSet;
 
 /**
  * @author Philippe Charles
@@ -61,21 +60,11 @@ final class SdmxFakeWebDemo {
     }
 
     private static SdmxWebManager getCustomManager() {
-        SdmxWebSource source = SdmxWebSource
-                .builder()
-                .name(RepoSamples.REPO.getName())
-                .driver("demo")
-                .endpoint(URI.create("MockedWebDriver:/" + RepoSamples.REPO.getName()))
-                .build();
         return SdmxWebManager
                 .builder()
-                .driver(MockedWebDriver
+                .driver(MockedDriver
                         .builder()
-                        .name("demo")
-                        .rank(SdmxWebDriver.UNKNOWN)
-                        .available(true)
-                        .repo(source.getEndpoint(), RepoSamples.REPO)
-                        .source(source)
+                        .repo(RepoSamples.REPO, EnumSet.allOf(Feature.class))
                         .build())
                 .build();
     }

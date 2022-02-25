@@ -29,8 +29,8 @@ import internal.tsp.extra.sdmx.SdmxCubeItems;
 import internal.tsp.extra.sdmx.SdmxPropertiesSupport;
 import nbbrd.io.Resource;
 import nbbrd.service.ServiceProvider;
+import sdmxdl.Connection;
 import sdmxdl.DataflowRef;
-import sdmxdl.SdmxConnection;
 import sdmxdl.file.SdmxFileManager;
 import sdmxdl.file.SdmxFileSource;
 
@@ -121,7 +121,7 @@ public final class SdmxFileProvider implements FileLoader<SdmxFileBean>, HasSdmx
 
         DataflowRef flow = files.asDataflowRef();
 
-        SdmxConnection conn = properties.getSdmxManager().getConnection(files);
+        Connection conn = properties.getSdmxManager().getConnection(files);
         try {
             return SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), getSourceLabel(bean));
         } catch (IOException ex) {
