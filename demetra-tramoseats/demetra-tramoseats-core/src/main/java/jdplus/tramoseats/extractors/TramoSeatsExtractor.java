@@ -34,6 +34,9 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
     public TramoSeatsExtractor() {
         set(SaDictionaries.MODE, DecompositionMode.class, source -> source.getFinals().getMode());
 
+        set(SaDictionaries.SEASONAL, Integer.class, source -> source.getDecomposition().getInitialComponents()
+                .getSeries(ComponentType.Seasonal, ComponentInformation.Value)
+                .getValues().allMatch(x->x == 0) ? 1 : 0);
         set(ModellingDictionary.Y, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
 //        set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source

@@ -68,7 +68,7 @@ public final class SaDictionaries {
     /**
      * Decomposition mode of the series
      */
-    public final String MODE = "mode";
+    public final String MODE = "mode", SEASONAL="seasonal";
 
     public final String Y_CMP = "y_cmp", Y_CMP_F = "y_cmp_f", Y_CMP_B = "y_cmp_b",
             T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
@@ -137,6 +137,7 @@ public final class SaDictionaries {
     public final Dictionary SADECOMPOSITION = AtomicDictionary.builder()
             .name("sadecomposition")
             .item(Item.builder().name(MODE).description("decomposition mode").outputClass(String.class).build())
+            .item(Item.builder().name(SEASONAL).description("has a seasonal component").outputClass(Integer.class).build())
 //            .item(Item.builder().name(Y).description("series").outputClass(TsData.class).build())
             .item(Item.builder().name(SA).description("seasonal adjusted").outputClass(TsData.class).build())
             .item(Item.builder().name(T).description("trend").outputClass(TsData.class).build())

@@ -38,9 +38,9 @@ import java.util.List;
 @lombok.experimental.UtilityClass
 public class TableFormatter {
 
-    private HashMap<Class, InformationFormatter> DICTIONARY = new HashMap<>();
+    private final HashMap<Class, InformationFormatter> DICTIONARY = new HashMap<>();
 
-    {
+    static{
         DICTIONARY.put(double.class, new DoubleFormatter());
         DICTIONARY.put(int.class, new IntegerFormatter());
         DICTIONARY.put(long.class, new LongFormatter());
