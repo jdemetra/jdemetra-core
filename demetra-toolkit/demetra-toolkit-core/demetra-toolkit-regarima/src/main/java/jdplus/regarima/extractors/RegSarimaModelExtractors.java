@@ -31,6 +31,7 @@ import demetra.toolkit.dictionaries.ArimaDictionaries;
 import demetra.toolkit.dictionaries.Dictionary;
 import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
+import demetra.toolkit.dictionaries.ResidualsDictionaries;
 import demetra.toolkit.dictionaries.UtilityDictionaries;
 import jdplus.dstats.T;
 import jdplus.modelling.GeneralLinearModel;
@@ -58,6 +59,10 @@ public class RegSarimaModelExtractors {
 
         private String regressionItem(String key) {
             return Dictionary.concatenate(RegArimaDictionaries.REGRESSION, key);
+        }
+
+        private String residualsItem(String key) {
+            return Dictionary.concatenate(RegArimaDictionaries.RESIDUALS, key);
         }
 
         private String advancedItem(String key) {
@@ -384,6 +389,18 @@ public class RegSarimaModelExtractors {
                 diag.set(1);
                 return cov;
             });
+            
+            set(residualsItem(ResidualsDictionaries.SER), Double.class, (RegSarimaModel source)->{
+                LikelihoodStatistics stats = source.getEstimation().getStatistics();
+                double ssqErr = stats.getSsqErr();
+                int ndf=stats.getEffectiveObservationsCount()-stats.getEstimatedParametersCount()-1;
+                return Math.sqrt(ssqErr/ndf);
+            });
+            set(residualsItem(ResidualsDictionaries.RES), double[].class, (RegSarimaModel source)->{
+                RegSarimaModel.Details details = source.getDetails();
+                return details.getIndependentResiduals().toArray();
+            });
+            set(residualsItem(ResidualsDictionaries.TSRES), TsData.class, (RegSarimaModel source)->source.fullResiduals());
         }
 
         @Override
