@@ -5,7 +5,7 @@
  */
 package jdplus.tramoseats.extractors;
 
-import nbbrd.design.Development;
+import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.modelling.ComponentInformation;
 import demetra.modelling.ModellingDictionary;
@@ -14,11 +14,11 @@ import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
-import jdplus.tramoseats.TramoSeatsResults;
-import demetra.information.InformationExtractor;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.seats.SeatsResults;
 import jdplus.tramoseats.TramoSeatsDiagnostics;
+import jdplus.tramoseats.TramoSeatsResults;
+import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -34,9 +34,16 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
     public TramoSeatsExtractor() {
         set(SaDictionaries.MODE, DecompositionMode.class, source -> source.getFinals().getMode());
 
-        set(SaDictionaries.SEASONAL, Integer.class, source -> source.getDecomposition().getInitialComponents()
-                .getSeries(ComponentType.Seasonal, ComponentInformation.Value)
-                .getValues().allMatch(x->x == 0) ? 1 : 0);
+        set(SaDictionaries.SEASONAL, Integer.class, source -> {
+            TsData s = source.getDecomposition().getInitialComponents()
+                    .getSeries(ComponentType.Seasonal, ComponentInformation.Value);
+            if (s == null) {
+                return 0;
+            } else {
+                return s.getValues().allMatch(x -> x == 0) ? 0 : 1;
+            }
+        }
+        );
         set(ModellingDictionary.Y, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
 //        set(ModellingDictionary.Y + SeriesInfo.F_SUFFIX, TsData.class, source
