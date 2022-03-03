@@ -393,7 +393,7 @@ public class RegSarimaModelExtractors {
             set(residualsItem(ResidualsDictionaries.SER), Double.class, (RegSarimaModel source)->{
                 LikelihoodStatistics stats = source.getEstimation().getStatistics();
                 double ssqErr = stats.getSsqErr();
-                int ndf=stats.getEffectiveObservationsCount()-stats.getEstimatedParametersCount()-1;
+                int ndf=stats.getEffectiveObservationsCount()-stats.getEstimatedParametersCount()-source.freeArimaParametersCount();
                 return Math.sqrt(ssqErr/ndf);
             });
             set(residualsItem(ResidualsDictionaries.RES), double[].class, (RegSarimaModel source)->{

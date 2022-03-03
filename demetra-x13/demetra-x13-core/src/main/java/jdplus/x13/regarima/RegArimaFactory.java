@@ -139,6 +139,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         update(regression.getTradingDays(), variables, rbuilder);
         update(regression.getEaster(), variables, rbuilder);
         updateOutliers(variables, rbuilder);
+        updateUserVariables(variables, rbuilder);
         builder.regression(rbuilder.build());
     }
 
@@ -152,26 +153,11 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         }
     }
 
-    private void updateOutliers(Variable[] vars, RegressionSpec.Builder builder) {
-        // we keep the information that it has been previously estimated automatically
-        Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isOutlier(v))
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
-                .forEach(v -> builder.outlier(v.removeAttribute(ModellingUtility.AMI)));
-//                .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "tramo")));
-    }
-
     private void update(TradingDaysSpec tdspec, Variable[] vars, RegressionSpec.Builder builder) {
-        // Nothing to do
-        if (!tdspec.isUsed() || tdspec.getRegressionTestType() == RegressionTestSpec.None) {
-            return;
-        }
         // leap year
         Optional<Variable> flp = Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .filter(v -> ModellingUtility.isLengthOfPeriod(v)).findFirst();
         Optional<Variable> ftd = Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .filter(v -> ModellingUtility.isTradingDays(v)).findFirst();
 
         TradingDaysSpec ntdspec = TradingDaysSpec.none();
@@ -208,13 +194,8 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
     }
 
     private void update(EasterSpec espec, Variable[] vars, RegressionSpec.Builder builder) {
-        // Nothing to do
-        if (!espec.isUsed() || (!espec.isAutomatic() && espec.getTest() == RegressionTestSpec.None)) {
-            return;
-        }
         // Search for an optional easter variable
         Optional<Variable> fe = Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .filter(v -> ModellingUtility.isEaster(v)).findFirst();
         if (fe.isPresent()) {
             Variable ev = fe.get();
@@ -229,6 +210,31 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
             espec = EasterSpec.none();
         }
         builder.easter(espec);
+    }
+
+    private void updateOutliers(Variable[] vars, RegressionSpec.Builder builder) {
+        builder.clearOutliers();
+        Arrays.stream(vars)
+                .filter(v -> ModellingUtility.isOutlier(v))
+                .forEach(v -> builder.outlier(v.removeAttribute(ModellingUtility.AMI)));
+    }
+
+    private void updateUserVariables(Variable[] vars, RegressionSpec.Builder builder) {
+        
+        builder.clearInterventionVariables();
+        Arrays.stream(vars)
+                .filter(v -> v.getCore() instanceof InterventionVariable )
+                .forEach(v -> builder.interventionVariable(v));
+        builder.clearRamps();
+        Arrays.stream(vars)
+                .filter(v -> v.getCore() instanceof Ramp )
+                .forEach(v -> builder.ramp(v));
+        builder.clearUserDefinedVariables();
+        Arrays.stream(vars)
+                .filter(v->ModellingUtility.isUser(v))
+                .filter(v -> !( v.getCore() instanceof InterventionVariable))
+                .filter(v -> !(v.getCore() instanceof Ramp))
+                .forEach(v -> builder.interventionVariable(v));
     }
 
     private void resetArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {

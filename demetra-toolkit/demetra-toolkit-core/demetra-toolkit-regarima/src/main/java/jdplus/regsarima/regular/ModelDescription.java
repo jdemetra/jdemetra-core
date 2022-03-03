@@ -627,6 +627,11 @@ public final class ModelDescription {
                 p[j] = P[i].getValue();
                 b[j] = P[i].isFixed();
             }
+            P = arima.getBphi();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
             P = arima.getTheta();
             for (int i = 0; i < P.length; ++i, ++j) {
                 p[j] = P[i].getValue();

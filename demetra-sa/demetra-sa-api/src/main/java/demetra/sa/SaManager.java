@@ -84,6 +84,26 @@ public class SaManager {
         return null;
     }
 
+    public SaEstimation resetQuality(SaEstimation estimation) {
+        Explorable rslt = estimation.getResults();
+        if (rslt == null) {
+            return estimation.withQuality(ProcQuality.Undefined);
+        }
+        List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
+        SaSpecification spec = estimation.getPointSpec();
+        for (SaProcessingFactory fac : all) {
+            SaSpecification dspec = fac.decode(spec);
+            if (dspec != null) {
+                SaProcessor processor = fac.processor(dspec);
+                List<ProcDiagnostic> tests = new ArrayList<>();
+                fac.fillDiagnostics(tests, rslt);
+                SaSpecification pspec = fac.generateSpec(spec, rslt);
+                return estimation.withQuality(ProcDiagnostic.summary(tests));
+            }
+        }
+        return estimation.withQuality(ProcQuality.Undefined);
+    }
+
     public <I extends SaSpecification> SaProcessingFactory factoryFor(SaSpecification spec) {
         List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
         return all.stream().filter(p -> p.canHandle(spec)).findFirst().get();

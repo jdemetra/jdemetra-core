@@ -100,6 +100,14 @@ public final class SaItem {
         }
     }
 
+    public void resetQuality() {
+        synchronized (this) {
+            if (estimation == null) {
+                return;
+            }
+            estimation = SaManager.resetQuality(estimation);
+        }
+    }
     /**
      * Process this item.The Processing is always executed, even if the item has
      * already been estimated. To avoid re-estimation, use getEstimation (which
@@ -181,6 +189,7 @@ public final class SaItem {
                     .ts(nts)
                     .domainSpec(dspec)
                     .estimationSpec(definition.activeSpecification())
+                    .policy(policy.getPolicy())
                     .build();
             return new SaItem(name, ndef, meta, comment, priority, estimation);
         } else {
@@ -206,6 +215,7 @@ public final class SaItem {
                     .ts(nts)
                     .domainSpec(dspec)
                     .estimationSpec(espec)
+                    .policy(policy.getPolicy())
                     .build();
             return new SaItem(name, ndef, meta, comment, priority, null);
         }
