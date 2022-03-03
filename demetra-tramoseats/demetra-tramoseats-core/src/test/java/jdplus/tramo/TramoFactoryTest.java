@@ -6,13 +6,11 @@
 package jdplus.tramo;
 
 import demetra.data.Data;
-import demetra.sa.EstimationPolicy;
 import demetra.sa.EstimationPolicyType;
-import demetra.timeseries.TsDomain;
 import demetra.tramo.TramoSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -27,7 +25,7 @@ public class TramoFactoryTest {
     public void testRefreshPolicy() {
         TramoKernel kernel = TramoKernel.of(TramoSpec.TRfull, null);
         RegSarimaModel rslt = kernel.process(Data.TS_PROD, null);
-        TramoSpec pspec = TramoFactory.INSTANCE.generateSpec(TramoSpec.TR0, rslt.getDescription());
+        TramoSpec pspec = TramoFactory.INSTANCE.generateSpec(TramoSpec.TRfull, rslt.getDescription());
         TramoSpec nspec = TramoFactory.INSTANCE.refreshSpec(pspec, TramoSpec.TRfull, EstimationPolicyType.Current, null);
         assertTrue(nspec != null);
         RegSarimaModel tmp = TramoKernel.of(nspec, null).process(Data.TS_PROD, null);
