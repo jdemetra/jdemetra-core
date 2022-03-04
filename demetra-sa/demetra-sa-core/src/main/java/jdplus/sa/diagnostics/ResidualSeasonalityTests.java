@@ -163,10 +163,10 @@ public class ResidualSeasonalityTests {
                     for (int i = 0; i < sp.length; ++i) {
                         SpectralPeaks.AR ar = SpectralPeaks.AR.none;
                         SpectralPeaks.Tukey tu = SpectralPeaks.Tukey.none;
-                        if (a != null) {
+                        if (a != null && a.length > i ) {
                             ar = SpectralPeaks.AR.fromInt(a[i]);
                         }
-                        if (t != null) {
+                        if (t != null && t.length > i) {
                             tu = SpectralPeaks.Tukey.fromInt(t[i]);
                         }
                         sp[i] = new SpectralPeaks(ar, tu);
