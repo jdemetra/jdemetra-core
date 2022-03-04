@@ -147,6 +147,8 @@ public class SpectralPeaks {
                 return hasMonthlyPeaks(peaks);
             case 2:
                 return hasQuarterlyPeaks(peaks);
+            case 1:
+                return hasHalfYearlyPreaks(peaks);   
             default:
                 return false;
         }
@@ -164,6 +166,8 @@ public class SpectralPeaks {
                 return hasHighMonthlyPeaks(peaks);
             case 2:
                 return hasHighQuarterlyPeaks(peaks);
+            case 1:
+                return hasHighHalfYearlyPreaks(peaks);
             default:
                 return false;
         }
@@ -264,6 +268,15 @@ public class SpectralPeaks {
         }
         return n == 2;
     }
+    
+    private static boolean hasHalfYearlyPreaks(SpectralPeaks[] peaks) {
+        return peaks[0].hasPeak();
+    }
+
+    private static boolean hasHighHalfYearlyPreaks(SpectralPeaks[] peaks) {
+        return peaks[0].hasHighPeak();
+    }
+    
     
     public static String format(SpectralPeaks[] peaks){
         StringBuilder builder=new StringBuilder();
