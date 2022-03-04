@@ -14,32 +14,37 @@ import jdplus.msts.ParameterInterpreter;
 import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
+import jdplus.ssf.implementations.Coefficients;
+import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.implementations.VarNoise;
 
 /**
  *
  * @author palatej
  */
-public class VarNoiseItem extends StateItem {
+public class VarRegressionItem extends StateItem {
 
+    public final DoubleSeq x;
     private final ScaleInterpreter scale;
-    private final double[] std;
+    private final DoubleSeq std;
 
-    public VarNoiseItem(String name, double[] std, double scale, boolean fixed) {
+    public VarRegressionItem(String name, double[] x, double[] std, double scale, boolean fixed) {
         super(name);
+        this.x = DoubleSeq.of(x);
         this.scale = new ScaleInterpreter(name + ".scale", scale, fixed, true);
-        this.std=std;
+        this.std = DoubleSeq.of(std);
     }
-    
-    private VarNoiseItem(VarNoiseItem item){
+
+    private VarRegressionItem(VarRegressionItem item) {
         super(item.name);
-        scale=item.scale.duplicate();
-        this.std=item.std;
+        this.x = item.x;
+        this.scale = item.scale.duplicate();
+        this.std = item.std;
     }
-    
+
     @Override
-    public VarNoiseItem duplicate(){
-        return new VarNoiseItem(this);
+    public VarRegressionItem duplicate() {
+        return new VarRegressionItem(this);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class VarNoiseItem extends StateItem {
         mapping.add(scale);
         mapping.add((p, builder) -> {
             double e = p.get(0);
-            StateComponent cmp = VarNoise.of(std, e);
+            StateComponent cmp = Coefficients.timeVaryingCoefficient(std, e);
             builder.add(name, cmp, VarNoise.defaultLoading());
             return 1;
         });
@@ -60,8 +65,8 @@ public class VarNoiseItem extends StateItem {
 
     @Override
     public StateComponent build(DoubleSeq p) {
-            double e = p.get(0);
-            return VarNoise.of(std, e);
+        double e = p.get(0);
+        return Coefficients.timeVaryingCoefficient(std, e);
     }
 
     @Override
@@ -74,7 +79,7 @@ public class VarNoiseItem extends StateItem {
         if (m > 0) {
             return null;
         } else {
-            return VarNoise.defaultLoading();
+            return Loading.regression(x);
         }
     }
 
@@ -84,13 +89,13 @@ public class VarNoiseItem extends StateItem {
     }
 
     @Override
-    public int stateDim(){
+    public int stateDim() {
         return 1;
     }
-    
+
     @Override
-    public boolean isScalable(){
-        return ! scale.isFixed();
+    public boolean isScalable() {
+        return !scale.isFixed();
     }
 
 }

@@ -24,6 +24,7 @@ import jdplus.math.matrices.FastMatrix;
 
 /**
  * Dynamics for time varying coefficients
+ *
  * @author Jean Palate
  */
 public class TimeVaryingDynamics {
@@ -40,15 +41,25 @@ public class TimeVaryingDynamics {
         return new TimeVaryingFull(var);
     }
 
-        static class TimeVaryingCDiag implements ISsfDynamics {
+    /**
+     * Time varying coefficient with time varying standard error
+     * @param stde Standard deviations of the coefficient (1 outside the range defined by the array)
+     * @param scale scaling factor
+     * @return 
+     */
+    public static ISsfDynamics of(DoubleSeq stde, double scale) {
+        return new TimeVaryingInnovations(stde, scale);
+    }
+
+    static class TimeVaryingCDiag implements ISsfDynamics {
 
         private final int n;
         private final double var, std;
 
         TimeVaryingCDiag(final int n, final double var) {
-            this.n=n;
+            this.n = n;
             this.var = var;
-            this.std =Math.sqrt(var);
+            this.std = Math.sqrt(var);
         }
 
         @Override
@@ -121,7 +132,6 @@ public class TimeVaryingDynamics {
         }
     }
 
-    
     static class TimeVaryingDiag implements ISsfDynamics {
 
         private final DataBlock var, std;
@@ -232,6 +242,7 @@ public class TimeVaryingDynamics {
         public boolean areInnovationsTimeInvariant() {
             return true;
         }
+
         @Override
         public int getInnovationsDim() {
             return var.getColumnsCount();
@@ -282,6 +293,88 @@ public class TimeVaryingDynamics {
         @Override
         public void addV(int pos, FastMatrix p) {
             p.add(var);
+        }
+    }
+
+    static class TimeVaryingInnovations implements ISsfDynamics {
+
+        private final double[] std;
+        private final double scale, scale2;
+
+        TimeVaryingInnovations(final DoubleSeq stde, double scale) {
+            this.std = stde.toArray();
+            this.scale = scale;
+            this.scale2 = scale * scale;
+        }
+
+        double stderr(int pos) {
+            return pos > std.length ? scale : scale * std[pos];
+        }
+
+        double var(int pos) {
+            return pos > std.length ? scale2 : scale2 * std[pos] * std[pos];
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
+        @Override
+        public boolean areInnovationsTimeInvariant() {
+            return false;
+        }
+
+        @Override
+        public int getInnovationsDim() {
+            return 1;
+        }
+
+        @Override
+        public void V(int pos, FastMatrix qm) {
+            qm.set(0, 0, var(pos));
+        }
+
+        @Override
+        public boolean hasInnovations(int pos) {
+            return true;
+        }
+
+        @Override
+        public void S(int pos, FastMatrix sm) {
+            sm.set(0, 0, stderr(pos));
+        }
+
+        @Override
+        public void addSU(int pos, DataBlock x, DataBlock u) {
+            x.add(stderr(pos) * u.get(0));
+        }
+
+        @Override
+        public void XS(int pos, DataBlock x, DataBlock xs) {
+            xs.set(x.get(0) * stderr(pos));
+        }
+
+        @Override
+        public void T(int pos, FastMatrix tr) {
+            tr.diagonal().set(1);
+        }
+
+        @Override
+        public void TX(int pos, DataBlock x) {
+        }
+
+        @Override
+        public void XT(int pos, DataBlock x) {
+        }
+
+        @Override
+        public void TVT(int pos, FastMatrix v) {
+        }
+
+        @Override
+        public void addV(int pos, FastMatrix p) {
+            p.add(var(pos));
         }
     }
 }
