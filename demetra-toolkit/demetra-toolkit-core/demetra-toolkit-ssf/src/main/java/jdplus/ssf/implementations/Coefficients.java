@@ -32,6 +32,10 @@ public class Coefficients {
         }
     }
 
+    public StateComponent timeVaryingCoefficient(DoubleSeq std, double scale) {
+        return new StateComponent(new ConstantInitialization(1), TimeVaryingDynamics.of(std, scale));
+     }
+
     /**
      * Coefficients which follow a multivariate random walk
      * @param vars The covariance of the innovations. The number of coefficients is

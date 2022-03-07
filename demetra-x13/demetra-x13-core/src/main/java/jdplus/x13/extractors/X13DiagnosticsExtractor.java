@@ -20,6 +20,7 @@ import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.sa.SaDictionaries;
 import demetra.sa.StationaryVarianceDecomposition;
+import demetra.x13.X13Dictionaries;
 import jdplus.sa.diagnostics.GenericSaTests;
 import jdplus.x13.Mstatistics;
 import jdplus.x13.X13Diagnostics;
@@ -34,14 +35,13 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class X13DiagnosticsExtractor extends InformationMapping<X13Diagnostics> {
 
-    public static final String MSTATISTICS = "m-statistics";
 
     public X13DiagnosticsExtractor() {
-        delegate("diagnostics", GenericSaTests.class, source -> source.getGenericDiagnostics());
+        delegate(SaDictionaries.DIAGNOSTICS, GenericSaTests.class, source -> source.getGenericDiagnostics());
         
         delegate(SaDictionaries.VARIANCE, StationaryVarianceDecomposition.class, source -> source.getVarianceDecomposition());
         
-        delegate(MSTATISTICS, Mstatistics.class, source -> source.getMstatistics());
+        delegate(X13Dictionaries.MSTATISTICS, Mstatistics.class, source -> source.getMstatistics());
     }
 
     @Override

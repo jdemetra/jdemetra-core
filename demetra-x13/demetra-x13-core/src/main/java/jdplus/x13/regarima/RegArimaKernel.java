@@ -25,7 +25,7 @@ import demetra.regarima.RegArimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.IAutoModellingModule;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.IModelBuilder;

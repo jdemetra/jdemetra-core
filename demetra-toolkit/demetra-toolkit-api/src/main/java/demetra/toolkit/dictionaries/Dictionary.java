@@ -12,6 +12,23 @@ import lombok.NonNull;
  * @author PALATEJ
  */
 public interface Dictionary {
+    
+    public enum EntryType{
+        Normal,
+        Parametric,
+        Array
+    }
+    
+     public static String fullName(String name, EntryType type){
+            switch (type){
+                case Parametric:
+                    return name+"(?)";
+                case Array:
+                    return name+"(*)";
+                default: return name;
+            }
+        }
+
 
     interface Entry {
 
@@ -19,9 +36,23 @@ public interface Dictionary {
 
         String getDescription();
 
-        Class getType();
-
-        boolean isList();
+        Class getOutputClass();
+        
+        EntryType getType();
+        
+        default String fullName(){
+            return Dictionary.fullName(getName(), getType());
+        }
+        
+        default String display(){
+            return new StringBuilder()
+                    .append(fullName())
+                    .append('\t')
+                    .append(getDescription())
+                    .append('\t')
+                    .append(getOutputClass().getCanonicalName())
+                    .toString();
+        }
     }
 
     Stream<? extends Entry> entries();
@@ -37,7 +68,7 @@ public interface Dictionary {
                 .map(item -> item.getName());
     }
 
-    public static String concat(@NonNull String... st) {
+    public static String concatenate(@NonNull String... st) {
         if (st.length == 1) {
             return st[0];
         }

@@ -30,7 +30,7 @@ import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
+ * Basic information extractor for a given type
  * @param <S>
  * @since 2.2.0
  * @author Jean Palate

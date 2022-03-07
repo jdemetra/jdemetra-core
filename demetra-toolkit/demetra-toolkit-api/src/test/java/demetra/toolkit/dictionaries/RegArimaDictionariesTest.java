@@ -17,15 +17,7 @@ public class RegArimaDictionariesTest {
     }
 
     public static void regsarima() {
-       RegArimaDictionaries.REGSARIMA.entries().forEach(entry
-                -> {
-            System.out.print(entry.getName());
-            System.out.print('\t');
-            System.out.print(entry.getDescription());
-            System.out.print('\t');
-            System.out.println(entry.getType().getCanonicalName());
-        }
-        );
+       RegArimaDictionaries.REGSARIMA.entries().forEach(entry-> System.out.println(entry.display()));
     }
     
     public static void main(String[] arg){

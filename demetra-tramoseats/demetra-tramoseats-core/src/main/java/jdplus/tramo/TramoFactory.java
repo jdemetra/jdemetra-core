@@ -33,7 +33,7 @@ import demetra.timeseries.regression.TsContextVariable;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.modelling.GeneralLinearModel;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 
 /**
  *
@@ -133,13 +133,14 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     }
 
     private void update(RegressionSpec regression, GeneralLinearModel.Description<SarimaSpec> rslts, TramoSpec.Builder builder) {
-        // The huge part
+        // The huge part. 
         RegressionSpec.Builder rbuilder = regression.toBuilder();
         // all the coefficients (fixed or free) of the variables have already been filled
         Variable[] variables = rslts.getVariables();
         updateMean(variables, rbuilder);
         update(regression.getCalendar(), variables, rbuilder);
         updateOutliers(variables, rbuilder);
+        updateUserVariables(variables, rbuilder);
         builder.regression(rbuilder.build());
     }
 
@@ -154,13 +155,29 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     }
 
     private void updateOutliers(Variable[] vars, RegressionSpec.Builder builder) {
-        // we keep the information that it has been previously estimated automatically
+        builder.clearOutliers();
         Arrays.stream(vars)
                 .filter(v -> ModellingUtility.isOutlier(v))
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .forEach(v -> builder.outlier(v.removeAttribute(ModellingUtility.AMI)));
-//                .forEach(v -> builder.outlier(v.replaceAttribute(ModellingUtility.AMI, ModellingUtility.AMI_PREVIOUS, "tramo")));
-   }
+    }
+
+    private void updateUserVariables(Variable[] vars, RegressionSpec.Builder builder) {
+        
+        builder.clearInterventionVariables();
+        Arrays.stream(vars)
+                .filter(v -> v.getCore() instanceof InterventionVariable )
+                .forEach(v -> builder.interventionVariable(v));
+        builder.clearRamps();
+        Arrays.stream(vars)
+                .filter(v -> v.getCore() instanceof Ramp )
+                .forEach(v -> builder.ramp(v));
+        builder.clearUserDefinedVariables();
+        Arrays.stream(vars)
+                .filter(v->ModellingUtility.isUser(v))
+                .filter(v -> !( v.getCore() instanceof InterventionVariable))
+                .filter(v -> !(v.getCore() instanceof Ramp))
+                .forEach(v -> builder.interventionVariable(v));
+    }
 
     private void update(CalendarSpec cspec, Variable[] variables, RegressionSpec.Builder builder) {
         CalendarSpec.Builder cbuilder = CalendarSpec.builder();
@@ -170,16 +187,10 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     }
 
     private void update(TradingDaysSpec tdspec, Variable[] vars, CalendarSpec.Builder builder) {
-        // Nothing to do
-        if (!tdspec.isUsed() || !(tdspec.isTest() || tdspec.isAutomatic())) {
-            return;
-        }
         // leap year
         Optional<Variable> flp = Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .filter(v -> ModellingUtility.isLengthOfPeriod(v)).findFirst();
         Optional<Variable> ftd = Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .filter(v -> ModellingUtility.isTradingDays(v)).findFirst();
 
         TradingDaysSpec ntdspec = TradingDaysSpec.none();
@@ -227,13 +238,8 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     }
 
     private void update(EasterSpec espec, Variable[] vars, CalendarSpec.Builder builder) {
-        // Nothing to do
-        if (!espec.isUsed() || !espec.isTest()) {
-            return;
-        }
         // Search for an optional easter variable
         Optional<Variable> fe = Arrays.stream(vars)
-                .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
                 .filter(v -> ModellingUtility.isEaster(v)).findFirst();
         if (fe.isPresent()) {
             Variable ev = fe.get();

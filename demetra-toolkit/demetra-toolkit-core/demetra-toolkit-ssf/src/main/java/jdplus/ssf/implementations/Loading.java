@@ -16,6 +16,7 @@
  */
 package jdplus.ssf.implementations;
 
+import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
@@ -114,8 +115,13 @@ public class Loading {
     public static ISsfLoading periodic(final int period, final int start) {
         return new PeriodicLoading(period, start);
     }
+
     public static ISsfLoading regression(final FastMatrix X) {
         return new RegressionLoading(X);
+    }
+
+    public static ISsfLoading regression(final DoubleSeq x) {
+        return new SingleRegressionLoading(x);
     }
 
     public static ISsfLoading rescale(ISsfLoading loading, double s) {
@@ -125,11 +131,11 @@ public class Loading {
             return new MLoading(loading, s);
         }
     }
-    
+
     public static ISsfLoading rescale(ISsfLoading loading, double[] s) {
         if (s.length == 1) {
             return rescale(loading, s[0]);
-        }else{
+        } else {
             return new ALoading(loading, s);
         }
     }
@@ -170,6 +176,54 @@ public class Loading {
         @Override
         public void XpZd(int pos, DataBlock x, double d) {
             x.addAY(d, data.row(pos));
+        }
+
+    }
+
+    private static class SingleRegressionLoading implements ISsfLoading {
+
+        private final double[] data;
+
+        private SingleRegressionLoading(final DoubleSeq data) {
+            this.data = data.toArray();
+        }
+
+        @Override
+        public boolean isTimeInvariant() {
+            return false;
+        }
+
+        double reg(int pos) {
+            return pos < data.length ? data[pos] : 0;
+        }
+
+        double reg2(int pos) {
+            return pos < data.length ? data[pos]*data[pos] : 0;
+        }
+
+        @Override
+        public void Z(int pos, DataBlock z) {
+            z.set(0, reg(pos));
+        }
+
+        @Override
+        public double ZX(int pos, DataBlock x) {
+            return x.get(0)*reg(pos);
+        }
+
+        @Override
+        public double ZVZ(int pos, FastMatrix V) {
+            return V.get(0, 0)*reg2(pos);
+        }
+
+        @Override
+        public void VpZdZ(int pos, FastMatrix V, double d) {
+            V.add(0,0,d*reg2(pos));
+        }
+
+        @Override
+        public void XpZd(int pos, DataBlock x, double d) {
+            x.add(0, d*reg(pos));
         }
 
     }
@@ -242,13 +296,14 @@ public class Loading {
 
         @Override
         public double ZVZ(int pos, FastMatrix V) {
-            return V.extract(0,cdim, 0,cdim).sum();
+            return V.extract(0, cdim, 0, cdim).sum();
         }
 
         @Override
         public void VpZdZ(int pos, FastMatrix V, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             V.extract(0, cdim, 0, cdim).add(d);
         }
 
@@ -270,8 +325,8 @@ public class Loading {
     }
 
     private static class Loading1 implements ISsfLoading {
-        
-        static Loading1 L0=new Loading1(0);
+
+        static Loading1 L0 = new Loading1(0);
 
         private final int mpos;
 
@@ -296,8 +351,9 @@ public class Loading {
 
         @Override
         public void VpZdZ(int pos, FastMatrix V, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             V.add(mpos, mpos, d);
         }
 
@@ -347,8 +403,9 @@ public class Loading {
 
         @Override
         public void VpZdZ(int pos, FastMatrix V, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             V.add(mpos, mpos, d * b2);
         }
 
@@ -770,8 +827,9 @@ public class Loading {
 
         @Override
         public void VpZdZ(int pos, FastMatrix V, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             loading.VpZdZ(pos, V, d * s2);
         }
 
@@ -796,14 +854,14 @@ public class Loading {
             this.loading = loading;
             this.s = s;
         }
-        
-        private double l(int pos){
-            return pos < s.length? s[pos] : s[s.length-1];
+
+        private double l(int pos) {
+            return pos < s.length ? s[pos] : s[s.length - 1];
         }
 
-        private double l2(int pos){
-            double z=l(pos);
-            return z*z;
+        private double l2(int pos) {
+            double z = l(pos);
+            return z * z;
         }
 
         @Override
@@ -824,8 +882,9 @@ public class Loading {
 
         @Override
         public void VpZdZ(int pos, FastMatrix V, double d) {
-            if (d == 0)
+            if (d == 0) {
                 return;
+            }
             loading.VpZdZ(pos, V, d * l2(pos));
         }
 

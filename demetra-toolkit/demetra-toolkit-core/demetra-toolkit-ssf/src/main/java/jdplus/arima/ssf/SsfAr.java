@@ -47,7 +47,7 @@ public class SsfAr {
         if (nlags < ar.length) {
             nlags = ar.length;
         }
-        Data data = new Data(ar, var, nlags+1);
+        Data data = new Data(ar, var, nlags);
         return new StateComponent(new Initialization(data, zeroinit), new Dynamics(data));
     }
 

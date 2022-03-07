@@ -21,8 +21,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- *
+ * 
  * @author PALATEJ
+ * @param <S>
+ * @param <T>
  */
 public abstract class InformationDelegate<S, T> implements InformationExtractor<S> {
 

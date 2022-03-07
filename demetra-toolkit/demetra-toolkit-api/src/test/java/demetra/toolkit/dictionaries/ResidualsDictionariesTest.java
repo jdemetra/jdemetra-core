@@ -12,24 +12,17 @@ import static org.junit.Assert.*;
  * @author PALATEJ
  */
 public class ResidualsDictionariesTest {
-    
+
     public ResidualsDictionariesTest() {
     }
-    
+
     public static void residuals() {
-       ResidualsDictionaries.RESIDUALS_DEFAULT.entries().forEach(entry
-                -> {
-            System.out.print(entry.getName());
-            System.out.print('\t');
-            System.out.print(entry.getDescription());
-            System.out.print('\t');
-            System.out.println(entry.getType().getCanonicalName());
-        }
-        );
+        ResidualsDictionaries.RESIDUALS_DEFAULT.entries().forEach(entry
+                -> System.out.println(entry.display()));
     }
-    
-    public static void main(String[] arg){
+
+    public static void main(String[] arg) {
         residuals();
     }
-    
+
 }

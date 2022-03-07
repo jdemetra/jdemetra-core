@@ -67,7 +67,7 @@ import jdplus.modelling.regression.HolidaysCorrectionFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.IModelBuilder;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.timeseries.simplets.TsDataToolkit;

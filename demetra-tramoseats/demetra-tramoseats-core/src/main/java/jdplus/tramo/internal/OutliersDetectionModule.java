@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 
 /**
  *

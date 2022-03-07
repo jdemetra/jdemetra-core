@@ -40,7 +40,7 @@ public class XmlRegItem implements IXmlConverter<RegressionItem> {
 
     @Override
     public RegressionItem create() {
-        return new RegressionItem(description, coefficient, stderror, pvalue);
+        return new RegressionItem(coefficient, stderror, pvalue, description);
     }
 
     @Override

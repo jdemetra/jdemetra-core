@@ -37,7 +37,19 @@ public interface IOutlier extends ITsVariable {
     
     @Override
     default <D extends TimeSeriesDomain<?>> String description(D context){
-        return defaultName(getCode(), getPosition(), context);
+        String code=getCode();
+        LocalDateTime pos = getPosition();
+        StringBuilder builder = new StringBuilder();
+        builder.append(code).append(" (");
+        if (context == null || !(context instanceof TsDomain)) {
+            builder.append(pos);
+        } else {
+            TsPeriod p = ((TsDomain) context).get(0);
+            p=p.withDate(pos);
+            builder.append(p.display());
+        }
+        builder.append(')');
+        return builder.toString();
     }
 
     public static <D extends TimeSeriesDomain<?>> String defaultName(String code, LocalDateTime pos, D context) {

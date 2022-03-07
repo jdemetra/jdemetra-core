@@ -38,9 +38,12 @@ class BasicInformationExtractors {
         return builder.toString();
     }
 
-    static int listItem(String prefix, String key) {
+    static int listItem(String prefix, String key, int defValue) {
         if (!key.startsWith(prefix)) {
             return Integer.MIN_VALUE;
+        }
+        if (key.equals(prefix)) {
+            return defValue;
         }
         int start = prefix.length() + LSTART.length();
         int end = key.length() - LEND.length();
@@ -48,11 +51,19 @@ class BasicInformationExtractors {
             return Integer.MIN_VALUE;
         }
         String s = key.substring(start, end);
+        if (iswc(s)) {
+            return defValue;
+        }
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException ex) {
             return Integer.MIN_VALUE;
         }
+    }
+
+    static boolean iswc(String id) {
+        id = id.trim();
+        return id.length() == 1 && id.charAt(0) == '*' || id.charAt(0) == '?';
     }
 
     static String wcKey(String prefix, char wc) {
@@ -139,7 +150,7 @@ class BasicInformationExtractors {
 
         @Override
         public boolean contains(String id) {
-            int idx = listItem(name, id);
+            int idx = listItem(name, id, start);
             return idx != Integer.MIN_VALUE;
         }
 
@@ -149,7 +160,7 @@ class BasicInformationExtractors {
                 return null;
             }
             if (tclass.isAssignableFrom(targetClass)) {
-                int idx = listItem(name, id);
+                int idx = listItem(name, id, start);
                 if (idx == Integer.MIN_VALUE) {
                     return null;
                 }
@@ -240,10 +251,10 @@ class BasicInformationExtractors {
             if (name != null) {
                 if (wcs.startsWith(name) && wcs.charAt(name.length()) == BasicInformationExtractor.SEP) {
                     String subwcs = wcs.substring(name.length() + 1);
-                    Map<String, Q> tmap=new LinkedHashMap<>();
+                    Map<String, Q> tmap = new LinkedHashMap<>();
                     InformationExtractors.searchAll(target, fn.apply(source), new WildCards(subwcs), tclass, tmap);
-                    if (! tmap.isEmpty()){
-                        tmap.forEach((key, value)->map.put(BasicInformationExtractor.concatenate(name, key), value));
+                    if (!tmap.isEmpty()) {
+                        tmap.forEach((key, value) -> map.put(BasicInformationExtractor.concatenate(name, key), value));
                     }
                     return;
                 }
@@ -288,7 +299,7 @@ class BasicInformationExtractors {
 
         @Override
         public boolean contains(String id) {
-            int idx = listItem(name, id);
+            int idx = listItem(name, id, start);
             return InformationExtractors.contains(target, detail(id));
         }
 
@@ -297,7 +308,7 @@ class BasicInformationExtractors {
             if (source == null) {
                 return null;
             }
-            int idx = listItem(name, id);
+            int idx = listItem(name, id, start);
             if (idx == Integer.MIN_VALUE) {
                 return null;
             }

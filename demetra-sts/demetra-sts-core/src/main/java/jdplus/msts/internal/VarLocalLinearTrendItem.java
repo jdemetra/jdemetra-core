@@ -14,7 +14,6 @@ import jdplus.msts.ParameterInterpreter;
 import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.sts.LocalLinearTrend;
 import jdplus.sts.VarLocalLinearTrend;
 
 /**

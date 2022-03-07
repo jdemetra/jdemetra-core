@@ -44,7 +44,7 @@ import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
@@ -623,6 +623,11 @@ public final class ModelDescription {
             boolean[] b = new boolean[n];
             int j = 0;
             Parameter[] P = arima.getPhi();
+            for (int i = 0; i < P.length; ++i, ++j) {
+                p[j] = P[i].getValue();
+                b[j] = P[i].isFixed();
+            }
+            P = arima.getBphi();
             for (int i = 0; i < P.length; ++i, ++j) {
                 p[j] = P[i].getValue();
                 b[j] = P[i].isFixed();

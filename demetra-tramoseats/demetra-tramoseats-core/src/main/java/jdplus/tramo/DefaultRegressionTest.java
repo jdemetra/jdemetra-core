@@ -34,7 +34,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regarima.IRegArimaComputer;
 
 /**

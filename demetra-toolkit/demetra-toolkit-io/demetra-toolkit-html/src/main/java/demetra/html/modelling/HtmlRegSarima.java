@@ -30,7 +30,6 @@ import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.arima.SarimaSpec;
 import demetra.stats.ProbabilityType;
-import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
@@ -46,6 +45,7 @@ import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.IUserVariable;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
@@ -65,7 +65,6 @@ import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.GeneralLinearModel;
-import jdplus.regarima.ami.ModellingUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
@@ -101,7 +100,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
     }
 
     private void writeSummary(HtmlStream stream) throws IOException {
-        TsDomain edom = model.getDetails().getEstimationDomain();
+        TsDomain edom = model.getEstimation().getDomain();
         stream.write(HtmlTag.HEADER1, "Summary").newLine();
         stream.write("Estimation span: [").write(edom.getStartPeriod().display());
         stream.write(" - ").write(edom.getLastPeriod().display()).write(']').newLine();
@@ -333,7 +332,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
     }
 
     public void writeRegression(HtmlStream stream, boolean outliers) throws IOException {
-        TsDomain edom = model.getDetails().getEstimationDomain();
+        TsDomain edom = model.getEstimation().getDomain();
         writeMean(stream);
 
         writeFullRegressionItems(stream, edom, var -> !var.isPreadjustment() && var.getCore() instanceof ITradingDaysVariable);
@@ -595,11 +594,12 @@ public class HtmlRegSarima extends AbstractHtmlElement {
     }
 
     private void writeMissing(HtmlStream stream) throws IOException {
-        TsDomain edom = model.getDetails().getEstimationDomain();
+        TsDomain edom = model.getEstimation().getDomain();
         MissingValueEstimation[] missings = model.getEstimation().getMissing();
         if (missings == null || missings.length == 0) {
             return;
         }
+        double[] missingEstimates = model.missingEstimates();
         stream.write(HtmlTag.HEADER3, "Missing values");
         stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
@@ -614,9 +614,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
             stream.write(new HtmlTableCell(period.display()).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(missings[i].getValue())).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(missings[i].getStandardError())).withWidth(100));
-            TsData tmp = TsData.ofInternal(period, new double[]{missings[i].getValue()});
-            tmp = model.backTransform(tmp, true);
-            stream.write(new HtmlTableCell(df4.format(tmp.get(0))).withWidth(100));
+            stream.write(new HtmlTableCell(df4.format(missingEstimates[i])).withWidth(100));
             stream.close(HtmlTag.TABLEROW);
         }
         stream.close(HtmlTag.TABLE);

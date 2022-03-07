@@ -223,22 +223,22 @@ public class Variables {
         return ramp(domain, domain.get(start).start(), domain.get(end).start());
     }
 
-    public FastMatrix stockTradingDays(TsDomain domain, int w) {
+    public Matrix stockTradingDays(TsDomain domain, int w) {
         StockTradingDays std = new StockTradingDays(w);
         return Regression.matrix(domain, std);
     }
 
-    public FastMatrix periodicDummies(TsDomain domain) {
+    public Matrix periodicDummies(TsDomain domain) {
         PeriodicDummies var = new PeriodicDummies(domain.getAnnualFrequency());
         return Regression.matrix(domain, var);
     }
 
-    public FastMatrix periodicContrasts(TsDomain domain) {
+    public Matrix periodicContrasts(TsDomain domain) {
         PeriodicContrasts var = new PeriodicContrasts(domain.getAnnualFrequency());
         return Regression.matrix(domain, var);
     }
 
-    public FastMatrix trigonometricVariables(TsDomain domain, int[] seasonal) {
+    public Matrix trigonometricVariables(TsDomain domain, int[] seasonal) {
         TrigonometricVariables var;
         if (seasonal == null) {
             var = TrigonometricVariables.regular(domain.getAnnualFrequency());
@@ -248,7 +248,7 @@ public class Variables {
         return Regression.matrix(domain, var);
     }
     
-    public FastMatrix trigonometricVariables(TsDomain domain, int[] seasonal, String reference) {
+    public Matrix trigonometricVariables(TsDomain domain, int[] seasonal, String reference) {
         LocalDate ref = LocalDate.parse(reference, DateTimeFormatter.ISO_DATE);
         TrigonometricVariables var;
         if (seasonal == null) {
@@ -259,7 +259,7 @@ public class Variables {
         return Regression.matrix(domain, var);
     }
 
-    public FastMatrix trigonometricVariables(double[] freq, int length, int start) {
+    public Matrix trigonometricVariables(double[] freq, int length, int start) {
         TrigonometricVariables var = new TrigonometricVariables(freq, TsPeriod.DEFAULT_EPOCH);
         return TrigonometricVariablesFactory.matrix(var, length, start);
     }

@@ -24,7 +24,7 @@ import jdplus.stats.tests.NiidTests;
 import demetra.data.DoubleSeq;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaUtility;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.sarima.SarimaModel;
 
 

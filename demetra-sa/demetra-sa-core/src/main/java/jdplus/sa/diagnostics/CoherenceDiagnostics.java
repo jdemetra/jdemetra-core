@@ -29,6 +29,7 @@ import java.util.List;
 import jdplus.stats.DescriptiveStatistics;
 import demetra.information.Explorable;
 import demetra.processing.Diagnostics;
+import demetra.toolkit.dictionaries.Dictionary;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
 
 /**
@@ -75,10 +76,14 @@ public final class CoherenceDiagnostics implements Diagnostics {
         this.config = config;
         test(rslts, mode);
     }
+    
+    private String decompositionItem(String key){
+        return Dictionary.concatenate(SaDictionaries.DECOMPOSITION, key);
+    }
 
     private void test(Explorable rslts, DecompositionMode mode) {
-        TsData yl = rslts.getData(RegressionDictionaries.Y_LIN, TsData.class);
-        if (yl != null && yl.length() < config.getShortSeriesLimit() * yl.getAnnualFrequency()) {
+        TsData cy = rslts.getData(decompositionItem(SaDictionaries.Y_CMP), TsData.class);
+        if (cy != null && cy.length() < config.getShortSeriesLimit() * cy.getAnnualFrequency()) {
             shortSeries = true;
         }
         multiplicative = mode != DecompositionMode.Additive;
@@ -99,15 +104,15 @@ public final class CoherenceDiagnostics implements Diagnostics {
         } else {
             TsData regy = rslts.getData(SaDictionaries.REG_Y, TsData.class);
             TsData regsa = rslts.getData(SaDictionaries.REG_SA, TsData.class);
-            TsData ct = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.T_CMP), TsData.class);
-            TsData cs = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.S_CMP), TsData.class);
-            TsData ci = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.I_CMP), TsData.class);
-            TsData csa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.SA_CMP), TsData.class);
-            TsData ly = rslts.getData(RegressionDictionaries.L, TsData.class);
-            TsData lt = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.T_LIN), TsData.class);
-            TsData ls = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.S_LIN), TsData.class);
-            TsData li = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.I_LIN), TsData.class);
-            TsData lsa = rslts.getData(BasicInformationExtractor.concatenate(SaDictionaries.DECOMPOSITION,SaDictionaries.SA_LIN), TsData.class);
+            TsData ct = rslts.getData(decompositionItem(SaDictionaries.T_CMP), TsData.class);
+            TsData cs = rslts.getData(decompositionItem(SaDictionaries.S_CMP), TsData.class);
+            TsData ci = rslts.getData(decompositionItem(SaDictionaries.I_CMP), TsData.class);
+            TsData csa = rslts.getData(decompositionItem(SaDictionaries.SA_CMP), TsData.class);
+            TsData ly = rslts.getData(decompositionItem(SaDictionaries.Y_LIN), TsData.class);
+            TsData lt = rslts.getData(decompositionItem(SaDictionaries.T_LIN), TsData.class);
+            TsData ls = rslts.getData(decompositionItem(SaDictionaries.S_LIN), TsData.class);
+            TsData li = rslts.getData(decompositionItem(SaDictionaries.I_LIN), TsData.class);
+            TsData lsa = rslts.getData(decompositionItem(SaDictionaries.SA_LIN), TsData.class);
             TsData tde = rslts.getData(RegressionDictionaries.TDE, TsData.class);
             TsData ee = rslts.getData(RegressionDictionaries.EE, TsData.class);
             TsData omhe = rslts.getData(RegressionDictionaries.OMHE, TsData.class);
@@ -130,9 +135,9 @@ public final class CoherenceDiagnostics implements Diagnostics {
             TsData df5 = sub(i, op(ci, regi, outi));
             TsData dcal = sub(cal, op(tde, ee, omhe));
             // components
-            TsData dc0 = sub(yl, op(ct, cs, ci));
+            TsData dc0 = sub(cy, op(ct, cs, ci));
             TsData dc1 = sub(csa, op(ct, ci));
-            //TsData dc2 = sub(yl, op(csa, cs)); REDUNDANT
+            //TsData dc2 = sub(cy, op(csa, cs)); REDUNDANT
 
             maxDefinitionDifference = Double.NaN;
             check(df0);

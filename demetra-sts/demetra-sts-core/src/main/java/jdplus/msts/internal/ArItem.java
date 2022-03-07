@@ -82,7 +82,7 @@ public class ArItem extends StateItem {
 
     @Override
     public int stateDim() {
-        return Math.max(nlags, ar.getDomain().getDim()) + 1;
+        return Math.max(nlags, ar.getDomain().getDim());
     }
 
 }

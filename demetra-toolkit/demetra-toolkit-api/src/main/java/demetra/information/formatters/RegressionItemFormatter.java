@@ -20,7 +20,7 @@ import demetra.timeseries.regression.RegressionItem;
 import java.text.DecimalFormat;
 
 /**
- *
+ * 
  * @author Jean Palate
  */
 public class RegressionItemFormatter implements InformationFormatter {
@@ -68,20 +68,20 @@ public class RegressionItemFormatter implements InformationFormatter {
             ++item;
         }
         switch (Math.abs(item)) {
-            case 1:
+           case 1:
                 return StringFormatter.cleanup(reg.getDescription());
-            case 2:
+           case 2:
                 return fmt.format(reg.getCoefficient());
             case 3:
-                if (reg.getStdError() == 0) {
+                 if (reg.getStdError() == 0) {
                     return null;
                 } else {
                     return df4.format(reg.getCoefficient() / reg.getStdError());
                 }
             case 4:
-                return fmt.format(reg.getStdError());
-            case 5:
                 return df4.format(reg.getPvalue());
+//            case 5:
+//                return fmt.format(reg.getStdError());
             default:
                 return null;
         }

@@ -17,15 +17,8 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
-import demetra.data.DoubleSeqCursor;
 import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsDomain;
-import jdplus.data.DataBlock;
-import jdplus.data.DataBlockIterator;
-import jdplus.math.matrices.FastMatrix;
-import jdplus.modelling.regression.Regression;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.sarima.SarimaModel;

@@ -9,7 +9,7 @@ import demetra.timeseries.regression.Variable;
 import java.util.Optional;
 import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.IRegressionTest;
 import jdplus.regsarima.regular.ModelDescription;

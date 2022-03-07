@@ -13,7 +13,6 @@ import demetra.x13.X13Spec;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -32,7 +31,7 @@ public class X13KernelTest {
         
         List<TsData> all=new ArrayList<>();
         
-        all.add(rslt.getFinals().getD10final());
+        all.add(rslt.getFinals().getD16());
         all.add(rslt.getFinals().getD11final());
         all.add(rslt.getFinals().getD12final());
         all.add(rslt.getFinals().getD13final());
@@ -42,5 +41,6 @@ public class X13KernelTest {
         
 //        System.out.println(table);
    }
+    
     
 }

@@ -8,7 +8,6 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
-import jdplus.ssf.implementations.Noise;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;

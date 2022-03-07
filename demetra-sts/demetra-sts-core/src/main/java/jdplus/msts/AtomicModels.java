@@ -29,6 +29,7 @@ import jdplus.msts.internal.VarLocalLinearTrendItem;
 import jdplus.msts.internal.VarSeasonalComponentItem;
 import jdplus.msts.internal.VarNoiseItem;
 import demetra.math.matrices.Matrix;
+import jdplus.msts.internal.VarRegressionItem;
 
 /**
  *
@@ -87,6 +88,10 @@ public class AtomicModels {
 
     public StateItem timeVaryingRegression(String name, Matrix x, final double[] vars, final boolean fixed) {
         return new RegressionItem(name, x, vars, fixed);
+    }
+
+    public StateItem timeVaryingRegression(String name, double[] x, final double[] stde, final double scale, final boolean fixed) {
+        return new VarRegressionItem(name, x, stde, scale, fixed);
     }
 
     public StateItem tdRegression(String name, TsDomain domain, int[] groups, final boolean contrast, final double var, final boolean fixed) {

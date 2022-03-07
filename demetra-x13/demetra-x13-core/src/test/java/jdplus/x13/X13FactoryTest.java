@@ -24,7 +24,11 @@ import demetra.sa.SaDefinition;
 import demetra.sa.SaItem;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsMoniker;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.x13.X13;
+import demetra.x13.X13Dictionaries;
 import demetra.x13.X13Spec;
+import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -33,14 +37,14 @@ import org.junit.Test;
  * @author PALATEJ
  */
 public class X13FactoryTest {
-    
+
     public X13FactoryTest() {
     }
 
     @Test
     public void testUpdatePoint() {
-        X13Kernel x13=X13Kernel.of(X13Spec.RSA4, null);
-        ProcessingLog log=ProcessingLog.dummy();
+        X13Kernel x13 = X13Kernel.of(X13Spec.RSA4, null);
+        ProcessingLog log = ProcessingLog.dummy();
         X13Results rslt = x13.process(Data.TS_PROD, log);
         assertTrue(rslt.getFinals() != null);
         X13Spec nspec = X13Factory.INSTANCE.generateSpec(X13Spec.RSA4, rslt);
@@ -54,25 +58,45 @@ public class X13FactoryTest {
         assertEquals(rslt.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(),
                 rslt2.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(), 1e-4);
     }
-    
+
     @Test
-    public void testSaItem(){
-        Ts ts=Ts.builder()
+    public void testSaItem() {
+        Ts ts = Ts.builder()
                 .moniker(TsMoniker.of())
                 .name("prod")
                 .data(Data.TS_PROD)
                 .build();
-        
-        SaDefinition sadef=SaDefinition.builder()
+
+        SaDefinition sadef = SaDefinition.builder()
                 .domainSpec(X13Spec.RSA5)
                 .ts(ts)
                 .build();
-        
-        SaItem item=SaItem.builder()
+
+        SaItem item = SaItem.builder()
                 .name("prod")
                 .definition(sadef)
                 .build();
         item.process(null, false);
         assertTrue(item.getEstimation().getQuality() == ProcQuality.Good);
+    }
+    
+    public static void main(String[] args){
+        testDictionaries();
+    }
+
+    static void testDictionaries() {
+        Dictionary dic = X13Dictionaries.X13DICTIONARY;
+        Map<String, Class> xdic = X13.outputDictionary(true);
+        dic.entries().forEach(entry -> {
+            System.out.print(entry.display());
+            System.out.print('\t');
+            if (xdic.containsKey(entry.fullName())) {
+                System.out.println(1);
+            } else {
+                System.out.println(0);
+            }
+
+        }
+        );
     }
 }

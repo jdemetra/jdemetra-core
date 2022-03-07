@@ -53,7 +53,7 @@ public class GenericSaTests implements GenericExplorable {
     }
     
     @lombok.Getter(lombok.AccessLevel.PRIVATE)
-    private volatile ResidualSeasonalityTests residualsTests, lsaTests, lirrTests;
+    private volatile ResidualSeasonalityTests linearizedTests, residualsTests, lsaTests, lirrTests;
     @lombok.Getter(lombok.AccessLevel.PRIVATE)
     private volatile CombinedSeasonalityTests combinedTests;
     @lombok.Getter(lombok.AccessLevel.PRIVATE)
@@ -87,6 +87,28 @@ public class GenericSaTests implements GenericExplorable {
         return tests;
     }
     
+     public ResidualSeasonalityTests seasonalityTestsOnLinearized() {
+        if (linearized == null) {
+            return null;
+        }
+        ResidualSeasonalityTests tests = linearizedTests;
+        if (tests == null) {
+            synchronized (this) {
+                tests = linearizedTests;
+                if (tests == null) {
+                    tests = ResidualSeasonalityTests.builder()
+                            .series(linearized)
+                            .ndiff(-1)
+                            .mean(true)
+                            .options(ResidualSeasonalityTestsOptions.getDefault())
+                            .build();
+                    linearizedTests = tests;
+                }
+            }
+        }
+        return tests;
+    }
+
     public ResidualSeasonalityTests residualSeasonalityTestsOnSa() {
         if (lsa == null) {
             return null;

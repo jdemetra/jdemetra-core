@@ -11,7 +11,7 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.tramo.internal.OutliersDetectionModule;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 
 @Development(status = Development.Status.Beta)
 class ModelEstimator implements IModelEstimator {

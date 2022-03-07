@@ -27,7 +27,7 @@ import demetra.timeseries.regression.ITsVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 
 /**
  * See the Fortran routine pass0.f

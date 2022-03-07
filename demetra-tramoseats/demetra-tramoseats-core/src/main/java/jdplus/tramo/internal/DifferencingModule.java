@@ -34,7 +34,7 @@ import jdplus.tramo.TramoException;
 import java.util.Optional;
 import demetra.data.DoubleSeq;
 import jdplus.arima.estimation.FastKalmanFilter;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.sarima.estimation.HannanRissanen;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.regarima.IRegArimaComputer;

@@ -20,7 +20,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.arima.SarimaOrders;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 
 
 /**

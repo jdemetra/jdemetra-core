@@ -8,7 +8,6 @@ package jdplus.msts.internal;
 import demetra.data.DoubleSeq;
 import jdplus.msts.StateItem;
 import jdplus.msts.MstsMapping;
-import jdplus.sts.SeasonalComponent;
 import demetra.sts.SeasonalModel;
 import java.util.Collections;
 import java.util.List;

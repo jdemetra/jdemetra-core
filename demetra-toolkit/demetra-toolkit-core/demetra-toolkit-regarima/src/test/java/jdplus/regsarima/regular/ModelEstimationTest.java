@@ -28,7 +28,7 @@ import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.data.interpolation.AverageInterpolator;
-import jdplus.regarima.ami.ModellingUtility;
+import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.RegSarimaComputer;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
