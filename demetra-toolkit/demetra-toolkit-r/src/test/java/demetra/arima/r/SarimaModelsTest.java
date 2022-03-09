@@ -25,10 +25,16 @@ public class SarimaModelsTest {
         assertTrue(rnd.length == 200);
     }
  
-       @Test
+    @Test
     public void testArima() {
         SarimaModel arima = SarimaModels.estimate(Data.PROD, new int[]{0,1,1}, 12, new int[]{0,1,1}, null);
         assertTrue(arima != null);
     }
 
+    @Test
+    public void testSerialize() {
+        SarimaModel arima = SarimaModels.estimate(Data.PROD, new int[]{0,1,1}, 12, new int[]{0,1,1}, null);
+        byte[] buffer = SarimaModels.toBuffer(arima);
+        assertTrue(buffer != null);
+    }
 }

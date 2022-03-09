@@ -5,7 +5,6 @@
  */
 package demetra.arima.r;
 
-import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import demetra.arima.SarimaSpec;
 import demetra.modelling.io.protobuf.ModellingProtos;
@@ -79,9 +78,11 @@ public class SarimaModels {
     
     public byte[] toBuffer(SarimaModel model){
         ModellingProtos.SarimaModel.Builder builder = ModellingProtos.SarimaModel.newBuilder()
+                .setName("sarima")
                 .setPeriod(model.getPeriod())
                 .setD(model.getD())
-                .setBd(model.getBd());
+                .setBd(model.getBd())
+                ;
         
         for (int i=1; i<=model.getP(); ++i){
             builder.addPhi(model.phi(i));
