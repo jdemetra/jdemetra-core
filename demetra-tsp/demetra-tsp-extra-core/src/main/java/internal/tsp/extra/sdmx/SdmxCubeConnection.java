@@ -30,7 +30,6 @@ import sdmxdl.*;
 import sdmxdl.util.SdmxCubeUtil;
 
 import java.io.IOException;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -224,28 +223,35 @@ public final class SdmxCubeConnection implements CubeConnection {
     }
 
     private static TsData getData(Series series) {
-        return TsDataBuilder
-                .byDateTime(GATHERINGS.get(series.getFreq()))
-                .addAll(series.getObs().stream(), Obs::getPeriod, Obs::getValue)
-                .build();
+        switch (series.getObs().size()) {
+            case 0:
+                return TsData.empty("No data");
+            case 1:
+                return TsDataBuilder
+                        .byDateTime(SINGLE_GATHERING)
+                        .addAll(series.getObs().stream(), Obs::getPeriod, Obs::getValue)
+                        .build();
+            default:
+                return TsDataBuilder
+                        .byDateTime(DEFAULT_GATHERING)
+                        .addAll(series.getObs().stream(), Obs::getPeriod, Obs::getValue)
+                        .build();
+        }
     }
 
-    private static final Map<Frequency, ObsGathering> GATHERINGS = initGatherings();
+    private static final ObsGathering DEFAULT_GATHERING = ObsGathering
+            .builder()
+            .includeMissingValues(true)
+            .unit(TsUnit.UNDEFINED)
+            .aggregationType(AggregationType.None)
+            .build();
 
-    private static Map<Frequency, ObsGathering> initGatherings() {
-        Map<Frequency, ObsGathering> result = new EnumMap<>(Frequency.class);
-        result.put(Frequency.ANNUAL, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.YEAR).aggregationType(AggregationType.None).build());
-        result.put(Frequency.HALF_YEARLY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.HALF_YEAR).aggregationType(AggregationType.None).build());
-        result.put(Frequency.QUARTERLY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.QUARTER).aggregationType(AggregationType.None).build());
-        result.put(Frequency.MONTHLY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.MONTH).aggregationType(AggregationType.None).build());
-        result.put(Frequency.WEEKLY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.WEEK).aggregationType(AggregationType.Last).build());
-        result.put(Frequency.DAILY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.DAY).aggregationType(AggregationType.Last).build());
-        result.put(Frequency.HOURLY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.HOUR).aggregationType(AggregationType.Last).build());
-        result.put(Frequency.DAILY_BUSINESS, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.DAY).aggregationType(AggregationType.Last).build());
-        result.put(Frequency.MINUTELY, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.MINUTE).aggregationType(AggregationType.Last).build());
-        result.put(Frequency.UNDEFINED, ObsGathering.builder().includeMissingValues(true).unit(TsUnit.UNDEFINED).aggregationType(AggregationType.None).build());
-        return result;
-    }
+    private static final ObsGathering SINGLE_GATHERING = ObsGathering
+            .builder()
+            .includeMissingValues(true)
+            .unit(TsUnit.YEAR)
+            .aggregationType(AggregationType.None)
+            .build();
 
     private static CubeId getOrLoadRoot(List<String> dimensions, DataStructure dsd) {
         return dimensions.isEmpty()
