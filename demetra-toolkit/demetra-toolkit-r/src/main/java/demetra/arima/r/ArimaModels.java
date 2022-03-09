@@ -5,7 +5,9 @@
  */
 package demetra.arima.r;
 
+import demetra.data.Iterables;
 import demetra.math.Complex;
+import demetra.modelling.io.protobuf.ModellingProtos;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.AutoCovarianceFunction;
@@ -81,4 +83,14 @@ public class ArimaModels {
         return g;
     }
 
+    public byte[] toBuffer(ArimaModel model) {
+        ModellingProtos.ArimaModel.Builder builder = ModellingProtos.ArimaModel.newBuilder()
+                .setName("arima")
+                .addAllAr(Iterables.of(model.getStationaryAr().coefficients()))
+                .addAllDelta(Iterables.of(model.getNonStationaryAr().coefficients()))
+                .addAllMa(Iterables.of(model.getMa().coefficients()))
+                .setInnovationVariance(model.getInnovationVariance());
+
+        return builder.build().toByteArray();
+    }
 }

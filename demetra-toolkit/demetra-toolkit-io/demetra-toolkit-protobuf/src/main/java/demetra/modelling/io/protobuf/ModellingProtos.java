@@ -16798,6 +16798,50 @@ public final class ModellingProtos {
      */
     demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getComponentsOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> 
+        getComplementsList();
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    demetra.modelling.io.protobuf.ModellingProtos.ArimaModel getComplements(int index);
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    int getComplementsCount();
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> 
+        getComplementsOrBuilderList();
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getComplementsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code modelling.UcarimaModel}
@@ -16813,6 +16857,7 @@ public final class ModellingProtos {
     }
     private UcarimaModel() {
       components_ = java.util.Collections.emptyList();
+      complements_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -16868,6 +16913,15 @@ public final class ModellingProtos {
                   input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.parser(), extensionRegistry));
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                complements_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              complements_.add(
+                  input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -16885,6 +16939,9 @@ public final class ModellingProtos {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           components_ = java.util.Collections.unmodifiableList(components_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) != 0)) {
+          complements_ = java.util.Collections.unmodifiableList(complements_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -17001,6 +17058,66 @@ public final class ModellingProtos {
       return components_.get(index);
     }
 
+    public static final int COMPLEMENTS_FIELD_NUMBER = 3;
+    private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> complements_;
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    @java.lang.Override
+    public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> getComplementsList() {
+      return complements_;
+    }
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> 
+        getComplementsOrBuilderList() {
+      return complements_;
+    }
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    @java.lang.Override
+    public int getComplementsCount() {
+      return complements_.size();
+    }
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel getComplements(int index) {
+      return complements_.get(index);
+    }
+    /**
+     * <pre>
+     * complements of some components (identified by the context or by their names
+     * </pre>
+     *
+     * <code>repeated .modelling.ArimaModel complements = 3;</code>
+     */
+    @java.lang.Override
+    public demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getComplementsOrBuilder(
+        int index) {
+      return complements_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -17021,6 +17138,9 @@ public final class ModellingProtos {
       for (int i = 0; i < components_.size(); i++) {
         output.writeMessage(2, components_.get(i));
       }
+      for (int i = 0; i < complements_.size(); i++) {
+        output.writeMessage(3, complements_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -17037,6 +17157,10 @@ public final class ModellingProtos {
       for (int i = 0; i < components_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, components_.get(i));
+      }
+      for (int i = 0; i < complements_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, complements_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -17060,6 +17184,8 @@ public final class ModellingProtos {
       }
       if (!getComponentsList()
           .equals(other.getComponentsList())) return false;
+      if (!getComplementsList()
+          .equals(other.getComplementsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -17078,6 +17204,10 @@ public final class ModellingProtos {
       if (getComponentsCount() > 0) {
         hash = (37 * hash) + COMPONENTS_FIELD_NUMBER;
         hash = (53 * hash) + getComponentsList().hashCode();
+      }
+      if (getComplementsCount() > 0) {
+        hash = (37 * hash) + COMPLEMENTS_FIELD_NUMBER;
+        hash = (53 * hash) + getComplementsList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -17208,6 +17338,7 @@ public final class ModellingProtos {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getComponentsFieldBuilder();
+          getComplementsFieldBuilder();
         }
       }
       @java.lang.Override
@@ -17224,6 +17355,12 @@ public final class ModellingProtos {
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           componentsBuilder_.clear();
+        }
+        if (complementsBuilder_ == null) {
+          complements_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          complementsBuilder_.clear();
         }
         return this;
       }
@@ -17265,6 +17402,15 @@ public final class ModellingProtos {
           result.components_ = components_;
         } else {
           result.components_ = componentsBuilder_.build();
+        }
+        if (complementsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0)) {
+            complements_ = java.util.Collections.unmodifiableList(complements_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.complements_ = complements_;
+        } else {
+          result.complements_ = complementsBuilder_.build();
         }
         onBuilt();
         return result;
@@ -17340,6 +17486,32 @@ public final class ModellingProtos {
                    getComponentsFieldBuilder() : null;
             } else {
               componentsBuilder_.addAllMessages(other.components_);
+            }
+          }
+        }
+        if (complementsBuilder_ == null) {
+          if (!other.complements_.isEmpty()) {
+            if (complements_.isEmpty()) {
+              complements_ = other.complements_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureComplementsIsMutable();
+              complements_.addAll(other.complements_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.complements_.isEmpty()) {
+            if (complementsBuilder_.isEmpty()) {
+              complementsBuilder_.dispose();
+              complementsBuilder_ = null;
+              complements_ = other.complements_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              complementsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getComplementsFieldBuilder() : null;
+            } else {
+              complementsBuilder_.addAllMessages(other.complements_);
             }
           }
         }
@@ -17838,6 +18010,318 @@ public final class ModellingProtos {
           components_ = null;
         }
         return componentsBuilder_;
+      }
+
+      private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> complements_ =
+        java.util.Collections.emptyList();
+      private void ensureComplementsIsMutable() {
+        if (!((bitField0_ & 0x00000002) != 0)) {
+          complements_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel>(complements_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.modelling.io.protobuf.ModellingProtos.ArimaModel, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder, demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> complementsBuilder_;
+
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> getComplementsList() {
+        if (complementsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(complements_);
+        } else {
+          return complementsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public int getComplementsCount() {
+        if (complementsBuilder_ == null) {
+          return complements_.size();
+        } else {
+          return complementsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel getComplements(int index) {
+        if (complementsBuilder_ == null) {
+          return complements_.get(index);
+        } else {
+          return complementsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder setComplements(
+          int index, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel value) {
+        if (complementsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureComplementsIsMutable();
+          complements_.set(index, value);
+          onChanged();
+        } else {
+          complementsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder setComplements(
+          int index, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder builderForValue) {
+        if (complementsBuilder_ == null) {
+          ensureComplementsIsMutable();
+          complements_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          complementsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder addComplements(demetra.modelling.io.protobuf.ModellingProtos.ArimaModel value) {
+        if (complementsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureComplementsIsMutable();
+          complements_.add(value);
+          onChanged();
+        } else {
+          complementsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder addComplements(
+          int index, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel value) {
+        if (complementsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureComplementsIsMutable();
+          complements_.add(index, value);
+          onChanged();
+        } else {
+          complementsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder addComplements(
+          demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder builderForValue) {
+        if (complementsBuilder_ == null) {
+          ensureComplementsIsMutable();
+          complements_.add(builderForValue.build());
+          onChanged();
+        } else {
+          complementsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder addComplements(
+          int index, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder builderForValue) {
+        if (complementsBuilder_ == null) {
+          ensureComplementsIsMutable();
+          complements_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          complementsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder addAllComplements(
+          java.lang.Iterable<? extends demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> values) {
+        if (complementsBuilder_ == null) {
+          ensureComplementsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, complements_);
+          onChanged();
+        } else {
+          complementsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder clearComplements() {
+        if (complementsBuilder_ == null) {
+          complements_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          complementsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public Builder removeComplements(int index) {
+        if (complementsBuilder_ == null) {
+          ensureComplementsIsMutable();
+          complements_.remove(index);
+          onChanged();
+        } else {
+          complementsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder getComplementsBuilder(
+          int index) {
+        return getComplementsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getComplementsOrBuilder(
+          int index) {
+        if (complementsBuilder_ == null) {
+          return complements_.get(index);  } else {
+          return complementsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> 
+           getComplementsOrBuilderList() {
+        if (complementsBuilder_ != null) {
+          return complementsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(complements_);
+        }
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder addComplementsBuilder() {
+        return getComplementsFieldBuilder().addBuilder(
+            demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder addComplementsBuilder(
+          int index) {
+        return getComplementsFieldBuilder().addBuilder(
+            index, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * complements of some components (identified by the context or by their names
+       * </pre>
+       *
+       * <code>repeated .modelling.ArimaModel complements = 3;</code>
+       */
+      public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder> 
+           getComplementsBuilderList() {
+        return getComplementsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.modelling.io.protobuf.ModellingProtos.ArimaModel, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder, demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> 
+          getComplementsFieldBuilder() {
+        if (complementsBuilder_ == null) {
+          complementsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              demetra.modelling.io.protobuf.ModellingProtos.ArimaModel, demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.Builder, demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder>(
+                  complements_,
+                  ((bitField0_ & 0x00000002) != 0),
+                  getParentForChildren(),
+                  isClean());
+          complements_ = null;
+        }
+        return complementsBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -18916,22 +19400,23 @@ public final class ModellingProtos {
       "\r\n\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001\"|\n\013SarimaMode" +
       "l\022\014\n\004name\030\001 \001(\t\022\016\n\006period\030\002 \001(\005\022\013\n\003phi\030\003" +
       " \003(\001\022\t\n\001d\030\004 \001(\005\022\r\n\005theta\030\005 \003(\001\022\014\n\004bphi\030\006" +
-      " \003(\001\022\n\n\002bd\030\007 \001(\005\022\016\n\006btheta\030\010 \003(\001\"_\n\014Ucar" +
-      "imaModel\022$\n\005model\030\001 \001(\0132\025.modelling.Arim" +
-      "aModel\022)\n\ncomponents\030\002 \003(\0132\025.modelling.A" +
-      "rimaModel\"7\n\026WienerKolmogorovFilter\022\017\n\007w" +
-      "eights\030\001 \003(\001\022\014\n\004gain\030\002 \003(\001*7\n\016Transforma" +
-      "tion\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG\020\001\022\013\n\007FN_AUT" +
-      "O\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_NONE\020\000\022\017\n\013LP" +
-      "_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPERIOD\020\002*H\n\013Tr" +
-      "adingDays\022\013\n\007TD_NONE\020\000\022\007\n\003TD2\020\001\022\007\n\003TD3\020\002" +
-      "\022\010\n\004TD3C\020\003\022\007\n\003TD4\020\004\022\007\n\003TD7\020\005*\264\001\n\014Variabl" +
-      "eType\022\023\n\017VAR_UNSPECIFIED\020\000\022\014\n\010VAR_MEAN\020\001" +
-      "\022\n\n\006VAR_TD\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EASTER\020\014" +
-      "\022\n\n\006VAR_AO\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006" +
-      "VAR_SO\020\027\022\017\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n" +
-      "\010VAR_RAMP\020(B0\n\035demetra.modelling.io.prot" +
-      "obufB\017ModellingProtosP\000b\006proto3"
+      " \003(\001\022\n\n\002bd\030\007 \001(\005\022\016\n\006btheta\030\010 \003(\001\"\213\001\n\014Uca" +
+      "rimaModel\022$\n\005model\030\001 \001(\0132\025.modelling.Ari" +
+      "maModel\022)\n\ncomponents\030\002 \003(\0132\025.modelling." +
+      "ArimaModel\022*\n\013complements\030\003 \003(\0132\025.modell" +
+      "ing.ArimaModel\"7\n\026WienerKolmogorovFilter" +
+      "\022\017\n\007weights\030\001 \003(\001\022\014\n\004gain\030\002 \003(\001*7\n\016Trans" +
+      "formation\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG\020\001\022\013\n\007F" +
+      "N_AUTO\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_NONE\020\000\022" +
+      "\017\n\013LP_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPERIOD\020\002*" +
+      "H\n\013TradingDays\022\013\n\007TD_NONE\020\000\022\007\n\003TD2\020\001\022\007\n\003" +
+      "TD3\020\002\022\010\n\004TD3C\020\003\022\007\n\003TD4\020\004\022\007\n\003TD7\020\005*\264\001\n\014Va" +
+      "riableType\022\023\n\017VAR_UNSPECIFIED\020\000\022\014\n\010VAR_M" +
+      "EAN\020\001\022\n\n\006VAR_TD\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EAS" +
+      "TER\020\014\022\n\n\006VAR_AO\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020" +
+      "\026\022\n\n\006VAR_SO\020\027\022\017\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV" +
+      "\020\036\022\014\n\010VAR_RAMP\020(B0\n\035demetra.modelling.io" +
+      ".protobufB\017ModellingProtosP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19063,7 +19548,7 @@ public final class ModellingProtos {
     internal_static_modelling_UcarimaModel_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_modelling_UcarimaModel_descriptor,
-        new java.lang.String[] { "Model", "Components", });
+        new java.lang.String[] { "Model", "Components", "Complements", });
     internal_static_modelling_WienerKolmogorovFilter_descriptor =
       getDescriptor().getMessageTypes().get(13);
     internal_static_modelling_WienerKolmogorovFilter_fieldAccessorTable = new
