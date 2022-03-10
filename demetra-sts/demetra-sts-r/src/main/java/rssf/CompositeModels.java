@@ -261,12 +261,14 @@ public class CompositeModels {
             return estimation.stdevSignal(obs, cmps).toArray();
         }
 
-        public double[] signal(FastMatrix m) {
-            return estimation.signal(FastMatrix.of(m)).toArray();
+        public double[] signal(Matrix m, int[] pos) {
+            FastMatrix M=FastMatrix.of(m);
+            return (pos == null ? estimation.signal(M): estimation.signal(M, pos)).toArray();
         }
 
-        public double[] stdevSignal(FastMatrix m) {
-            return estimation.stdevSignal(FastMatrix.of(m)).toArray();
+        public double[] stdevSignal(Matrix m, int[] pos) {
+            FastMatrix M=FastMatrix.of(m);
+            return (pos == null ? estimation.stdevSignal(M): estimation.stdevSignal(M, pos)).toArray();
         }
 
         public FastMatrix loading(int obs) {

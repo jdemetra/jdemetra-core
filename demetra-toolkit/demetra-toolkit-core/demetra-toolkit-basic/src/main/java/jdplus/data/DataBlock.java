@@ -1390,6 +1390,20 @@ public final class DataBlock implements DoubleSeq.Mutable {
     }
 
     /**
+     * Sets this(i)= this(i) + fn(x(i), y(i))
+     *
+     * @param x
+     * @param y
+     * @param fn
+     */
+    public void add(@NonNull DoubleSeq x, @NonNull DoubleSeq y, @NonNull DoubleBinaryOperator fn) {
+        DoubleSeqCursor xcell = x.cursor(), ycell = y.cursor();
+        for (int i = beg; i != end; i += inc) {
+            data[i] += fn.applyAsDouble(xcell.getAndNext(), ycell.getAndNext());
+        }
+    }
+
+    /**
      * Sets this(i)=a*y(i)
      *
      * @param a
