@@ -165,8 +165,8 @@ public class TramoSpecMapping {
         }
         if (rinfo != null) {
             RegressionSpecMapping.readLegacy(rinfo, rb);
-            builder.regression(rb.build());
         }
+        builder.regression(rb.build());
         return builder.build();
     }
 

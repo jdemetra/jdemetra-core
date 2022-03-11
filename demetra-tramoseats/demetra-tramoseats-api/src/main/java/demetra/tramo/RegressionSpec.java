@@ -59,7 +59,7 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     }
 
     public boolean isUsed() {
-        return mean !=null || calendar.isUsed() || outliers.isEmpty()
+        return mean !=null || calendar.isUsed() || !outliers.isEmpty()
                 || !ramps.isEmpty() || !interventionVariables.isEmpty() 
                 || !userDefinedVariables.isEmpty();
     }
