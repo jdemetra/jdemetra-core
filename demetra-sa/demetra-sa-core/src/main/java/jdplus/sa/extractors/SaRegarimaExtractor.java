@@ -25,6 +25,7 @@ import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingUtility;
+import demetra.timeseries.regression.TrendConstant;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NBCAST;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NFCAST;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -48,7 +49,7 @@ public class SaRegarimaExtractor extends InformationMapping<RegSarimaModel> {
     }
 
     private static TsData det(RegSarimaModel source, ComponentType type, TsDomain domain, boolean lpcorr) {
-        TsData s = source.deterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        TsData s = source.deterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()) && ! (v.getCore() instanceof TrendConstant));
         return source.backTransform(s, lpcorr);
     }
 

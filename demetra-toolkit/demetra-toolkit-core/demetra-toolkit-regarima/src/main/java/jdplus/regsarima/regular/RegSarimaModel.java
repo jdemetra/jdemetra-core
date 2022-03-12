@@ -48,6 +48,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import jdplus.arima.estimation.IArimaMapping;
+import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.LogNormal;
 import jdplus.dstats.T;
@@ -365,13 +366,12 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         LikelihoodStatistics ll = getEstimation().getStatistics();
         double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
         TsDomain edom = estimation.getDomain();
+        TsDomain xdom = edom.extend(0, nf);
         if (b.isEmpty()) {
             fcasts = RegArimaForecasts.calcForecast(arima(),
                     getEstimation().originalY(), nf, sig2);
         } else {
-            Variable[] variables = getDescription().getVariables();
-            TsDomain xdom = edom.extend(0, nf);
-            FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+            FastMatrix matrix = regressionMatrix(xdom);
             fcasts = RegArimaForecasts.calcForecast(arima(),
                     getEstimation().originalY(), matrix,
                     b, getEstimation().getCoefficientsCovariance(), sig2);
@@ -381,6 +381,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         double[] ef = fcasts.getForecastsStdev();
 
         TsData tf = TsData.ofInternal(fstart, f);
+        tf = TsData.add(tf, preadjustmentEffect(xdom, v -> true));
         TsData fy = backTransform(tf, true);
         TsData efy;
         if (getDescription().isLogTransformation()) {
@@ -402,12 +403,11 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         LikelihoodStatistics ll = getEstimation().getStatistics();
         double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
         TsDomain edom = estimation.getDomain();
+        TsDomain xdom = edom.extend(nb, 0);
         if (b.isEmpty()) {
             bcasts = RegArimaForecasts.calcForecast(arima(), getEstimation().originalY().reverse(), nb, sig2);
         } else {
-            Variable[] variables = getDescription().getVariables();
-            TsDomain xdom = edom.extend(nb, 0);
-            FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
+            FastMatrix matrix = regressionMatrix(xdom);
             // reverse the matrix
             FastMatrix rmatrix = FastMatrix.make(matrix.getRowsCount(), matrix.getColumnsCount());
             DataBlockIterator iter = matrix.columnsIterator(), riter = rmatrix.columnsIterator();
@@ -425,6 +425,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         Arrays2.reverse(ef);
 
         TsData tb = TsData.ofInternal(bstart, f);
+        tb = TsData.add(tb, preadjustmentEffect(xdom, v -> true));
         TsData by = backTransform(tb, true);
         TsData eby;
         if (getDescription().isLogTransformation()) {

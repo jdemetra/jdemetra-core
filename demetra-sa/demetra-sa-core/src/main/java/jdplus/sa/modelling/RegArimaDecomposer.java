@@ -20,6 +20,7 @@ import demetra.sa.ComponentType;
 import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import java.util.function.Predicate;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -50,7 +51,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed) {
-        TsData f = model.deterministicEffect(domain, v ->  v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        TsData f = model.deterministicEffect(domain, v ->  v.isAttribute(SaVariable.REGEFFECT, type.name()) && ! (v.getCore() instanceof TrendConstant));
         if (f != null && !transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
         }

@@ -33,6 +33,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.TrendConstant;
+import java.util.Arrays;
 import java.util.function.Predicate;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
@@ -370,6 +371,36 @@ public interface GeneralLinearModel<M> extends Explorable {
         return missingvals;
     }
 
+    default int regressionVariablesDim(){
+        Variable[] variables = getDescription().getVariables();
+        return Arrays.stream(variables).mapToInt(v->v.freeCoefficientsCount()).sum();
+    }
+    
+    default FastMatrix regressionMatrix(TsDomain domain) {
+        int nvars=regressionVariablesDim();
+        if (nvars == 0)
+            return null;
+        FastMatrix M = FastMatrix.make(domain.getLength(), nvars);
+        Variable[] variables = getDescription().getVariables();
+        int cur=0;
+        for (Variable v : variables) {
+            if (!v.isPreadjustment()) {
+                FastMatrix x = Regression.matrix(domain, v.getCore());
+                if (x != null) {
+                    DataBlockIterator columns = x.columnsIterator();
+                    int ic = 0;
+                    while (columns.hasNext()) {
+                        DataBlock col = columns.next();
+                        if (v.getCoefficient(ic++).isFree()) {
+                            M.column(cur++).copy(col);
+                        }
+                    }
+                }
+            }
+        }
+        return M;
+    }
+
     /**
      * Gets the effect of all the estimated regression variables (= with unknown
      * coefficients)
@@ -424,7 +455,6 @@ public interface GeneralLinearModel<M> extends Explorable {
      */
     default TsData preadjustmentEffect(TsDomain domain, Predicate<Variable> test) {
         Description description = getDescription();
-        Estimation estimation = getEstimation();
         Variable[] variables = description.getVariables();
         DataBlock all = DataBlock.make(domain.getLength());
         if (variables.length > 0) {
