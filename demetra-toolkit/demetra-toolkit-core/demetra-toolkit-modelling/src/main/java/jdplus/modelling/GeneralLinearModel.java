@@ -19,26 +19,26 @@ package jdplus.modelling;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
-import demetra.information.Explorable;
-import jdplus.stats.likelihood.LikelihoodStatistics;
-import demetra.timeseries.regression.MissingValueEstimation;
 import demetra.data.ParametersEstimation;
+import demetra.information.Explorable;
+import demetra.math.matrices.Matrix;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.Variable;
-import java.util.List;
-import demetra.math.matrices.Matrix;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.MissingValueEstimation;
 import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.Variable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import jdplus.timeseries.simplets.Transformations;
 
 /**
@@ -254,7 +254,7 @@ public interface GeneralLinearModel<M> extends Explorable {
         if (variables.length == 0) {
             return interp;
         }
-        TsData det = deterministicEffect(interp.getDomain(), v -> !(v.getCore() instanceof TrendConstant));
+        TsData det = deterministicEffect(interp.getDomain(), v->true);
 
         return TsData.subtract(interp, det);
     }

@@ -17,36 +17,36 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.arima.SarimaSpec;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.timeseries.regression.Variable;
-import nbbrd.design.Development;
-import jdplus.sarima.SarimaModel;
 import demetra.timeseries.TsData;
-import demetra.timeseries.calendars.LengthOfPeriodType;
-import jdplus.stats.likelihood.LikelihoodStatistics;
-import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.Variable;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
+import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
-import demetra.timeseries.regression.ModellingUtility;
+import jdplus.sarima.SarimaModel;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LikelihoodStatistics;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.stats.tests.NiidTests;
 import jdplus.timeseries.simplets.Transformations;
-import jdplus.regarima.IRegArimaComputer;
+import nbbrd.design.Development;
 
 /**
  *
@@ -489,7 +489,7 @@ public final class ModelEstimation {
      * @return
      */
     public TsData getDeterministicEffect(TsDomain domain) {
-        TsData s = deterministicEffect(domain, v -> !(v.getCore() instanceof TrendConstant));
+        TsData s = deterministicEffect(domain, v -> true);
         return backTransform(s, true);
     }
 
