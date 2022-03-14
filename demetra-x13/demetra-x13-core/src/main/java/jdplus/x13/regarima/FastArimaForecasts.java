@@ -57,7 +57,7 @@ public class FastArimaForecasts implements ArimaForecasts {
     /**
      * 
      * @param model
-     * @param mu Vale of the mean estimated by regression. Will be internally modified by the stationary AR polynomial
+     * @param mu Value of the mean estimated by regression. Will be internally modified by the stationary AR polynomial
      * @return 
      */
     @Override
@@ -65,7 +65,7 @@ public class FastArimaForecasts implements ArimaForecasts {
         arima = model;
         ar = arima.getAr().asPolynomial();
         ma = arima.getMa().asPolynomial();
-        if (model.getStationaryArOrder() > 0) {
+        if (mu != 0 && model.getStationaryArOrder() > 0) {
             Polynomial c = model.getStationaryAr().asPolynomial();
             mean = mu * c.evaluateAt(1);
         } else {

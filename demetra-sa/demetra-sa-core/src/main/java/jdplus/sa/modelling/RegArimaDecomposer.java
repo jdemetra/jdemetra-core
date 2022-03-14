@@ -51,7 +51,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed) {
-        TsData f = model.deterministicEffect(domain, v ->  v.isAttribute(SaVariable.REGEFFECT, type.name()) && ! (v.getCore() instanceof TrendConstant));
+        TsData f = model.deterministicEffect(domain, v ->  SaVariable.isRegressionEffect(v, type) );
         if (f != null && !transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
         }
@@ -74,7 +74,7 @@ public class RegArimaDecomposer {
      * @return
      */
     public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
-        TsData f = model.deterministicEffect(domain, v -> test.test(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        TsData f = model.deterministicEffect(domain, v -> test.test(v) && SaVariable.isRegressionEffect(v, type));
         if (f != null && !transformed) {
             f = model.backTransform(f, false);
         }

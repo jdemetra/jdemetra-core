@@ -24,6 +24,7 @@ import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.SwitchOutlier;
 import demetra.timeseries.regression.TransitoryChange;
+import demetra.timeseries.regression.Variable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -75,4 +76,9 @@ public class SaVariable {
      * Specific attributes
      */
     public final String REGEFFECT = "regeffect";
+    
+    public boolean isRegressionEffect(Variable var, ComponentType type){
+        String effect=var.attribute(REGEFFECT);
+        return effect == null ? type == ComponentType.Undefined : effect.equals(type.name());
+    }
 }

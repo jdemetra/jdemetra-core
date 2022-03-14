@@ -32,6 +32,7 @@ import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.SwitchOutlier;
 import demetra.timeseries.regression.TransitoryChange;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TrigonometricVariables;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -92,10 +93,6 @@ public class SaVariablesMapping {
 
     static {
         synchronized (DEFAULTMAPPING) {
-            // Basic
-            DEFAULTMAPPING.put(Constant.class, v -> ComponentType.Trend);
-            DEFAULTMAPPING.put(LinearTrend.class, v -> ComponentType.Trend);
-
             // Outliers
             DEFAULTMAPPING.put(AdditiveOutlier.class, v -> ComponentType.Irregular);
             DEFAULTMAPPING.put(LevelShift.class, v -> ComponentType.Trend);

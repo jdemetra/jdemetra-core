@@ -44,17 +44,17 @@ public class SaRegarimaExtractor extends InformationMapping<RegSarimaModel> {
     }
 
     private static TsData outlier(RegSarimaModel source, ComponentType type, TsDomain domain) {
-        TsData s = source.deterministicEffect(domain, v -> ModellingUtility.isOutlier(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        TsData s = source.deterministicEffect(domain, v -> ModellingUtility.isOutlier(v) && SaVariable.isRegressionEffect(v, type));
         return source.backTransform(s, false);
     }
 
     private static TsData det(RegSarimaModel source, ComponentType type, TsDomain domain, boolean lpcorr) {
-        TsData s = source.deterministicEffect(domain, v -> v.isAttribute(SaVariable.REGEFFECT, type.name()) && ! (v.getCore() instanceof TrendConstant));
+        TsData s = source.deterministicEffect(domain, v -> SaVariable.isRegressionEffect(v, type));
         return source.backTransform(s, lpcorr);
     }
 
     private static TsData reg(RegSarimaModel source, ComponentType type, TsDomain domain) {
-        TsData s = source.deterministicEffect(domain, v -> ModellingUtility.isUser(v) && v.isAttribute(SaVariable.REGEFFECT, type.name()));
+        TsData s = source.deterministicEffect(domain, v -> ModellingUtility.isUser(v) && SaVariable.isRegressionEffect(v, type));
         return source.backTransform(s, false);
     }
 

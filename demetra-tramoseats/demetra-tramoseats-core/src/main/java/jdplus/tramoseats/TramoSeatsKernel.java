@@ -85,13 +85,13 @@ public class TramoSeatsKernel {
 
     private static SeatsModelSpec of(RegSarimaModel model) {
         TsData series = model.interpolatedSeries(false);
-        TsData det = model.deterministicEffect(null, v->! v.isAttribute(SaVariable.REGEFFECT, ComponentType.Undefined.name()) );
+        TsData det = model.deterministicEffect(null, v->! SaVariable.isRegressionEffect(v, ComponentType.Undefined)  );
         det=model.backTransform(det, true);
-        TsData yreg = RegArimaDecomposer.deterministicEffect(model, series.getDomain(), ComponentType.Series, false);
+        // we remove all the regression effects except the undefined ones (which will be included in the different components)
         if (model.getDescription().isLogTransformation()) {
-            series = TsData.divide(series, TsData.divide(det, yreg));
+            series = TsData.divide(series, det);
         } else {
-            series = TsData.subtract(series, TsData.subtract(det, yreg));
+            series = TsData.subtract(series, det);
         }
 
         SarimaModel arima = model.arima();

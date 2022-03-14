@@ -26,8 +26,12 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.ModellingUtility;
+import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.Variable;
 import demetra.x11.X11Spec;
 import demetra.x13.X13Spec;
+import java.util.Arrays;
+import java.util.Optional;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
@@ -112,85 +116,76 @@ public class X13Kernel {
         TsPeriod bstart = domain.getStartPeriod(), start = sdomain.getStartPeriod(), fstart = sdomain.getEndPeriod();
 
         // Gets all regression effects
-        TsData mh = model.getMovingHolidayEffect(domain);
-        TsData td = model.getTradingDaysEffect(domain);
+        TsData mh = model.deterministicEffect(domain, v -> ModellingUtility.isMovingHoliday(v));
+        TsData td = model.deterministicEffect(domain, v -> ModellingUtility.isDaysRelated(v));
 
-        TsData pt = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> ModellingUtility.isOutlier(v));
-        TsData ps = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> ModellingUtility.isOutlier(v));
-        TsData pi = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> ModellingUtility.isOutlier(v));
-        TsData ut = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, false, v -> ModellingUtility.isUser(v));
-        TsData us = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, false, v -> ModellingUtility.isUser(v));
-        TsData ui = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, false, v -> ModellingUtility.isUser(v));
-        TsData usa = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.SeasonallyAdjusted, false, v -> ModellingUtility.isUser(v));
-        TsData user = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Series, false, v -> ModellingUtility.isUser(v));
-        TsData uu = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Undefined, false, v -> ModellingUtility.isUser(v));
-        TsData p = mul ? TsData.multiply(pt, ps, pi) : TsData.add(pt, ps, pi);
+        TsData pt = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, true, v -> ModellingUtility.isOutlier(v));
+        TsData ps = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, true, v -> ModellingUtility.isOutlier(v));
+        TsData pi = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, true, v -> ModellingUtility.isOutlier(v));
+        TsData ut = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Trend, true, v -> ModellingUtility.isUser(v));
+        TsData us = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Seasonal, true, v -> ModellingUtility.isUser(v));
+        TsData ui = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Irregular, true, v -> ModellingUtility.isUser(v));
+        TsData usa = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.SeasonallyAdjusted, true, v -> ModellingUtility.isUser(v));
+        TsData user = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Series, true, v -> ModellingUtility.isUser(v));
+        TsData uu = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Undefined, true, v -> ModellingUtility.isUser(v));
+        TsData p = TsData.add(pt, ps, pi);
 
-        pt = mul ? TsData.multiply(pt, ut) : TsData.add(pt, ut);
-        ps = mul ? TsData.multiply(ps, us) : TsData.add(ps, us);
-        pi = mul ? TsData.multiply(pi, ui) : TsData.add(pi, ui);
-        TsData pall = mul ? TsData.multiply(pt, ps, pi) : TsData.add(pt, ps, pi);
-        TsData u = mul ? TsData.multiply(usa, user) : TsData.add(usa, user);
+        pt = TsData.add(pt, ut);
+        ps = TsData.add(ps, us);
+        pi = TsData.add(pi, ui);
+        TsData pall = TsData.add(pt, ps, pi);
+        TsData u = TsData.add(usa, user);
 
         // linearized series. detlin are deterministic effects removed before the decomposition,
         // detall are all the deterministic effects
-        TsData detlin, detall;
-        if (mul) {
-            detlin = TsData.multiply(td, mh, p, uu);
-            detall = TsData.multiply(detlin, u);
-        } else {
-            detlin = TsData.add(td, mh, p, uu);
-            detall = TsData.add(detlin, u);
-        }
+        TsData detlin = TsData.add(td, mh, p, uu), detall = TsData.add(detlin, u);
         // forecasts, backcasts
         TsData nbcasts = null, nfcasts = null;
-        TsData s = model.interpolatedSeries(false);
+        TsData s = model.interpolatedSeries(true);
 
         if (nb > 0 || nf > 0) {
-            DoubleSeq lin = model.linearizedSeries().getValues();
+            TsData lin = TsData.subtract(s, detall);
             SarimaModel arima = model.arima();
             FastArimaForecasts fcasts = new FastArimaForecasts();
             double mean = 0;
-            if (model.isMeanEstimation()) {
-                mean = model.getEstimation().getCoefficients().get(0);
+            Optional<Variable> mu = Arrays.stream(model.getDescription().getVariables()).filter(v -> v.getCore() instanceof TrendConstant).findFirst();
+            if (mu.isPresent()) {
+                mean = mu.get().getCoefficient(0).getValue();
             }
             fcasts.prepare(arima, mean);
 
             if (nb > 0) {
-                DoubleSeq tmp = fcasts.backcasts(lin, nb);
+                DoubleSeq tmp = fcasts.backcasts(lin.getValues(), nb);
                 nbcasts = TsData.of(bstart, tmp);
-                if (mul) {
-                    nbcasts = TsData.multiply(nbcasts.fastFn(z -> Math.exp(z)), detall);
-                } else {
-                    nbcasts = TsData.add(nbcasts, detall);
-                }
+                TsData.add(nbcasts, detall);
             }
             if (nf > 0) {
-                DoubleSeq tmp = fcasts.forecasts(lin, nf);
+                DoubleSeq tmp = fcasts.forecasts(lin.getValues(), nf);
                 nfcasts = TsData.of(fstart, tmp);
-                if (mul) {
-                    nfcasts = TsData.multiply(nfcasts.fastFn(z -> Math.exp(z)), detall);
-                } else {
-                    nfcasts = TsData.add(nfcasts, detall.drop(nb + n, 0));
-                }
+                nfcasts = TsData.add(nfcasts, detall);
             }
         }
 
-        astep.a1(s)
-                .a1a(nfcasts)
-                .a1b(nbcasts)
-                .a6(td)
-                .a7(mh)
-                .a8(pall)
-                .a8t(pt)
-                .a8s(ps)
-                .a8i(pi)
-                .a9(u)
-                .a9sa(usa)
-                .a9ser(user);
+        TsData a1a = nfcasts == null ? null : model.backTransform(nfcasts, true),
+                a1b = nbcasts == null ? null : model.backTransform(nbcasts, true);
 
-        s = TsData.concatenate(nbcasts, s, nfcasts);
-        return (mul ? TsData.divide(s, detlin) : TsData.subtract(s, detlin));
+        astep.a1(series)
+                .a1a(a1a)
+                .a1b(a1b)
+                .a6(model.backTransform(td, true))
+                .a7(model.backTransform(mh, false))
+                .a8(model.backTransform(pall, false))
+                .a8t(model.backTransform(pt, false))
+                .a8s(model.backTransform(ps, false))
+                .a8i(model.backTransform(pi, false))
+                .a9(model.backTransform(u, false))
+                .a9sa(model.backTransform(usa, false))
+                .a9ser(model.backTransform(user, false));
+
+        series = TsData.concatenate(a1b, series, a1a);
+        TsData x = model.backTransform(detlin, true);
+
+        return (mul ? TsData.divide(series, x) : TsData.subtract(series, x));
     }
 
     private X11Spec updateSpec(X11Spec spec, RegSarimaModel model) {
@@ -217,6 +212,14 @@ public class X13Kernel {
         } else {
             return TsData.divide(l, r);
         }
+    }
+
+    private TsData add(boolean mul, TsData l, TsData... r) {
+        return mul ? TsData.multiply(l, r) : TsData.add(l, r);
+    }
+
+    private TsData subtract(boolean mul, TsData l, TsData r) {
+        return mul ? TsData.divide(l, r) : TsData.subtract(l, r);
     }
 
     /**
@@ -295,10 +298,10 @@ public class X13Kernel {
         TsDomain d = a1.getDomain();
         // add ps to d10
 //
-        TsData a6=astep.getA6(), a7=astep.getA7();
-        TsData d18=invOp(mode, a6, a7);
+        TsData a6 = astep.getA6(), a7 = astep.getA7();
+        TsData d18 = invOp(mode, a6, a7);
         TsData d10c = invOp(mode, d10, a8s);
-        TsData d16=invOp(mode, d10c, d18);
+        TsData d16 = invOp(mode, d10c, d18);
 //        if (fd != null) {
 //            decomp.d10a(TsData.fitToDomain(d10c, fd));
 //            d10c = TsData.fitToDomain(d10c, d);
@@ -312,7 +315,7 @@ public class X13Kernel {
 //        TsData d18=op(mode, d16, d10c);
         if (fd != null) {
             decomp.d18a(TsData.fitToDomain(d18, fd));
-            d18= TsData.fitToDomain(d18, d);
+            d18 = TsData.fitToDomain(d18, d);
         }
         decomp.d18(d18);
 
@@ -343,7 +346,6 @@ public class X13Kernel {
         }
         decomp.d11final(d11c);
 
-
 //        if (spec.getMode() == DecompositionMode.PseudoAdditive) {
 //            TsData tmp = TsData.divide(a1, d12);
 //            tmp = TsData.subtract(tmp, d13);
@@ -351,7 +353,6 @@ public class X13Kernel {
 //        } else {
 //            d16 = op(mode, a1, d11c);
 //        }
-
         // remove pre-specified outliers
         TsData a1c = op(mode, a1, a8i);
         d11c = op(mode, d11c, a8i);
