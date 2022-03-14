@@ -111,6 +111,7 @@ public final class SdmxCubeConnection implements CubeConnection {
         int dimensionIndex = SdmxCubeUtil.getDimensionIndexById(dsd, dimensionId).orElseThrow(RuntimeException::new);
         return SdmxCubeUtil
                 .getChildren(connection, flow.getRef(), converter.toKey(ref), dimensionIndex)
+                .sorted()
                 .map(ref::child);
     }
 
