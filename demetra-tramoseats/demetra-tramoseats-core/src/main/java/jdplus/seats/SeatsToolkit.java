@@ -57,15 +57,15 @@ public class SeatsToolkit {
         int nf = spec.getForecastCount(), nb = spec.getBackcastCount();
 
         IComponentsEstimator cmpEstimator;
-//        switch (spec.getMethod()) {
-//            case KalmanSmoother:
-//                cmpEstimator = new KalmanEstimator(nb, nf);
-//                break;
-//            default:
-//                cmpEstimator = new WienerKolmogorovEstimator(nb, nf);
-//                break;
-//        }
+        switch (spec.getMethod()) {
+            case KalmanSmoother:
                 cmpEstimator = new KalmanEstimator(nb, nf);
+                break;
+            default:
+                cmpEstimator = new WienerKolmogorovEstimator(nb, nf);
+                break;
+        }
+//               cmpEstimator = new KalmanEstimator(nb, nf);
 
         IBiasCorrector bias;
         switch (spec.getBiasCorrection()) {
