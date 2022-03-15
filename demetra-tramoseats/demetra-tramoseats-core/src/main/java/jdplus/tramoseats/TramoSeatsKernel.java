@@ -8,14 +8,13 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
-import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
+import demetra.sa.SaVariable;
 import demetra.sa.SeriesDecomposition;
 import demetra.seats.SeatsModelSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.timeseries.regression.TrendConstant;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -25,6 +24,7 @@ import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsKernel;
 import jdplus.seats.SeatsResults;
 import jdplus.seats.SeatsToolkit;
+import jdplus.stats.likelihood.LikelihoodStatistics;
 import jdplus.tramo.TramoKernel;
 
 /**
@@ -85,13 +85,13 @@ public class TramoSeatsKernel {
 
     private static SeatsModelSpec of(RegSarimaModel model) {
         TsData series = model.interpolatedSeries(false);
-        TsData det = model.deterministicEffect(null, v->! (v.getCore() instanceof TrendConstant));
+        TsData det = model.deterministicEffect(null, v->! SaVariable.isRegressionEffect(v, ComponentType.Undefined)  );
         det=model.backTransform(det, true);
-        TsData yreg = RegArimaDecomposer.deterministicEffect(model, series.getDomain(), ComponentType.Series, false);
+        // we remove all the regression effects except the undefined ones (which will be included in the different components)
         if (model.getDescription().isLogTransformation()) {
-            series = TsData.divide(series, TsData.divide(det, yreg));
+            series = TsData.divide(series, det);
         } else {
-            series = TsData.subtract(series, TsData.subtract(det, yreg));
+            series = TsData.subtract(series, det);
         }
 
         SarimaModel arima = model.arima();

@@ -48,6 +48,7 @@ import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.StockTradingDays;
@@ -68,7 +69,6 @@ import jdplus.modelling.regression.HolidaysCorrectionFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
-import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.regular.IModelBuilder;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.timeseries.simplets.TsDataToolkit;
@@ -161,7 +161,7 @@ class X13ModelBuilder implements IModelBuilder {
             model.setMean(false);
         } else if (mu.isFixed()) {
             int d = spec.getArima().getD(), bd = spec.getArima().getBd();
-            add(model, new TrendConstant(d, bd), "const", ComponentType.Trend, new Parameter[]{mu});
+            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu});
         } else {
             model.setMean(true);
         }

@@ -65,6 +65,7 @@ public class SeatsToolkit {
                 cmpEstimator = new WienerKolmogorovEstimator(nb, nf);
                 break;
         }
+//               cmpEstimator = new KalmanEstimator(nb, nf);
 
         IBiasCorrector bias;
         switch (spec.getBiasCorrection()) {

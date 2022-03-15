@@ -5,27 +5,21 @@
  */
 package jdplus.regarima.extractors;
 
-import demetra.information.InformationMapping;
-import jdplus.data.DataBlock;
-import jdplus.math.matrices.FastMatrix;
-import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.regsarima.regular.RegSarimaModel;
-import demetra.information.InformationDelegate;
-import demetra.information.InformationExtractor;
-import demetra.modelling.SeriesInfo;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
+import demetra.information.InformationDelegate;
+import demetra.information.InformationExtractor;
+import demetra.information.InformationMapping;
+import demetra.math.matrices.Matrix;
+import demetra.modelling.SeriesInfo;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.TrendConstant;
-import demetra.timeseries.regression.RegressionItem;
-import nbbrd.design.Development;
-import nbbrd.service.ServiceProvider;
-import demetra.math.matrices.Matrix;
 import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.timeseries.regression.RegressionItem;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.UserVariable;
 import demetra.toolkit.dictionaries.ArimaDictionaries;
 import demetra.toolkit.dictionaries.Dictionary;
@@ -33,9 +27,15 @@ import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
 import demetra.toolkit.dictionaries.ResidualsDictionaries;
 import demetra.toolkit.dictionaries.UtilityDictionaries;
+import jdplus.data.DataBlock;
 import jdplus.dstats.T;
+import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.GeneralLinearModel;
+import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.stats.likelihood.LikelihoodStatistics;
+import nbbrd.design.Development;
+import nbbrd.service.ServiceProvider;
 
 /**
  *
@@ -239,19 +239,19 @@ public class RegSarimaModelExtractors {
             });
 //        MAPPING.set(RegressionDictionaries.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
 
-// All determinsitic effects
+// All deterministic effects
             set(RegressionDictionaries.DET, TsData.class, (RegSarimaModel source) -> {
-                TsData det = source.deterministicEffect(null, v -> !(v.getCore() instanceof TrendConstant));
+                TsData det = source.deterministicEffect(null, v->true);
                 return source.backTransform(det, true);
             });
             setArray(RegressionDictionaries.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
                     (source, i) -> {
-                        TsData det = source.deterministicEffect(source.forecastDomain(i), v -> !(v.getCore() instanceof TrendConstant));
+                        TsData det = source.deterministicEffect(source.forecastDomain(i), v -> true);
                         return source.backTransform(det, true);
                     });
             setArray(RegressionDictionaries.DET + SeriesInfo.B_SUFFIX, NBCAST, TsData.class,
                     (source, i) -> {
-                        TsData det = source.deterministicEffect(source.backcastDomain(i), v -> !(v.getCore() instanceof TrendConstant));
+                        TsData det = source.deterministicEffect(source.backcastDomain(i), v -> true);
                         return source.backTransform(det, true);
                     });
 

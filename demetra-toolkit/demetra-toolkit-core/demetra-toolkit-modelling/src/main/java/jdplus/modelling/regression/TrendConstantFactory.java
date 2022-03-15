@@ -5,14 +5,12 @@
  */
 package jdplus.modelling.regression;
 
-import demetra.timeseries.regression.Constant;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.regression.TrendConstant;
 import jdplus.data.DataBlock;
-import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.UnitRoots;
 
 /**

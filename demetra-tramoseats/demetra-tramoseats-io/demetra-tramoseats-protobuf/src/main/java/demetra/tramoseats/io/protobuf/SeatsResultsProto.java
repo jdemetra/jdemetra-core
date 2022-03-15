@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.protobuf;
 
+import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
@@ -29,14 +30,14 @@ import jdplus.ucarima.UcarimaModel;
 @lombok.experimental.UtilityClass
 public class SeatsResultsProto {
 
-    TramoSeatsProtos.CanonicalDecomposition convert(UcarimaModel ucm) {
+    ModellingProtos.UcarimaModel convert(UcarimaModel ucm) {
 
-        TramoSeatsProtos.CanonicalDecomposition.Builder builder = TramoSeatsProtos.CanonicalDecomposition.newBuilder()
-                .setArima(ToolkitProtosUtility.convert(ucm.getModel(), "model"));
+        ModellingProtos.UcarimaModel.Builder builder = ModellingProtos.UcarimaModel.newBuilder()
+                .setModel(ToolkitProtosUtility.convert(ucm.getModel(), "model"));
 
         if (ucm.getComponentsCount() == 4) {
             return builder
-                    .addComponents(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
+                    .addComplements(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(1), "seasonal"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(2), "transitory"))
@@ -44,7 +45,7 @@ public class SeatsResultsProto {
                     .build();
         } else {
             return builder
-                    .addComponents(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
+                    .addComplements(ToolkitProtosUtility.convert(ucm.getComplement(1), "seasonallyadjusted"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(0), "trend"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(1), "seasonal"))
                     .addComponents(ToolkitProtosUtility.convert(ucm.getComponent(2), "irregular"))

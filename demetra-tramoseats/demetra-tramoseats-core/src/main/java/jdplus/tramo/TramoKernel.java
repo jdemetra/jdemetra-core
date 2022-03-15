@@ -236,6 +236,11 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private RegSarimaModel ami(RegSarimaModelling modelling, ProcessingLog log) {
 
+        if (isFullySpecified()) {
+            modelling.estimate(options.precision);
+            return modelling.build();
+        }
+
         // Test the seasonality
         testSeasonality(modelling);
 
@@ -243,11 +248,6 @@ public class TramoKernel implements RegSarimaProcessor {
         testTransformation(modelling);
 
         regressionModule().test(modelling);
-
-        if (isFullySpecified()) {
-            modelling.estimate(options.precision);
-            return modelling.build();
-        }
 
         initProcessing(modelling.getDescription().regarima().getActualObservationsCount());
 

@@ -16,15 +16,6 @@
  */
 package demetra.timeseries.regression;
 
-import demetra.timeseries.regression.IEasterVariable;
-import demetra.timeseries.regression.ILengthOfPeriodVariable;
-import demetra.timeseries.regression.IMovingHolidayVariable;
-import demetra.timeseries.regression.IOutlier;
-import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.IUserVariable;
-import demetra.timeseries.regression.ModifiedTsVariable;
-import demetra.timeseries.regression.Variable;
-
 /**
  *
  * @author PALATEJ

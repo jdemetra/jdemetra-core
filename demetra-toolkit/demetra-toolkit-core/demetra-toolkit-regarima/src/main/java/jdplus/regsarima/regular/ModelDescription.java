@@ -45,6 +45,7 @@ import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import demetra.timeseries.regression.ModellingUtility;
+import demetra.timeseries.regression.TrendConstant;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
@@ -160,6 +161,9 @@ public final class ModelDescription {
             return;
         }
         List<Variable> vars = new ArrayList<>();
+        variables.stream()
+                .filter(v -> v.getCore() instanceof TrendConstant)
+                .forEach(v -> vars.add(v));
         variables.stream()
                 .filter(v -> ModellingUtility.isUser(v))
                 .forEachOrdered(v -> vars.add(v));

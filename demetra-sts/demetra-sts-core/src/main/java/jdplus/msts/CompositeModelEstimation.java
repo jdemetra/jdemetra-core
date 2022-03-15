@@ -17,11 +17,13 @@ import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.StateFilteringResults;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import jdplus.stats.likelihood.Likelihood;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
 import java.util.Arrays;
+import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.DataBlockStorage;
 import jdplus.math.matrices.FastMatrix;
@@ -88,7 +90,7 @@ public class CompositeModelEstimation {
     public StateStorage getSmoothedStates() {
         if (smoothedStates == null) {
             try {
-                StateStorage ss = AkfToolkit.robustSmooth(getSsf(),  new SsfMatrix(getData()), true, false);
+                StateStorage ss = AkfToolkit.robustSmooth(getSsf(), new SsfMatrix(getData()), true, false);
                 if (likelihood.isScalingFactor()) {
                     ss.rescaleVariances(likelihood.sigma2());
                 }
@@ -228,7 +230,6 @@ public class CompositeModelEstimation {
 
     public DoubleSeq signal(FastMatrix L) {
         double[] x = new double[data.getRowsCount()];
-        L.rowsIterator();
         DataBlockIterator rows = L.rowsIterator();
         StateStorage ss = getSmoothedStates();
         int pos = 0;
@@ -237,6 +238,17 @@ public class CompositeModelEstimation {
             ++pos;
         }
         return DoubleSeq.of(x);
+    }
+
+    public DoubleSeq signal(FastMatrix L, int[] cols) {
+        DataBlock x = DataBlock.make(data.getRowsCount());
+        DataBlockIterator columns = L.columnsIterator();
+        StateStorage ss = getSmoothedStates();
+        x.set(columns.next(), ss.getComponent(cols[0]), (a, b) -> a * b);
+        for (int i = 1; i < cols.length; ++i) {
+            x.add(columns.next(), ss.getComponent(cols[i]), (a, b) -> a * b);
+        }
+        return x.unmodifiable();
     }
 
     public FastMatrix loading(int obs, int[] cmps) {
@@ -280,6 +292,24 @@ public class CompositeModelEstimation {
             x[pos++] = v <= 0 ? 0 : Math.sqrt(v);
         }
         return DoubleSeq.of(x);
+    }
+
+    public DoubleSeq stdevSignal(FastMatrix L, int[] pos) {
+        if (pos.length == 1) {
+            StateStorage ss = getSmoothedStates();
+            double[] v=ss.getComponentVariance(pos[0]).toArray();
+            DoubleSeqCursor cursor=L.column(0).cursor();
+            for (int i=0; i<v.length; ++i){
+                v[i]=Math.sqrt(v[i])*Math.abs(cursor.getAndNext());
+            }
+            return DoubleSeq.of(v);
+        } else {
+            FastMatrix M = FastMatrix.make(data.getRowsCount(), ssf.getStateDim());
+            for (int i = 0; i < pos.length; ++i) {
+                M.column(pos[i]).copy(L.column(i));
+            }
+            return stdevSignal(M);
+        }
     }
 
     /**

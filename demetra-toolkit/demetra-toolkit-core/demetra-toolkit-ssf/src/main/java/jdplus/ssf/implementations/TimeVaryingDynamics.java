@@ -308,11 +308,11 @@ public class TimeVaryingDynamics {
         }
 
         double stderr(int pos) {
-            return pos > std.length ? scale : scale * std[pos];
+            return pos >= std.length ? scale : scale * std[pos];
         }
 
         double var(int pos) {
-            return pos > std.length ? scale2 : scale2 * std[pos] * std[pos];
+            return pos >= std.length ? scale2 : scale2 * std[pos] * std[pos];
         }
 
         @Override
@@ -347,12 +347,12 @@ public class TimeVaryingDynamics {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(stderr(pos) * u.get(0));
+            x.add(0, stderr(pos) * u.get(0));
         }
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(x.get(0) * stderr(pos));
+            xs.set(0, x.get(0) * stderr(pos));
         }
 
         @Override
