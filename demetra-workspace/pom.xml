@@ -72,12 +72,10 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
-            <version>${java-io-util.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml-bind</artifactId>
-            <version>${java-io-util.version}</version>
         </dependency>
     </dependencies>
 </project>

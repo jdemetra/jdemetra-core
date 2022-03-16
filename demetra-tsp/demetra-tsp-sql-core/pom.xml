@@ -63,7 +63,6 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-win</artifactId>
-            <version>${java-io-util.version}</version>
             <scope>runtime</scope>
         </dependency>
 
