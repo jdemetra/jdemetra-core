@@ -129,9 +129,13 @@ public final class SaItem {
             if (estimation == null) {
                 estimation = SaManager.process(definition, context, verbose);
             } else {
+                // workaround against incomplete estimation
+                SaSpecification pointSpec = estimation.getPointSpec();
+                if (pointSpec == null)
+                    pointSpec=definition.activeSpecification();
                 SaDefinition pdef = SaDefinition.builder()
                         .ts(definition.getTs())
-                        .domainSpec(estimation.getPointSpec())
+                        .domainSpec(pointSpec)
                         .build();
                 SaEstimation nestimation = SaManager.process(pdef, context, verbose);
                 estimation = nestimation.withQuality(estimation.getQuality());

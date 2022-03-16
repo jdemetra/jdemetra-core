@@ -147,7 +147,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
             }
         }
 
-        int no = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && var.isFree()).count();
+        int no = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && var.hasAttribute(ModellingUtility.AMI)).count();
         int nfo = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && !var.isFree()).count();
         int npo = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && !var.hasAttribute(ModellingUtility.AMI)).count();
 
@@ -337,7 +337,8 @@ public class HtmlRegSarima extends AbstractHtmlElement {
 
         writeFullRegressionItems(stream, edom, var -> !var.isPreadjustment() && var.getCore() instanceof ITradingDaysVariable);
         writeFullRegressionItems(stream, edom, var -> !var.isPreadjustment() && var.getCore() instanceof ILengthOfPeriodVariable);
-        writeFixedRegressionItems(stream, "Fixed calendar effects", edom, var -> !var.isFree() && var.getCore() instanceof ICalendarVariable);
+        writeFixedRegressionItems(stream, "Fixed trading days", edom, var -> !var.isFree() && var.getCore() instanceof ITradingDaysVariable);
+        writeFixedRegressionItems(stream, "Fixed leap year", edom, var -> !var.isFree() && var.getCore() instanceof ILengthOfPeriodVariable);
         writeRegressionItems(stream, "Easter", edom, var -> !var.isPreadjustment() && var.getCore() instanceof IEasterVariable);
         writeFixedRegressionItems(stream, "Fixed Easter", edom, var -> var.isPreadjustment() && var.getCore() instanceof IEasterVariable);
         if (outliers) {
@@ -499,7 +500,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, ITsVariable var, TsDomain context) throws IOException {
 
         List<RegSarimaModel.RegressionDesc> regs = model.getDetails().getRegressionItems().stream()
-                .filter(desc -> desc.getCore().equals(var))
+                .filter(desc -> desc.getCore() == var)
                 .collect(Collectors.toList());
         if (regs.isEmpty()) {
             return;
@@ -543,27 +544,26 @@ public class HtmlRegSarima extends AbstractHtmlElement {
                 double prob = 1 - t.getProbabilityForInterval(-tval, tval);
                 stream.write(new HtmlTableCell(df4.format(prob)).withWidth(100));
                 stream.close(HtmlTag.TABLEROW);
-                stream.close(HtmlTag.TABLE);
-                stream.newLine();
-                try {
-                    SymmetricMatrix.lcholesky(bvar);
-                    DataBlock r = DataBlock.of(coef);
-                    LowerTriangularMatrix.solveLx(bvar, r);
-                    double f = r.ssq() / size;
-                    F fdist = new F(size, estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
-                    StringBuilder builder = new StringBuilder();
-                    double pval = fdist.getProbability(f, ProbabilityType.Upper);
-                    builder.append("Joint F-Test = ").append(df2.format(f))
-                            .append(" (").append(df4.format(pval)).append(')');
-                    if (pval > .05) {
-                        stream.write(HtmlTag.IMPORTANT_TEXT, builder.toString(), Bootstrap4.TEXT_DANGER);
-                    } else {
-                        stream.write(HtmlTag.EMPHASIZED_TEXT, builder.toString());
-                    }
-                    stream.newLines(2);
-                } catch (Exception ex) {
-
+            }
+            stream.close(HtmlTag.TABLE);
+            stream.newLine();
+            try {
+                SymmetricMatrix.lcholesky(bvar);
+                DataBlock r = DataBlock.of(coef);
+                LowerTriangularMatrix.solveLx(bvar, r);
+                double f = r.ssq() / size;
+                F fdist = new F(size, estimation.getStatistics().getEffectiveObservationsCount() - estimation.getStatistics().getEstimatedParametersCount());
+                StringBuilder builder = new StringBuilder();
+                double pval = fdist.getProbability(f, ProbabilityType.Upper);
+                builder.append("Joint F-Test = ").append(df2.format(f))
+                        .append(" (").append(df4.format(pval)).append(')');
+                if (pval > .05) {
+                    stream.write(HtmlTag.IMPORTANT_TEXT, builder.toString(), Bootstrap4.TEXT_DANGER);
+                } else {
+                    stream.write(HtmlTag.EMPHASIZED_TEXT, builder.toString());
                 }
+                stream.newLines(2);
+            } catch (Exception ex) {
             }
 
         } else {
