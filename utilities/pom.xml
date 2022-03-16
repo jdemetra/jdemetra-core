@@ -86,22 +86,10 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.nbbrd.java-design-util</groupId>
-                    <artifactId>java-design-processor</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml-bind</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.nbbrd.java-design-util</groupId>
-                    <artifactId>java-design-processor</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- test only -->
