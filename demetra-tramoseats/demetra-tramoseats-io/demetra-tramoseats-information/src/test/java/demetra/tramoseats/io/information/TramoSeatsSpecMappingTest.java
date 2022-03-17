@@ -30,26 +30,21 @@ import demetra.timeseries.TsMoniker;
 import demetra.toolkit.io.xml.information.XmlInformationSet;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.util.NameManager;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
+import nbbrd.io.xml.bind.Jaxb;
 import org.assertj.core.util.Files;
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -117,35 +112,27 @@ public class TramoSeatsSpecMappingTest {
         assertEquals(nspec, spec);
     }
 
-    public static void testXmlSerialization() throws JAXBException, FileNotFoundException, IOException {
+    public static void testXmlSerialization() throws IOException {
         InformationSet info = TramoSeatsSpecMapping.writeLegacy(TramoSeatsSpec.RSAfull, true);
 
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         String tmp = Files.temporaryFolderPath();
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-
-        FileOutputStream stream = new FileOutputStream(tmp + "tramoseats.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-            Marshaller marshaller = jaxb.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xmlinfo, writer);
-            writer.flush();
-        }
+        Jaxb.Formatter
+                .of(XmlInformationSet.class)
+                .withFormatted(true)
+                .formatFile(xmlinfo, new File(tmp + "tramoseats.xml"));
     }
 
-    public static void testXmlDeserialization() throws JAXBException, FileNotFoundException, IOException {
+    public static void testXmlDeserialization() throws IOException {
         String tmp = Files.temporaryFolderPath();
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
+        XmlInformationSet rslt = Jaxb.Parser
+                .of(XmlInformationSet.class)
+                .parseFile(new File(tmp + "tramoseats.xml"));
 
-        FileInputStream istream = new FileInputStream(tmp + "tramoseats.xml");
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-            Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
-            InformationSet info = rslt.create();
-            TramoSeatsSpec nspec = TramoSeatsSpecMapping.readLegacy(info);
-            System.out.println(nspec.equals(TramoSeatsSpec.RSAfull));
-        }
+        InformationSet info = rslt.create();
+        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readLegacy(info);
+        System.out.println(nspec.equals(TramoSeatsSpec.RSAfull));
     }
 
     public static void main(String[] arg) throws JAXBException, IOException {
@@ -210,7 +197,7 @@ public class TramoSeatsSpecMappingTest {
         nitems.getItems().forEach(v -> v.process(null, true));
     }
 
-    public static void testXmlSerialization2() throws JAXBException, FileNotFoundException, IOException {
+    public static void testXmlSerialization2() throws IOException {
         Ts ts = Ts.builder()
                 .moniker(TsMoniker.of())
                 .name("prod")
@@ -237,40 +224,31 @@ public class TramoSeatsSpecMappingTest {
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         String tmp = Files.temporaryFolderPath();
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-
-        FileOutputStream stream = new FileOutputStream(tmp + "processing.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-            Marshaller marshaller = jaxb.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xmlinfo, writer);
-            writer.flush();
-        }
+        Jaxb.Formatter
+                .of(XmlInformationSet.class)
+                .withFormatted(true)
+                .formatFile(xmlinfo, new File(tmp + "processing.xml"));
     }
 
-    public static void testXmlDeserialization2() throws JAXBException, FileNotFoundException, IOException {
+    public static void testXmlDeserialization2() throws IOException {
         String tmp = Files.temporaryFolderPath();
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
+        XmlInformationSet rslt = Jaxb.Parser
+                .of(XmlInformationSet.class)
+                .parseFile(new File(tmp + "processing.xml"));
 
-        FileInputStream istream = new FileInputStream(tmp + "processing.xml");
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-            Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
-            InformationSet info = rslt.create();
-            SaItems nspec = SaItemsMapping.read(info);
-            System.out.println(nspec.getItems().get(0).getDefinition().getDomainSpec().equals(TramoSeatsSpec.RSA5));
-            System.out.println("");
-        }
+        InformationSet info = rslt.create();
+        SaItems nspec = SaItemsMapping.read(info);
+        System.out.println(nspec.getItems().get(0).getDefinition().getDomainSpec().equals(TramoSeatsSpec.RSA5));
+        System.out.println("");
     }
 
-    public static void testXmlDeserializationLegacy() throws FileNotFoundException {
+    public static void testXmlDeserializationLegacy() {
         String tmp = Files.temporaryFolderPath();
+        try {
+            XmlInformationSet rslt = Jaxb.Parser
+                .of(XmlInformationSet.class)
+                .parseFile(new File(tmp + "saprocessing-1.xml"));
 
-        FileInputStream istream = new FileInputStream(tmp + "saprocessing-1.xml");
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-            JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-            Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
             InformationSet info = rslt.create();
             SaItems nspec = SaItemsMapping.read(info);
             nspec.getItems().forEach(v->v.process(null, false));
@@ -282,8 +260,6 @@ public class TramoSeatsSpecMappingTest {
             long t1=System.currentTimeMillis();
             System.out.println(t1-t0);
         } catch (IOException ex) {
-            Logger.getLogger(TramoSeatsSpecMappingTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JAXBException ex) {
             Logger.getLogger(TramoSeatsSpecMappingTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

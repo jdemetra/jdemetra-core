@@ -20,23 +20,19 @@ import demetra.data.Data;
 import demetra.information.InformationSet;
 import demetra.toolkit.io.xml.legacy.core.XmlInformationSet;
 import demetra.tramo.TramoSpec;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.tramo.TramoFactory;
 import jdplus.tramo.TramoKernel;
+import nbbrd.io.xml.bind.Jaxb;
 import org.assertj.core.util.Files;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -110,29 +106,21 @@ public class TramoSpecMappingTest {
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         String tmp = Files.temporaryFolderPath();
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-
-        FileOutputStream stream = new FileOutputStream(tmp + "tramo.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
-            Marshaller marshaller = jaxb.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(xmlinfo, writer);
-            writer.flush();
-        }
+        Jaxb.Formatter
+                .of(XmlInformationSet.class)
+                .withFormatted(true)
+                .formatFile(xmlinfo, new File(tmp + "tramo.xml"));
     }
 
     public static void testXmlDeserialization() throws JAXBException, FileNotFoundException, IOException {
         String tmp = Files.temporaryFolderPath();
-        JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
+        XmlInformationSet rslt = Jaxb.Parser
+                .of(XmlInformationSet.class)
+                .parseFile(new File(tmp + "tramo.xml"));
 
-        FileInputStream istream = new FileInputStream(tmp + "tramo.xml");
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-            Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
-            InformationSet info = rslt.create();
-            TramoSpec nspec = TramoSpecMapping.readLegacy(info);
-            System.out.println(nspec.equals(TramoSpec.TRfull));
-        }
+        InformationSet info = rslt.create();
+        TramoSpec nspec = TramoSpecMapping.readLegacy(info);
+        System.out.println(nspec.equals(TramoSpec.TRfull));
     }
     
     public static void main(String[] arg) throws JAXBException, IOException{

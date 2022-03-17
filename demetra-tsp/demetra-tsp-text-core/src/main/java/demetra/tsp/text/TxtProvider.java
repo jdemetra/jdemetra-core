@@ -65,6 +65,6 @@ public final class TxtProvider implements FileLoader<TxtBean> {
     }
 
     private static @NonNull TsCollection getData(@NonNull DataSource dataSource, HasFilePaths paths, TxtParam param) throws IOException {
-        return new TxtLoader(paths).load(param.get(dataSource));
+        return TxtLoader.load(param.get(dataSource), paths);
     }
 }

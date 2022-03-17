@@ -19,11 +19,7 @@ package demetra.x13.io.information;
 import demetra.DemetraVersion;
 import demetra.data.Data;
 import demetra.information.InformationSet;
-import demetra.sa.SaDefinition;
-import demetra.sa.SaEstimation;
-import demetra.sa.SaItem;
-import demetra.sa.SaItems;
-import demetra.sa.SaSpecification;
+import demetra.sa.*;
 import demetra.sa.io.information.SaItemMapping;
 import demetra.sa.io.information.SaItemsMapping;
 import demetra.timeseries.Ts;
@@ -31,22 +27,20 @@ import demetra.timeseries.TsMoniker;
 import demetra.toolkit.io.xml.information.XmlInformationSet;
 import demetra.util.NameManager;
 import demetra.x13.X13Spec;
-import static demetra.x13.io.information.X11SpecMapping.FCASTS;
-import static demetra.x13.io.information.X11SpecMapping.SIGMAVEC;
-import static demetra.x13.io.information.X13SpecMapping.X11;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import jdplus.x13.X13Results;
+import nbbrd.io.xml.bind.Jaxb;
 import org.assertj.core.util.Files;
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+
+import static demetra.x13.io.information.X11SpecMapping.FCASTS;
+import static demetra.x13.io.information.X11SpecMapping.SIGMAVEC;
+import static demetra.x13.io.information.X13SpecMapping.X11;
 
 /**
  *
@@ -141,14 +135,13 @@ public class X13SpecMappingTest {
         nitems.getItems().forEach(v -> v.process(null, true));
     }
 
-    public static void testXmlDeserializationLegacy() throws FileNotFoundException {
+    public static void testXmlDeserializationLegacy() {
         String tmp = Files.temporaryFolderPath();
+        try {
+            XmlInformationSet rslt = Jaxb.Parser
+                    .of(XmlInformationSet.class)
+                    .parseFile(new File(tmp + "saprocessing-2.xml"));
 
-        FileInputStream istream = new FileInputStream(tmp + "saprocessing-2.xml");
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
-            JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-            Unmarshaller unmarshaller = jaxb.createUnmarshaller();
-            XmlInformationSet rslt = (XmlInformationSet) unmarshaller.unmarshal(reader);
             InformationSet info = rslt.create();
             SaItems nspec = SaItemsMapping.read(info);
             nspec.getItems().forEach(v -> v.process(null, false));
@@ -167,7 +160,6 @@ public class X13SpecMappingTest {
             long t1 = System.currentTimeMillis();
             System.out.println(t1 - t0);
         } catch (IOException ex) {
-        } catch (JAXBException ex) {
         }
     }
 
