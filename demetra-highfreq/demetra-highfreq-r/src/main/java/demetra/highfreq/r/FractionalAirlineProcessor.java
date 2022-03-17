@@ -45,7 +45,6 @@ public class FractionalAirlineProcessor {
 
     public FractionalAirlineEstimation estimate(double[] y, Matrix x, boolean mean, double[] periods, int ndiff, boolean ar, String[] outliers, double cv, double precision, boolean approximateHessian) {
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
-                .y(y)
                 .X(x)
                 .meanCorrection(mean)
                 .periodicities(periods)
@@ -57,7 +56,7 @@ public class FractionalAirlineProcessor {
                 .precision(precision)
                 .approximateHessian(approximateHessian)
                 .build();
-        return FractionalAirlineKernel.process(spec);
+        return FractionalAirlineKernel.process(DoubleSeq.of(y), spec);
     }
 
     public SsfUcarimaEstimation ssfDetails(FractionalAirlineDecomposition fad) {

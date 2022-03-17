@@ -43,11 +43,10 @@ public class FractionalAirlineKernelTest {
         FastMatrix hol = FastMatrix.make(edf.getRowsCount(), france.length);
         HolidaysUtility.fillDays(france, hol, LocalDate.of(1996, 1, 1), new int[]{7}, false);
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
-                .y(edf.column(0).fn(z -> Math.log(z)).toArray())
                 .X(hol)
                 .periodicities(new double[]{7, 365.25})
                 .build();
-        FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(spec);
+        FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(edf.column(0).fn(z -> Math.log(z)), spec);
         assertTrue(rslt != null);
 
 //        System.out.println(rslt.getCoefficients());
@@ -55,43 +54,39 @@ public class FractionalAirlineKernelTest {
 //        System.out.println(rslt.getLikelihood().getLogLikelihood());
 
         spec = FractionalAirlineSpec.builder()
-                .y(edf.column(0).fn(z -> Math.log(z)).toArray())
-                .X(hol)
+                 .X(hol)
                 .periodicities(new double[]{7, 365})
                 //                .outliers(new String[]{"ao", "wo"})
                 //                .criticalValue(6)
                 .differencingOrder(2)
                 .build();
-        rslt = FractionalAirlineKernel.process(spec);
+        rslt = FractionalAirlineKernel.process(edf.column(0).fn(z -> Math.log(z)), spec);
         assertTrue(rslt != null);
 //        System.out.println(rslt.getCoefficients());
 //        System.out.println(DoubleSeq.of(rslt.tstats()));
 //        System.out.println(rslt.getLikelihood().getLogLikelihood());
 
         spec = FractionalAirlineSpec.builder()
-                .y(edf.column(0).fn(z -> Math.log(z)).toArray())
                 .periodicities(new double[]{7, 365.25})
                 .differencingOrder(2)
                 .build();
-        rslt = FractionalAirlineKernel.process(spec);
+        rslt = FractionalAirlineKernel.process(edf.column(0).fn(z -> Math.log(z)), spec);
 //        System.out.println(rslt.getLikelihood().getLogLikelihood());
     }
 
     @Test
     public void testWeekly() {
         FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
-                .y(WeeklyData.US_CLAIMS)
                 .periodicities(new double[]{365.25 / 7})
                 .precision(1e-7)
                 .build();
-        FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(spec);
+        FractionalAirlineEstimation rslt = FractionalAirlineKernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS), spec);
 //        System.out.println(rslt.getLikelihood().getLogLikelihood());
         spec = FractionalAirlineSpec.builder()
-                .y(WeeklyData.US_CLAIMS)
                 .periodicities(new double[]{52})
                 .precision(1e-7)
                 .build();
-        rslt = FractionalAirlineKernel.process(spec);
+        rslt = FractionalAirlineKernel.process(DoubleSeq.of(WeeklyData.US_CLAIMS), spec);
 //        System.out.println(rslt.getLikelihood().getLogLikelihood());
     }
 

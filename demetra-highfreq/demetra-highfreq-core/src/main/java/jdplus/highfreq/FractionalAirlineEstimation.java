@@ -36,6 +36,7 @@ public class FractionalAirlineEstimation implements GenericExplorable {
     private Matrix parametersCovariance;
 
     LikelihoodStatistics likelihood;
+    DoubleSeq residuals;
 
     public double[] linearized() {
 

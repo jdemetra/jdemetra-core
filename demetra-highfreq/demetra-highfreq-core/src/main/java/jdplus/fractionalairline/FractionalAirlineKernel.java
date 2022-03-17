@@ -30,6 +30,7 @@ import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.SwitchOutlierFactory;
+import jdplus.regarima.ami.GenericOutliersDetection;
 import jdplus.regarima.ami.OutliersDetectionModule;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.CompositeSsf;
@@ -51,11 +52,10 @@ import jdplus.ucarima.ssf.SsfUcarima;
 @lombok.experimental.UtilityClass
 public class FractionalAirlineKernel {
 
-    public FractionalAirlineEstimation process(FractionalAirlineSpec spec) {
+    public FractionalAirlineEstimation process(DoubleSeq y, FractionalAirlineSpec spec) {
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), false, spec.getDifferencingOrder(), spec.isAr());
-        double[] y = spec.getY();
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
-                .y(DoubleSeq.of(y))
+                .y(y)
                 .addX(FastMatrix.of(spec.getX()))
                 .arima(mapping.getDefault())
                 .meanCorrection(spec.isMeanCorrection());
@@ -71,7 +71,9 @@ public class FractionalAirlineKernel {
                     .processor(processor)
                     .build();
             
-            od.setCriticalValue(spec.getCriticalValue());
+            double cv = Math.max(spec.getCriticalValue(), GenericOutliersDetection.criticalValue(y.length(), 0.01));
+            od.setCriticalValue(cv);
+            
             RegArimaModel regarima = builder.build();
             od.prepare(regarima.getObservationsCount());
             od.process(regarima, mapping);
@@ -79,7 +81,7 @@ public class FractionalAirlineKernel {
             o = new OutlierDescriptor[io.length];
             for (int i = 0; i < io.length; ++i) {
                 int[] cur = io[i];
-                DataBlock xcur = DataBlock.make(y.length);
+                DataBlock xcur = DataBlock.make(y.length());
                 factories[cur[1]].fill(cur[0], xcur);
                 o[i] = new OutlierDescriptor(factories[cur[1]].getCode(), cur[0]);
                 builder.addX(xcur);
@@ -110,6 +112,7 @@ public class FractionalAirlineKernel {
                 .coefficients(rslt.getConcentratedLikelihood().coefficients())
                 .coefficientsCovariance(rslt.getConcentratedLikelihood().covariance(2, true))
                 .likelihood(rslt.statistics())
+                .residuals(rslt.getConcentratedLikelihood().e())
                 .outliers(o)
                 .parameters(max.getParameters())
                 .parametersCovariance(max.asymptoticCovariance())
