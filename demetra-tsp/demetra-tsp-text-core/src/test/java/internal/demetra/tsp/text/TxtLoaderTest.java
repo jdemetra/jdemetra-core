@@ -17,7 +17,6 @@
 package internal.demetra.tsp.text;
 
 import demetra.data.AggregationType;
-import demetra.data.Data;
 import demetra.timeseries.*;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsp.text.TxtBean;
@@ -39,19 +38,19 @@ import static org.junit.Assert.assertEquals;
  */
 public class TxtLoaderTest {
 
-    private final TxtLoader loader = new TxtLoader(HasFilePaths.of());
+    private final HasFilePaths noPath = HasFilePaths.of();
 
     private File getFile(String resource) throws URISyntaxException {
         URI uri = TxtLoaderTest.class.getResource(resource).toURI();
         return new File(uri);
-     }
+    }
 
     @Test
     public void testDefaultBean() throws IOException, URISyntaxException {
         TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/Insee1.txt"));
 
-        TsCollection source = loader.load(bean);
+        TsCollection source = TxtLoader.load(bean, noPath);
 
         assertEquals(15, source.getItems().size());
 
@@ -84,7 +83,7 @@ public class TxtLoaderTest {
         bean.setHeaders(false);
         bean.setSkipLines(5);
 
-        TsCollection source = loader.load(bean);
+        TsCollection source = TxtLoader.load(bean, noPath);
 
         assertEquals(1, source.size());
 
@@ -104,7 +103,7 @@ public class TxtLoaderTest {
         bean.setFile(getFile("/Insee1.txt"));
         bean.setObsGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.First).build());
 
-        TsCollection source = loader.load(bean);
+        TsCollection source = TxtLoader.load(bean, noPath);
 
         assertEquals(15, source.size());
 
