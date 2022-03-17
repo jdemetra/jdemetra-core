@@ -5,31 +5,29 @@
  */
 package jdplus.fractionalairline;
 
-import jdplus.arima.ArimaModel;
-import jdplus.regarima.GlsArimaProcessor;
-import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.RegArimaModel;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import jdplus.highfreq.FractionalAirlineDecomposition;
-import jdplus.highfreq.FractionalAirlineEstimation;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.highfreq.SeriesComponent;
 import demetra.modelling.OutlierDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
-import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
-import jdplus.stats.likelihood.LogLikelihoodFunction;
+import jdplus.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.FractionalAirlineEstimation;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.SwitchOutlierFactory;
+import jdplus.regarima.GlsArimaProcessor;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.ami.GenericOutliersDetection;
 import jdplus.regarima.ami.OutliersDetectionModule;
 import jdplus.ssf.dk.DkToolkit;
@@ -38,6 +36,8 @@ import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ExtendedSsfData;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.SsfData;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.ucarima.AllSelector;
 import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;
@@ -53,7 +53,7 @@ import jdplus.ucarima.ssf.SsfUcarima;
 public class FractionalAirlineKernel {
 
     public FractionalAirlineEstimation process(DoubleSeq y, FractionalAirlineSpec spec) {
-        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), false, spec.getDifferencingOrder(), spec.isAr());
+        final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), spec.isAdjustToInt(), spec.getDifferencingOrder(), spec.isAr());
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(y)
                 .addX(FastMatrix.of(spec.getX()))

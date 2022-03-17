@@ -88,4 +88,9 @@ public class FractionalAirlineSpec implements ProcSpecification{
         return new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
     }
     
+    @Override
+    public String display(){
+        return "Fractional airline";
+    }
+    
 }
