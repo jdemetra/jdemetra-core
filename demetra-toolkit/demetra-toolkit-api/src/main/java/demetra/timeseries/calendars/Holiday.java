@@ -34,4 +34,7 @@ public interface Holiday {
     Holiday reweight(double newWeight);
     
     Holiday forPeriod(LocalDate start, LocalDate end);
+    
+    String display();
+    
 }

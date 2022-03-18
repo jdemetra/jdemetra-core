@@ -8,6 +8,7 @@ package demetra.highfreq;
 import demetra.math.matrices.Matrix;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
+import demetra.timeseries.calendars.HolidaysOption;
 
 /**
  *
@@ -24,9 +25,11 @@ public class FractionalAirlineSpec implements ProcSpecification{
     // regression variables
     private boolean meanCorrection;
     private Matrix X;
+    private String[] Xnames;
     
     private String calendar;
-    private boolean skip;
+    private HolidaysOption holidaysOption;
+    private boolean single;
     
     // Periodic airline model
     private double[] periodicities;
@@ -55,6 +58,7 @@ public class FractionalAirlineSpec implements ProcSpecification{
                 .meanCorrection(false)
                 .periodicities(NO_PERIOD)
                 .outliers(ALL_OUTLIERS)
+                .holidaysOption(HolidaysOption.Default)
                 .precision(1e-9);
     }
     

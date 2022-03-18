@@ -214,10 +214,10 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         int P = sspec.getP();
         Parameter[] p = arima.getPhi();
         int nobs = ll.getEffectiveObservationsCount(), nparams = ll.getEstimatedParametersCount();
-        T t = new T(nobs - nparams);
         DoubleSeqCursor vars = model.getEstimation().getParameters().getCovariance().diagonal().cursor();
         double ndf = nobs - nparams;
-        double vcorr = ndf / (ndf + nhp);
+        double vcorr = (ndf - nhp) / ndf;
+        T t = new T(ndf - nhp);
         List<String> headers = new ArrayList<>();
         for (int j = 0; j < P; ++j) {
             stream.open(HtmlTag.TABLEROW);

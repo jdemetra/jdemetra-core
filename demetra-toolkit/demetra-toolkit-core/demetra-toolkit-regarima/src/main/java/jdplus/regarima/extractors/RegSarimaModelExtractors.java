@@ -10,6 +10,7 @@ import demetra.data.Parameter;
 import demetra.information.InformationDelegate;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.SeriesInfo;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.IEasterVariable;
@@ -24,7 +25,12 @@ import demetra.toolkit.dictionaries.ArimaDictionaries;
 import demetra.toolkit.dictionaries.Dictionary;
 import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
+import demetra.toolkit.dictionaries.ResidualsDictionaries;
+import demetra.toolkit.dictionaries.UtilityDictionaries;
+import jdplus.data.DataBlock;
 import jdplus.dstats.T;
+import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.GeneralLinearModel;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.stats.likelihood.LikelihoodStatistics;
@@ -235,7 +241,7 @@ public class RegSarimaModelExtractors {
 
 // All deterministic effects
             set(RegressionDictionaries.DET, TsData.class, (RegSarimaModel source) -> {
-           onal     TsData det = source.deterministicEffect(null, v->true);
+                TsData det = source.deterministicEffect(null, v->true);
                 return source.backTransform(det, true);
             });
             setArray(RegressionDictionaries.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,

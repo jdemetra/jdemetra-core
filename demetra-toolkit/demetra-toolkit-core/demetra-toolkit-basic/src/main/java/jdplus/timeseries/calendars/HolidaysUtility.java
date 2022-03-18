@@ -31,7 +31,11 @@ import java.util.Iterator;
 import java.util.Map;
 import jdplus.math.matrices.FastMatrix;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.FixedWeekDay;
+import demetra.timeseries.calendars.HolidaysOption;
+import java.time.temporal.ChronoUnit;
+import jdplus.data.DataBlockIterator;
 
 /**
  *
@@ -48,6 +52,50 @@ public class HolidaysUtility {
             }
         }
         return false;
+    }
+    
+     
+    public FastMatrix regressionVariables(Holiday[] holidays, TsDomain domain, HolidaysOption option, int[] nonworking, boolean single){
+        
+        // Fill the full matrix
+        LocalDate start = domain.getStartPeriod().start().toLocalDate(), end = domain.getEndPeriod().start().toLocalDate();
+        int length=(int) start.until(end, ChronoUnit.DAYS);
+        int  nhol=holidays.length;
+        FastMatrix A=FastMatrix.make(length, nhol);
+        switch (option){
+            case Previous: 
+                fillPreviousWorkingDays(holidays, A, start, nonworking);
+                break;
+            case Next: 
+                fillNextWorkingDays(holidays, A, start, nonworking);
+                break;
+            case Skip: 
+                fillDays(holidays, A, start, nonworking, true);
+                break;
+            default:
+                fillDays(holidays, A, start, nonworking, false);
+        }
+        FastMatrix M=FastMatrix.make(domain.getLength(), single ? 1 : A.getColumnsCount());
+        for (int i=0; i<domain.getLength(); ++i){
+            TsPeriod p = domain.get(i);
+            int j0=(int) start.until(p.start().toLocalDate(), ChronoUnit.DAYS);
+            int j1=(int) start.until(p.end().toLocalDate(), ChronoUnit.DAYS);
+            FastMatrix a = A.extract(j0, j1-j0, 0, nhol);
+            if (single){
+                M.set(i, 0, a.sum());
+            }else{
+                M.row(i).set(a.columnsIterator(), ca->ca.sum());
+            }
+        }
+        return M;
+    }
+    
+    public String[] names(Holiday[] hol){
+        String[] n=new String[hol.length];
+        for (int i=0; i<hol.length; ++i){
+            n[i]=hol[i].display();
+        }
+        return n;
     }
 
     public void fillDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, int[] nonworking, final boolean skip) {

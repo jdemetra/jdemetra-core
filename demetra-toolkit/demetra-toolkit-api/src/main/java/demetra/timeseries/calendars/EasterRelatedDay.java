@@ -137,5 +137,15 @@ public class EasterRelatedDay implements Holiday {
             }
         }
     }
+    
+    @Override
+    public String display(){
+        if (offset == 0)
+            return "easter";
+        else if (offset < 0)
+            return "easter+"+offset;
+        else
+            return "easter-"+(-offset);
+    }
 
 }

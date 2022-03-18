@@ -100,5 +100,12 @@ public class FixedDay implements Holiday {
         }
         return new FixedDay(nmonth + 1, nday, weight, validityPeriod);
     }
+    
+    @Override
+    public String display(){
+        StringBuilder builder=new StringBuilder();
+        builder.append(day).append('-').append(month);
+        return builder.toString();
+    }
 
 }

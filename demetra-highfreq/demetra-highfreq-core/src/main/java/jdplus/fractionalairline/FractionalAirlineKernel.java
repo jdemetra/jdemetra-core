@@ -9,9 +9,13 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.highfreq.FractionalAirlineSpec;
 import demetra.highfreq.SeriesComponent;
+import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
+import demetra.timeseries.calendars.CalendarDefinition;
+import demetra.timeseries.regression.ModellingContext;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
@@ -53,27 +57,36 @@ import jdplus.ucarima.ssf.SsfUcarima;
 public class FractionalAirlineKernel {
 
     public FractionalAirlineEstimation process(DoubleSeq y, FractionalAirlineSpec spec) {
+        return process(y, spec, ModellingContext.getActiveContext());
+    }
+
+    public FractionalAirlineEstimation process(DoubleSeq y, FractionalAirlineSpec spec, ModellingContext context) {
+        if (spec.isLog()) {
+            y = y.log();
+        }
         final MultiPeriodicAirlineMapping mapping = new MultiPeriodicAirlineMapping(spec.getPeriodicities(), spec.isAdjustToInt(), spec.getDifferencingOrder(), spec.isAr());
+        //
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(y)
                 .addX(FastMatrix.of(spec.getX()))
                 .arima(mapping.getDefault())
                 .meanCorrection(spec.isMeanCorrection());
         OutlierDescriptor[] o = null;
-        if (spec.getOutliers() != null) {
+        String[] outliers = spec.getOutliers();
+        if (outliers.length>0) {
             GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                     .precision(1e-5)
                     .build();
-            IOutlierFactory[] factories = factories(spec.getOutliers());
+            IOutlierFactory[] factories = factories(outliers);
             OutliersDetectionModule od = OutliersDetectionModule.build(ArimaModel.class)
                     .maxOutliers(100)
                     .addFactories(factories)
                     .processor(processor)
                     .build();
-            
+
             double cv = Math.max(spec.getCriticalValue(), GenericOutliersDetection.criticalValue(y.length(), 0.01));
             od.setCriticalValue(cv);
-            
+
             RegArimaModel regarima = builder.build();
             od.prepare(regarima.getObservationsCount());
             od.process(regarima, mapping);
@@ -86,7 +99,8 @@ public class FractionalAirlineKernel {
                 o[i] = new OutlierDescriptor(factories[cur[1]].getCode(), cur[0]);
                 builder.addX(xcur);
             }
-        }
+        }else
+            o=new OutlierDescriptor[0];
         RegArimaModel regarima = builder.build();
         GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(spec.getPrecision())
@@ -97,12 +111,12 @@ public class FractionalAirlineKernel {
         DoubleSeq parameters = max.getParameters();
         double phi;
         DoubleSeq theta;
-        if (spec.isAr()){
-            phi=parameters.get(0);
-            theta=parameters.drop(1, 0);
-        } else{
-            phi=0;
-            theta=parameters;
+        if (spec.isAr()) {
+            phi = parameters.get(0);
+            theta = parameters.drop(1, 0);
+        } else {
+            phi = 0;
+            theta = parameters;
         }
 
         return FractionalAirlineEstimation.builder()
@@ -110,7 +124,7 @@ public class FractionalAirlineKernel {
                 .x(regarima.variables())
                 .model(new demetra.highfreq.FractionalAirline(spec.getPeriodicities(), spec.getDifferencingOrder(), phi, theta))
                 .coefficients(rslt.getConcentratedLikelihood().coefficients())
-                .coefficientsCovariance(rslt.getConcentratedLikelihood().covariance(2, true))
+                .coefficientsCovariance(rslt.getConcentratedLikelihood().covariance(mapping.getDim(), true))
                 .likelihood(rslt.statistics())
                 .residuals(rslt.getConcentratedLikelihood().e())
                 .outliers(o)
@@ -277,12 +291,12 @@ public class FractionalAirlineKernel {
         DoubleSeq parameters = max.getParameters();
         double phi;
         DoubleSeq theta;
-        if (ar){
-            phi=parameters.get(0);
-            theta=parameters.drop(1, 0);
-        } else{
-            phi=0;
-            theta=parameters;
+        if (ar) {
+            phi = parameters.get(0);
+            theta = parameters.drop(1, 0);
+        } else {
+            phi = 0;
+            theta = parameters;
         }
         UcarimaModel ucm = ucm(rslt.getModel().arima(), ip);
 
