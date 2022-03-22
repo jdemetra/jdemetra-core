@@ -20,14 +20,15 @@ import demetra.spreadsheet.SpreadSheetBean;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.legacy.LegacyHandler;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.TsProviders;
-import nbbrd.io.text.Formatter;
-import nbbrd.io.text.Parser;
-import nbbrd.io.text.Property;
+import demetra.tsprovider.util.PropertyHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.File;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * @author Philippe Charles
@@ -42,55 +43,59 @@ public interface SpreadSheetParam extends DataSource.Converter<SpreadSheetBean> 
 
     final class V1 implements SpreadSheetParam {
 
-        private final Property<File> file = Property.of("file", new File(""), Parser.onFile(), Formatter.onFile());
-        private final DataSource.Converter<ObsFormat> obsFormat = TsProviders.onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
-        private final DataSource.Converter<ObsGathering> obsGathering = TsProviders.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final Property<String> sheet = Property.of("sheetName", "", Parser.onString(), Formatter.onString());
-        private final Property<String> series = Property.of("seriesName", "", Parser.onString(), Formatter.onString());
+        @lombok.experimental.Delegate
+        private final DataSource.Converter<SpreadSheetBean> converter =
+                SpreadSheetBeanHandler
+                        .builder()
+                        .file(PropertyHandler.onFile("file", new File("")))
+                        .format(LegacyHandler.onObsFormat("locale", "datePattern", "numberPattern", ObsFormat.getSystemDefault()))
+                        .gathering(LegacyHandler.onObsGathering("frequency", "aggregationType", "cleanMissing", ObsGathering.DEFAULT))
+                        .build()
+                        .asDataSourceConverter();
+
+        @lombok.Getter
+        private final String version = "20111201";
+
+        @lombok.Getter
+        private final DataSet.Converter<String> sheetParam = PropertyHandler.onString("sheetName", "").asDataSetConverter();
+
+        @lombok.Getter
+        private final DataSet.Converter<String> seriesParam = PropertyHandler.onString("seriesName", "").asDataSetConverter();
+    }
+
+    @lombok.Builder(toBuilder = true)
+    final class SpreadSheetBeanHandler implements PropertyHandler<SpreadSheetBean> {
+
+        @lombok.NonNull
+        private final PropertyHandler<File> file;
+
+        @lombok.NonNull
+        private final PropertyHandler<ObsFormat> format;
+
+        @lombok.NonNull
+        private final PropertyHandler<ObsGathering> gathering;
 
         @Override
-        public String getVersion() {
-            return "20111201";
-        }
-
-        @Override
-        public SpreadSheetBean getDefaultValue() {
+        public @NonNull SpreadSheetBean get(@NonNull Function<? super String, ? extends CharSequence> properties) {
             SpreadSheetBean result = new SpreadSheetBean();
-            result.setFile(file.getDefaultValue());
-            result.setObsFormat(obsFormat.getDefaultValue());
-            result.setObsGathering(obsGathering.getDefaultValue());
+            result.setFile(file.get(properties));
+            result.setFormat(format.get(properties));
+            result.setGathering(gathering.get(properties));
             return result;
         }
 
         @Override
-        public SpreadSheetBean get(DataSource dataSource) {
-            SpreadSheetBean result = new SpreadSheetBean();
-            result.setFile(file.get(dataSource::getParameter));
-            result.setObsFormat(obsFormat.get(dataSource));
-            result.setObsGathering(obsGathering.get(dataSource));
-            return result;
-        }
-
-        @Override
-        public void set(DataSource.Builder builder, SpreadSheetBean value) {
-            file.set(builder::parameter, value.getFile());
-            // FIXME: NPE bug in jtss
-            if (value.getObsFormat() != null) {
-                obsFormat.set(builder, value.getObsFormat());
+        public void set(@NonNull BiConsumer<? super String, ? super String> properties, @Nullable SpreadSheetBean value) {
+            if (value != null) {
+                file.set(properties, value.getFile());
+                // FIXME: NPE bug in jtss
+                if (value.getFormat() != null) {
+                    format.set(properties, value.getFormat());
+                }
+                if (value.getGathering() != null) {
+                    gathering.set(properties, value.getGathering());
+                }
             }
-            if (value.getObsGathering() != null) {
-                obsGathering.set(builder, value.getObsGathering());
-            }
-        }
-
-        @Override
-        public DataSet.Converter<String> getSheetParam() {
-            return TsProviders.dataSetConverterOf(sheet);
-        }
-
-        @Override
-        public DataSet.Converter<String> getSeriesParam() {
-            return TsProviders.dataSetConverterOf(series);
         }
     }
 }

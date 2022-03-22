@@ -21,23 +21,19 @@ import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.cube.*;
+import demetra.tsprovider.legacy.LegacyHandler;
 import demetra.tsprovider.util.ObsFormat;
-import demetra.tsprovider.util.TsProviders;
-import demetra.util.List2;
-import internal.util.Strings;
-import nbbrd.io.text.Formatter;
-import nbbrd.io.text.Parser;
-import nbbrd.io.text.Property;
+import demetra.tsprovider.util.PropertyHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static demetra.tsprovider.util.PropertyHandler.*;
 
 /**
  * @author Philippe Charles
@@ -50,82 +46,81 @@ public interface JdbcParam extends DataSource.Converter<JdbcBean> {
 
     final class V1 implements JdbcParam {
 
-        private static final Collector<CharSequence, ?, String> COMMA_JOINER = Collectors.joining(",");
+        private static final BulkCube DEFAULT_BULK = BulkCube.builder().ttl(Duration.ofMinutes(5)).depth(1).build();
 
-        private final Function<CharSequence, Stream<String>> dimensionSplitter = o -> Strings.splitToStream(',', o).map(String::trim).filter(Strings::isNotEmpty);
-        private final Function<Stream<CharSequence>, String> dimensionJoiner = o -> o.collect(COMMA_JOINER);
-
-        private final Property<String> dbName = Property.of("dbName", "", Parser.onString(), Formatter.onString());
-        private final Property<String> tableName = Property.of("tableName", "", Parser.onString(), Formatter.onString());
-        private final Property<List<String>> dimColumns = Property.of("dimColumns", List2.copyOf(Collections.emptyList()), Parser.onStringList(dimensionSplitter), Formatter.onStringList(dimensionJoiner));
-        private final Property<String> periodColumn = Property.of("periodColumn", "", Parser.onString(), Formatter.onString());
-        private final Property<String> valueColumn = Property.of("valueColumn", "", Parser.onString(), Formatter.onString());
-        private final DataSource.Converter<ObsFormat> dataFormat = TsProviders.onObsFormat(ObsFormat.DEFAULT, "locale", "datePattern", "numberPattern");
-        private final Property<String> versionColumn = Property.of("versionColumn", "", Parser.onString(), Formatter.onString());
-        private final Property<String> labelColumn = Property.of("labelColumn", "", Parser.onString(), Formatter.onString());
-        private final DataSource.Converter<ObsGathering> obsGathering = TsProviders.onObsGathering(ObsGathering.DEFAULT, "frequency", "aggregationType", "cleanMissing");
-        private final DataSource.Converter<BulkCube> cacheConfig = TsProviders.onBulkCube(BulkCube.builder().ttl(Duration.ofMinutes(5)).depth(1).build(), "cacheTtl", "cacheDepth");
+        @lombok.experimental.Delegate
+        private final DataSource.Converter<JdbcBean> converter =
+                JdbcBeanHandler
+                        .builder()
+                        .database(onString("dbName", ""))
+                        .table(onString("tableName", ""))
+                        .cube(
+                                TableAsCubeHandler
+                                        .builder()
+                                        .dimensions(onStringList("dimColumns", Collections.emptyList(), ','))
+                                        .timeDimension(onString("periodColumn", ""))
+                                        .measure(onString("valueColumn", ""))
+                                        .format(LegacyHandler.onObsFormat("locale", "datePattern", "numberPattern", ObsFormat.getSystemDefault()))
+                                        .version(onString("versionColumn", ""))
+                                        .label(onString("labelColumn", ""))
+                                        .gathering(LegacyHandler.onObsGathering("frequency", "aggregationType", "cleanMissing", ObsGathering.DEFAULT))
+                                        .build()
+                        )
+                        .cache(
+                                BulkCubeHandler
+                                        .builder()
+                                        .ttl(PropertyHandler.onDurationInMillis("cacheTtl", DEFAULT_BULK.getTtl()))
+                                        .depth(PropertyHandler.onInteger("cacheDepth", DEFAULT_BULK.getDepth()))
+                                        .build()
+                        )
+                        .build()
+                        .asDataSourceConverter();
 
         @Override
         public String getVersion() {
             return "20131203";
         }
 
-        @Override
-        public JdbcBean getDefaultValue() {
-            JdbcBean result = new JdbcBean();
-            result.setDatabase(dbName.getDefaultValue());
-            result.setTable(tableName.getDefaultValue());
-            result.setCube(TableAsCube
-                    .builder()
-                    .dimensions(dimColumns.getDefaultValue())
-                    .timeDimension(periodColumn.getDefaultValue())
-                    .measure(valueColumn.getDefaultValue())
-                    .obsFormat(dataFormat.getDefaultValue())
-                    .version(versionColumn.getDefaultValue())
-                    .label(labelColumn.getDefaultValue())
-                    .obsGathering(obsGathering.getDefaultValue())
-                    .build());
-            result.setCache(cacheConfig.getDefaultValue());
-            return result;
-        }
-
-        @Override
-        public JdbcBean get(DataSource dataSource) {
-            JdbcBean result = new JdbcBean();
-            result.setDatabase(dbName.get(dataSource::getParameter));
-            result.setTable(tableName.get(dataSource::getParameter));
-            result.setCube(TableAsCube
-                    .builder()
-                    .dimensions(dimColumns.get(dataSource::getParameter))
-                    .timeDimension(periodColumn.get(dataSource::getParameter))
-                    .measure(valueColumn.get(dataSource::getParameter))
-                    .obsFormat(dataFormat.get(dataSource))
-                    .version(versionColumn.get(dataSource::getParameter))
-                    .label(labelColumn.get(dataSource::getParameter))
-                    .obsGathering(obsGathering.get(dataSource))
-                    .build());
-            result.setCache(cacheConfig.get(dataSource));
-            return result;
-        }
-
-        @Override
-        public void set(DataSource.Builder builder, JdbcBean value) {
-            dbName.set(builder::parameter, value.getDatabase());
-            tableName.set(builder::parameter, value.getTable());
-            dimColumns.set(builder::parameter, value.getCube().getDimensions());
-            periodColumn.set(builder::parameter, value.getCube().getTimeDimension());
-            valueColumn.set(builder::parameter, value.getCube().getMeasure());
-            dataFormat.set(builder, value.getCube().getObsFormat());
-            versionColumn.set(builder::parameter, value.getCube().getVersion());
-            labelColumn.set(builder::parameter, value.getCube().getLabel());
-            obsGathering.set(builder, value.getCube().getObsGathering());
-            cacheConfig.set(builder, value.getCache());
-        }
 
         @Override
         public DataSet.Converter<CubeId> getCubeIdParam(CubeConnection connection) throws IOException {
             return CubeSupport.idByName(connection.getRoot());
+        }
+    }
+
+    @lombok.Builder(toBuilder = true)
+    final class JdbcBeanHandler implements PropertyHandler<JdbcBean> {
+
+        @lombok.NonNull
+        private final PropertyHandler<String> database;
+
+        @lombok.NonNull
+        private final PropertyHandler<String> table;
+
+        @lombok.NonNull
+        private final PropertyHandler<TableAsCube> cube;
+
+        @lombok.NonNull
+        private final PropertyHandler<BulkCube> cache;
+
+        @Override
+        public @NonNull JdbcBean get(@NonNull Function<? super String, ? extends CharSequence> properties) {
+            JdbcBean result = new JdbcBean();
+            result.setDatabase(database.get(properties));
+            result.setTable(table.get(properties));
+            result.setCube(cube.get(properties));
+            result.setCache(cache.get(properties));
+            return result;
+        }
+
+        @Override
+        public void set(@NonNull BiConsumer<? super String, ? super String> properties, @Nullable JdbcBean value) {
+            if (value != null) {
+                database.set(properties, value.getDatabase());
+                table.set(properties, value.getTable());
+                cube.set(properties, value.getCube());
+                cache.set(properties, value.getCache());
+            }
         }
     }
 }

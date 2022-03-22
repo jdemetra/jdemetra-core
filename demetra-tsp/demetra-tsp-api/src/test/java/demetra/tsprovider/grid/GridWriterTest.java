@@ -19,6 +19,7 @@ package demetra.tsprovider.grid;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.tsprovider.util.ObsFormat;
+import internal.util.Strings;
 import org.junit.Test;
 import test.tsprovider.grid.ArrayGridOutput;
 
@@ -208,7 +209,7 @@ public class GridWriterTest {
 
     @Test
     public void testValueTypes() throws IOException {
-        GridWriter opts = GridWriter.builder().format(ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "00.00")).build();
+        GridWriter opts = GridWriter.builder().format(ObsFormat.builder().dateTimePattern("yyyy-MM-dd").numberPattern("00.00").build()).build();
 
         assertDeepEqualTo(toArray(sample, opts, EnumSet.allOf(GridDataType.class)),
                 new Object[][]{

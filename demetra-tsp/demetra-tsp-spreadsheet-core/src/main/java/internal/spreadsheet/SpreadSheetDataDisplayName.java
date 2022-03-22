@@ -38,7 +38,7 @@ public final class SpreadSheetDataDisplayName implements HasDataDisplayName {
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
         SpreadSheetBean bean = resource.get(dataSource);
-        return bean.getFile().getPath() + toString(bean.getObsGathering());
+        return bean.getFile().getPath() + toString(bean.getGathering());
     }
 
     @Override
