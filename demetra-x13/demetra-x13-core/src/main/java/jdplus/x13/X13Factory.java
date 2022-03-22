@@ -17,8 +17,9 @@ import demetra.x11.X11Spec;
 import demetra.x13.X13Spec;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
-import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.x13.X13Dictionaries;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,13 +27,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import jdplus.regarima.diagnostics.OutOfSampleDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.OutliersDiagnosticsConfiguration;
 import jdplus.regarima.diagnostics.ResidualsDiagnosticsConfiguration;
-import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnostics;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
 import jdplus.sa.diagnostics.CoherenceDiagnostics;
 import jdplus.sa.diagnostics.CoherenceDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.CoherenceDiagnosticsFactory;
-import jdplus.sa.diagnostics.ResidualTradingDaysDiagnostics;
 import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.ResidualTradingDaysDiagnosticsFactory;
 import jdplus.sa.diagnostics.SaOutOfSampleDiagnosticsFactory;
@@ -52,15 +51,15 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     public static final X13Factory INSTANCE = new X13Factory();
 
     private final List<SaDiagnosticsFactory<?, X13Results>> diagnostics = new CopyOnWriteArrayList<>();
-    
-    public static List<SaDiagnosticsFactory<?, X13Results>> defaultDiagnostics(){
+
+    public static List<SaDiagnosticsFactory<?, X13Results>> defaultDiagnostics() {
         CoherenceDiagnosticsFactory<X13Results> coherence
                 = new CoherenceDiagnosticsFactory<>(true, CoherenceDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> {
                             return new CoherenceDiagnostics.Input(r.getDecomposition().getMode(), r);
                         }
                 );
-        
+
         SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
                 = new SaOutOfSampleDiagnosticsFactory<>(true, OutOfSampleDiagnosticsConfiguration.getDefault(),
                         r -> r.getDiagnostics().getGenericDiagnostics().forecastingTest());
@@ -92,29 +91,30 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     }
 
     public X13Factory() {
-         diagnostics.addAll(defaultDiagnostics());
+        diagnostics.addAll(defaultDiagnostics());
     }
 
     @Override
     public X13Spec generateSpec(X13Spec spec, X13Results estimation) {
- 
-            RegArimaSpec nrspec = RegArimaFactory.INSTANCE.generateSpec(spec.getRegArima(), estimation.getPreprocessing().getDescription());
-            X11Spec nxspec = update(spec.getX11(), estimation.getDecomposition());
 
-            return spec.toBuilder()
-                    .regArima(nrspec)
-                    .x11(nxspec)
-                    .build();
+        RegArimaSpec nrspec = RegArimaFactory.INSTANCE.generateSpec(spec.getRegArima(), estimation.getPreprocessing().getDescription());
+        X11Spec nxspec = update(spec.getX11(), estimation.getDecomposition());
+
+        return spec.toBuilder()
+                .regArima(nrspec)
+                .x11(nxspec)
+                .build();
     }
 
     @Override
     public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, EstimationPolicyType policy, TsDomain frozen) {
-        if (policy == policy.None)
+        if (policy == policy.None) {
             return currentSpec;
+        }
         RegArimaSpec nrspec = RegArimaFactory.INSTANCE.refreshSpec(currentSpec.getRegArima(), domainSpec.getRegArima(), policy, frozen);
         X11Spec x11 = currentSpec.getX11();
-        if (nrspec.getTransform().getFunction() == TransformationType.Auto){
-            x11=x11.toBuilder()
+        if (nrspec.getTransform().getFunction() == TransformationType.Auto) {
+            x11 = x11.toBuilder()
                     .mode(DecompositionMode.Undefined)
                     .build();
         }
@@ -171,4 +171,10 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         diagnostics.clear();
         diagnostics.addAll(factories);
     }
+
+    @Override
+    public Dictionary outputDictionary() {
+        return X13Dictionaries.X13DICTIONARY;
+    }
+
 }

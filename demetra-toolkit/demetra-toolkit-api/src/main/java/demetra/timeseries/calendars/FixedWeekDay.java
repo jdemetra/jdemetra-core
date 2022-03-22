@@ -81,9 +81,9 @@ public class FixedWeekDay implements Holiday {
 
     /**
      * Return the first Day in the given month of the given year which is a
-     * specified day of place
+     * specified day of week
      *
-     * @param day Day of place
+     * @param day Day of week
      * @param year
      * @param month
      * @return
@@ -103,7 +103,34 @@ public class FixedWeekDay implements Holiday {
         return start;
     }
 
+    /**
+     * Return the first Day in the given month of the given year which is a
+     * specified day of week
+     *
+     * @param day Day of week
+     * @param year
+     * @param month
+     * @return
+     */
+    public static LocalDate lastWeekDate(DayOfWeek day, int year, int month) {
+        TsPeriod m = TsPeriod.monthly(year, month);
+        LocalDate end = m.end().toLocalDate();
+        DayOfWeek dow = end.getDayOfWeek();
+        int istart = dow.getValue(); // 1 for monday
+        int n = day.getValue() - istart;
+        if (n >= 0) {
+            n -= 7;
+        }
+        if (n != 0) {
+            end = end.plusDays(n);
+        }
+        return end;
+    }
+
     public LocalDate calcDate(int year) {
+        if (place < 0){
+            return lastWeekDate(dayOfWeek, year, month);
+        }
         LocalDate d = firstWeekDate(dayOfWeek, year, month);
         if (place > 1) {
             d = d.plusDays((place - 1) * 7);

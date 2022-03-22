@@ -35,6 +35,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.HolidaysOption;
 import java.time.temporal.ChronoUnit;
+import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 
 /**
@@ -81,13 +82,44 @@ public class HolidaysUtility {
             int j0=(int) start.until(p.start().toLocalDate(), ChronoUnit.DAYS);
             int j1=(int) start.until(p.end().toLocalDate(), ChronoUnit.DAYS);
             FastMatrix a = A.extract(j0, j1-j0, 0, nhol);
+            // Avoid doubles
+            // We just keep the first holiday when several holidays fall the same day
+            DataBlockIterator arows = a.rowsIterator();
             if (single){
-                M.set(i, 0, a.sum());
+                double v=0;
+                while (arows.hasNext()){
+                    v+=vrow(arows.next());
+                }
+                M.set(i, 0, v);
             }else{
-                M.row(i).set(a.columnsIterator(), ca->ca.sum());
+                DataBlock mrow = M.row(i);
+                while (arows.hasNext()){
+                    addrow(arows.next(), mrow);
+                }
             }
         }
         return M;
+    }
+    
+    private double vrow(DataBlock row){
+        double[] pdata=row.getStorage();
+        for (int j=row.getStartPosition(); j<row.getEndPosition(); j+=row.getIncrement()){
+            double s=pdata[j];
+            if (s>0)
+                return s;
+        }
+        return 0;
+    }
+    
+    private void addrow(DataBlock row, DataBlock srow){
+        double[] pdata=row.getStorage();
+        for (int j=row.getStartPosition(), k=0; j<row.getEndPosition(); j+=row.getIncrement(), ++k){
+            double s=pdata[j];
+            if (s>0){
+                srow.add(k, s);
+                return;
+            }
+        }
     }
     
     public String[] names(Holiday[] hol){

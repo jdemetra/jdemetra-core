@@ -20,6 +20,7 @@ package internal.workspace.file.xml.util;
 
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
+import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import javax.xml.bind.annotation.XmlElement;
@@ -56,12 +57,12 @@ public abstract class AbstractXmlDay {
             fday.copy((FixedDay)day);
             return fday;
         }
-//        if (day instanceof FixedWeekDay)
-//        {
-//            XmlFixedWeekDay fday=new XmlFixedWeekDay();
-//            fday.copy((FixedWeekDay)day);
-//            return fday;
-//        }
+        if (day instanceof FixedWeekDay)
+        {
+            XmlFixedWeekDay fday=new XmlFixedWeekDay();
+            fday.copy((FixedWeekDay)day);
+            return fday;
+        }
         if (day instanceof EasterRelatedDay)
         {
             XmlEasterRelatedDay fday=new XmlEasterRelatedDay();

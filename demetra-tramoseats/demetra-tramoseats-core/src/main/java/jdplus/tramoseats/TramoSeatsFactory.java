@@ -16,9 +16,13 @@ import demetra.tramoseats.TramoSeatsSpec;
 import nbbrd.service.ServiceProvider;
 import demetra.sa.SaProcessingFactory;
 import demetra.timeseries.TsDomain;
+import demetra.toolkit.dictionaries.Dictionary;
+import demetra.tramoseats.TramoSeats;
+import demetra.tramoseats.TramoSeatsDictionaries;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import jdplus.modelling.GeneralLinearModel;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
@@ -168,6 +172,11 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
     public void resetDiagnosticFactories(List<SaDiagnosticsFactory<?, TramoSeatsResults>> factories) {
         diagnostics.clear();
         diagnostics.addAll(factories);
+    }
+    
+    @Override
+    public  Dictionary outputDictionary(){
+        return TramoSeatsDictionaries.TRAMOSEATSDICTIONARY;
     }
 
 }

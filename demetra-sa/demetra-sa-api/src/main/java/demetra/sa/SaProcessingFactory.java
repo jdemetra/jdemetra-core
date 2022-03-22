@@ -23,6 +23,8 @@ import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import demetra.information.Explorable;
+import demetra.toolkit.dictionaries.Dictionary;
+import java.util.Map;
 
 /**
  *
@@ -87,5 +89,7 @@ public interface SaProcessingFactory<I extends SaSpecification, R extends Explor
             }
         }
     }
+    
+    Dictionary outputDictionary();
 
 }

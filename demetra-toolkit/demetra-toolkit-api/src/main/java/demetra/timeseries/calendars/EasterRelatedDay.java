@@ -143,9 +143,9 @@ public class EasterRelatedDay implements Holiday {
         if (offset == 0)
             return "easter";
         else if (offset < 0)
-            return "easter+"+offset;
-        else
             return "easter-"+(-offset);
+        else
+            return "easter+"+offset;
     }
 
 }

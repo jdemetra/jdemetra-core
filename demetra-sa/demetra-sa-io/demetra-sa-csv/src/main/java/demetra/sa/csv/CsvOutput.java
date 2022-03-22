@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -55,11 +56,17 @@ public class CsvOutput implements Output<SaDocument> {
 
     @Override
     public void end(Object context) throws Exception {
+
         for (String item : summary_.getItems()) {
-            String nfile = config_.getFilePrefix();
-            nfile += "_" + StringFormatter.cleanup(item.replace('.', '_'));
-            nfile = Paths.changeExtension(nfile, "csv");
-            write(new File(Paths.folder(folder_), nfile), summary_.getNames(), summary_.getSeries(item));
+            List<TsData> series = summary_.getSeries(item);
+            Optional<TsData> any = series.stream().filter(s -> s != null && !s.isEmpty()).findAny();
+            if (any.isPresent()) {
+                String nfile = config_.getFilePrefix();
+                String c = item.replaceAll("[?*.]", "_");
+                nfile += "_" + StringFormatter.cleanup(c);
+                nfile = Paths.changeExtension(nfile, "csv");
+                write(new File(Paths.folder(folder_), nfile), summary_.getNames(), series);
+            }
         }
         summary_ = null;
     }
@@ -75,8 +82,8 @@ public class CsvOutput implements Output<SaDocument> {
     }
 
     private void write(File file, List<String> names, List<TsData> s) throws Exception {
-        try (FileOutputStream matrix = new FileOutputStream(file)) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
+        try ( FileOutputStream matrix = new FileOutputStream(file)) {
+            try ( OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
                 TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
                 fmt.setFullName(config_.isFullName());
                 fmt.setPresentation(config_.getPresentation());
