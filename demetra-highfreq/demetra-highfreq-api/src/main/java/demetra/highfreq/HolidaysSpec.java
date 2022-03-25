@@ -27,22 +27,28 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true)
-public final class HolidaysSpec  {
-    
+public final class HolidaysSpec {
+
     public final static HolidaysSpec DEFAULT_UNUSED = HolidaysSpec.builder().build();
-    
+
     private String holidays;
     private HolidaysOption holidaysOption;
     private boolean single;
 
     private Parameter[] coefficients;
-    
-    public boolean isUsed(){
+
+    public boolean isUsed() {
         return holidays != null;
     }
-    
-    public boolean hasFixedCoefficients(){
+
+    public boolean hasFixedCoefficients() {
         return Parameter.hasFixedParameters(coefficients);
     }
-    
+
+    public static Builder builder() {
+        return new Builder()
+                .holidaysOption(HolidaysOption.Skip)
+                .single(false);
+    }
+
 }

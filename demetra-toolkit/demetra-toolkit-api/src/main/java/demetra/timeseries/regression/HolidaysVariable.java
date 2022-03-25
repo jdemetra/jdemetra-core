@@ -17,7 +17,7 @@ import nbbrd.design.Development;
  */
 @lombok.Value
 @Development(status = Development.Status.Release)
-public class HolidaysVariable implements ICalendarVariable {
+public class HolidaysVariable implements ITradingDaysVariable {
 
     private static final int[] NON_WORKING = new int[]{6, 7};
 

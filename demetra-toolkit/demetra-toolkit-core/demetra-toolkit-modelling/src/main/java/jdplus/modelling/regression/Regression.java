@@ -5,17 +5,23 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsException;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
+import demetra.timeseries.regression.HolidaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.LinearTrend;
+import demetra.timeseries.regression.MovingHolidayVariable;
 import demetra.timeseries.regression.PeriodicContrasts;
 import demetra.timeseries.regression.PeriodicDummies;
 import demetra.timeseries.regression.PeriodicOutlier;
@@ -23,6 +29,7 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.StockTradingDays;
 import demetra.timeseries.regression.SwitchOutlier;
 import demetra.timeseries.regression.TransitoryChange;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TrigonometricVariables;
 import demetra.timeseries.regression.TsVariable;
 import demetra.timeseries.regression.TsVariables;
@@ -30,17 +37,11 @@ import demetra.timeseries.regression.UserMovingHoliday;
 import demetra.timeseries.regression.UserTradingDays;
 import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.UserVariables;
+import java.util.HashMap;
+import java.util.Map;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
-import demetra.timeseries.TimeSeriesDomain;
-import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsException;
-import demetra.timeseries.TsPeriod;
-import demetra.timeseries.regression.MovingHolidayVariable;
-import demetra.timeseries.regression.TrendConstant;
-import java.util.HashMap;
-import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -89,6 +90,7 @@ public class Regression {
             FACTORIES.put(GenericTradingDaysVariable.class, GenericTradingDaysFactory.FACTORY);
             FACTORIES.put(HolidaysCorrectedTradingDays.class, HolidaysCorrectionFactory.FACTORY);
             FACTORIES.put(StockTradingDays.class, StockTDFactory.FACTORY);
+            FACTORIES.put(HolidaysVariable.class, HolidaysFactory.FACTORY);
 
             // Moving holidays
             FACTORIES.put(EasterVariable.class, EasterFactory.FACTORY);
