@@ -29,6 +29,6 @@ import java.io.File;
 public final class SpreadSheetBean implements FileBean {
 
     private File file;
-    private ObsFormat obsFormat;
-    private ObsGathering obsGathering;
+    private ObsFormat format;
+    private ObsGathering gathering;
 }

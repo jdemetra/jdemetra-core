@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import internal.util.Strings;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -65,14 +67,14 @@ public interface TsMeta<T> {
 
     @NonNull
     static TsMeta<LocalDateTime> onDateTime(@NonNull String key, @NonNull String datePattern, @NonNull Locale locale) {
-        ObsFormat obsFormat = ObsFormat.of(locale, datePattern, null);
+        ObsFormat obsFormat = ObsFormat.builder().locale(locale).dateTimePattern(Strings.emptyToNull(datePattern)).build();
         return new DefaultTsMeta<>(key, obsFormat.dateTimeParser(), obsFormat.dateTimeFormatter());
     }
 
     @NonNull
     static TsMeta<LocalDateTime> onTimestamp() {
         DateTimeFormatter main = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        ObsFormat legacy = ObsFormat.of(Locale.ROOT, "EEE MMM dd HH:mm:ss zzz yyyy", null);
+        ObsFormat legacy = ObsFormat.builder().dateTimePattern("EEE MMM dd HH:mm:ss zzz yyyy").build();
         return new DefaultTsMeta<>("@timestamp",
                 Parser.onDateTimeFormatter(main, LocalDateTime::from).orElse(legacy.dateTimeParser()),
                 Formatter.onDateTimeFormatter(main));

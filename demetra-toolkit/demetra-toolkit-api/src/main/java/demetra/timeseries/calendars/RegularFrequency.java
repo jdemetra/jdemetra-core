@@ -17,7 +17,12 @@
 package demetra.timeseries.calendars;
 
 import demetra.timeseries.TsException;
+import demetra.timeseries.TsUnit;
 import nbbrd.design.Development;
+import nbbrd.design.RepresentableAs;
+import nbbrd.design.RepresentableAsInt;
+
+import java.time.temporal.ChronoUnit;
 
 /**
  * Frequency of an event.
@@ -25,6 +30,8 @@ import nbbrd.design.Development;
  *
  * @author Jean Palate
  */
+@RepresentableAsInt
+@RepresentableAs(value = TsUnit.class, parseMethodName = "parseTsUnit")
 @Development(status = Development.Status.Release)
 public enum RegularFrequency {
     /**
@@ -81,7 +88,7 @@ public enum RegularFrequency {
      * Integer representation of the frequency
      * @return Enum representation of the frequency
      */
-    public static RegularFrequency valueOf(int value) {
+    public static RegularFrequency parse(int value) throws IllegalArgumentException{
         if (value <= 0)
             return Undefined;
         if (12 % value == 0) {
@@ -91,7 +98,7 @@ public enum RegularFrequency {
                 }
             }
         }
-        return RegularFrequency.Undefined;
+        throw new IllegalArgumentException("Cannot parse " + value);
     }
 
     private final int value;
@@ -103,7 +110,7 @@ public enum RegularFrequency {
     public static final RegularFrequency[] all()
     {return ENUMS.clone();}
 
-    private RegularFrequency(final int value) {
+    RegularFrequency(final int value) {
         this.value = value;
     }
 
@@ -112,7 +119,7 @@ public enum RegularFrequency {
      *
      * @return The number of events by year
      */
-    public int intValue() {
+    public int toInt() {
         return value;
     }
 
@@ -133,5 +140,56 @@ public enum RegularFrequency {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
         }
         return value / lfreq.value;
+    }
+
+    public TsUnit toTsUnit() {
+        switch (this) {
+            case Yearly:
+                return TsUnit.YEAR;
+            case HalfYearly:
+                return TsUnit.HALF_YEAR;
+            case QuadriMonthly:
+                return TsUnit.of(4, ChronoUnit.MONTHS);
+            case Quarterly:
+                return TsUnit.QUARTER;
+            case BiMonthly:
+                return TsUnit.of(2, ChronoUnit.MONTHS);
+            case Monthly:
+                return TsUnit.MONTH;
+            case Undefined:
+                return TsUnit.UNDEFINED;
+        }
+        throw new RuntimeException("Unreachable");
+    }
+
+    public static RegularFrequency parseTsUnit(TsUnit unit) throws IllegalArgumentException {
+        if (unit.equals(TsUnit.UNDEFINED)) {
+            return RegularFrequency.Undefined;
+        }
+        switch (unit.getChronoUnit()) {
+            case YEARS:
+                if (unit.getAmount() == 1) {
+                    return Yearly;
+                }
+                break;
+            case MONTHS:
+                if (unit.getAmount() == 6) {
+                    return HalfYearly;
+                }
+                if (unit.getAmount() == 4) {
+                    return QuadriMonthly;
+                }
+                if (unit.getAmount() == 3) {
+                    return Quarterly;
+                }
+                if (unit.getAmount() == 2) {
+                    return BiMonthly;
+                }
+                if (unit.getAmount() == 1) {
+                    return Monthly;
+                }
+                break;
+        }
+        throw new IllegalArgumentException("Unsupported unit " + unit);
     }
 }

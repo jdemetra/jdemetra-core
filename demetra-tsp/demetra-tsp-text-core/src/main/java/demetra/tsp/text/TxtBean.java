@@ -18,9 +18,9 @@ public final class TxtBean implements FileBean {
 
     Charset charset;
 
-    ObsFormat obsFormat;
+    ObsFormat format;
 
-    ObsGathering obsGathering;
+    ObsGathering gathering;
 
     Delimiter delimiter;
 

@@ -110,8 +110,8 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     private static GridReader getReader(SpreadSheetBean bean) {
         return GridReader
                 .builder()
-                .format(bean.getObsFormat())
-                .gathering(bean.getObsGathering())
+                .format(bean.getFormat())
+                .gathering(bean.getGathering())
                 .build();
     }
 }

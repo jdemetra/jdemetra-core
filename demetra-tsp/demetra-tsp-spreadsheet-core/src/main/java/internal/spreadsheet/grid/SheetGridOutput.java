@@ -46,7 +46,7 @@ public final class SheetGridOutput implements GridOutput {
         if (isSupportedDataType.test(Double.class)) {
             dataTypes.add(GridDataType.DOUBLE);
         }
-        if (isSupportedDataType.test(LocalDateTime.class)) {
+        if (isSupportedDataType.test(Date.class)) {
             dataTypes.add(GridDataType.LOCAL_DATE_TIME);
         }
         return dataTypes;

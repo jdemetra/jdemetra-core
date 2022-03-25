@@ -39,8 +39,8 @@ public class TxtLoader {
     private static GridReader getGridReader(TxtBean bean) {
         return GridReader
                 .builder()
-                .format(bean.getObsFormat())
-                .gathering(bean.getObsGathering())
+                .format(bean.getFormat())
+                .gathering(bean.getGathering())
                 .layout(GridLayout.VERTICAL)
                 .namePattern("Column ${number}")
                 .build();

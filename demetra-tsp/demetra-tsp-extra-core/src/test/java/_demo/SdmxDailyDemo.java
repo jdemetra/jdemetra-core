@@ -43,7 +43,7 @@ final class SdmxDailyDemo {
             bean.setSource("ECB");
             bean.setFlow("EXR");
             bean.setLabelAttribute("TITLE");
-            bean.setCacheConfig(BulkCube.NONE);
+            bean.setCache(BulkCube.NONE);
 
             // 3. run demos
             Ts ts = provider.getTs(bean, Key.parse("D.CHF.EUR.SP00.A"), TsInformationType.All);

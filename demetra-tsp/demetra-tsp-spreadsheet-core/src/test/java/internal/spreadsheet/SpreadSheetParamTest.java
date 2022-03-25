@@ -58,8 +58,8 @@ public class SpreadSheetParamTest {
     static SpreadSheetBean getBeanSample() {
         SpreadSheetBean result = new SpreadSheetBean();
         result.setFile(new File("1234"));
-        result.setObsFormat(ObsFormat.of(Parser.onLocale().parse("fr_BE"), "yyyy", "#"));
-        result.setObsGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).includeMissingValues(true).build());
+        result.setFormat(ObsFormat.builder().locale(Parser.onLocale().parse("fr_BE")).dateTimePattern("yyyy").numberPattern("#").build());
+        result.setGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).includeMissingValues(true).build());
         return result;
     }
 

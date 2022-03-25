@@ -16,22 +16,24 @@
  */
 package internal.tsprovider.grid;
 
-import static _util.FixAssertj.assertDeepEqualTo;
 import demetra.tsprovider.grid.GridDataType;
 import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.grid.GridOutput;
 import demetra.tsprovider.util.ObsFormat;
-import static internal.tsprovider.grid.InternalValueWriter.*;
+import org.junit.Test;
+import test.tsprovider.grid.ArrayGridInput;
+import test.tsprovider.grid.ArrayGridOutput;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
-import java.util.Locale;
-import org.junit.Test;
-import test.tsprovider.grid.ArrayGridInput;
-import test.tsprovider.grid.ArrayGridOutput;
+
+import static _util.FixAssertj.assertDeepEqualTo;
+import static internal.tsprovider.grid.InternalValueWriter.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.atIndex;
 import static test.tsprovider.grid.Data.*;
-import static org.assertj.core.api.Assertions.*;
 
 /**
  *
@@ -108,7 +110,7 @@ public class InternalValueWriterTest {
     
     @Test
     public void testOnStringFormatter() throws IOException {
-        ObsFormat f = ObsFormat.of(Locale.ROOT, "yyyy-MM-dd", "");
+        ObsFormat f = ObsFormat.builder().dateTimePattern("yyyy-MM-dd").build();
         
         ArrayGridOutput out = new ArrayGridOutput(GridLayout.VERTICAL, EnumSet.allOf(GridDataType.class));
         try (GridOutput.Stream stream = out.open("test", 1, 4)) {

@@ -78,7 +78,7 @@ public class TxtLoaderTest {
         TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/bbk_SU0503.csv"));
         bean.setCharset(StandardCharsets.UTF_8);
-        bean.setObsFormat(ObsFormat.of(Locale.GERMAN, "yyyy-MM", null));
+        bean.setFormat(ObsFormat.builder().locale(Locale.GERMAN).dateTimePattern("yyyy-MM").build());
         bean.setDelimiter(TxtBean.Delimiter.SEMICOLON);
         bean.setHeaders(false);
         bean.setSkipLines(5);
@@ -101,7 +101,7 @@ public class TxtLoaderTest {
     public void testAggregation() throws IOException, URISyntaxException {
         TxtBean bean = new TxtParam.V1().getDefaultValue();
         bean.setFile(getFile("/Insee1.txt"));
-        bean.setObsGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.First).build());
+        bean.setGathering(ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.First).build());
 
         TsCollection source = TxtLoader.load(bean, noPath);
 
