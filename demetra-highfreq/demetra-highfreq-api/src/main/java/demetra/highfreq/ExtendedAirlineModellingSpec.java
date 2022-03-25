@@ -35,7 +35,7 @@ public class ExtendedAirlineModellingSpec implements ProcSpecification {
     @NonNull
     private ExtendedAirlineSpec stochastic;
     @NonNull
-    private OutliersSpec outliers;
+    private OutlierSpec outlier;
     @NonNull
     private RegressionSpec regression;
     @NonNull
@@ -46,10 +46,12 @@ public class ExtendedAirlineModellingSpec implements ProcSpecification {
                 .transform(TransformSpec.DEFAULT)
                 .stochastic(ExtendedAirlineSpec.DEFAULT_WD)
                 .regression(RegressionSpec.DEFAULT)
-                .outliers(OutliersSpec.DEFAULT_DISABLED)
+                .outlier(OutlierSpec.DEFAULT_DISABLED)
                 .estimate(EstimateSpec.DEFAULT);
                 
     }
+    
+    public static final ExtendedAirlineModellingSpec DEFAULT = builder().build();
 
     public static final String METHOD = "extendedairline";
     public static final String FAMILY = "Modelling";

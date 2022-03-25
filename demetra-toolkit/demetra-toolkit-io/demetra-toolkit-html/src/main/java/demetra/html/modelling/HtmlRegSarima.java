@@ -65,6 +65,7 @@ import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.GeneralLinearModel;
+import jdplus.modelling.regression.RegressionDesc;
 import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
@@ -365,12 +366,12 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         }
         Variable v = mean.get();
         if (v.isFree()) {
-            List<RegSarimaModel.RegressionDesc> regressionItems = model.getDetails().getRegressionItems();
-            Optional<RegSarimaModel.RegressionDesc> d = regressionItems.stream().filter(desc -> desc.getCore() instanceof TrendConstant).findFirst();
+            List<RegressionDesc> regressionItems = model.getDetails().getRegressionItems();
+            Optional<RegressionDesc> d = regressionItems.stream().filter(desc -> desc.getCore() instanceof TrendConstant).findFirst();
             if (!d.isPresent()) {
                 return;
             }
-            RegSarimaModel.RegressionDesc reg = d.get();
+            RegressionDesc reg = d.get();
             stream.write(HtmlTag.HEADER3, "Mean");
             stream.open(new HtmlTable().withWidth(400));
             stream.open(HtmlTag.TABLEROW);
@@ -466,7 +467,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         }
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, List<RegSarimaModel.RegressionDesc> regs, TsDomain context) throws IOException {
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, List<RegressionDesc> regs, TsDomain context) throws IOException {
 
         stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
@@ -475,7 +476,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(Bootstrap4.FONT_WEIGHT_BOLD));
         stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(Bootstrap4.FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
-        for (RegSarimaModel.RegressionDesc reg : regs) {
+        for (RegressionDesc reg : regs) {
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell(reg.getCore().description(reg.getItem(), context)).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(reg.getCoef())).withWidth(100));
@@ -488,8 +489,8 @@ public class HtmlRegSarima extends AbstractHtmlElement {
     }
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, Set<ITsVariable> vars, TsDomain context) throws IOException {
-        List<RegSarimaModel.RegressionDesc> regs = new ArrayList<>();
-        for (RegSarimaModel.RegressionDesc reg : model.getDetails().getRegressionItems()) {
+        List<RegressionDesc> regs = new ArrayList<>();
+        for (RegressionDesc reg : model.getDetails().getRegressionItems()) {
             if (vars.contains(reg.getCore())) {
                 regs.add(reg);
             }
@@ -499,7 +500,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
 
     private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, ITsVariable var, TsDomain context) throws IOException {
 
-        List<RegSarimaModel.RegressionDesc> regs = model.getDetails().getRegressionItems().stream()
+        List<RegressionDesc> regs = model.getDetails().getRegressionItems().stream()
                 .filter(desc -> desc.getCore() == var)
                 .collect(Collectors.toList());
         if (regs.isEmpty()) {
@@ -517,7 +518,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         stream.write(new HtmlTableCell("T-Stat").withWidth(100).withClass(Bootstrap4.FONT_WEIGHT_BOLD));
         stream.write(new HtmlTableCell("P[|T| &gt t]").withWidth(100).withClass(Bootstrap4.FONT_WEIGHT_BOLD));
         stream.close(HtmlTag.TABLEROW);
-        for (RegSarimaModel.RegressionDesc reg : regs) {
+        for (RegressionDesc reg : regs) {
             stream.open(HtmlTag.TABLEROW);
             stream.write(new HtmlTableCell(reg.getCore().description(reg.getItem(), context)).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(reg.getCoef())).withWidth(100));

@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import demetra.highfreq.ExtendedAirlineModellingSpec;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.highfreq.HolidaysSpec;
-import demetra.highfreq.OutliersSpec;
+import demetra.highfreq.OutlierSpec;
 import demetra.highfreq.RegressionSpec;
 import demetra.highfreq.TransformSpec;
 import java.io.InputStream;
@@ -56,7 +56,7 @@ public class ExtendedAirlineKernelTest {
                         .function(TransformationType.Log)
                         .build())
                 .stochastic(ExtendedAirlineSpec.DEFAULT_WD)
-                .outliers(OutliersSpec.builder()
+                .outlier(OutlierSpec.builder()
                         .criticalValue(8)
                         .outliers(new String[]{"AO"})
                         .build())

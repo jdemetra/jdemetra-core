@@ -26,7 +26,7 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true)
-public class OutliersSpec {
+public class OutlierSpec {
     
 
     public static final int DEF_MAXOUTLIERS = 100, DEF_MAXROUND=100;
@@ -56,7 +56,7 @@ public class OutliersSpec {
         return outliers.length>0;
     }
     
-    public static final OutliersSpec DEFAULT_ENABLED=new Builder()
+    public static final OutlierSpec DEFAULT_ENABLED=new Builder()
             .span(TimeSelector.all())
                 .outliers(DEF_OUTLIERS)
                 .maxOutliers(DEF_MAXOUTLIERS)
@@ -65,7 +65,7 @@ public class OutliersSpec {
                 .build();
     
     
-    public static final OutliersSpec DEFAULT_DISABLED=new Builder()
+    public static final OutlierSpec DEFAULT_DISABLED=new Builder()
             .span(TimeSelector.all())
                 .outliers(NO_OUTLIER)
                 .maxOutliers(DEF_MAXOUTLIERS)

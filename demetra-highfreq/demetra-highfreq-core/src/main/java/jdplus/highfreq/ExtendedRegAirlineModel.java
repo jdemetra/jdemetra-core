@@ -7,21 +7,28 @@ package jdplus.highfreq;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
+import demetra.data.Parameter;
 import demetra.data.ParametersEstimation;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.information.GenericExplorable;
 import demetra.processing.ProcessingLog;
+import demetra.stats.ProbabilityType;
+import demetra.timeseries.regression.Constant;
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.MissingValueEstimation;
 import demetra.timeseries.regression.ResidualsType;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.dictionaries.ResidualsDictionaries;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import jdplus.arima.ArimaModel;
+import jdplus.dstats.T;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.GeneralLinearModel;
 import jdplus.modelling.LightweightLinearModel;
 import jdplus.modelling.Residuals;
+import jdplus.modelling.regression.RegressionDesc;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
@@ -52,8 +59,48 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
             ++nvars;
         }
         Variable[] variables = new Variable[nvars];
+         DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
+        DoubleSeqCursor.OnMutable diag = estimation.getConcentratedLikelihood().unscaledCovariance().diagonal().cursor();
         int df = ll.degreesOfFreedom() - free;
         double vscale = ll.ssq() / df;
+        T tstat = new T(df);
+
+        int k = 0, pos = 0;
+
+        List<RegressionDesc> regressionDesc = new ArrayList<>();
+        if (description.isMean()) {
+            ITsVariable cur = Constant.C;
+            double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
+            regressionDesc.add(new RegressionDesc(cur, 0, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+            variables[k++] = Variable.variable("const", cur)
+                    .withCoefficient(Parameter.estimated(c));
+        }
+        // fill the free coefficients
+        for (Variable var : vars) {
+            int nfree = var.freeCoefficientsCount();
+            if (nfree == var.dim()) {
+                Parameter[] p = new Parameter[nfree];
+                for (int j = 0; j < nfree; ++j) {
+                    double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
+                    p[j] = Parameter.estimated(c);
+                    regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                }
+                variables[k++] = var.withCoefficients(p);
+            } else if (nfree > 0) {
+                Parameter[] p = var.getCoefficients();
+                for (int j = 0; j < p.length; ++j) {
+                    if (p[j].isFree()) {
+                        double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
+                        p[j] = Parameter.estimated(c);
+                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                    }
+                }
+                variables[k++] = var.withCoefficients(p);
+            } else {
+                variables[k++] = var;
+            }
+        }
+        
 
         LightweightLinearModel.Description desc = LightweightLinearModel.Description.<ExtendedAirlineSpec>builder()
                 .series(description.getSeries())
@@ -123,6 +170,8 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                 .description(desc)
                 .estimation(est)
                 .residuals(residuals)
+                .regressionItems(regressionDesc)
+                .independentResiduals(ll.e())
                 .build();
     }
     Description<ExtendedAirlineSpec> description;
@@ -130,5 +179,8 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
     Estimation estimation;
 
     Residuals residuals;
+
+    DoubleSeq independentResiduals;
+    List<RegressionDesc> regressionItems;
 
 }

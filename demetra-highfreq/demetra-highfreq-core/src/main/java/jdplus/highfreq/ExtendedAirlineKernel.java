@@ -12,7 +12,7 @@ import demetra.highfreq.ExtendedAirline;
 import demetra.highfreq.ExtendedAirlineModellingSpec;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.highfreq.HolidaysSpec;
-import demetra.highfreq.OutliersSpec;
+import demetra.highfreq.OutlierSpec;
 import demetra.highfreq.RegressionSpec;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
@@ -177,7 +177,7 @@ public class ExtendedAirlineKernel {
     }
 
     private void addOutliers(ModelDescription desc, int[][] io) {
-        OutliersSpec ospec = spec.getOutliers();
+        OutlierSpec ospec = spec.getOutlier();
         String[] outliers = ospec.getOutliers();
         TsDomain edom = desc.getEstimationDomain();
         for (int i = 0; i < io.length; ++i) {
@@ -206,7 +206,7 @@ public class ExtendedAirlineKernel {
         // step 1: log/level
         execTransform(modelling, log);
         // step 2: outliers
-        if (spec.getOutliers().isUsed()) {
+        if (spec.getOutlier().isUsed()) {
             if (modelling.needEstimation()) {
                 modelling.estimate(1e-5);
             }
@@ -318,7 +318,7 @@ public class ExtendedAirlineKernel {
 
     private void execOutliers(ExtendedRegAirlineModelling modelling, ProcessingLog log) {
         log.push("outliers");
-        OutliersSpec ospec = spec.getOutliers();
+        OutlierSpec ospec = spec.getOutlier();
         String[] outliers = ospec.getOutliers();
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(1e-5)
