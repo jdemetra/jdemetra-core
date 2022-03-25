@@ -42,7 +42,9 @@ public class SeasonalityTests {
         if (ny != 0) {
             y = y.drop(Math.max(0, y.length() - period * ny), 0);
         }
-        return new Qs(y, period).autoCorrelationsCount(2).build();
+        return new Qs(y, period)
+                .autoCorrelationsCount(2)
+                .build();
     }
 
     public StatisticalTest kruskalWallisTest(double[] s, int period, int ny) {

@@ -16,33 +16,26 @@
  */
 package demetra.highfreq;
 
-import demetra.timeseries.TimeSeriesData;
-import demetra.timeseries.TimeSeriesObs;
-import demetra.timeseries.regression.Variable;
-import demetra.timeseries.TimeSeriesInterval;
+import nbbrd.design.Development;
 
 /**
  *
- * @author Jean Palate
- * @param <P> Time period
- * @param <O> Observation
+ * @author PALATEJ
  */
+@Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder
-public class LinearModelDescription<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P> >  {
-
-    /**
-     * Original series
-     */
-    private TimeSeriesData<P, O> series;
-    /**
-     * Log transformation
-     */
-    private boolean logTransformation;
-
-    /**
-     * Regression variables
-     */
-    private Variable[] variables;
-
+@lombok.Builder(toBuilder = true,  builderClassName = "Builder")
+public class DecompositionSpec {
+    
+    public static final boolean DEF_ITERATIVE=true;
+    
+    private boolean iterative;
+    
+    public static Builder builder(){
+        return new Builder()
+                .iterative(DEF_ITERATIVE);
+    }
+    
+    
+    
 }

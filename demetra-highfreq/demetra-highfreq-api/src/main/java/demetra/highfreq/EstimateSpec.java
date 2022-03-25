@@ -16,33 +16,34 @@
  */
 package demetra.highfreq;
 
-import demetra.timeseries.TimeSeriesData;
-import demetra.timeseries.TimeSeriesObs;
-import demetra.timeseries.regression.Variable;
-import demetra.timeseries.TimeSeriesInterval;
+import demetra.timeseries.TimeSelector;
+import nbbrd.design.Development;
 
 /**
  *
- * @author Jean Palate
- * @param <P> Time period
- * @param <O> Observation
+ * @author PALATEJ
  */
+@Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder
-public class LinearModelDescription<P extends TimeSeriesInterval<?>, O extends TimeSeriesObs<P> >  {
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class EstimateSpec {
 
-    /**
-     * Original series
-     */
-    private TimeSeriesData<P, O> series;
-    /**
-     * Log transformation
-     */
-    private boolean logTransformation;
+    public static final EstimateSpec DEFAULT=builder().build();
 
-    /**
-     * Regression variables
-     */
-    private Variable[] variables;
+    public static final boolean DEF_APPHESSIAN = false;
+    public static final double EPS = 1e-7;
+
+    @lombok.NonNull
+    private TimeSelector span;
+    // operational
+    private double precision;
+    private boolean approximateHessian;
+
+    public static Builder builder() {
+        return new Builder()
+                .span(TimeSelector.all())
+                .precision(EPS)
+                .approximateHessian(DEF_APPHESSIAN);
+    }
 
 }

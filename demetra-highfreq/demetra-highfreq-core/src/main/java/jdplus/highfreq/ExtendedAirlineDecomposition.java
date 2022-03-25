@@ -6,7 +6,7 @@
 package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
-import demetra.highfreq.FractionalAirline;
+import demetra.highfreq.ExtendedAirline;
 import demetra.highfreq.SeriesComponent;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
@@ -21,10 +21,10 @@ import jdplus.ucarima.UcarimaModel;
  */
 @lombok.Value
 @lombok.Builder
-public class FractionalAirlineDecomposition implements GenericExplorable {
+public class ExtendedAirlineDecomposition implements GenericExplorable {
 
     DoubleSeq y;
-    FractionalAirline model;
+    ExtendedAirline model;
 
     private DoubleSeq parameters, score;
     private Matrix parametersCovariance;

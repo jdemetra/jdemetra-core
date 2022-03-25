@@ -223,7 +223,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                 .build();
     }
 
-    private final ConcurrentMap<String, Object> cache = new ConcurrentHashMap<String, Object>();
+    private final ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
 
     @lombok.Singular
     private Map<String, Object> additionalResults;

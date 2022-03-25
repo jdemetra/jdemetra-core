@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -19,8 +19,6 @@ package demetra.highfreq;
 import demetra.data.Parameter;
 import demetra.timeseries.calendars.HolidaysOption;
 import nbbrd.design.Development;
-import nbbrd.design.LombokWorkaround;
-import demetra.util.Validatable;
 
 /**
  *
@@ -31,10 +29,20 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true)
 public final class HolidaysSpec  {
     
-    public final static HolidaysSpec DEFAULT = HolidaysSpec.builder().build();
+    public final static HolidaysSpec DEFAULT_UNUSED = HolidaysSpec.builder().build();
     
+    private String holidays;
     private HolidaysOption holidaysOption;
     private boolean single;
 
     private Parameter[] coefficients;
+    
+    public boolean isUsed(){
+        return holidays != null;
+    }
+    
+    public boolean hasFixedCoefficients(){
+        return Parameter.hasFixedParameters(coefficients);
+    }
+    
 }

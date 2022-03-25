@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -27,7 +27,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class EasterSpec implements Validatable<EasterSpec> {
 
     public static enum Type {
@@ -49,11 +49,17 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     int duration;
     Type type;
     boolean julian;
-    
+
     // optional coefficient.
     Parameter coefficient;
 
     public static final EasterSpec DEFAULT_UNUSED = EasterSpec.builder().build();
+    public static final EasterSpec DEFAULT_USED = new Builder()
+            .test(false)
+            .julian(false)
+            .type(Type.Standard)
+            .duration(DEF_IDUR)
+            .build();
 
     @LombokWorkaround
     public static Builder builder() {
@@ -69,8 +75,9 @@ public final class EasterSpec implements Validatable<EasterSpec> {
         if (duration <= 0 || duration > 15) {
             throw new IllegalArgumentException("Duration should be inside [1, 15]");
         }
-        if (test && Parameter.isFixed(coefficient))
+        if (test && Parameter.isFixed(coefficient)) {
             throw new IllegalArgumentException("Fixed coefficient should not be used with testing");
+        }
         return this;
     }
 
@@ -85,12 +92,12 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     public boolean isDefault() {
         return this.equals(DEFAULT_UNUSED);
     }
-    
-    public static EasterSpec none(){
+
+    public static EasterSpec none() {
         return DEFAULT_UNUSED;
     }
-    
-    public boolean hasFixedCoefficient(){
+
+    public boolean hasFixedCoefficient() {
         return coefficient != null && coefficient.isFixed();
     }
 

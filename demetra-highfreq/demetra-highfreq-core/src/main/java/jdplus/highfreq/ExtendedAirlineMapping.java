@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.fractionalairline;
+package jdplus.highfreq;
 
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
@@ -22,8 +22,13 @@ import jdplus.math.functions.ParamValidation;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.arima.estimation.IArimaMapping;
 import demetra.data.DoubleSeq;
+import demetra.highfreq.ExtendedAirlineSpec;
 
-public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
+public class ExtendedAirlineMapping implements IArimaMapping<ArimaModel> {
+    
+    public static ExtendedAirlineMapping of(ExtendedAirlineSpec spec){
+        return new ExtendedAirlineMapping(spec.getPeriodicities(), spec.isAdjustToInt(), spec.getDifferencingOrder(), spec.hasAr());
+    }
 
     private final double[] f0, f1;
     private final int[] p0;
@@ -33,7 +38,7 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
     private final boolean ar;
 
     // internal stationary mapping
-    private MultiPeriodicAirlineMapping(double[] f0, double[] f1, int[] p0, boolean round, boolean ar) {
+    private ExtendedAirlineMapping(double[] f0, double[] f1, int[] p0, boolean round, boolean ar) {
         this.f0 = f0;
         this.f1 = f1;
         this.p0 = p0;
@@ -43,8 +48,8 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
         this.ar = ar;
     }
 
-    public MultiPeriodicAirlineMapping(double[] periods) {
-        this(periods, false, 0, false);
+    public ExtendedAirlineMapping(double[] periods) {
+        this(periods, false, -1, false);
     }
 
     /**
@@ -54,7 +59,7 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
      * @param nur1
      * @param ar 
      */
-    public MultiPeriodicAirlineMapping(double[] periods, boolean round, int nur1, boolean ar) {
+    public ExtendedAirlineMapping(double[] periods, boolean round, int nur1, boolean ar) {
         this.round = round;
         this.stationary = false;
         this.nur1 = nur1;
@@ -227,6 +232,6 @@ public class MultiPeriodicAirlineMapping implements IArimaMapping<ArimaModel> {
 
     @Override
     public IArimaMapping<ArimaModel> stationaryMapping() {
-        return stationary ? this : new MultiPeriodicAirlineMapping(f0, f1, p0, round, ar);
+        return stationary ? this : new ExtendedAirlineMapping(f0, f1, p0, round, ar);
     }
 }

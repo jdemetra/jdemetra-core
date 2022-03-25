@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -21,11 +21,10 @@ import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
-import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
-import demetra.util.Validatable;
 import java.util.List;
+import lombok.NonNull;
 
 /**
  *
@@ -33,17 +32,18 @@ import java.util.List;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
-public final class RegressionSpec implements Validatable<RegressionSpec> {
+@lombok.Builder(toBuilder = true, builderClassName="Builder")
+public final class RegressionSpec {
 
-    
-    Parameter mean;
-    
+    @NonNull
     HolidaysSpec calendar;
+    @NonNull
     EasterSpec easter;
     
     @lombok.Singular
     List< Variable<IOutlier> > outliers;
+    @lombok.Singular
+    List< Variable<InterventionVariable> > interventionVariables;
     @lombok.Singular
     List< Variable<TsContextVariable> > userDefinedVariables;
 
@@ -52,20 +52,26 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .calendar(HolidaysSpec.builder().build());
+                .calendar(HolidaysSpec.DEFAULT_UNUSED)
+                .easter(EasterSpec.DEFAULT_UNUSED);
     }
-
+    
     public boolean isDefault() {
         return this.equals(DEFAULT);
     }
 
-    @Override
-    public RegressionSpec validate() throws IllegalArgumentException {
-        return this;
+    public boolean isUsed() {
+        return calendar.isUsed() || easter.isUsed() || !outliers.isEmpty()
+                || ! interventionVariables.isEmpty() ||  !userDefinedVariables.isEmpty();
     }
-
-    public static class Builder implements Validatable.Builder<RegressionSpec> {
-
+    
+    public boolean hasFixedCoefficients(){
+        if (! isUsed())
+            return false;
+        return calendar.hasFixedCoefficients()
+                || outliers.stream().anyMatch(var->! var.isFree())
+                || interventionVariables.stream().anyMatch(var->! var.isFree())
+                || userDefinedVariables.stream().anyMatch(var->! var.isFree());
     }
     
 }

@@ -7,7 +7,7 @@ package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.highfreq.FractionalAirline;
+import demetra.highfreq.ExtendedAirline;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
@@ -20,12 +20,12 @@ import demetra.information.GenericExplorable;
  */
 @lombok.Value
 @lombok.Builder
-public class FractionalAirlineEstimation implements GenericExplorable {
+public class ExtendedAirlineEstimation implements GenericExplorable {
 
     double[] y;
     Matrix x;
 
-    FractionalAirline model;
+    ExtendedAirline model;
 
     OutlierDescriptor[] outliers;
 
