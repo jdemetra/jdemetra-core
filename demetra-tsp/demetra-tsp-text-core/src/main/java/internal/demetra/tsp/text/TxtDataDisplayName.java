@@ -41,7 +41,7 @@ public final class TxtDataDisplayName implements HasDataDisplayName {
     public String getDisplayName(DataSource dataSource) throws IllegalArgumentException {
         DataSourcePreconditions.checkProvider(providerName, dataSource);
         TxtBean bean = param.get(dataSource);
-        return bean.getFile().getPath() + toString(bean.getObsGathering());
+        return bean.getFile().getPath() + toString(bean.getGathering());
     }
 
     @Override

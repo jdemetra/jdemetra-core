@@ -16,20 +16,13 @@
  */
 package demetra.tsprovider.util;
 
-import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
-import demetra.tsprovider.cube.BulkCube;
 import demetra.util.TreeTraverser;
-import internal.tsprovider.util.BulkCubeParam;
-import internal.tsprovider.util.ObsFormatParam;
-import internal.tsprovider.util.ObsGatheringParam;
 import nbbrd.io.function.IOFunction;
-import nbbrd.io.text.Property;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -51,7 +44,7 @@ public class TsProviders {
                 o instanceof DataSource
                         ? provider.children((DataSource) o)
                         : ((DataSet) o).getKind() == DataSet.Kind.COLLECTION ? provider.children((DataSet) o) : Collections.emptyList();
-        
+
         return TreeTraverser.of(dataSource, children.asUnchecked());
     }
 
@@ -71,36 +64,5 @@ public class TsProviders {
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
-    }
-
-    public static DataSource.@NonNull Converter<ObsFormat> onObsFormat(@NonNull ObsFormat defaultValue, @NonNull String localeKey, @NonNull String datePatternKey, @NonNull String numberPatternKey) {
-        return new ObsFormatParam(defaultValue, localeKey, datePatternKey, numberPatternKey);
-    }
-
-    public static DataSource.@NonNull Converter<ObsGathering> onObsGathering(@NonNull ObsGathering defaultValue, @NonNull String frequencyKey, @NonNull String aggregationKey, @NonNull String skipKey) {
-        return new ObsGatheringParam(defaultValue, frequencyKey, aggregationKey, skipKey);
-    }
-
-    public static DataSource.@NonNull Converter<BulkCube> onBulkCube(@NonNull BulkCube defaultValue, @NonNull String ttlKey, @NonNull String depthKey) {
-        return new BulkCubeParam(defaultValue, ttlKey, depthKey);
-    }
-
-    public static <P> DataSet.Converter<P> dataSetConverterOf(Property<P> p) {
-        return new DataSet.Converter<P>() {
-            @Override
-            public @NonNull P getDefaultValue() {
-                return p.getDefaultValue();
-            }
-
-            @Override
-            public @NonNull P get(@NonNull DataSet config) {
-                return p.get(config::getParameter);
-            }
-
-            @Override
-            public void set(DataSet.@NonNull Builder builder, @Nullable P value) {
-                p.set(builder::parameter, value);
-            }
-        };
     }
 }

@@ -389,7 +389,12 @@ public class TsConverter {
     }
 
     public @NonNull ObsFormat toObsFormat(ec.tss.tsproviders.utils.@NonNull DataFormat o) {
-        return ObsFormat.of(o.getLocale(), o.getDatePattern(), o.getNumberPattern());
+        return ObsFormat
+                .builder()
+                .locale(o.getLocale())
+                .dateTimePattern(Strings.nullToEmpty(o.getDatePattern()))
+                .numberPattern(Strings.nullToEmpty(o.getNumberPattern()))
+                .build();
     }
     //</editor-fold>
 

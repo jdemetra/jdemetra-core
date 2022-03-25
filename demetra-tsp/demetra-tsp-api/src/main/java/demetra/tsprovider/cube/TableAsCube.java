@@ -31,9 +31,9 @@ public class TableAsCube {
 
     @lombok.NonNull
     @lombok.Builder.Default
-    ObsFormat obsFormat = ObsFormat.DEFAULT;
+    ObsFormat format = ObsFormat.DEFAULT;
 
     @lombok.NonNull
     @lombok.Builder.Default
-    ObsGathering obsGathering = ObsGathering.DEFAULT;
+    ObsGathering gathering = ObsGathering.DEFAULT;
 }

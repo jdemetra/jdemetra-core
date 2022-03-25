@@ -9,6 +9,8 @@ import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSource;
+import demetra.tsprovider.legacy.LegacyHandler;
+import internal.util.Strings;
 import org.junit.Test;
 
 import java.util.Map;
@@ -51,7 +53,9 @@ public class DataSetConverterTest {
         builder.clearParameters();
         param.set(builder, newValue);
         DataSource newConfig = builder.build();
-        keyValues.forEach((k, v) -> assertThat(newConfig.getParameter(k)).isEqualTo(v));
+        assertThat(newConfig.getParameters())
+                .containsExactlyInAnyOrderEntriesOf(keyValues);
+        //keyValues.forEach((k, v) -> assertThat(newConfig.getParameter(k)).isEqualTo(v));
 
         // default value => keys absent
         builder.clearParameters();
@@ -61,12 +65,14 @@ public class DataSetConverterTest {
 
     @Test
     public void testOnDataFormat() {
-        ObsFormat d = ObsFormat.of(null, "yyyy-MM", null);
-        ObsFormat n1 = ObsFormat.of(null, "dd-MM-yyyy", null);
-        assertBehavior(TsProviders.onObsFormat(d, "k1", "k2", "k3"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy"));
-        assertBehavior(TsProviders.onObsFormat(d, "k1", "k2", "k3"), d, n1, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "k3", ""));
-        ObsFormat n2 = ObsFormat.of(null, "dd-MM-yyyy", "#");
-        assertBehavior(TsProviders.onObsFormat(d, "k1", "k2", "k3"), d, n2, ImmutableMap.of("k1", "", "k2", "dd-MM-yyyy", "k3", "#"));
+        ObsFormat defaultFormat = ObsFormat.builder().locale(null).dateTimePattern("yyyy-MM").build();
+        DataSource.Converter<ObsFormat> x = LegacyHandler.onObsFormat("locale", "date", "number", defaultFormat).asDataSourceConverter();
+
+        ObsFormat format1 = ObsFormat.builder().locale(null).dateTimePattern("dd-MM-yyyy").build();
+        assertBehavior(x, defaultFormat, format1, ImmutableMap.of( "date", "dd-MM-yyyy"));
+
+        ObsFormat format2 = ObsFormat.builder().locale(null).dateTimePattern("dd-MM-yyyy").numberPattern("#").build();
+        assertBehavior(x, defaultFormat, format2, ImmutableMap.of("date", "dd-MM-yyyy", "number", "#"));
     }
 
     @Test
@@ -74,10 +80,10 @@ public class DataSetConverterTest {
     public void testOnObsGathering() {
         ObsGathering defaultValue = ObsGathering.DEFAULT;
         ObsGathering newValue = ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).includeMissingValues(true).build();
-        assertBehavior(TsProviders.onObsGathering(defaultValue, "f", "a", "s"), defaultValue, newValue, ImmutableMap.of("f", "Yearly", "a", "Average", "s", "false"));
-        assertThatThrownBy(() -> TsProviders.onObsGathering(null, "f", "a", "s")).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> TsProviders.onObsGathering(defaultValue, null, "a", "s")).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> TsProviders.onObsGathering(defaultValue, "f", null, "s")).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> TsProviders.onObsGathering(defaultValue, "f", "a", null)).isInstanceOf(NullPointerException.class);
+        assertBehavior(LegacyHandler.onObsGathering("f", "a", "s", defaultValue).asDataSourceConverter(), defaultValue, newValue, ImmutableMap.of("f", "Yearly", "a", "Average", "s", "false"));
+        assertThatThrownBy(() -> LegacyHandler.onObsGathering("f", "a", "s", null).asDataSourceConverter()).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> LegacyHandler.onObsGathering(null, "a", "s", defaultValue).asDataSourceConverter()).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> LegacyHandler.onObsGathering("f", null, "s", defaultValue).asDataSourceConverter()).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> LegacyHandler.onObsGathering("f", "a", null, defaultValue).asDataSourceConverter()).isInstanceOf(NullPointerException.class);
     }
 }
