@@ -13,6 +13,7 @@ import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.information.GenericExplorable;
 import demetra.processing.ProcessingLog;
 import demetra.stats.ProbabilityType;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.MissingValueEstimation;
@@ -105,6 +106,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
         LightweightLinearModel.Description desc = LightweightLinearModel.Description.<ExtendedAirlineSpec>builder()
                 .series(description.getSeries())
                 .logTransformation(description.isLogTransformation())
+                .lengthOfPeriodTransformation(LengthOfPeriodType.None)
                 .variables(variables)
                 .stochasticComponent(stochasticSpec)
                 .build();

@@ -23,7 +23,7 @@ import demetra.sa.SeriesDecomposition;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.modelling.GeneralLinearModel;
 
 /**
  *
@@ -48,7 +48,7 @@ public class TwoStepsDecomposition {
         }
     }
 
-    public SeriesDecomposition merge(RegSarimaModel model, SeriesDecomposition sadecomp) {
+    public <M> SeriesDecomposition merge(GeneralLinearModel<M> model, SeriesDecomposition sadecomp) {
         boolean mul = model.getDescription().isLogTransformation();
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive);
 

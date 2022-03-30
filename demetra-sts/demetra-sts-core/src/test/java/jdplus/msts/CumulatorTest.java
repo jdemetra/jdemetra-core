@@ -45,8 +45,8 @@ public class CumulatorTest {
         
 //        StateItem ar = AtomicModels.localLevel("ar", 1, true, Double.NaN);
         StateItem ar = AtomicModels.ar("ar", new double[]{.96}, false, 1, true, 0, 0);
-//        StateItem reg=AtomicModels.timeVaryingRegression("reg", x, 1, false);
-        StateItem reg=AtomicModels.regression("reg", x);
+        StateItem reg=AtomicModels.timeVaryingRegression("reg", x, 1, true);
+//        StateItem reg=AtomicModels.regression("reg", x);
         StateItem c=DerivedModels.aggregation("agg", reg, ar);
         StateItem disagg= DerivedModels.cumulator("disagg", c, 4, 0);
         

@@ -18,7 +18,7 @@ package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
-import jdplus.highfreq.ExtendedAirlineDecomposition;
+import jdplus.highfreq.LightExtendedAirlineDecomposition;
 import jdplus.highfreq.ExtendedAirlineEstimation;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.math.matrices.Matrix;
@@ -33,7 +33,7 @@ import jdplus.ssf.extractors.SsfUcarimaEstimation;
 @lombok.experimental.UtilityClass
 public class FractionalAirlineProcessor {
 
-    public ExtendedAirlineDecomposition decompose(double[] s, double period, boolean sn, boolean cov, int nb, int nf) {
+    public LightExtendedAirlineDecomposition decompose(double[] s, double period, boolean sn, boolean cov, int nb, int nf) {
         int iperiod = (int) period;
         if (Math.abs(period - iperiod) < 1e-9) {
             period = iperiod;
@@ -41,7 +41,7 @@ public class FractionalAirlineProcessor {
         return ExtendedAirlineDecomposer.decompose(DoubleSeq.of(s), period, sn, cov, nb, nf);
     }
 
-    public ExtendedAirlineDecomposition decompose(double[] s, double[] periods, int ndiff, boolean ar, boolean cov, int nb, int nf) {
+    public LightExtendedAirlineDecomposition decompose(double[] s, double[] periods, int ndiff, boolean ar, boolean cov, int nb, int nf) {
         return ExtendedAirlineDecomposer.decompose(DoubleSeq.of(s), periods, ndiff, ar, cov, nb, nf);
     }
 
@@ -56,7 +56,7 @@ public class FractionalAirlineProcessor {
         return ExtendedAirlineKernel.fastProcess(DoubleSeq.of(y), x, mean, outliers, cv, spec, precision);
     }
 
-    public SsfUcarimaEstimation ssfDetails(ExtendedAirlineDecomposition fad) {
+    public SsfUcarimaEstimation ssfDetails(LightExtendedAirlineDecomposition fad) {
         return new SsfUcarimaEstimation(fad.getUcarima(), fad.getY());
     }
 }

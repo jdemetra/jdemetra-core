@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2022 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package jdplus.highfreq;
 
@@ -43,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.IOutlierFactory;
@@ -241,7 +253,7 @@ public class ExtendedAirlineKernel {
                 .arima(mapping.getDefault())
                 .meanCorrection(mean);
         OutlierDescriptor[] o = null;
-        if (outliers != null && outliers.length>0) {
+        if (outliers != null && outliers.length > 0) {
             GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
                     .precision(1e-5)
                     .build();
@@ -267,8 +279,9 @@ public class ExtendedAirlineKernel {
                 o[i] = new OutlierDescriptor(factories[cur[1]].getCode(), cur[0]);
                 builder.addX(xcur);
             }
-        }else
-            o=new OutlierDescriptor[0];
+        } else {
+            o = new OutlierDescriptor[0];
+        }
         RegArimaModel regarima = builder.build();
         GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
                 .precision(eps)
@@ -278,12 +291,11 @@ public class ExtendedAirlineKernel {
         LogLikelihoodFunction.Point max = rslt.getMax();
         DoubleSeq parameters = max.getParameters();
 
-        ExtendedAirline ea=ExtendedAirline.of(spec)
+        ExtendedAirline ea = ExtendedAirline.of(spec)
                 .toBuilder()
                 .p(parameters)
                 .build();
-                
-        
+
         return ExtendedAirlineEstimation.builder()
                 .y(regarima.getY().toArray())
                 .x(regarima.variables())
@@ -412,11 +424,32 @@ public class ExtendedAirlineKernel {
                 return null;
         }
     }
-    
+
     private Map<String, String> attributes(IOutlier o) {
         HashMap<String, String> attributes = new HashMap<>();
         attributes.put(ModellingUtility.AMI, "tramo");
         attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
         return attributes;
     }
+
+    public static ArimaModel estimate(DoubleSeq s, double period) {
+        ExtendedAirlineMapping mapping = new ExtendedAirlineMapping(new double[]{period});
+
+        GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
+        builder.minimizer(LevenbergMarquardtMinimizer.builder())
+                .precision(1e-12)
+                .useMaximumLikelihood(true)
+                .useParallelProcessing(true)
+                .build();
+        ArimaModel arima = mapping.getDefault();
+        RegArimaModel<ArimaModel> regarima
+                = RegArimaModel.<ArimaModel>builder()
+                        .y(s)
+                        .arima(arima)
+                        .build();
+        GlsArimaProcessor<ArimaModel> monitor = builder.build();
+        RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima, mapping);
+        return rslt.getModel().arima();
+    }
+
 }

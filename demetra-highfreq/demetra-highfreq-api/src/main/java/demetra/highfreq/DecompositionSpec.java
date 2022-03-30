@@ -27,13 +27,23 @@ import nbbrd.design.Development;
 @lombok.Builder(toBuilder = true,  builderClassName = "Builder")
 public class DecompositionSpec {
     
-    public static final boolean DEF_ITERATIVE=true;
+    public static final boolean DEF_ITERATIVE=true, DEF_NOISY=true, DEF_STDEV=false, DEF_BIAS=true;
     
+    @lombok.NonNull
+    private double[] periodicities;
     private boolean iterative;
+    private boolean noisy;
+    private boolean stdev;
+    private int backcastsCount, forecastsCount;
+    private boolean biasCorrection;
     
     public static Builder builder(){
         return new Builder()
-                .iterative(DEF_ITERATIVE);
+                .iterative(DEF_ITERATIVE)
+                .noisy(DEF_NOISY)
+                .stdev(DEF_STDEV)
+                .biasCorrection(DEF_BIAS);
+        
     }
     
     
