@@ -219,7 +219,7 @@
             </activation>
             <properties>
                 <lombok.version>1.18.22</lombok.version>
-                <java-service.version>1.4.0</java-service.version>
+                <java-service.version>1.5.0</java-service.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
