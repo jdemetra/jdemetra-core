@@ -60,7 +60,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
             ++nvars;
         }
         Variable[] variables = new Variable[nvars];
-         DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
+        DoubleSeqCursor cursor = estimation.getConcentratedLikelihood().coefficients().cursor();
         DoubleSeqCursor.OnMutable diag = estimation.getConcentratedLikelihood().unscaledCovariance().diagonal().cursor();
         int df = ll.degreesOfFreedom() - free;
         double vscale = ll.ssq() / df;
@@ -101,7 +101,6 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                 variables[k++] = var;
             }
         }
-        
 
         LightweightLinearModel.Description desc = LightweightLinearModel.Description.<ExtendedAirlineSpec>builder()
                 .series(description.getSeries())

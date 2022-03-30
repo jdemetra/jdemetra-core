@@ -36,6 +36,7 @@ public class DecompositionSpec {
     private boolean stdev;
     private int backcastsCount, forecastsCount;
     private boolean biasCorrection;
+    private boolean adjustToInt;
     
     public static Builder builder(){
         return new Builder()
@@ -45,6 +46,8 @@ public class DecompositionSpec {
                 .biasCorrection(DEF_BIAS);
         
     }
+    
+    public static final DecompositionSpec DEFAULT=builder().periodicities(new double[]{7}).build();
     
     
     

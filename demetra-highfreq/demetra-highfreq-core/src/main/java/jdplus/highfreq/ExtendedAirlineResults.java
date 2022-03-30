@@ -4,6 +4,8 @@
  */
 package jdplus.highfreq;
 
+import demetra.information.GenericExplorable;
+import demetra.processing.HasLog;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
 
@@ -13,7 +15,7 @@ import demetra.sa.SeriesDecomposition;
  */
 @lombok.Value
 @lombok.Builder
-public class ExtendedAirlineResults {
+public class ExtendedAirlineResults implements GenericExplorable, HasLog{
 
     private ExtendedRegAirlineModel preprocessing;
     private ExtendedAirlineDecomposition decomposition;

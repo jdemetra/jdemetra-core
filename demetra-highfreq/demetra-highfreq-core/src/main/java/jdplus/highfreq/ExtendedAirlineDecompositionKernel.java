@@ -16,7 +16,6 @@
  */
 package jdplus.highfreq;
 
-import demetra.data.DoubleSeq;
 import demetra.highfreq.ExtendedAirlineDecompositionSpec;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
