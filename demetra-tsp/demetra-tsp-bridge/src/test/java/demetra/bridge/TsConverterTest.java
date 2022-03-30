@@ -243,23 +243,23 @@ public class TsConverterTest {
 
     @Test
     public void testObsFormat() {
-        assertThat(TsConverter.fromObsFormat(ObsFormat.DEFAULT))
+        assertThat(TsConverter.fromObsFormat(ObsFormat.getSystemDefault()))
                 .isEqualTo(DataFormat.DEFAULT);
 
-        assertThat(TsConverter.fromObsFormat(ObsFormat.ROOT))
+        assertThat(TsConverter.fromObsFormat(ObsFormat.DEFAULT))
                 .isEqualTo(DataFormat.ROOT);
 
-        assertThat(TsConverter.fromObsFormat(ObsFormat.of(Locale.FRENCH, "yyyy-MMM", "#")))
+        assertThat(TsConverter.fromObsFormat(ObsFormat.builder().locale(Locale.FRENCH).dateTimePattern("yyyy-MMM").numberPattern("#").build()))
                 .isEqualTo(DataFormat.of(Locale.FRENCH, "yyyy-MMM", "#"));
 
         assertThat(TsConverter.toObsFormat(DataFormat.DEFAULT))
-                .isEqualTo(ObsFormat.DEFAULT);
+                .isEqualTo(ObsFormat.getSystemDefault());
 
         assertThat(TsConverter.toObsFormat(DataFormat.ROOT))
-                .isEqualTo(ObsFormat.ROOT);
+                .isEqualTo(ObsFormat.DEFAULT);
 
         assertThat(TsConverter.toObsFormat(DataFormat.of(Locale.FRENCH, "yyyy-MMM", "#")))
-                .isEqualTo(ObsFormat.of(Locale.FRENCH, "yyyy-MMM", "#"));
+                .isEqualTo(ObsFormat.builder().locale(Locale.FRENCH).dateTimePattern("yyyy-MMM").numberPattern("#").build());
     }
 
     @Test

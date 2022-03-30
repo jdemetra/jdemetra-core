@@ -31,5 +31,5 @@ public final class SdmxWebBean {
     private String flow;
     private List<String> dimensions;
     private String labelAttribute;
-    private BulkCube cacheConfig;
+    private BulkCube cache;
 }

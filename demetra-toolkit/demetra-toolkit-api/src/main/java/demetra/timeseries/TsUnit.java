@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import nbbrd.design.RepresentableAsString;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import lombok.AccessLevel;
@@ -39,6 +41,7 @@ import lombok.AccessLevel;
  *
  * @author Philippe Charles
  */
+@RepresentableAsString
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TsUnit implements TemporalAmount, IsoRepresentable {

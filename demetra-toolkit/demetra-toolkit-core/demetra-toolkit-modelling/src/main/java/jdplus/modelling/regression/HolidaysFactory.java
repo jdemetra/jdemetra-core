@@ -19,10 +19,10 @@ package jdplus.modelling.regression;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.TsPeriod;
-import nbbrd.design.Development;
 import demetra.timeseries.regression.HolidaysVariable;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.timeseries.calendars.HolidaysUtility;
+import nbbrd.design.Development;
 
 /**
  *
@@ -30,6 +30,8 @@ import jdplus.timeseries.calendars.HolidaysUtility;
  */
 @Development(status = Development.Status.Release)
 public class HolidaysFactory implements RegressionVariableFactory<HolidaysVariable> {
+    
+    static HolidaysFactory FACTORY=new HolidaysFactory();
 
     @Override
     public boolean fill(HolidaysVariable var, TsPeriod start, FastMatrix buffer) {

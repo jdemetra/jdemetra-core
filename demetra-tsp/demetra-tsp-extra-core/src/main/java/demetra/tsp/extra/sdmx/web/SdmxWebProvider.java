@@ -146,7 +146,7 @@ public final class SdmxWebProvider implements DataSourceLoader<SdmxWebBean>, Has
         Connection conn = properties.getSdmxManager().getConnection(bean.getSource());
         try {
             CubeConnection result = SdmxCubeConnection.of(conn, flow, bean.getDimensions(), bean.getLabelAttribute(), bean.getSource());
-            return BulkCubeConnection.of(result, bean.getCacheConfig(), IOCacheFactoryLoader.get());
+            return BulkCubeConnection.of(result, bean.getCache(), IOCacheFactoryLoader.get());
         } catch (IOException ex) {
             Resource.ensureClosed(ex, conn);
             throw ex;

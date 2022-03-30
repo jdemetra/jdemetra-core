@@ -77,7 +77,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
     private static CubeConnection openConnection(DataSource key, HasSqlProperties properties, JdbcParam param) {
         JdbcBean bean = param.get(key);
 
-        SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDatabase(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getCube().getObsGathering(), bean.getCube().getLabel());
+        SqlTableAsCubeResource sqlResource = SqlTableAsCubeResource.of(properties.getConnectionSupplier(), bean.getDatabase(), bean.getTable(), toRoot(bean), toDataParams(bean), bean.getCube().getGathering(), bean.getCube().getLabel());
 
         CubeConnection result = TableAsCubeConnection.of(sqlResource);
         return BulkCubeConnection.of(result, bean.getCache(), IOCacheFactoryLoader.get());
@@ -92,7 +92,7 @@ public final class JdbcProvider implements DataSourceLoader<JdbcBean>, HasSqlPro
                 .periodColumn(bean.getCube().getTimeDimension())
                 .valueColumn(bean.getCube().getMeasure())
                 .versionColumn(bean.getCube().getVersion())
-                .obsFormat(bean.getCube().getObsFormat())
+                .obsFormat(bean.getCube().getFormat())
                 .build();
     }
 }
