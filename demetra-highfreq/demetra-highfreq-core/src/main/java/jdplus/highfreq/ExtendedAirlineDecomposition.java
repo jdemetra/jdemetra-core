@@ -18,8 +18,10 @@ package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.highfreq.SeriesComponent;
+import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
 import java.util.List;
+import java.util.Optional;
 import jdplus.arima.ArimaModel;
 import jdplus.ucarima.UcarimaModel;
 
@@ -34,6 +36,7 @@ public class ExtendedAirlineDecomposition {
     @lombok.Value
     @lombok.Builder
     public static class Step {
+
         private double period;
         private DoubleSeq data;
         private ArimaModel model;
@@ -50,8 +53,20 @@ public class ExtendedAirlineDecomposition {
         }
     }
 
+    private boolean multiplicative;
+    private int backcastsCount, forecastsCount;
+    
     @lombok.Singular
     private List<Step> steps;
-    private SeriesDecomposition finalComponents;
 
+    @lombok.Singular
+    List<SeriesComponent> finalComponents;
+
+    public DoubleSeq getFinalComponent(String id){
+        return finalComponents.stream()
+                .filter(c->c.getName().equals(id))
+                .map(c->c.getData())
+                .findAny()
+                .orElse(DoubleSeq.empty());
+    }
 }

@@ -23,8 +23,15 @@ import demetra.data.DoubleSeq;
  * @author PALATEJ
  */
 @lombok.Value
+@lombok.AllArgsConstructor
 public class SeriesComponent {
     String name;
     DoubleSeq data;
     DoubleSeq stde;
+    
+    public SeriesComponent(String name, DoubleSeq data){
+        this.name=name;
+        this.data=data;
+        this.stde=DoubleSeq.empty();
+    }
 }

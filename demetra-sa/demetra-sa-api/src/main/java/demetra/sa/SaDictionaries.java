@@ -74,6 +74,7 @@ public final class SaDictionaries {
             T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
 
     public final String Y_LIN = "y_lin", T_LIN = "t_lin", S_LIN = "s_lin", SA_LIN = "sa_lin", I_LIN = "i_lin", SI_LIN = "si_lin";
+    public final String T_LIN_E = "t_lin_e", S_LIN_E = "s_lin_e", SA_LIN_E = "sa_lin_e", I_LIN_E = "i_lin_e";
     public final String Y_LIN_F = "y_lin_f", T_LIN_F = "t_lin_f", S_LIN_F = "s_lin_f", SA_LIN_F = "sa_lin_f", I_LIN_F = "i_lin_f";
     public final String Y_LIN_EF = "y_lin_ef", T_LIN_EF = "t_lin_ef", S_LIN_EF = "s_lin_ef", SA_LIN_EF = "sa_lin_ef", I_LIN_EF = "i_lin_ef";
     public final String Y_LIN_B = "y_lin_b", T_LIN_B = "t_lin_b", S_LIN_B = "s_lin_b", SA_LIN_B = "sa_lin_b", I_LIN_B = "i_lin_b";

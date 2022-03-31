@@ -17,15 +17,18 @@ import demetra.toolkit.dictionaries.Dictionary.EntryType;
  */
 @lombok.experimental.UtilityClass
 public class SeatsDictionaries {
-    
-    
-   public final Dictionary LINDECOMPOSITION = AtomicDictionary.builder()
+
+    public final Dictionary LINDECOMPOSITION = AtomicDictionary.builder()
             .name("stochastic components")
             .item(Item.builder().name(SaDictionaries.Y_LIN).description("linearized series").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.SA_LIN).description("seasonal adjusted linearized component").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.T_LIN).description("trend linearized component").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.S_LIN).description("seasonal linearized component").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.I_LIN).description("irregular linearized component").outputClass(TsData.class).build())
+            .item(Item.builder().name(SaDictionaries.SA_LIN_E).description("error on the seasonal adjusted linearized component").outputClass(TsData.class).build())
+            .item(Item.builder().name(SaDictionaries.T_LIN_E).description("error on the trend linearized component").outputClass(TsData.class).build())
+            .item(Item.builder().name(SaDictionaries.S_LIN_E).description("error on the seasonal linearized component").outputClass(TsData.class).build())
+            .item(Item.builder().name(SaDictionaries.I_LIN_E).description("error on the irregular linearized component").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.Y_LIN_F).description("forecasts of the linearized series").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.SA_LIN_F).description("forecasts of the seasonal adjusted linearized component").outputClass(TsData.class).build())
             .item(Item.builder().name(SaDictionaries.T_LIN_F).description("forecasts of the trend linearized component").outputClass(TsData.class).build())

@@ -19,7 +19,7 @@ public class ExtendedAirlineResults implements GenericExplorable, HasLog{
 
     private ExtendedRegAirlineModel preprocessing;
     private ExtendedAirlineDecomposition decomposition;
-    private SeriesDecomposition finals;
+    private SeriesDecomposition components, finals;
     private ProcessingLog log;
     
 }

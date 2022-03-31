@@ -38,14 +38,14 @@ import static org.junit.Assert.*;
  */
 public class DecompositionKernelTest {
 
-    final static TsData EDF;
+    final static DoubleSeq EDF;
 
     static {
-        TsData y;
+        DoubleSeq y;
         try {
             InputStream stream = ExtendedAirlineMapping.class.getResourceAsStream("/edf.txt");
             Matrix edf = MatrixSerializer.read(stream);
-            y = TsData.of(TsPeriod.daily(1996, 1, 1), edf.column(0));
+            y = edf.column(0);
         } catch (IOException ex) {
             y = null;
         }
@@ -81,6 +81,6 @@ public class DecompositionKernelTest {
                 .build();
         DecompositionKernel kernel = new DecompositionKernel(spec);
         ExtendedAirlineDecomposition decomp = kernel.process(EDF.log(), true, ProcessingLog.dummy());
-        System.out.println(decomp.getFinalComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
+        System.out.println(decomp.getFinalComponents().get(2));
     }
 }

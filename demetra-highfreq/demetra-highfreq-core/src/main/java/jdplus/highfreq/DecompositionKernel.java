@@ -19,13 +19,10 @@ package jdplus.highfreq;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.highfreq.DecompositionSpec;
+import demetra.highfreq.ExtendedAirlineDictionaries;
 import demetra.highfreq.SeriesComponent;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
-import demetra.sa.DecompositionMode;
-import demetra.sa.SeriesDecomposition;
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsPeriod;
 import java.util.Arrays;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
@@ -56,7 +53,7 @@ public class DecompositionKernel {
         this.spec = spec;
     }
 
-    public ExtendedAirlineDecomposition process(TsData lin, boolean mul, ProcessingLog log) {
+    public ExtendedAirlineDecomposition process(DoubleSeq lin, boolean mul, ProcessingLog log) {
         try {
             log.push(CD);
             double[] periodicities = spec.getPeriodicities();
@@ -64,11 +61,14 @@ public class DecompositionKernel {
                 throw new java.lang.UnsupportedOperationException("Not implemented yet");
             }
 
-            ExtendedAirlineDecomposition.Builder builder = ExtendedAirlineDecomposition.builder();
-            Arrays.sort(periodicities);
-            DoubleSeq cur = lin.getValues();
-            ExtendedAirlineDecomposition.Step[] steps = new ExtendedAirlineDecomposition.Step[periodicities.length];
             int nb = spec.getBackcastsCount(), nf = spec.getForecastsCount();
+            ExtendedAirlineDecomposition.Builder builder = ExtendedAirlineDecomposition.builder()
+                    .multiplicative(mul)
+                    .backcastsCount(nb)
+                    .forecastsCount(nf);
+            Arrays.sort(periodicities);
+            DoubleSeq cur = lin;
+            ExtendedAirlineDecomposition.Step[] steps = new ExtendedAirlineDecomposition.Step[periodicities.length];
             for (int i = 0; i < periodicities.length; ++i) {
                 ExtendedAirlineDecomposition.Step.Builder sbuilder = ExtendedAirlineDecomposition.Step.builder();
                 // we re-estimate the model
@@ -115,7 +115,7 @@ public class DecompositionKernel {
             }
             // final decomposition, with simple bias correction (in case of log-transformation)
 
-            DoubleSeq t = steps[steps.length-1].getComponent(0).getData();
+            DoubleSeq t = steps[steps.length - 1].getComponent(0).getData();
             if (mul) {
                 t = t.exp();
             }
@@ -139,7 +139,13 @@ public class DecompositionKernel {
                 } else {
                     s = DoublesMath.add(s, curs);
                 }
+                if (steps[i].getPeriod() == 7) {
+                    builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SW_CMP, curs));
+                } else {
+                    builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SY_CMP, curs));
+                }
             }
+            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.S_CMP, s));
 
             SeriesComponent cmp = steps[steps.length - 1].getComponent(2);
             DoubleSeq irr = cmp == null ? null : cmp.getData();
@@ -152,30 +158,21 @@ public class DecompositionKernel {
                         bias *= ibias;
                     }
                 }
+                builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.I_CMP, irr));
             }
             if (bias != 1) {
                 double tbias = bias;
                 t = t.fn(z -> z * tbias);
             }
+            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.T_CMP, t));
 
-            DoubleSeq sa = mul ?  DoublesMath.multiply(t, irr) : DoublesMath.add(t, irr);
+            DoubleSeq sa = mul ? DoublesMath.multiply(t, irr) : DoublesMath.add(t, irr);
             DoubleSeq y = mul ? DoublesMath.multiply(sa, s) : DoublesMath.add(sa, s);
 
+            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.Y_CMP, y))
+                    .finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SA_CMP, sa));
 
-            TsPeriod start = lin.getStart().plus(-nb);
-            SeriesDecomposition.Builder dbuilder = SeriesDecomposition.builder(mul ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
-                    .add(TsData.of(start, y), ComponentType.Series)
-                    .add(TsData.of(start, sa), ComponentType.SeasonallyAdjusted)
-                    .add(TsData.of(start, t), ComponentType.Trend)
-                    .add(TsData.of(start, s), ComponentType.Seasonal);
-
-            if (irr != null) {
-                dbuilder.add(TsData.of(start, irr), ComponentType.Irregular);
-            }
-
-            return builder
-                    .finalComponents(dbuilder.build())
-                    .build();
+            return builder.build();
         } finally {
             log.pop();
         }
