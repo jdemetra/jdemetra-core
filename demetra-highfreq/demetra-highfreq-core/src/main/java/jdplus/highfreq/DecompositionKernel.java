@@ -60,6 +60,10 @@ public class DecompositionKernel {
             if (!spec.isIterative() && periodicities.length > 1) {
                 throw new java.lang.UnsupportedOperationException("Not implemented yet");
             }
+            if (spec.isAdjustToInt()){
+                for (int i=0; i<periodicities.length; ++i)
+                    periodicities[i]=Math.round(periodicities[i]);
+            }
 
             int nb = spec.getBackcastsCount(), nf = spec.getForecastsCount();
             ExtendedAirlineDecomposition.Builder builder = ExtendedAirlineDecomposition.builder()

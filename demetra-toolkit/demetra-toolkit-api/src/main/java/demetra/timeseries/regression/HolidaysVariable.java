@@ -19,15 +19,15 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class HolidaysVariable implements ITradingDaysVariable {
 
-    private static final int[] NON_WORKING = new int[]{6, 7};
+    public static final int[] NONWORKING_WE = new int[]{6, 7}, NONWORKING_SUNDAYS = new int[]{7};
 
-    public static HolidaysVariable of(String name, HolidaysOption holidaysOption, boolean single, ModellingContext context) {
+    public static HolidaysVariable of(String name, HolidaysOption holidaysOption, int[] nonworking, boolean single, ModellingContext context) {
         CalendarDefinition cdef = context.getCalendars().get(name);
         if (!(cdef instanceof Calendar)) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
         Calendar c = (Calendar) cdef;
-        return new HolidaysVariable(c.getHolidays(), holidaysOption, single, NON_WORKING);
+        return new HolidaysVariable(c.getHolidays(), holidaysOption, single, nonworking);
     }
 
     private Holiday[] holidays;

@@ -122,7 +122,7 @@ public class ExtendedAirlineKernel {
         HolidaysSpec calendar = regression.getCalendar();
         if (calendar.isUsed()) {
             HolidaysVariable hvar = HolidaysVariable.of(calendar.getHolidays(),
-                    calendar.getHolidaysOption(), calendar.isSingle(), modellingContext);
+                    calendar.getHolidaysOption(), HolidaysVariable.NONWORKING_SUNDAYS, calendar.isSingle(), modellingContext);
             add(desc, hvar, "holidays", ComponentType.CalendarEffect, calendar.getCoefficients());
         }
         EasterSpec easter = regression.getEaster();
@@ -337,8 +337,8 @@ public class ExtendedAirlineKernel {
                 .build();
         IOutlierFactory[] factories = factories(outliers);
         OutliersDetectionModule od = OutliersDetectionModule.build(ArimaModel.class)
-                .maxOutliers(100)
-                .maxRound(0)
+                .maxOutliers(spec.getOutlier().getMaxOutliers())
+                .maxRound(spec.getOutlier().getMaxRound())
                 .addFactories(factories)
                 .processor(processor)
                 .build();

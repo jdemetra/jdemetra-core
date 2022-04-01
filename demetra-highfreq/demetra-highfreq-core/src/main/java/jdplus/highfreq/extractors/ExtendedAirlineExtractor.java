@@ -18,6 +18,7 @@ import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.toolkit.dictionaries.Dictionary;
+import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
 import java.util.Optional;
 import jdplus.highfreq.ExtendedAirlineDecomposition;
@@ -50,7 +51,7 @@ public class ExtendedAirlineExtractor extends InformationMapping<ExtendedAirline
     public ExtendedAirlineExtractor() {
         set(SaDictionaries.MODE, DecompositionMode.class, source -> source.getFinals().getMode());
 
-        set(ModellingDictionary.Y, TsData.class, source
+        set(RegressionDictionaries.Y, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
         set(SaDictionaries.T, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Value));
@@ -60,6 +61,26 @@ public class ExtendedAirlineExtractor extends InformationMapping<ExtendedAirline
                 -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
         set(SaDictionaries.I, TsData.class, source
                 -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Value));
+        set(RegressionDictionaries.Y_F, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Forecast));
+        set(SaDictionaries.T+SaDictionaries.FORECAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Forecast));
+        set(SaDictionaries.SA+SaDictionaries.FORECAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
+        set(SaDictionaries.S+SaDictionaries.FORECAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
+        set(SaDictionaries.I+SaDictionaries.FORECAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
+        set(RegressionDictionaries.Y_B, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Backcast));
+        set(SaDictionaries.T+SaDictionaries.BACKCAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Backcast));
+        set(SaDictionaries.SA+SaDictionaries.BACKCAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
+        set(SaDictionaries.S+SaDictionaries.BACKCAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
+        set(SaDictionaries.I+SaDictionaries.BACKCAST, TsData.class, source
+                -> source.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));
         set(cmpItem(SaDictionaries.T_CMP), TsData.class, source
                 -> source.getComponents().getSeries(ComponentType.Trend, ComponentInformation.Value));
         set(cmpItem(SaDictionaries.SA_CMP), TsData.class, source

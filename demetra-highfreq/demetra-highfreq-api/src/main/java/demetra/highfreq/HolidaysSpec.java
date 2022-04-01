@@ -17,6 +17,7 @@
 package demetra.highfreq;
 
 import demetra.data.Parameter;
+import demetra.timeseries.calendars.CalendarManager;
 import demetra.timeseries.calendars.HolidaysOption;
 import nbbrd.design.Development;
 
@@ -38,7 +39,7 @@ public final class HolidaysSpec {
     private Parameter[] coefficients;
 
     public boolean isUsed() {
-        return holidays != null;
+        return holidays != null && !holidays.equals(CalendarManager.DEF);
     }
 
     public boolean hasFixedCoefficients() {
