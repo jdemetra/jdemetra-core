@@ -20,8 +20,6 @@ import demetra.html.AbstractHtmlElement;
 import demetra.html.Bootstrap4;
 import demetra.html.HtmlStream;
 import demetra.html.HtmlTag;
-import demetra.information.Information;
-import demetra.information.InformationSet;
 import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcQuality;
 import java.io.IOException;
