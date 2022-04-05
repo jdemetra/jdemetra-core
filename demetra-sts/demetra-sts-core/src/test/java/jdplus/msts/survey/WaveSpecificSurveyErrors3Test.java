@@ -9,6 +9,8 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.StateComponent;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 import jdplus.math.matrices.FastMatrix;
@@ -33,7 +35,7 @@ public class WaveSpecificSurveyErrors3Test {
         dyn.T(0, T);
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         y.product(T.rowsIterator(), x);
         dyn.TX(0, x);
@@ -56,7 +58,7 @@ public class WaveSpecificSurveyErrors3Test {
         dyn.T(0, T);
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         y.product(T.rowsIterator(), x);
         dyn.TX(0, x);

@@ -110,11 +110,7 @@ public final class UriBuilder {
     }
 
     private static String decodeUrlUtf8(String o) {
-        try {
-            return URLDecoder.decode(o, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
+        return URLDecoder.decode(o, StandardCharsets.UTF_8);
     }
 
     @NonNull

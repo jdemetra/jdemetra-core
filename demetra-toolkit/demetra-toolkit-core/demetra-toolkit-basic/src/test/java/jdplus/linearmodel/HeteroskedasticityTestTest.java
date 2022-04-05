@@ -22,6 +22,8 @@ import jdplus.stats.linearmodel.LeastSquaresResults;
 import jdplus.stats.linearmodel.HeteroskedasticityTest;
 import demetra.data.DoubleSeq;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.dstats.Chi2;
 import demetra.dstats.Distribution;
@@ -53,7 +55,7 @@ public class HeteroskedasticityTestTest {
 
         FastMatrix X = FastMatrix.make(N, NX);
         DataBlock y = DataBlock.make(N);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
 
         X.set((r, c) -> rnd.nextDouble());
         LinearModel lm = LinearModel.builder()

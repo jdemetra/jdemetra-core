@@ -18,6 +18,8 @@ package jdplus.math.highprecision;
 
 import demetra.math.Complex;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
@@ -37,7 +39,7 @@ public class DoublePolynomialTest {
     public void testEvaluation() {
         DataBlock P = DataBlock.make(300);
         Random rnd = new Random(0);
-        P.set(rnd::nextDouble);
+        P.set((DoubleSupplier)rnd::nextDouble);
 
         Polynomial sp = Polynomial.of(P.toArray());
         double z = sp.evaluateAt(0.999901);

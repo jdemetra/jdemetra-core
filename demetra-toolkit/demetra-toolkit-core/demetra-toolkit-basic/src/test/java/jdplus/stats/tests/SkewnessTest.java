@@ -19,6 +19,8 @@ package jdplus.stats.tests;
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -37,7 +39,7 @@ public class SkewnessTest {
         double[] data=new double[N];
         DataBlock X=DataBlock.of(data);
         Random rnd=new Random();
-        X.set(rnd::nextDouble);
+        X.set((DoubleSupplier)rnd::nextDouble);
         
         StatisticalTest sk = new Skewness(X).build();
         

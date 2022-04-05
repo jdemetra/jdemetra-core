@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -42,13 +43,13 @@ public class MatrixSerializer {
     public static final double ND = -99999;
 
     public static Matrix read(File file, String separators) throws FileNotFoundException, IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             return read(reader, Locale.ROOT, separators);
         }
     }
 
     public static Matrix read(File file) throws FileNotFoundException, IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             return read(reader, Locale.ROOT, "\\s+|,");
         }
     }
@@ -66,7 +67,7 @@ public class MatrixSerializer {
     }
 
     public static void write(Matrix m, File file) throws FileNotFoundException, IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(m.toString());
         }
     }

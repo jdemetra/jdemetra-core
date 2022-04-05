@@ -8,6 +8,8 @@ package jdplus.math.matrices;
 import jdplus.math.matrices.decomposition.HouseholderReflection;
 import jdplus.data.DataBlock;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,7 +26,7 @@ public class HouseholderReflectionTest {
     public void testHouseholder() {
         DataBlock x=DataBlock.make(10);
         Random rnd=new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         double nx=x.norm2();
         // Creates the Householder reflection
         HouseholderReflection hr = HouseholderReflection.of(x, true);
@@ -33,7 +35,7 @@ public class HouseholderReflectionTest {
         assertEquals(nx, Math.abs(x.get(0)), 1e-9);
         // apply the transformation on another vector
         DataBlock y=DataBlock.make(10);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
         hr.transform(y);
     }
     

@@ -19,6 +19,7 @@ package jdplus.linearmodel;
 import jdplus.stats.linearmodel.LinearModel;
 import jdplus.data.DataBlock;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -39,7 +40,7 @@ public class LinearModelTest {
         Random rnd = new Random();
 
         DataBlock y = DataBlock.make(10);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
         LinearModel lm = LinearModel.builder()
                 .y(y)
                 .meanCorrection(true)
@@ -53,11 +54,11 @@ public class LinearModelTest {
         Random rnd = new Random();
 
         DataBlock y = DataBlock.make(10);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
         DataBlock x1 = DataBlock.make(10);
-        x1.set(rnd::nextDouble);
+        x1.set((DoubleSupplier)rnd::nextDouble);
         DataBlock x2 = DataBlock.make(10);
-        x2.set(rnd::nextDouble);
+        x2.set((DoubleSupplier)rnd::nextDouble);
         LinearModel lm = LinearModel.builder()
                 .y(y)
                 .meanCorrection(true)
@@ -72,11 +73,11 @@ public class LinearModelTest {
         Random rnd = new Random();
 
         DataBlock y = DataBlock.make(10);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
         DataBlock x1 = DataBlock.make(10);
-        x1.set(rnd::nextDouble);
+        x1.set((DoubleSupplier)rnd::nextDouble);
         DataBlock x2 = DataBlock.make(10);
-        x2.set(rnd::nextDouble);
+        x2.set((DoubleSupplier)rnd::nextDouble);
         LinearModel lm = LinearModel.builder()
                 .y(y.map(Math::log))
                 .addX(x1, x2)
