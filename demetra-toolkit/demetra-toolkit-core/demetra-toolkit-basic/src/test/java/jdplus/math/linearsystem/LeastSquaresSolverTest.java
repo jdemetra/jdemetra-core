@@ -8,6 +8,7 @@ package jdplus.math.linearsystem;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
 
 /**
  *
@@ -28,7 +29,7 @@ public class LeastSquaresSolverTest {
         Random rnd = new Random(0);
         A.set((i, j) -> rnd.nextDouble());
         DataBlock y = DataBlock.make(N);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {
             QRLeastSquaresSolver.fastLeastSquares(y, A);

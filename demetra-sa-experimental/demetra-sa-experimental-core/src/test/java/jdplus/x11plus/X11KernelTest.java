@@ -18,6 +18,8 @@ import ec.tstoolkit.modelling.arima.PreprocessingModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.dfa.MSEDecomposition;
 import jdplus.filters.AsymmetricCriterion;
@@ -110,7 +112,7 @@ public class X11KernelTest {
     public void testDaily() {
         Random rnd=new Random();
         DataBlock s=DataBlock.make(5000);
-        s.set(rnd::nextDouble);
+        s.set((DoubleSupplier)rnd::nextDouble);
         X11Kernel kernel = new X11Kernel();
 //        System.out.println("Exact");
         X11Context context1 = X11Context.builder()

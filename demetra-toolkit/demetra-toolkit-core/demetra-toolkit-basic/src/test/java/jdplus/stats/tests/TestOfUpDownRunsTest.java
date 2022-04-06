@@ -18,6 +18,8 @@ package jdplus.stats.tests;
 
 import jdplus.data.DataBlock;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,7 +37,7 @@ public class TestOfUpDownRunsTest {
         int N=100;
         DataBlock X=DataBlock.make(N);
         Random rnd=new Random(0);
-        X.set(rnd::nextDouble);
+        X.set((DoubleSupplier)rnd::nextDouble);
         
         TestOfUpDownRuns runs=new TestOfUpDownRuns(X);
         
@@ -59,7 +61,7 @@ public class TestOfUpDownRunsTest {
         int N=100;
         DataBlock X=DataBlock.make(N);
         Random rnd=new Random(0);
-        X.set(rnd::nextDouble);
+        X.set((DoubleSupplier)rnd::nextDouble);
         
         X.set(1, Double.NaN);
         X.range(56, 63).set(Double.NaN);

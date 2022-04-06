@@ -20,6 +20,8 @@ import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.linearmodel.Ols;
 import jdplus.stats.linearmodel.LeastSquaresResults;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
@@ -39,7 +41,7 @@ public class LeastSquaresResultsTest {
         int N=200;
         DataBlock y=DataBlock.make(N);
         Random rnd=new Random(0);
-        y.set(rnd::nextDouble);
+        y.set((DoubleSupplier)rnd::nextDouble);
         FastMatrix X=FastMatrix.make(N, 5);
         X.set((a,b)->rnd.nextDouble());
         

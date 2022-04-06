@@ -6,6 +6,8 @@
 package jdplus.math.linearsystem;
 
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixException;
@@ -31,7 +33,7 @@ public class LULinearSystemSolverTest {
         FastMatrix M = FastMatrix.square(n);
         M.set((i, j) -> rnd.nextDouble());
         DataBlock x = DataBlock.make(n);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = x.deepClone();
         LULinearSystemSolver solver = LULinearSystemSolver.builder().decomposer((A, e) -> CroutDoolittle.decompose(A, e)).build();
         solver.solve(M, x);
@@ -50,7 +52,7 @@ public class LULinearSystemSolverTest {
         DataBlock x = DataBlock.make(n);
         M.column(36).set(M.column(3));
         M.column(36).addAY(.002, M.column(12));
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = x.deepClone();
         LULinearSystemSolver2 solver2 = new LULinearSystemSolver2(1e-13);
         boolean ok=true;
@@ -76,7 +78,7 @@ public class LULinearSystemSolverTest {
         FastMatrix M = FastMatrix.square(n);
         M.set((i, j) -> rnd.nextDouble());
         DataBlock x = DataBlock.make(n);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
 
         int K = 1000000;
         long t0 = System.currentTimeMillis();

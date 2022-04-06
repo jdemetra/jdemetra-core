@@ -8,6 +8,8 @@ package jdplus.msts.survey;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -56,7 +58,7 @@ public class WaveSpecificSurveyErrorsTest {
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = x.deepClone();
         dyn.TX(0, x);
         dyn2.TX(0, y);
@@ -77,7 +79,7 @@ public class WaveSpecificSurveyErrorsTest {
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         y.product(T.rowsIterator(), x);
         dyn.TX(0, x);
@@ -94,7 +96,7 @@ public class WaveSpecificSurveyErrorsTest {
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         y.product(T.columnsIterator(), x);
         dyn.XT(0, x);
@@ -113,7 +115,7 @@ public class WaveSpecificSurveyErrorsTest {
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         y.product(T.rowsIterator(), x);
         dyn.TX(0, x);
@@ -135,7 +137,7 @@ public class WaveSpecificSurveyErrorsTest {
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         y.product(T.columnsIterator(), x);
         dyn.XT(0, x);
@@ -162,7 +164,7 @@ public class WaveSpecificSurveyErrorsTest {
 
         DataBlock x = DataBlock.make(dim);
         Random rnd = new Random(0);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y = DataBlock.make(dim);
         DataBlock z = DataBlock.make(dim);
         long t0 = System.currentTimeMillis();

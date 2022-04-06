@@ -9,6 +9,8 @@ import demetra.data.DataSets;
 import static demetra.data.DataSets.lre;
 import demetra.data.DoubleSeq;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.linearsystem.QRLeastSquaresSolver;
@@ -33,7 +35,7 @@ public class Householder2Test {
         A.set((i, j) -> rnd.nextDouble());
 
         DataBlock Y = DataBlock.make(M);
-        Y.set(rnd::nextDouble);
+        Y.set((DoubleSupplier)rnd::nextDouble);
 
         Householder2 H2 = new Householder2();
         QRDecomposition qr = H2.decompose(A);
@@ -129,7 +131,7 @@ public class Householder2Test {
         A.set((i, j) -> rnd.nextDouble());
 
         DataBlock Y = DataBlock.make(M);
-        Y.set(rnd::nextDouble);
+        Y.set((DoubleSupplier)rnd::nextDouble);
 
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {

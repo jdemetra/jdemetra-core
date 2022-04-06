@@ -18,6 +18,8 @@ package jdplus.stats.tests;
 
 import jdplus.data.DataBlock;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,7 +37,7 @@ public class NiidTestsTest {
         double[] data = new double[120];
         DataBlock X = DataBlock.of(data);
         Random rnd = new Random(0);
-        X.set(rnd::nextDouble);
+        X.set((DoubleSupplier)rnd::nextDouble);
 
         ec.tstoolkit.stats.NiidTests oldTests = new ec.tstoolkit.stats.NiidTests(
                 new ec.tstoolkit.data.ReadDataBlock(data), 12, 2, true);
@@ -66,7 +68,7 @@ public class NiidTestsTest {
         double[] data = new double[120];
         DataBlock X = DataBlock.of(data);
         Random rnd = new Random(0);
-        X.set(rnd::nextDouble);
+        X.set((DoubleSupplier)rnd::nextDouble);
         X.set(2, Double.NaN);
 
         for (int i = 35; i < 50; ++i) {

@@ -8,6 +8,8 @@ package jdplus.stats.tests;
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,7 +27,7 @@ public class BowmanShentonTest {
         int N = 100;
         DataBlock X = DataBlock.make(N);
         Random rnd = new Random();
-        X.set(rnd::nextDouble);
+        X.set((DoubleSupplier)rnd::nextDouble);
 
         BowmanShenton bs = new BowmanShenton(X);
 
