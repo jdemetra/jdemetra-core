@@ -18,8 +18,17 @@ import java.util.function.DoubleUnaryOperator;
 @lombok.Builder(toBuilder=true, builderClassName="Builder")
 public class LoessSpecification {
 
+    /**
+     * The length of the estimation window (should be odd)
+     */
     private int window;
+    /**
+     * The degree of the regression polynomial (0 for constant, 1 for linear trend)
+     */
     private int degree;
+    /**
+     * The number of jumps between two successive estimations
+     */
     private int jump;
     private DoubleUnaryOperator loessFunction;
     

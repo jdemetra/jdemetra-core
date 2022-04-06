@@ -18,6 +18,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.information.Explorable;
 import demetra.math.matrices.Matrix;
+import jdplus.stl.SeasonalSpecification;
 
 /**
  *
@@ -27,11 +28,11 @@ import demetra.math.matrices.Matrix;
 public class StlDecomposition {
 
     public Matrix process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
-        StlPlusSpecification spec = StlPlusSpecification.createDefault(period, swindow, robust);
-        if (twindow != 0) {
-            spec.setTrendSpec(LoessSpecification.of(twindow, 1));
-        }
-        spec.setMultiplicative(mul);
+        StlPlusSpecification spec = (robust ? StlPlusSpecification.robustBuilder() : StlPlusSpecification.builder())
+                .multiplicative(mul)
+                .trendSpec(LoessSpecification.defaultTrend(period, swindow))
+                .seasonalSpec(new SeasonalSpecification(period, swindow))
+                .build();
         StlPlus stl = spec.build();
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
 

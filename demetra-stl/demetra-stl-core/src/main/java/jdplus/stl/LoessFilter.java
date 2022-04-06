@@ -150,12 +150,12 @@ public class LoessFilter {
         return true;
     }
 
-    private double loess(IDataGetter y, double xs, int nleft, int nright, IntToDoubleFunction userWeights) {
+    private double loess(IDataGetter y, int ix, int nleft, int nright, IntToDoubleFunction userWeights) {
         int n = y.getLength();
         int nw = nright - nleft + 1;
         double[] w = new double[nw];
         double range = n - 1;
-        double h = Math.max(xs - nleft, nright - xs);
+        double h = Math.max(ix - nleft, nright - ix);
         if (spec.getWindow() > n) {
             h += (spec.getWindow() - n) * .5;
         }
@@ -165,7 +165,7 @@ public class LoessFilter {
         for (int j = nleft, jw = 0; j <= nright; ++j, ++jw) {
             boolean ok = Double.isFinite(y.get(j));
             if (ok) {
-                double r = Math.abs(j - xs);
+                double r = Math.abs(j - ix);
                 if (r < h9) {
                     if (r < h1) {
                         w[jw] = 1;
@@ -194,7 +194,7 @@ public class LoessFilter {
                         a += w[j] * j;
                     }
                 }
-                double b = xs - nleft - a;
+                double b = ix - nleft - a;
                 double c = 0;
                 for (int j = 0; j < nw; ++j) {
                     if (w[j] != 0) {

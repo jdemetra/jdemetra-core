@@ -80,7 +80,7 @@ public class StlPlusSpecification implements ProcSpecification {
                 .seasonalSpec(new SeasonalSpecification(period, swindow))
                 .build();
     }
-
+    
     public StlPlus build() {
         LoessFilter tf = new LoessFilter(trendSpec);
         SeasonalFilter[] sf = new SeasonalFilter[seasonalSpecs.size()];
@@ -98,7 +98,7 @@ public class StlPlusSpecification implements ProcSpecification {
     }
 
     public static final String METHOD = "stlplus";
-    public static final String FAMILY = "Seasonal Adjustment";
+    public static final String FAMILY = "Seasonal adjustment";
     public static final String VERSION = "0.1.0.0";
 
     @Override

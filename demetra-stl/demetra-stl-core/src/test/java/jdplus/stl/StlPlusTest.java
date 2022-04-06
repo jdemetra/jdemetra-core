@@ -59,7 +59,8 @@ public class StlPlusTest {
     //@Ignore
     public void testSpec() {
 
-        StlPlusSpecification spec = StlPlusSpecification.createDefault(12, false);
+        StlPlusSpecification spec = StlPlusSpecification
+                .createDefault(12, false);
         StlPlus stl = spec.build();
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(DataBlock.of(stl.trend));
@@ -71,9 +72,9 @@ public class StlPlusTest {
 //    @Ignore
     public void testMul() {
 
-        StlPlusSpecification spec = StlPlusSpecification.createDefault(12, false);
-        spec.setMultiplicative(true);
-        spec.setNumberOfOuterIterations(5);
+        StlPlusSpecification spec = StlPlusSpecification .createDefault(12, false);
+//        spec.setMultiplicative(true);
+//        spec.setNumberOfOuterIterations(5);
         StlPlus stl = spec.build();
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(DataBlock.of(stl.trend));
@@ -86,8 +87,8 @@ public class StlPlusTest {
     public void testMissing() {
 
         StlPlusSpecification spec = StlPlusSpecification.createDefault(12, false);
-        spec.setMultiplicative(true);
-        spec.setNumberOfOuterIterations(5);
+//        spec.setMultiplicative(true);
+//        spec.setNumberOfOuterIterations(5);
         StlPlus stl = spec.build();
         DataBlock s = DataBlock.copyOf(Data.EXPORTS);
         Random rnd = new Random();
@@ -107,7 +108,7 @@ public class StlPlusTest {
         for (int i = 0; i < 10000; ++i) {
 //            StlPlus stl = new StlPlus(12, 7);
             StlPlusSpecification spec = StlPlusSpecification.createDefault(12, 7, false);
-            spec.setNumberOfOuterIterations(5);
+//            spec.setNumberOfOuterIterations(5);
             StlPlus stl = spec.build();
             stl.process(Doubles.of(Data.EXPORTS));
         }
