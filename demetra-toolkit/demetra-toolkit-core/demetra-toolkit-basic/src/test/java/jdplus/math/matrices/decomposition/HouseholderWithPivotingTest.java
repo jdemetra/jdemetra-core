@@ -10,6 +10,8 @@ import static demetra.data.DataSets.lre;
 import demetra.data.DoubleSeq;
 import ec.tstoolkit.maths.Constants;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.linearsystem.QRLeastSquaresSolver;
@@ -34,7 +36,7 @@ public class HouseholderWithPivotingTest {
         A.set((i, j) -> rnd.nextDouble());
 
         DataBlock Y = DataBlock.make(M);
-        Y.set(rnd::nextDouble);
+        Y.set((DoubleSupplier)rnd::nextDouble);
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(A, 0);
@@ -54,7 +56,7 @@ public class HouseholderWithPivotingTest {
         A.column(7).setAY(-500, A.column(0));
 
         DataBlock Y = DataBlock.make(M);
-        Y.set(rnd::nextDouble);
+        Y.set((DoubleSupplier)rnd::nextDouble);
 
         HouseholderWithPivoting H2 = new HouseholderWithPivoting();
         QRDecomposition qr = H2.decompose(A, 0);
@@ -181,7 +183,7 @@ public class HouseholderWithPivotingTest {
         A.set((i, j) -> rnd.nextDouble());
 
         DataBlock Y = DataBlock.make(M);
-        Y.set(rnd::nextDouble);
+        Y.set((DoubleSupplier)rnd::nextDouble);
 
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < K; ++i) {

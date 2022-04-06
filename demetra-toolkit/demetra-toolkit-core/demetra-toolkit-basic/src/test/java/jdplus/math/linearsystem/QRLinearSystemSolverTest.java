@@ -6,6 +6,8 @@
 package jdplus.math.linearsystem;
 
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
@@ -29,7 +31,7 @@ public class QRLinearSystemSolverTest {
         FastMatrix M=FastMatrix.square(n);
         M.set((i, j)->rnd.nextDouble());
         DataBlock x=DataBlock.make(n);
-        x.set(rnd::nextDouble);
+        x.set((DoubleSupplier)rnd::nextDouble);
         DataBlock y=x.deepClone();
         QRLinearSystemSolver solver = QRLinearSystemSolver.builder().decomposer(A->new HouseholderWithPivoting().decompose(A,0)).build();
         solver.solve(M, x);

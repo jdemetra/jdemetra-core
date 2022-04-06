@@ -30,6 +30,8 @@ import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.LevelShiftFactory;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.modelling.regression.IOutlierFactory;
@@ -50,7 +52,7 @@ public class FastOutlierDetectorTest {
     public void testNew() {
         DataBlock rnd = DataBlock.make(600);
         Random gen = new Random(0);
-        rnd.set(gen::nextDouble);
+        rnd.set((DoubleSupplier)gen::nextDouble);
         FastOutlierDetector sod = new FastOutlierDetector(null);
         sod.setOutlierFactories(AdditiveOutlierFactory.FACTORY, LevelShiftFactory.FACTORY_ZEROENDED);
         SarmaOrders spec = new SarmaOrders(12);
@@ -77,7 +79,7 @@ public class FastOutlierDetectorTest {
     public void testLegacy() {
         ec.tstoolkit.data.DataBlock rnd = new ec.tstoolkit.data.DataBlock(600);
         Random gen = new Random(0);
-        rnd.set(gen::nextDouble);
+        rnd.set((DoubleSupplier)gen::nextDouble);
         ec.tstoolkit.modelling.arima.tramo.SingleOutlierDetector sod=new ec.tstoolkit.modelling.arima.tramo.SingleOutlierDetector();
         ec.tstoolkit.sarima.SarmaSpecification spec=new ec.tstoolkit.sarima.SarmaSpecification(12);
         sod.addOutlierFactory(new ec.tstoolkit.timeseries.regression.AdditiveOutlierFactory());

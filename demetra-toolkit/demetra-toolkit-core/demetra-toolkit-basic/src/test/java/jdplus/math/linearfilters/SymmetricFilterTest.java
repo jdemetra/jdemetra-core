@@ -8,6 +8,8 @@ package jdplus.math.linearfilters;
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
 import java.util.Random;
+import java.util.function.DoubleSupplier;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -27,7 +29,7 @@ public class SymmetricFilterTest {
         double[] z = new double[N];
         DataBlock Z = DataBlock.of(z);
         Random rnd = new Random();
-        Z.set(rnd::nextDouble);
+        Z.set((DoubleSupplier)rnd::nextDouble);
         double[] q = new double[N - K + 1];
         double[] q2 = new double[N - K + 1];
         DataBlock Q = DataBlock.of(q2);
