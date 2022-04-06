@@ -19,6 +19,7 @@ package demetra.highfreq;
 import demetra.data.Parameter;
 import demetra.timeseries.calendars.CalendarManager;
 import demetra.timeseries.calendars.HolidaysOption;
+import demetra.timeseries.regression.HolidaysVariable;
 import nbbrd.design.Development;
 
 /**
@@ -35,6 +36,7 @@ public final class HolidaysSpec {
     private String holidays;
     private HolidaysOption holidaysOption;
     private boolean single;
+    private int[] nonWorkingDays;
 
     private Parameter[] coefficients;
 
@@ -49,7 +51,8 @@ public final class HolidaysSpec {
     public static Builder builder() {
         return new Builder()
                 .holidaysOption(HolidaysOption.Skip)
-                .single(false);
+                .single(false)
+                .nonWorkingDays(HolidaysVariable.NONWORKING_WE);
     }
-
+    
 }

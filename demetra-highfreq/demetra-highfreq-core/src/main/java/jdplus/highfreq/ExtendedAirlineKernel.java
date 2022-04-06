@@ -122,7 +122,7 @@ public class ExtendedAirlineKernel {
         HolidaysSpec calendar = regression.getCalendar();
         if (calendar.isUsed()) {
             HolidaysVariable hvar = HolidaysVariable.of(calendar.getHolidays(),
-                    calendar.getHolidaysOption(), HolidaysVariable.NONWORKING_SUNDAYS, calendar.isSingle(), modellingContext);
+                    calendar.getHolidaysOption(), calendar.getNonWorkingDays(), calendar.isSingle(), modellingContext);
             add(desc, hvar, "holidays", ComponentType.CalendarEffect, calendar.getCoefficients());
         }
         EasterSpec easter = regression.getEaster();

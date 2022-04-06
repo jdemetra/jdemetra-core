@@ -14,12 +14,14 @@ import java.util.function.DoubleUnaryOperator;
  * - jump (optimization option): the number of jumps between two successive estimations
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@lombok.Value
+@lombok.Builder(toBuilder=true, builderClassName="Builder")
 public class LoessSpecification {
 
-    private final int window;
-    private final int degree;
-    private final int jump;
-    private final DoubleUnaryOperator loessfn;
+    private int window;
+    private int degree;
+    private int jump;
+    private DoubleUnaryOperator loessFunction;
     
     private static final DoubleUnaryOperator DEF_FN= x -> {
         double t = 1 - x * x * x;
@@ -97,7 +99,7 @@ public class LoessSpecification {
         this.window = window;
         this.degree = degree;
         this.jump = jump;
-        this.loessfn=fn == null ? DEF_FN : fn;
+        this.loessFunction=fn == null ? DEF_FN : fn;
     }
 
     /**
@@ -122,10 +124,10 @@ public class LoessSpecification {
     }
 
     /**
-     * @return the loessfn
+     * @return the loessFunction
      */
     public DoubleUnaryOperator getWeights() {
-        return loessfn;
+        return loessFunction;
     }
 
 }

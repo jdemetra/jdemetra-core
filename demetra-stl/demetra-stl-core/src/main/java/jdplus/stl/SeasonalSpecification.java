@@ -9,6 +9,8 @@ package jdplus.stl;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
+@lombok.Value
+@lombok.Builder(toBuilder=true, builderClassName="Builder")
 public class SeasonalSpecification {
     private final int period;
     private final LoessSpecification sspec;

@@ -5,6 +5,8 @@
  */
 package jdplus.stl;
 
+import demetra.processing.AlgorithmDescriptor;
+import demetra.processing.ProcSpecification;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,168 +16,98 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author Jean Palate <jean.palate@nbb.be>
  */
-public class StlPlusSpecification {
-    
-    private boolean multiplicative;
-    private LoessSpecification tspec;
-    private final List<SeasonalSpecification> sspecs=new ArrayList<>(); 
-    private int ni=2, no=0;
-    private double rwthreshold = 0.001;
+@lombok.Value
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class StlPlusSpecification implements ProcSpecification {
 
-    private DoubleUnaryOperator rwfn = x -> {
+    private boolean multiplicative;
+    private LoessSpecification trendSpec;
+    @lombok.Singular
+    private List<SeasonalSpecification> seasonalSpecs;
+    private int innerLoopsCount, outerLoopsCount;
+    private double robustWeightThreshold;
+
+    private DoubleUnaryOperator robustWeightFunction;
+
+    public static final double RWTHRESHOLD = 0.001;
+    public static final DoubleUnaryOperator RWFUNCTION = x -> {
         double t = 1 - x * x;
         return t * t;
     };
-    
+
+    public static Builder robustBuilder() {
+        return new Builder()
+                .innerLoopsCount(1)
+                .outerLoopsCount(15)
+                .robustWeightFunction(RWFUNCTION)
+                .robustWeightThreshold(RWTHRESHOLD);
+    }
+
+    public static Builder builder() {
+        return new Builder()
+                .innerLoopsCount(2)
+                .outerLoopsCount(0)
+                .robustWeightFunction(RWFUNCTION)
+                .robustWeightThreshold(RWTHRESHOLD);
+    }
+
+    public static final StlPlusSpecification DEFAULT = createDefault(7, true);
+
     /**
      * Creates a default specification for a series that has a given periodicity
+     *
      * @param period The periodicity of the series
      * @param robust True for robust filtering, false otherwise.
-     * @return 
+     * @return
      */
-    public static StlPlusSpecification createDefault(int period, boolean robust){
+    public static StlPlusSpecification createDefault(int period, boolean robust) {
         return createDefault(period, 7, robust);
     }
-    
+
     /**
-     * Given the length of the seasonal window, creates a default specification 
+     * Given the length of the seasonal window, creates a default specification
      * for a series that has a given periodicity
-     * 
+     *
      * @param period
      * @param swindow
      * @param robust
-     * @return 
+     * @return
      */
-    public static StlPlusSpecification createDefault(int period, int swindow, boolean robust){
-        StlPlusSpecification spec=new StlPlusSpecification(robust);
-        spec.tspec=LoessSpecification.defaultTrend(period, swindow);
-        spec.sspecs.add(new SeasonalSpecification(period, swindow));
-        return spec;
+    public static StlPlusSpecification createDefault(int period, int swindow, boolean robust) {
+
+        return robustBuilder()
+                .trendSpec(LoessSpecification.defaultTrend(period, swindow))
+                .seasonalSpec(new SeasonalSpecification(period, swindow))
+                .build();
     }
 
-    /**
-     * Creates the skeleton for a stl specification (the different filters have to be
-     * specified
-     * @param robust 
-     */
-    public StlPlusSpecification(boolean robust){
-        if (robust){
-            ni=1;
-            no=15;
-        }else{
-            ni=2;
-            no=0;
+    public StlPlus build() {
+        LoessFilter tf = new LoessFilter(trendSpec);
+        SeasonalFilter[] sf = new SeasonalFilter[seasonalSpecs.size()];
+        for (int i = 0; i < sf.length; ++i) {
+            SeasonalSpecification cur = seasonalSpecs.get(i);
+            sf[i] = new SeasonalFilter(cur.getSeasonalSpec(), cur.getLowPassSpec(), cur.getPeriod());
         }
-    }
-
-    /**
-     * @return the multiplicative
-     */
-    public boolean isMultiplicative() {
-        return multiplicative;
-    }
-
-    /**
-     * @param multiplicative the multiplicative to set
-     */
-    public void setMultiplicative(boolean multiplicative) {
-        this.multiplicative = multiplicative;
-    }
-
-    /**
-     * @return the tspec
-     */
-    public LoessSpecification getTrendSpec() {
-        return tspec;
-    }
-
-    /**
-     * @param tspec the tspec to set
-     */
-    public void setTrendSpec(LoessSpecification tspec) {
-        this.tspec = tspec;
-    }
-
-    /**
-     * @return the sspecs
-     */
-    public List<SeasonalSpecification> getSeasonalSpecs() {
-        return Collections.unmodifiableList(sspecs);
-    }
-    
-    public void add(SeasonalSpecification spec){
-        sspecs.add(spec);
-    }
-
-    /**
-     * @return the ni
-     */
-    public int getNumberOfInnerIterations() {
-        return ni;
-    }
-
-    /**
-     * @param ni the ni to set
-     */
-    public void setNumberOfInnerIterations(int ni) {
-        this.ni = ni;
-    }
-
-    /**
-     * @return the no
-     */
-    public int getNumberOfOuterIterations() {
-        return no;
-    }
-
-    /**
-     * @param no the no to set
-     */
-    public void setNumberOfOuterIterations(int no) {
-        this.no = no;
-    }
-
-    /**
-     * @return the rwthreshold
-     */
-    public double getRobustWeightsThreshold() {
-        return rwthreshold;
-    }
-
-    /**
-     * @param rwthreshold the rwthreshold to set
-     */
-    public void setRobustWeightsThreshold(double rwthreshold) {
-        this.rwthreshold = rwthreshold;
-    }
-
-    /**
-     * @return the rwfn
-     */
-    public DoubleUnaryOperator getRobustWeightsFunction() {
-        return rwfn;
-    }
-
-    /**
-     * @param rwfn the rwfn to set
-     */
-    public void setRobustWeightsFunction(DoubleUnaryOperator rwfn) {
-        this.rwfn = rwfn;
-    }
-
-    public StlPlus build(){
-        LoessFilter tf=new LoessFilter(tspec);
-        SeasonalFilter[] sf=new SeasonalFilter[sspecs.size()];
-        for (int i=0; i<sf.length; ++i){
-            SeasonalSpecification cur = sspecs.get(i);
-            sf[i]=new SeasonalFilter(cur.getSeasonalSpec(),cur.getLowPassSpec(), cur.getPeriod());
-        }
-        StlPlus stl=new StlPlus(tf, sf);
-        stl.setNi(ni);
-        stl.setNo(no);
-        stl.wfn=this.rwfn;
-        stl.setWthreshold(rwthreshold);
+        StlPlus stl = new StlPlus(tf, sf);
+        stl.setNi(innerLoopsCount);
+        stl.setNo(outerLoopsCount);
+        stl.wfn = this.robustWeightFunction;
+        stl.setWthreshold(robustWeightThreshold);
         stl.setMultiplicative(this.multiplicative);
         return stl;
-   }
+    }
+
+    public static final String METHOD = "stlplus";
+    public static final String FAMILY = "Seasonal Adjustment";
+    public static final String VERSION = "0.1.0.0";
+
+    @Override
+    public AlgorithmDescriptor getAlgorithmDescriptor() {
+        return new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+    }
+
+    @Override
+    public String display() {
+        return "Extended airline";
+    }
 }
