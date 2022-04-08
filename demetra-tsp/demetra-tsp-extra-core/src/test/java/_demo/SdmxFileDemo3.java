@@ -21,8 +21,8 @@ import demetra.tsp.extra.sdmx.file.SdmxFileBean;
 import demetra.tsp.extra.sdmx.file.SdmxFileProvider;
 import demetra.tsprovider.DataSource;
 import sdmxdl.file.SdmxFileManager;
-import sdmxdl.util.ext.MapCache;
-import tests.sdmxdl.xml.SdmxXmlSources;
+import sdmxdl.provider.ext.MapCache;
+import tests.sdmxdl.format.xml.SdmxXmlSources;
 
 import java.io.File;
 import java.io.IOException;

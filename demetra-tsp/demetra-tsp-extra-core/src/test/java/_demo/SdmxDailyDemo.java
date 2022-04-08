@@ -23,7 +23,7 @@ import demetra.tsp.extra.sdmx.web.SdmxWebBean;
 import demetra.tsp.extra.sdmx.web.SdmxWebProvider;
 import demetra.tsprovider.cube.BulkCube;
 import sdmxdl.Key;
-import sdmxdl.util.ext.MapCache;
+import sdmxdl.provider.ext.MapCache;
 import sdmxdl.web.SdmxWebManager;
 
 import java.io.IOException;
