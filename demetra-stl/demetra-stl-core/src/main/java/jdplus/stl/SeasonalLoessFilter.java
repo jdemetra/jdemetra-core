@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -54,12 +55,12 @@ public class SeasonalLoessFilter {
     }
 
     public boolean filter(IDataGetter y, IntToDoubleFunction userWeights, IDataSelector ys) {
-        IPeriodicDataGetters yp = organizer.getters(y);
-        IPeriodicDataSelectors ysp = organizer.selectors(ys);
         int np = organizer.getPeriod();
         if (np < 1) {
             return false;
         }
+        IPeriodicDataGetters yp = organizer.getters(y);
+        IPeriodicDataSelectors ysp = organizer.selectors(ys);
         for (int j = 0; j < np; ++j) {
             // last index fo period j (excluded)
             IDataGetter src = yp.get(j);

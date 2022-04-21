@@ -37,7 +37,7 @@ public enum DiscreteWindowFunction {
     /**
      * Returns the normalized window function, defined on [-1, 1].
      * We must have that f(-1)=f(1)=0
-     * The window function is even, so that f(-x)=f(x)3
+     * The window function is even, so that f(-x)=f(x)
      * It should be noted that the functions don't check the validity of the input
      *
      * @return

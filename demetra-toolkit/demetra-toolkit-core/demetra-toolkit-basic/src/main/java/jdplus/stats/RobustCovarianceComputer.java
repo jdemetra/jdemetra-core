@@ -17,7 +17,7 @@
 package jdplus.stats;
 
 import demetra.stats.AutoCovariances;
-import jdplus.data.analysis.WindowFunction;
+import jdplus.data.analysis.WeightFunction;
 import jdplus.math.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
@@ -42,7 +42,7 @@ public class RobustCovarianceComputer {
      * @param truncationLag Truncation lag (excluded from the computation)
      * @return
      */
-    public FastMatrix covariance(FastMatrix x, WindowFunction winFunction, int truncationLag) {
+    public FastMatrix covariance(FastMatrix x, WeightFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
         int n = x.getRowsCount(), nx = x.getColumnsCount();
         FastMatrix s = SymmetricMatrix.XtX(x);
@@ -60,7 +60,7 @@ public class RobustCovarianceComputer {
         return s;
     }
 
-    public double covariance(DoubleSeq x, WindowFunction winFunction, int truncationLag) {
+    public double covariance(DoubleSeq x, WeightFunction winFunction, int truncationLag) {
         DoubleUnaryOperator w = winFunction.window();
         DoubleSeq y=DoublesMath.removeMean(x);
         IntToDoubleFunction acf = AutoCovariances.autoCovarianceFunction(y, 0);

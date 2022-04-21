@@ -13,10 +13,13 @@ import java.util.List;
  * @author PALATEJ
  */
 @lombok.Value
+@lombok.Builder(builderClassName="Builder")
 public class StlPlusResults implements GenericExplorable{
+    DoubleSeq series;
     DoubleSeq trend;
     @lombok.Singular
     List<DoubleSeq> seasons;
     DoubleSeq irregular;
     DoubleSeq fit;
+    DoubleSeq weights;
 }

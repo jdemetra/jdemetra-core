@@ -73,17 +73,10 @@ public class HolidaysUtility {
 
         FastMatrix A = FastMatrix.make(length, nhol);
         switch (option) {
-            case Previous:
-                fillPreviousWorkingDays(holidays, A, start, nonworking);
-                break;
-            case Next:
-                fillNextWorkingDays(holidays, A, start, nonworking);
-                break;
-            case Skip:
-                fillDays(holidays, A, start, nonworking, true);
-                break;
-            default:
-                fillDays(holidays, A, start, nonworking, false);
+            case Previous -> fillPreviousWorkingDays(holidays, A, start, nonworking);
+            case Next -> fillNextWorkingDays(holidays, A, start, nonworking);
+            case Skip -> fillDays(holidays, A, start, nonworking, true);
+            default -> fillDays(holidays, A, start, nonworking, false);
         }
         TsPeriod p = P0;
         boolean ok = false;

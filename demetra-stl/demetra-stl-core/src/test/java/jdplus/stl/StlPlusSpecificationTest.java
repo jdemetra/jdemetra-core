@@ -16,6 +16,9 @@
  */
 package jdplus.stl;
 
+import demetra.stl.StlPlusSpecification;
+import demetra.stl.LoessSpecification;
+import demetra.stl.SeasonalSpecification;
 import demetra.data.Doubles;
 import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
@@ -41,7 +44,7 @@ public class StlPlusSpecificationTest {
                 .seasonalSpec(new SeasonalSpecification(52, 7))
                 .build();
 
-        StlPlus stl = spec.build();
+        StlPlusKernel stl = new StlPlusKernel(spec);
         stl.process(data);
         FastMatrix m = FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
@@ -61,7 +64,7 @@ public class StlPlusSpecificationTest {
                 .seasonalSpec(new SeasonalSpecification(52, 7))
                 .build();
 
-        StlPlus stl = spec.build();
+        StlPlusKernel stl = new StlPlusKernel(spec);
 
         stl.process(data);
         FastMatrix m = FastMatrix.make(data.length(), 4);
@@ -82,7 +85,7 @@ public class StlPlusSpecificationTest {
                 .trendSpec(LoessSpecification.of(105, 1, 1, null))
                 .seasonalSpec(sspec)
                 .build();
-        StlPlus stl = spec.build();
+        StlPlusKernel stl = new StlPlusKernel(spec);
         stl.process(data);
 
         FastMatrix m = FastMatrix.make(data.length(), 4);

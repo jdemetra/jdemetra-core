@@ -22,7 +22,7 @@ import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.linearmodel.Ols;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
-import jdplus.data.analysis.WindowFunction;
+import jdplus.data.analysis.WeightFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
@@ -54,7 +54,7 @@ public class RobustCovarianceEstimatorsTest {
 
         LeastSquaresResults rslts = Ols.compute(model);
 //        System.out.println(rslts.covariance());
-        FastMatrix hac = RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WindowFunction.Bartlett, 5);
+        FastMatrix hac = RobustCovarianceEstimators.hac(model, rslts.getCoefficients(), WeightFunction.TRIANGULAR, 5);
 //        System.out.println(hac);
         DataBlock u = model.calcResiduals(rslts.getCoefficients());
         FastMatrix hc = RobustCovarianceEstimators.hc(model, rslts.getCoefficients(), i -> u.get(i));

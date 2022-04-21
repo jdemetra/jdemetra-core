@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.stl;
+package demetra.stl;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -19,7 +19,7 @@ import java.util.function.DoubleUnaryOperator;
 public class LoessSpecification {
 
     /**
-     * The length of the estimation window (should be odd)
+     * The length of the full(two-sided) estimation window (should be odd)
      */
     private int window;
     /**

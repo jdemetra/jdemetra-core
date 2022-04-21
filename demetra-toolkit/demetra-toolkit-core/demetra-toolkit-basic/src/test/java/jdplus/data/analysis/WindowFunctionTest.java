@@ -30,7 +30,7 @@ public class WindowFunctionTest {
 
     @Test
     public void testWindow() {
-        double[] wnd = WindowFunction.Bartlett.discreteWindow(11);
+        double[] wnd = WeightFunction.TRIANGULAR.discreteWindow(11);
         for (int i=0; i<wnd.length; ++i){
             assertTrue(wnd[i]>0);
         }

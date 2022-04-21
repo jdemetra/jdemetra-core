@@ -5,6 +5,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
 import java.util.function.IntToDoubleFunction;
 
 /**

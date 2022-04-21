@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.stl;
+package demetra.stl;
 
+import demetra.stl.SeasonalSpecification;
+import demetra.stl.LoessSpecification;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
@@ -27,7 +27,7 @@ public class StlPlusSpecification implements ProcSpecification {
     private int innerLoopsCount, outerLoopsCount;
     private double robustWeightThreshold;
 
-    private DoubleUnaryOperator robustWeightFunction;
+    private DoubleUnaryOperator robustWeightFunction, kernel;
 
     public static final double RWTHRESHOLD = 0.001;
     public static final DoubleUnaryOperator RWFUNCTION = x -> {
@@ -35,10 +35,16 @@ public class StlPlusSpecification implements ProcSpecification {
         return t * t;
     };
 
+    protected static final DoubleUnaryOperator KERNEL = x -> {
+        double t = 1 - x * x * x;
+        return t * t * t;
+    };
+
     public static Builder robustBuilder() {
         return new Builder()
                 .innerLoopsCount(1)
                 .outerLoopsCount(15)
+                .kernel(KERNEL)
                 .robustWeightFunction(RWFUNCTION)
                 .robustWeightThreshold(RWTHRESHOLD);
     }
@@ -47,6 +53,7 @@ public class StlPlusSpecification implements ProcSpecification {
         return new Builder()
                 .innerLoopsCount(2)
                 .outerLoopsCount(0)
+                .kernel(KERNEL)
                 .robustWeightFunction(RWFUNCTION)
                 .robustWeightThreshold(RWTHRESHOLD);
     }
@@ -75,26 +82,17 @@ public class StlPlusSpecification implements ProcSpecification {
      */
     public static StlPlusSpecification createDefault(int period, int swindow, boolean robust) {
 
-        return robustBuilder()
-                .trendSpec(LoessSpecification.defaultTrend(period, swindow))
-                .seasonalSpec(new SeasonalSpecification(period, swindow))
-                .build();
-    }
-    
-    public StlPlus build() {
-        LoessFilter tf = new LoessFilter(trendSpec);
-        SeasonalFilter[] sf = new SeasonalFilter[seasonalSpecs.size()];
-        for (int i = 0; i < sf.length; ++i) {
-            SeasonalSpecification cur = seasonalSpecs.get(i);
-            sf[i] = new SeasonalFilter(cur.getSeasonalSpec(), cur.getLowPassSpec(), cur.getPeriod());
+        if (robust) {
+            return robustBuilder()
+                    .trendSpec(LoessSpecification.defaultTrend(period, swindow))
+                    .seasonalSpec(new SeasonalSpecification(period, swindow))
+                    .build();
+        } else {
+            return builder()
+                    .trendSpec(LoessSpecification.defaultTrend(period, swindow))
+                    .seasonalSpec(new SeasonalSpecification(period, swindow))
+                    .build();
         }
-        StlPlus stl = new StlPlus(tf, sf);
-        stl.setNi(innerLoopsCount);
-        stl.setNo(outerLoopsCount);
-        stl.wfn = this.robustWeightFunction;
-        stl.setWthreshold(robustWeightThreshold);
-        stl.setMultiplicative(this.multiplicative);
-        return stl;
     }
 
     public static final String METHOD = "stlplus";

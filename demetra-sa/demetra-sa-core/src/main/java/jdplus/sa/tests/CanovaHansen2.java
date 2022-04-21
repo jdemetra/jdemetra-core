@@ -6,7 +6,7 @@
 package jdplus.sa.tests;
 
 import jdplus.data.analysis.TrigonometricSeries;
-import jdplus.data.analysis.WindowFunction;
+import jdplus.data.analysis.WeightFunction;
 import jdplus.stats.linearmodel.LeastSquaresResults;
 import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.RobustCovarianceComputer;
@@ -27,7 +27,7 @@ public class CanovaHansen2 {
     private final DoubleSeq s;
     private boolean trend = false;
     private double period;
-    private WindowFunction winFunction = WindowFunction.Bartlett;
+    private WeightFunction winFunction = WeightFunction.TRIANGULAR;
     private int truncationLag = 12;
 
     private CanovaHansen2(DoubleSeq s) {
@@ -49,7 +49,7 @@ public class CanovaHansen2 {
         return this;
     }
 
-    public CanovaHansen2 windowFunction(WindowFunction winFunction) {
+    public CanovaHansen2 windowFunction(WeightFunction winFunction) {
         this.winFunction = winFunction;
         return this;
     }

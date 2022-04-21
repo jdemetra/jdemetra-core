@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.StlSpecification;
 import demetra.data.Doubles;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
@@ -28,15 +29,15 @@ import org.junit.Test;
  *
  * @author Jean Palate
  */
-public class StlTest {
+public class StlKernelTest {
 
-    public StlTest() {
+    public StlKernelTest() {
     }
 
     @Test
     public void testDefault() {
         StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
-        Stl stl = new Stl(spec);
+        StlKernel stl = new StlKernel(spec);
         spec.setNo(5);
         spec.setMultiplicative(true);
         stl.process(Doubles.of(Data.EXPORTS));
@@ -48,7 +49,7 @@ public class StlTest {
     @Test
     public void testMissing() {
         StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
-        Stl stl = new Stl(spec);
+        StlKernel stl = new StlKernel(spec);
         spec.setNo(5);
         spec.setMultiplicative(true);
         DataBlock s = DataBlock.copyOf(Data.EXPORTS);
@@ -67,7 +68,7 @@ public class StlTest {
     public void testLargeFilter() {
 
         StlSpecification spec = StlSpecification.defaultSpec(12, 21, false);
-        Stl stl = new Stl(spec);
+        StlKernel stl = new StlKernel(spec);
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));
@@ -78,7 +79,7 @@ public class StlTest {
     public void testMul() {
         StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
         spec.setMultiplicative(true);
-        Stl stl = new Stl(spec);
+        StlKernel stl = new StlKernel(spec);
         spec.setNo(5);
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
@@ -93,7 +94,7 @@ public class StlTest {
         for (int i = 0; i < 10000; ++i) {
             StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
             spec.setNo(5);
-            Stl stl = new Stl(spec);
+            StlKernel stl = new StlKernel(spec);
             stl.process(Doubles.of(Data.EXPORTS));
         }
         long t1 = System.currentTimeMillis();
@@ -104,7 +105,7 @@ public class StlTest {
 //    @Ignore
     public void testInner() {
         StlSpecification spec = StlSpecification.defaultSpec(12, 9, true);
-        Stl stl = new Stl(spec);
+        StlKernel stl = new StlKernel(spec);
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
 //        System.out.println(new DataBlock(stl.season));

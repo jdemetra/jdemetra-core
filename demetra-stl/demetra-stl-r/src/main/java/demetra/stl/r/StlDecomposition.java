@@ -5,20 +5,16 @@
  */
 package demetra.stl.r;
 
-import demetra.information.InformationMapping;
 import jdplus.stl.IDataGetter;
 import jdplus.stl.IDataSelector;
 import jdplus.stl.LoessFilter;
-import jdplus.stl.LoessSpecification;
-import jdplus.stl.StlPlus;
-import jdplus.stl.StlPlusSpecification;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import demetra.stl.LoessSpecification;
+import jdplus.stl.StlPlusKernel;
+import demetra.stl.StlPlusSpecification;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import demetra.information.Explorable;
 import demetra.math.matrices.Matrix;
-import jdplus.stl.SeasonalSpecification;
+import demetra.stl.SeasonalSpecification;
 
 /**
  *
@@ -33,7 +29,7 @@ public class StlDecomposition {
                 .trendSpec(LoessSpecification.defaultTrend(period, swindow))
                 .seasonalSpec(new SeasonalSpecification(period, swindow))
                 .build();
-        StlPlus stl = spec.build();
+        StlPlusKernel stl = new StlPlusKernel(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
 
         int n = y.length();

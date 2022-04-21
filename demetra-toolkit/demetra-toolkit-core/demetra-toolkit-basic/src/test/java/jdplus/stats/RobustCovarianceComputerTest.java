@@ -17,7 +17,7 @@
 package jdplus.stats;
 
 import jdplus.data.DataBlock;
-import jdplus.data.analysis.WindowFunction;
+import jdplus.data.analysis.WeightFunction;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -41,8 +41,8 @@ public class RobustCovarianceComputerTest {
 //        double sxx = s.ssq(), sx = s.sum();
 //        System.out.println((sxx - sx * sx / s.length()) / s.length());
         for (int i = 5; i < 100; ++i) {
-            assertTrue(0.00001<RobustCovarianceComputer.covariance(s, WindowFunction.Bartlett, i));
-            assertTrue(0.00001<RobustCovarianceComputer.covariance(s, WindowFunction.Tukey, i));
+            assertTrue(0.00001<RobustCovarianceComputer.covariance(s, WeightFunction.TRIANGULAR, i));
+            assertTrue(0.00001<RobustCovarianceComputer.covariance(s, WeightFunction.EPANECHNIKOV, i));
         }
     }
 

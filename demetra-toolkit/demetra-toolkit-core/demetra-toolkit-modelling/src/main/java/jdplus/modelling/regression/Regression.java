@@ -130,9 +130,7 @@ public class Regression {
                 if (factory == null) {
                     throw new TsException("Unknown variable");
                 }
-                if (!factory.fill(v, start, wnd.hnext(v.dim()))) {
-                    return null;
-                }
+                factory.fill(v, start, wnd.hnext(v.dim()));
             }
         } else {
             for (int i = 0, j = 0; i < vars.length; ++i) {
@@ -141,9 +139,7 @@ public class Regression {
                 if (factory == null) {
                     throw new TsException("Unknown variable");
                 }
-                if (!factory.fill(v, domain, wnd.hnext(v.dim()))) {
-                    return null;
-                }
+                factory.fill(v, domain, wnd.hnext(v.dim()));
             }
         }
         return M;

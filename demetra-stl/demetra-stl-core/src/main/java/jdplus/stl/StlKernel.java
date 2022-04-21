@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.StlSpecification;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.DoubleUnaryOperator;
@@ -30,7 +31,7 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate
  */
-public class Stl {
+public class StlKernel {
 
     protected static final DoubleUnaryOperator W = x -> {
         double t = 1 - x * x * x;
@@ -52,7 +53,7 @@ public class Stl {
         return y.length;
     }
 
-    public Stl(StlSpecification spec) {
+    public StlKernel(StlSpecification spec) {
         this.spec = spec;
     }
 
@@ -64,7 +65,7 @@ public class Stl {
         int istep = 0;
         do {
             stlstp();
-            if (++istep > spec.no) {
+            if (++istep > spec.getNo()) {
                 return finishProcessing();
             }
             if (weights == null) {
@@ -142,15 +143,15 @@ public class Stl {
 
         double mad = mad(w);
 
-        double c1 = spec.wthreshold * mad;
-        double c9 = (1 - spec.wthreshold) * mad;
+        double c1 = spec.getWthreshold()* mad;
+        double c9 = (1 - spec.getWthreshold()) * mad;
 
         for (int i = 0; i < n; ++i) {
             double r = w[i];
             if (r <= c1) {
                 w[i] = 1;
             } else if (r <= c9) {
-                w[i] = spec.wfn.applyAsDouble(r / mad);
+                w[i] = spec.getWfn().applyAsDouble(r / mad);
             } else {
                 w[i] = 0;
             }
@@ -217,7 +218,7 @@ public class Stl {
                     if (r < h1) {
                         w[jw] = 1;
                     } else {
-                        w[jw] = spec.loessfn.applyAsDouble(r / h);
+                        w[jw] = spec.getLoessfn().applyAsDouble(r / h);
                     }
 
                     if (userWeights != null) {
@@ -348,32 +349,32 @@ public class Stl {
     }
 
     protected void stlss(IntToDoubleFunction fn, double[] season) {
-        if (spec.np < 1) {
+        if (spec.getNp() < 1) {
             return;
         }
         int n = n();
-        double[] s = new double[(n - 1) / spec.np + 1];
-        for (int j = 0; j < spec.np; ++j) {
+        double[] s = new double[(n - 1) / spec.getNp() + 1];
+        for (int j = 0; j < spec.getNp(); ++j) {
             // last index fo period j (excluded)
-            int k = (n - 1 - j) / spec.np + 1;
+            int k = (n - 1 - j) / spec.getNp() + 1;
             final int start = j;
-            IntToDoubleFunction yp = idx -> fn.applyAsDouble(idx * spec.np + start);
-            IntToDoubleFunction wp = weights == null ? null : idx -> weights[idx * spec.np + start];
-            stless(yp, k, spec.ns, spec.sdeg, spec.nsjump, wp, s);
+            IntToDoubleFunction yp = idx -> fn.applyAsDouble(idx * spec.getNp() + start);
+            IntToDoubleFunction wp = weights == null ? null : idx -> weights[idx * spec.getNp() + start];
+            stless(yp, k, spec.getNs(), spec.getSdeg(), spec.getNsjump(), wp, s);
             // backcast
-            double sb = stlest(yp, k, spec.ns, spec.sdeg, -1, 0, Math.min(spec.ns - 1, k - 1), wp);
+            double sb = stlest(yp, k, spec.getNs(), spec.getSdeg(), -1, 0, Math.min(spec.getNs() - 1, k - 1), wp);
             if (Double.isFinite(sb)) {
                 season[j] = sb;
             } else {
                 season[j] = yp.applyAsDouble(0);
             }
             // copy s
-            int l = spec.np + j;
-            for (int i = 0; i < k; ++i, l += spec.np) {
+            int l = spec.getNp() + j;
+            for (int i = 0; i < k; ++i, l += spec.getNp()) {
                 season[l] = s[i];
             }
             // forecast (pos =np*(b+1) )
-            double sf = stlest(yp, k, spec.ns, spec.sdeg, k, Math.max(0, k - spec.ns), k - 1, wp);
+            double sf = stlest(yp, k, spec.getNs(), spec.getSdeg(), k, Math.max(0, k - spec.getNs()), k - 1, wp);
             if (Double.isFinite(sf)) {
                 season[l] = sf;
             } else {
@@ -387,10 +388,10 @@ public class Stl {
         double[] si = new double[n];
         double[] l = new double[n];
         double[] w = new double[n];
-        double[] c = new double[n + 2 * spec.np];
+        double[] c = new double[n + 2 * spec.getNp()];
         // Step 1: SI=Y-T
 
-        for (int j = 0; j < spec.ni; ++j) {
+        for (int j = 0; j < spec.getNi(); ++j) {
 
             for (int i = 0; i < n; ++i) {
                 if (missing[i]) {
@@ -404,14 +405,14 @@ public class Stl {
             // Step 2: C=smooth(SI) (extended series)
             stlss(k -> si[k], c);
             // Step 3: L = f(C), low-pass filter 
-            stlfts(spec.np, c, w);
-            stless(k -> w[k], n, spec.nl, spec.ldeg, spec.nljump, null, l);
+            stlfts(spec.getNp(), c, w);
+            stless(k -> w[k], n, spec.getNl(), spec.getLdeg(), spec.getNljump(), null, l);
             // Step 4: S = C - L
             for (int i = 0; i < n; ++i) {
                 if (spec.isMultiplicative()) {
-                    season[i] = c[spec.np + i] / l[i];
+                    season[i] = c[spec.getNp() + i] / l[i];
                 } else {
-                    season[i] = c[spec.np + i] - l[i];
+                    season[i] = c[spec.getNp() + i] - l[i];
                 }
             }
             // Step 5: seasonal adjustment
@@ -427,7 +428,7 @@ public class Stl {
                 }
             }
             // Step 6: T=smooth(sa)
-            stless(k -> w[k], n, spec.nt, spec.tdeg, spec.ntjump, weights == null ? null : k -> weights[k], trend);
+            stless(k -> w[k], n, spec.getNt(), spec.getTdeg(), spec.getNtjump(), weights == null ? null : k -> weights[k], trend);
         }
     }
 

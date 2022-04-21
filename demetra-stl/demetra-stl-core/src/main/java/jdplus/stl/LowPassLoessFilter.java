@@ -16,6 +16,8 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
+
 /**
  *
  * @author Jean Palate
@@ -31,7 +33,6 @@ public class LowPassLoessFilter {
     }
 
     public boolean filter(IDataGetter x, IDataSelector t) {
-
         // moving averages...
         int n = x.getLength();
         double[] w1 = new double[n - np + 1];

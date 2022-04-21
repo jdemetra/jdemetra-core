@@ -19,6 +19,8 @@ package jdplus.stl;
 import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
 import demetra.data.DoubleSeq;
+import demetra.stl.SeasonalSpecification;
+import demetra.stl.StlPlusSpecification;
 
 /**
  * Java implementation of the original FORTRAN routine
@@ -29,70 +31,34 @@ import demetra.data.DoubleSeq;
  *
  * @author Jean Palate
  */
-public class StlPlus {
-    
-    protected static final DoubleUnaryOperator W = x -> {
-        double t = 1 - x * x * x;
-        return t * t * t;
-    };
-    
-    private final LoessFilter tfilter;
-    private final SeasonalFilter[] sfilter;
-    protected DoubleUnaryOperator wfn = x -> {
-        double t = 1 - x * x;
-        return t * t;
-    };
-    
-    protected DoubleUnaryOperator loessfn = x -> {
-        double t = 1 - x * x * x;
-        return t * t * t;
-    };
-    
+public class StlPlusKernel {
+
+    public StlPlusKernel(StlPlusSpecification spec) {
+        this.spec = spec;
+    }
+
+    private final StlPlusSpecification spec;
+
     protected double[] y;
     protected double[][] season;
     protected double[] trend;
     protected double[] irr;
     protected double[] weights;
     protected double[] fit;
-    private boolean mul;
-    
-    private int ni = 2, no = 0;
-    private double wthreshold = .001;
-    
+
     private int n() {
         return y.length;
     }
-    
-    public StlPlus(final LoessFilter tfilter, final SeasonalFilter sfilter) {
-        this.tfilter = tfilter;
-        this.sfilter = new SeasonalFilter[]{sfilter};
-    }
-    
-    public StlPlus(final LoessFilter tfilter, final SeasonalFilter[] sfilter) {
-        this.tfilter = tfilter;
-        this.sfilter = sfilter;
-    }
-    
-    public StlPlus(final int period, final int swindow) {
-        LoessSpecification sspec = LoessSpecification.of(swindow, 0);
-        int twindow = (int) Math.ceil((1.5 * period) / (1 - 1.5 / swindow));
-        if (twindow % 2 == 0) {
-            ++twindow;
-        }
-        LoessSpecification tspec = LoessSpecification.of(twindow);
-        tfilter = new LoessFilter(tspec);
-        sfilter = new SeasonalFilter[]{new SeasonalFilter(sspec, LoessSpecification.of(period + 1), period)};
-    }
-    
-    public boolean process(DoubleSeq data) {
-        
+
+    public StlPlusResults process(DoubleSeq data) {
+
         if (!initializeProcessing(data)) {
-            return false;
+            return null;
         }
         int istep = 0;
         do {
             innerLoop();
-            if (++istep > no) {
+            if (++istep > spec.getOuterLoopsCount()) {
                 return finishProcessing();
             }
             if (weights == null) {
@@ -108,8 +74,8 @@ public class StlPlus {
             computeRobustWeights(fit, weights);
         } while (true);
     }
-    
-    private boolean finishProcessing() {
+
+    private StlPlusResults finishProcessing() {
         for (int i = 0; i < n(); ++i) {
             fit[i] = trend[i];
             for (int j = 0; j < season.length; ++j) {
@@ -121,26 +87,37 @@ public class StlPlus {
                 irr[i] = mean();
             }
         }
-        return true;
+        StlPlusResults.Builder builder = StlPlusResults.builder()
+                .series(DoubleSeq.of(y))
+                .trend(DoubleSeq.of(trend))
+                .irregular(DoubleSeq.of(irr))
+                .fit(DoubleSeq.of(fit));
+        for (int i = 0; i < season.length; ++i) {
+            builder.season(DoubleSeq.of(season[i]));
+        }
+        if (weights != null)
+            builder.weights(DoubleSeq.of(weights));
+        return builder.build();
     }
-    
+
     private boolean initializeProcessing(DoubleSeq data) {
+        int nseas = spec.getSeasonalSpecs().size();
         int n = data.length();
         y = new double[n];
         data.copyTo(y, 0);
         fit = new double[n];
-        season = new double[sfilter.length][];
-        for (int i = 0; i < sfilter.length; ++i) {
+        season = new double[nseas][];
+        for (int i = 0; i < nseas; ++i) {
             season[i] = new double[n];
         }
         trend = new double[n];
-        if (mul) {
+        if (spec.isMultiplicative()) {
             Arrays.setAll(trend, i -> 1);
         }
         irr = new double[n];
         return true;
     }
-    
+
     private static double mad(double[] r) {
         double[] sr = r.clone();
         Arrays.sort(sr);
@@ -152,21 +129,22 @@ public class StlPlus {
             return 3 * (sr[n2 - 1] + sr[n2]);
         }
     }
-    
+
     private void computeRobustWeights(double[] fit, double[] w) {
-        
+
         int n = n();
         for (int i = 0; i < n; ++i) {
             if (Double.isFinite(y[i])) {
                 w[i] = Math.abs(invop(y[i], fit[i]) - mean());
             }
         }
-        
+
         double mad = mad(w);
-        
+        double wthreshold = spec.getRobustWeightThreshold();
+        DoubleUnaryOperator wfn = spec.getRobustWeightFunction();
         double c1 = wthreshold * mad;
         double c9 = (1 - wthreshold) * mad;
-        
+
         for (int i = 0; i < n; ++i) {
             double r = w[i];
             if (r <= c1) {
@@ -177,7 +155,7 @@ public class StlPlus {
                 w[i] = 0;
             }
         }
-        
+
     }
 
     /**
@@ -189,28 +167,32 @@ public class StlPlus {
         double[] w = new double[n];
         // Step 1: SI=Y-T
 
-        for (int j = 0; j < ni; ++j) {
-            
+        for (int j = 0; j < spec.getInnerLoopsCount(); ++j) {
+
             for (int i = 0; i < n; ++i) {
                 si[i] = invop(y[i], trend[i]);
             }
             // compute S
-            for (int s = 0; s < sfilter.length; ++s) {
-                sfilter[s].filter(IDataGetter.of(si), weights == null ? null : k -> weights[k], mul, IDataSelector.of(season[s]));
-                if (s != sfilter.length - 1) {
+            int s = 0;
+            for (SeasonalSpecification sspec : spec.getSeasonalSpecs()) {
+                SeasonalFilter sfilter = SeasonalFilter.of(sspec);
+                sfilter.filter(IDataGetter.of(si), weights == null ? null : k -> weights[k], spec.isMultiplicative(), IDataSelector.of(season[s]));
+                if (s != season.length - 1) {
                     for (int i = 0; i < n; ++i) {
                         si[i] = invop(si[i], season[s][i]);
                     }
                 }
+                ++s;
             }
             // seasonal adjustment
             for (int i = 0; i < n; ++i) {
                 w[i] = y[i];
-                for (int s = 0; s < sfilter.length; ++s) {
+                for (s = 0; s < season.length; ++s) {
                     w[i] = invop(w[i], season[s][i]);
                 }
             }
             // Step 6: T=smooth(sa)
+            LoessFilter tfilter = new LoessFilter(spec.getTrendSpec());
             tfilter.filter(IDataSelector.of(w), weights == null ? null : k -> weights[k], IDataSelector.of(trend));
         }
     }
@@ -223,6 +205,7 @@ public class StlPlus {
     }
 
     /**
+     * @param i
      * @return the season
      */
     public double[] getSeason(int i) {
@@ -257,82 +240,15 @@ public class StlPlus {
         return fit;
     }
 
-    /**
-     * @return the tfilter
-     */
-    public LoessFilter getTfilter() {
-        return tfilter;
-    }
-
-    /**
-     * @return sfilter1lter
-     */
-    public SeasonalFilter[] getSfilter() {
-        return sfilter;
-    }
-
-    /**
-     * @return the ni
-     */
-    public int getNi() {
-        return ni;
-    }
-
-    /**
-     * @param ni the ni to set
-     */
-    public void setNi(int ni) {
-        this.ni = ni;
-    }
-
-    /**
-     * @return the no
-     */
-    public int getNo() {
-        return no;
-    }
-
-    /**
-     * @param no the no to set
-     */
-    public void setNo(int no) {
-        this.no = no;
-    }
-
-    /**
-     * @return the wthreshold
-     */
-    public double getWthreshold() {
-        return wthreshold;
-    }
-
-    /**
-     * @param wthreshold the wthreshold to set
-     */
-    public void setWthreshold(double wthreshold) {
-        this.wthreshold = wthreshold;
-    }
-    
-    public void setMultiplicative(boolean multiplicative) {
-        mul = multiplicative;
-    }
-
-    /**
-     * @return the mul
-     */
-    public boolean isMultiplicative() {
-        return mul;
-    }
-    
     private double op(double l, double r) {
-        return mul ? l * r : l + r;
+        return spec.isMultiplicative() ? l * r : l + r;
     }
-    
+
     private double invop(double l, double r) {
-        return mul ? l / r : l - r;
+        return spec.isMultiplicative() ? l / r : l - r;
     }
-    
+
     private double mean() {
-        return mul ? 1 : 0;
+        return spec.isMultiplicative() ? 1 : 0;
     }
 }

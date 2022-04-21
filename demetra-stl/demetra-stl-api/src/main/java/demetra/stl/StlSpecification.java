@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.stl;
+package demetra.stl;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -343,6 +343,12 @@ public class StlSpecification {
         return wfn;
     }
 
+    /**
+     * @return the wfn
+     */
+    public DoubleUnaryOperator getLoessfn() {
+        return loessfn;
+    }
     /**
      * @param wfn the wfn to set
      */

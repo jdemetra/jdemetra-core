@@ -16,6 +16,8 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
+import demetra.stl.SeasonalSpecification;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -25,6 +27,10 @@ import java.util.function.IntToDoubleFunction;
 public class SeasonalFilter {
     private final SeasonalLoessFilter sfilter;
     private final LowPassLoessFilter lfilter;
+    
+    public static SeasonalFilter of(SeasonalSpecification spec){
+        return new SeasonalFilter(spec.getSeasonalSpec(), spec.getLowPassSpec(), spec.getPeriod());
+    }
     
     public SeasonalFilter(final SeasonalLoessFilter sfilter, final LowPassLoessFilter lfilter) {
         this.sfilter=sfilter;
