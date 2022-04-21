@@ -6,7 +6,7 @@
 package jdplus.sa.tests;
 
 import jdplus.data.analysis.TrigonometricSeries;
-import jdplus.data.analysis.WeightFunction;
+import jdplus.data.analysis.WindowFunction;
 import nbbrd.design.BuilderPattern;
 import jdplus.stats.linearmodel.LeastSquaresResults;
 import jdplus.stats.linearmodel.LinearModel;
@@ -41,7 +41,7 @@ public class CanovaHansen {
         private double period;
         private boolean lag1 = true;
         private Variables type = Variables.Dummy;
-        private WeightFunction winFunction = WeightFunction.TRIANGULAR;
+        private WindowFunction winFunction = WindowFunction.Bartlett;
         private int truncationLag = 12;
         private int startPosition;
         private int nh;
@@ -79,7 +79,7 @@ public class CanovaHansen {
             return this;
         }
 
-        public Builder windowFunction(WeightFunction winFunction) {
+        public Builder windowFunction(WindowFunction winFunction) {
             this.winFunction = winFunction;
             return this;
         }
@@ -155,7 +155,7 @@ public class CanovaHansen {
     private final FastMatrix x, xe, cxe, omega;
     private final DoubleSeq c, u;
 
-    private CanovaHansen(final FastMatrix x, final LinearModel lm, final WeightFunction winFunction, int truncationLag) {
+    private CanovaHansen(final FastMatrix x, final LinearModel lm, final WindowFunction winFunction, int truncationLag) {
         this.x = x;
         LeastSquaresResults olsResults = Ols.compute(lm);
         c=olsResults.getCoefficients();

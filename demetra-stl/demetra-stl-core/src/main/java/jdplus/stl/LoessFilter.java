@@ -171,7 +171,7 @@ public class LoessFilter {
                     if (r < h1) {
                         w[jw] = 1;
                     } else {
-                        w[jw] = spec.getWeights().applyAsDouble(r / h);
+                        w[jw] = spec.weights().applyAsDouble(r / h);
                     }
 
                     if (userWeights != null) {

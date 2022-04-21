@@ -16,7 +16,7 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.data.analysis.DiscreteWindowFunction;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
 import demetra.timeseries.TsException;
 import demetra.data.DoubleSeq;
@@ -170,7 +170,7 @@ public class SeasonalityTests {
             }
             btSpectrum = SmoothedPeriodogram.builder()
                     .data(d)
-                    .windowFunction(DiscreteWindowFunction.Tukey)
+                    .windowFunction(WindowFunction.Tukey)
                     .windowLength(wlen * period)
                     .build();
 

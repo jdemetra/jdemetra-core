@@ -5,6 +5,7 @@
  */
 package demetra.stl;
 
+import demetra.data.WeightFunction;
 import demetra.stl.SeasonalSpecification;
 import demetra.stl.LoessSpecification;
 import demetra.processing.AlgorithmDescriptor;
@@ -27,24 +28,16 @@ public class StlPlusSpecification implements ProcSpecification {
     private int innerLoopsCount, outerLoopsCount;
     private double robustWeightThreshold;
 
-    private DoubleUnaryOperator robustWeightFunction, kernel;
+    private WeightFunction robustWeightFunction, kernel;
 
     public static final double RWTHRESHOLD = 0.001;
-    public static final DoubleUnaryOperator RWFUNCTION = x -> {
-        double t = 1 - x * x;
-        return t * t;
-    };
-
-    protected static final DoubleUnaryOperator KERNEL = x -> {
-        double t = 1 - x * x * x;
-        return t * t * t;
-    };
+    public static final WeightFunction RWFUNCTION = WeightFunction.BIWEIGHT;
 
     public static Builder robustBuilder() {
         return new Builder()
                 .innerLoopsCount(1)
                 .outerLoopsCount(15)
-                .kernel(KERNEL)
+                .kernel(LoessSpecification.WEIGHTS)
                 .robustWeightFunction(RWFUNCTION)
                 .robustWeightThreshold(RWTHRESHOLD);
     }
@@ -53,7 +46,7 @@ public class StlPlusSpecification implements ProcSpecification {
         return new Builder()
                 .innerLoopsCount(2)
                 .outerLoopsCount(0)
-                .kernel(KERNEL)
+                .kernel(LoessSpecification.WEIGHTS)
                 .robustWeightFunction(RWFUNCTION)
                 .robustWeightThreshold(RWTHRESHOLD);
     }

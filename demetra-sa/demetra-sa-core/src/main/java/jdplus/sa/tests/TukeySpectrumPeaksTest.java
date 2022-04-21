@@ -16,7 +16,7 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.data.analysis.DiscreteWindowFunction;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.data.analysis.SmoothedPeriodogram;
 import internal.jdplus.dstats.SpecialFunctions;
 import demetra.data.DoubleSeq;
@@ -228,7 +228,7 @@ public class TukeySpectrumPeaksTest {
         SmoothedPeriodogram tukey = SmoothedPeriodogram.builder()
                 .data(s)
                 .windowLength(windowLength)
-                .windowFunction(DiscreteWindowFunction.Tukey)
+                .windowFunction(WindowFunction.Tukey)
                 .taper(null)
                 .build();
                 

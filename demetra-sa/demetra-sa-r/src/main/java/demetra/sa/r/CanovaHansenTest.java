@@ -16,7 +16,7 @@
  */
 package demetra.sa.r;
 
-import jdplus.data.analysis.WeightFunction;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.sa.tests.CanovaHansen;
 import demetra.data.DoubleSeq;
 
@@ -33,7 +33,7 @@ public class CanovaHansenTest {
     }
     
     public static CanovaHansenTest ofSeasonalDummies(double[] data, int period, boolean lag1, String window, int truncation){
-        WeightFunction fn=WeightFunction.valueOf(window);
+        WindowFunction fn=WindowFunction.valueOf(window);
         return new CanovaHansenTest(CanovaHansen.test(DoubleSeq.of(data))
                 .lag1(lag1)
                 .dummies(period)
@@ -43,7 +43,7 @@ public class CanovaHansenTest {
     }
     
     public static CanovaHansenTest ofTrigs(double[] data, int period, boolean lag1, String window, int truncation){
-        WeightFunction fn=WeightFunction.valueOf(window);
+        WindowFunction fn=WindowFunction.valueOf(window);
         return new CanovaHansenTest(CanovaHansen.test(DoubleSeq.of(data))
                 .lag1(lag1)
                 .trigonometric(period)
@@ -53,7 +53,7 @@ public class CanovaHansenTest {
     }
 
     public static CanovaHansenTest ofSpecificFrequency(double[] data, double period, int nh, boolean lag1, String window, int truncation){
-        WeightFunction fn=WeightFunction.valueOf(window);
+        WindowFunction fn=WindowFunction.valueOf(window);
         return new CanovaHansenTest(CanovaHansen.test(DoubleSeq.of(data))
                 .lag1(lag1)
                 .specific(period, nh)

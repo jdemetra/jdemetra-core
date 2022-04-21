@@ -141,7 +141,7 @@ public class StlPlusKernel {
 
         double mad = mad(w);
         double wthreshold = spec.getRobustWeightThreshold();
-        DoubleUnaryOperator wfn = spec.getRobustWeightFunction();
+        DoubleUnaryOperator wfn = spec.getRobustWeightFunction().asFunction();
         double c1 = wthreshold * mad;
         double c9 = (1 - wthreshold) * mad;
 

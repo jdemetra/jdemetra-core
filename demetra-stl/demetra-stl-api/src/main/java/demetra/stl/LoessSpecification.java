@@ -5,6 +5,7 @@
  */
 package demetra.stl;
 
+import demetra.data.WeightFunction;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -30,12 +31,9 @@ public class LoessSpecification {
      * The number of jumps between two successive estimations
      */
     private int jump;
-    private DoubleUnaryOperator loessFunction;
+    private WeightFunction loessFunction;
     
-    private static final DoubleUnaryOperator DEF_FN= x -> {
-        double t = 1 - x * x * x;
-        return t * t * t;
-    };
+    public static final WeightFunction WEIGHTS= WeightFunction.TRICUBE;
     
     /**
      * 
@@ -91,7 +89,7 @@ public class LoessSpecification {
         return new LoessSpecification(window, degree, (int) Math.ceil( .1 * window), null);
     }
 
-    public static LoessSpecification of(int window, int degree, int jump, DoubleUnaryOperator fn) {
+    public static LoessSpecification of(int window, int degree, int jump, WeightFunction fn) {
         if (window < 2 || window % 2 != 1) {
             throw new IllegalArgumentException("STL");
         }
@@ -104,11 +102,11 @@ public class LoessSpecification {
         return new LoessSpecification(window, degree, jump, fn);
     }
 
-    private LoessSpecification(int window, int degree, int jump, DoubleUnaryOperator fn) {
+    private LoessSpecification(int window, int degree, int jump, WeightFunction fn) {
         this.window = window;
         this.degree = degree;
         this.jump = jump;
-        this.loessFunction=fn == null ? DEF_FN : fn;
+        this.loessFunction=fn == null ? WEIGHTS : fn;
     }
 
     /**
@@ -135,8 +133,8 @@ public class LoessSpecification {
     /**
      * @return the loessFunction
      */
-    public DoubleUnaryOperator getWeights() {
-        return loessFunction;
+    public DoubleUnaryOperator weights() {
+        return loessFunction.asFunction();
     }
 
 }

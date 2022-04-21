@@ -37,7 +37,7 @@ public class SmoothedPeriodogram {
     @BuilderPattern(SmoothedPeriodogram.class)
     public static class Builder {
 
-        private DiscreteWindowFunction win = DiscreteWindowFunction.Tukey;
+        private WindowFunction win = WindowFunction.Tukey;
         private int winLen = 44;
         private int resolution = 0;
         private Taper taper = null;
@@ -72,7 +72,7 @@ public class SmoothedPeriodogram {
          * @param win The window function used to smooth the autocorrelations
          * @return
          */
-        public Builder windowFunction(DiscreteWindowFunction win) {
+        public Builder windowFunction(WindowFunction win) {
             this.win = win;
             return this;
         }

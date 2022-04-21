@@ -16,7 +16,7 @@
  */
 package jdplus.stats.linearmodel;
 
-import jdplus.data.analysis.WeightFunction;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.stats.RobustCovarianceComputer;
 import java.util.function.IntToDoubleFunction;
@@ -30,7 +30,7 @@ import jdplus.math.matrices.FastMatrix;
 @lombok.experimental.UtilityClass
 public class RobustCovarianceEstimators {
 
-    public FastMatrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WeightFunction w, final int truncationLag) {
+    public FastMatrix hac(final LinearModel model, final DoubleSeq olsCoefficients, final WindowFunction w, final int truncationLag) {
         FastMatrix x = model.variables();
         DoubleSeq u = model.calcResiduals(olsCoefficients);
         FastMatrix xx = SymmetricMatrix.XtX(x);

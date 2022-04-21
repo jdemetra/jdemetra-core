@@ -25,7 +25,7 @@ import java.util.function.IntToDoubleFunction;
  * @author Jean Palate
  */
 @Development(status=Development.Status.Release)
-public enum DiscreteWindowFunction {
+public enum WindowFunction {
 
     Square,
     Welch,

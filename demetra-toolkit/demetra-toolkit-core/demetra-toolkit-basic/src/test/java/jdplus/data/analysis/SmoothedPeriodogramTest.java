@@ -41,7 +41,7 @@ public class SmoothedPeriodogramTest {
                 .data(Doubles.of(data))
                 .taper(new TukeyHanningTaper(.1))
                 .windowLength(45)
-                .windowFunction(DiscreteWindowFunction.Tukey)
+                .windowFunction(WindowFunction.Tukey)
                 .build();
         
 //        for (int i = 0; i < 200; ++i) {

@@ -6,7 +6,7 @@
 package jdplus.sa.tests;
 
 import jdplus.data.analysis.TrigonometricSeries;
-import jdplus.data.analysis.WeightFunction;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.stats.linearmodel.LeastSquaresResults;
 import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.RobustCovarianceComputer;
@@ -19,16 +19,17 @@ import jdplus.math.matrices.FastMatrix;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class CanovaHansen2 {
-    
-    public static CanovaHansen2 of(DoubleSeq s){
+
+    public static CanovaHansen2 of(DoubleSeq s) {
         return new CanovaHansen2(s);
     }
 
     private final DoubleSeq s;
     private boolean trend = false;
     private double period;
-    private WeightFunction winFunction = WeightFunction.TRIANGULAR;
+    private WindowFunction winFunction = WindowFunction.Bartlett;
     private int truncationLag = 12;
+    private boolean lag1 = true;
 
     private CanovaHansen2(DoubleSeq s) {
         this.s = s;
@@ -36,6 +37,11 @@ public class CanovaHansen2 {
 
     public CanovaHansen2 periodicity(double period) {
         this.period = period;
+        return this;
+    }
+
+    public CanovaHansen2 lag1(boolean lag1) {
+        this.lag1 = lag1;
         return this;
     }
 
@@ -49,7 +55,7 @@ public class CanovaHansen2 {
         return this;
     }
 
-    public CanovaHansen2 windowFunction(WeightFunction winFunction) {
+    public CanovaHansen2 windowFunction(WindowFunction winFunction) {
         this.winFunction = winFunction;
         return this;
     }
@@ -57,20 +63,19 @@ public class CanovaHansen2 {
     public double compute() {
         FastMatrix x = sx();
         LinearModel lm = buildModel(x);
-        LeastSquaresResults olsResults= Ols.compute(lm);
+        LeastSquaresResults olsResults = Ols.compute(lm);
         DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
-        FastMatrix xe = x.deepClone();
-        int n=lm.getObservationsCount();
-        
+         int n = lm.getObservationsCount();
+      FastMatrix xe = lag1 ? x.extract(1, n, 0, x.getColumnsCount()) :  x;
+ 
         // multiply the columns of x by e
-        xe.applyByColumns(c -> c.apply(e, (a, b) -> (a * b)/n));
-        FastMatrix cxe = xe.deepClone();
-        cxe.applyByColumns(c -> c.cumul());
-        if (cxe.getColumnsCount() == 1)
-            return cxe.column(0).ssq()/rvar;
-        else{
-            return 2*(cxe.column(0).ssq()+cxe.column(1).ssq())/rvar;
+        xe.applyByColumns(c -> c.apply(e, (a, b) -> a * b));
+        xe.applyByColumns(c -> c.cumul());
+        if (xe.getColumnsCount() == 1) {
+            return xe.column(0).ssq() / (n * n * rvar);
+        } else {
+            return 2 * (xe.column(0).ssq() + xe.column(1).ssq()) / (n * n * rvar);
         }
     }
 
@@ -81,15 +86,26 @@ public class CanovaHansen2 {
     }
 
     private LinearModel buildModel(FastMatrix sx) {
+        if (!lag1) {
+            LinearModel.Builder builder = LinearModel.builder();
+            builder.y(s);
+            if (trend) {
+                builder.addX(DoubleSeq.onMapping(s.length(), i -> i));
+            }
+            builder.addX(sx)
+                    .meanCorrection(true);
+            return builder.build();
+        } else {
+            LinearModel.Builder builder = LinearModel.builder();
+            builder.y(s.drop(1, 0))
+                    .addX(s.drop(0, 1))
+                    .meanCorrection(true);
+            if (trend) {
+                builder.addX(DoubleSeq.onMapping(s.length(), i -> i));
+            }
+            return builder.build();
 
-        LinearModel.Builder builder = LinearModel.builder();
-        builder.y(s);
-        if (trend) {
-            builder.addX(DoubleSeq.onMapping(s.length(), i -> i));
         }
-        builder.addX(sx)
-                .meanCorrection(true);
-        return builder.build();
     }
 
 }
