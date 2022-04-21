@@ -17,15 +17,17 @@
 package jdplus.regsarima.regular;
 
 import demetra.arima.SarimaOrders;
+import demetra.arima.SarimaSpec;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
-import demetra.arima.SarimaSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.ModellingUtility;
+import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.util.IntList;
 import java.util.ArrayList;
@@ -40,20 +42,18 @@ import jdplus.data.interpolation.DataInterpolator;
 import jdplus.data.transformation.LogJacobian;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
-import jdplus.stats.likelihood.LogLikelihoodFunction;
-import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import demetra.timeseries.regression.ModellingUtility;
-import demetra.timeseries.regression.TrendConstant;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaFixedMapping;
 import jdplus.sarima.estimation.SarimaMapping;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 import jdplus.timeseries.simplets.Transformations;
 import jdplus.timeseries.simplets.TsDataTransformation;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -283,7 +283,7 @@ public final class ModelDescription {
         for (Variable v : variables) {
             if (!v.isPreadjustment()) {
                 FastMatrix x = Regression.matrix(domain, v.getCore());
-                if (x == null) {
+                if (x == null || x.isZero(0)) {
                     excluded.add(v);
                 } else {
                     DataBlockIterator columns = x.columnsIterator();

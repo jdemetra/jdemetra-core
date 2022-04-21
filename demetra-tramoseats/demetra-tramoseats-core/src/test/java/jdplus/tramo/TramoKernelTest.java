@@ -18,30 +18,27 @@ package jdplus.tramo;
 
 import demetra.data.AggregationType;
 import demetra.data.Data;
-import demetra.timeseries.regression.ModellingContext;
-import jdplus.regsarima.regular.RegSarimaModel;
+import demetra.processing.DefaultProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
-import ec.tstoolkit.modelling.arima.IPreprocessor;
-import ec.tstoolkit.timeseries.Month;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
-import demetra.data.Doubles;
-import demetra.processing.DefaultProcessingLog;
-import demetra.timeseries.TsUnit;
+import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TradingDaysSpec.AutoMethod;
 import demetra.tramo.TramoSpec;
-import java.util.Map;
+import ec.tstoolkit.modelling.arima.IPreprocessor;
+import ec.tstoolkit.timeseries.Month;
+import java.util.ArrayList;
+import java.util.List;
+import jdplus.regsarima.regular.RegSarimaModel;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  *
@@ -572,7 +569,7 @@ public class TramoKernelTest {
                 ++n;
             }
         }
-        assertTrue(n >= 48);
+        assertTrue(n >= 45);
     }
 
     public static void stressTestProd() {
