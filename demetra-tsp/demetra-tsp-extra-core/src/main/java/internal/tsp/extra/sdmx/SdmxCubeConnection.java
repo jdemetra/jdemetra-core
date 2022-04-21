@@ -27,7 +27,7 @@ import demetra.tsprovider.cube.CubeSeries;
 import demetra.tsprovider.cube.CubeSeriesWithData;
 import nbbrd.design.VisibleForTesting;
 import sdmxdl.*;
-import sdmxdl.util.SdmxCubeUtil;
+import sdmxdl.provider.SdmxCubeUtil;
 
 import java.io.IOException;
 import java.util.List;
