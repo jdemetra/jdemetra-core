@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2022 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.stl;
 
@@ -76,7 +87,7 @@ public class LoessSpecification {
         if (window < 2 || window % 2 != 1) {
             throw new IllegalArgumentException("STL");
         }
-        return new LoessSpecification(window, 1, (int) Math.ceil( .1 * window), null);
+        return new LoessSpecification(window, 1, 0, null);
     }
 
     public static LoessSpecification of(int window, int degree) {
@@ -86,7 +97,7 @@ public class LoessSpecification {
         if (degree < 0 || degree > 1) {
             throw new IllegalArgumentException("STL");
         }
-        return new LoessSpecification(window, degree, (int) Math.ceil( .1 * window), null);
+        return new LoessSpecification(window, degree, 0, null);
     }
 
     public static LoessSpecification of(int window, int degree, int jump, WeightFunction fn) {

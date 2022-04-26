@@ -1,17 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2022 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.stl;
 
 import demetra.data.WeightFunction;
-import demetra.stl.SeasonalSpecification;
-import demetra.stl.LoessSpecification;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import java.util.List;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  *
@@ -28,7 +36,7 @@ public class StlPlusSpecification implements ProcSpecification {
     private int innerLoopsCount, outerLoopsCount;
     private double robustWeightThreshold;
 
-    private WeightFunction robustWeightFunction, kernel;
+    private WeightFunction robustWeightFunction;
 
     public static final double RWTHRESHOLD = 0.001;
     public static final WeightFunction RWFUNCTION = WeightFunction.BIWEIGHT;
@@ -37,7 +45,6 @@ public class StlPlusSpecification implements ProcSpecification {
         return new Builder()
                 .innerLoopsCount(1)
                 .outerLoopsCount(15)
-                .kernel(LoessSpecification.WEIGHTS)
                 .robustWeightFunction(RWFUNCTION)
                 .robustWeightThreshold(RWTHRESHOLD);
     }
@@ -46,7 +53,6 @@ public class StlPlusSpecification implements ProcSpecification {
         return new Builder()
                 .innerLoopsCount(2)
                 .outerLoopsCount(0)
-                .kernel(LoessSpecification.WEIGHTS)
                 .robustWeightFunction(RWFUNCTION)
                 .robustWeightThreshold(RWTHRESHOLD);
     }
