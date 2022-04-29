@@ -14,15 +14,22 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.stl;
+package jdplus.highfreq.extractors;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author PALATEJ
  */
-public interface IPeriodicDataGetters {
-    
-    int getPeriod();
-    
-    IDataGetter get(int period);
+public class ExtendedAirlineExtractorTest {
+
+    public ExtendedAirlineExtractorTest() {
+    }
+
+    @Test
+    public void testSomeMethod() {
+    }
+
 }

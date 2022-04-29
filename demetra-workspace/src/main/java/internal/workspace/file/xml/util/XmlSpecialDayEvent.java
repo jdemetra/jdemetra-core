@@ -52,7 +52,7 @@ public class XmlSpecialDayEvent implements IXmlConverter<demetra.timeseries.cale
         Holiday rslt = sday.create();
         if (validityperiod != null) {
             ValidityPeriod vp = validityperiod.create();
-            rslt.forPeriod(vp.getStart(), vp.getEnd());
+            rslt=rslt.forPeriod(vp.getStart(), vp.getEnd());
         }
         return rslt;
     }

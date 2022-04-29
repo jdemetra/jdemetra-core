@@ -18,10 +18,7 @@ package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.highfreq.SeriesComponent;
-import demetra.sa.ComponentType;
-import demetra.sa.SeriesDecomposition;
 import java.util.List;
-import java.util.Optional;
 import jdplus.arima.ArimaModel;
 import jdplus.ucarima.UcarimaModel;
 

@@ -17,11 +17,13 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.MissingValueEstimation;
+import demetra.timeseries.regression.RegressionItem;
 import demetra.timeseries.regression.ResidualsType;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.dictionaries.ResidualsDictionaries;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import jdplus.arima.ArimaModel;
 import jdplus.dstats.T;
@@ -184,4 +186,17 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
     DoubleSeq independentResiduals;
     List<RegressionDesc> regressionItems;
 
+    public RegressionItem regressionItem(Predicate<ITsVariable> pred, int item) {
+        int curitem = 0;
+        for (RegressionDesc desc : regressionItems) {
+            if (pred.test(desc.getCore())) {
+                if (item == curitem) {
+                    return new RegressionItem(desc.getCoef(), desc.getStderr(), desc.getPvalue(), desc.getCore().description(desc.getItem(), estimation.getDomain()));
+                } else {
+                    ++curitem;
+                }
+            }
+        }
+        return null;
+    }
 }

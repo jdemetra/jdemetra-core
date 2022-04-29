@@ -17,13 +17,16 @@
 package jdplus.stl;
 
 import demetra.stl.StlSpecification;
-import demetra.data.Doubles;
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
+import demetra.stl.LoessSpecification;
+import demetra.stl.SeasonalSpecification;
 import jdplus.data.DataBlock;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  *
@@ -35,56 +38,77 @@ public class StlKernelTest {
     }
 
     @Test
+//    @Ignore
     public void testDefault() {
-        StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
+        StlSpecification spec = StlSpecification.builder()
+                .seasonalSpec(new SeasonalSpecification(12, 7))
+                .trendSpec(LoessSpecification.of(7, 1))
+                .build();
         StlKernel stl = new StlKernel(spec);
-        spec.setNo(5);
-        spec.setMultiplicative(true);
         stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(new DataBlock(stl.trend));
-//        System.out.println(new DataBlock(stl.season));
-//        System.out.println(new DataBlock(stl.irr));
-    }
-
-    @Test
-    public void testMissing() {
-        StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
-        StlKernel stl = new StlKernel(spec);
-        spec.setNo(5);
-        spec.setMultiplicative(true);
-        DataBlock s = DataBlock.copyOf(Data.EXPORTS);
-        Random rnd = new Random();
-        for (int i = 0; i < 10; ++i) {
-            s.set(rnd.nextInt(s.length()), Double.NaN);
-        }
-        stl.process(s);
-//        System.out.println(new DataBlock(stl.trend));
-//        System.out.println(new DataBlock(stl.season));
-//        System.out.println(new DataBlock(stl.irr));
+//        System.out.println(DoubleSeq.of(stl.trend));
+//        System.out.println(DoubleSeq.of(stl.season[0]));
+//        System.out.println(DoubleSeq.of(stl.irr));
     }
 
     @Test
 //    @Ignore
     public void testLargeFilter() {
-
-        StlSpecification spec = StlSpecification.defaultSpec(12, 21, false);
+        StlSpecification spec = StlSpecification.builder()
+                .seasonalSpec(new SeasonalSpecification(12, 7))
+                .trendSpec(LoessSpecification.of(21, 1))
+                .build();
         StlKernel stl = new StlKernel(spec);
         stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(new DataBlock(stl.trend));
-//        System.out.println(new DataBlock(stl.season));
-//        System.out.println(new DataBlock(stl.irr));
+//        System.out.println(DoubleSeq.of(stl.trend));
+//        System.out.println(DoubleSeq.of(stl.season[0]));
+//        System.out.println(DoubleSeq.of(stl.irr));
     }
 
     @Test
-    public void testMul() {
-        StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
-        spec.setMultiplicative(true);
+    //@Ignore
+    public void testSpec() {
+
+        StlSpecification spec = StlSpecification
+                .createDefault(12, false);
         StlKernel stl = new StlKernel(spec);
-        spec.setNo(5);
         stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(new DataBlock(stl.trend));
-//        System.out.println(new DataBlock(stl.season));
-//        System.out.println(new DataBlock(stl.irr));
+//        System.out.println(DataBlock.of(stl.trend));
+//        System.out.println(DataBlock.of(stl.season[0]));
+//        System.out.println(DataBlock.of(stl.irr));
+    }
+
+    @Test
+//    @Ignore
+    public void testMul() {
+
+        StlSpecification spec = StlSpecification .createDefault(12, false);
+//        spec.setMultiplicative(true);
+//        spec.setNumberOfOuterIterations(5);
+        StlKernel stl = new StlKernel(spec);
+        stl.process(Doubles.of(Data.EXPORTS));
+//        System.out.println(DataBlock.of(stl.trend));
+//        System.out.println(DataBlock.of(stl.season[0]));
+//        System.out.println(DataBlock.of(stl.irr));
+    }
+
+    @Test
+//    @Ignore
+    public void testMissing() {
+
+        StlSpecification spec = StlSpecification.createDefault(12, false);
+//        spec.setMultiplicative(true);
+//        spec.setNumberOfOuterIterations(5);
+        StlKernel stl = new StlKernel(spec);
+        DataBlock s = DataBlock.copyOf(Data.EXPORTS);
+        Random rnd = new Random();
+        for (int i = 0; i < 30; ++i) {
+            s.set(rnd.nextInt(s.length()), Double.NaN);
+        }
+        stl.process(s);
+//        System.out.println(DataBlock.of(stl.trend));
+//        System.out.println(DataBlock.of(stl.season[0]));
+//        System.out.println(DataBlock.of(stl.irr));
     }
 
     @Test
@@ -92,24 +116,13 @@ public class StlKernelTest {
     public void stressTest() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            StlSpecification spec = StlSpecification.defaultSpec(12, 7, false);
-            spec.setNo(5);
-            StlKernel stl = new StlKernel(spec);
+//            StlPlusKernel stl = new StlPlusKernel(12, 7);
+            StlSpecification spec = StlSpecification.createDefault(12, 7, false);
+//            spec.setNumberOfOuterIterations(5);
+        StlKernel stl = new StlKernel(spec);
             stl.process(Doubles.of(Data.EXPORTS));
         }
         long t1 = System.currentTimeMillis();
         System.out.println(t1 - t0);
     }
-
-    @Test
-//    @Ignore
-    public void testInner() {
-        StlSpecification spec = StlSpecification.defaultSpec(12, 9, true);
-        StlKernel stl = new StlKernel(spec);
-        stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(new DataBlock(stl.trend));
-//        System.out.println(new DataBlock(stl.season));
-//        System.out.println(new DataBlock(stl.irr));
-    }
-
 }

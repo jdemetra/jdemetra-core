@@ -16,13 +16,23 @@
  */
 package jdplus.stl;
 
+import demetra.data.DoubleSeq;
+import demetra.information.GenericExplorable;
+import java.util.List;
+
 /**
  *
- * @author Jean Palate <jean.palate@nbb.be>
+ * @author PALATEJ
  */
-public interface IPeriodicDataGetters {
-    
-    int getPeriod();
-    
-    IDataGetter get(int period);
+@lombok.Value
+@lombok.Builder(builderClassName="Builder")
+public class StlResults implements GenericExplorable{
+
+    DoubleSeq series;
+    DoubleSeq trend;
+    @lombok.Singular
+    List<DoubleSeq> seasons;
+    DoubleSeq irregular;
+    DoubleSeq fit;
+    DoubleSeq weights;
 }

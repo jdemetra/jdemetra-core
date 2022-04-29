@@ -21,6 +21,7 @@ import demetra.toolkit.dictionaries.RegressionDictionaries;
 import java.util.Optional;
 import jdplus.highfreq.ExtendedAirlineDecomposition;
 import jdplus.highfreq.ExtendedAirlineResults;
+import jdplus.highfreq.ExtendedRegAirlineModel;
 import jdplus.modelling.GeneralLinearModel;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NBCAST;
 import nbbrd.design.Development;
@@ -341,7 +342,7 @@ public class ExtendedAirlineExtractor extends InformationMapping<ExtendedAirline
             return TsData.of(dom.getEndPeriod(), data.range(data.length() - nf, data.length()));
         });
 
-        delegate(null, GeneralLinearModel.class, source -> source.getPreprocessing());
+        delegate(null, ExtendedRegAirlineModel.class, source -> source.getPreprocessing());
 
         set(RegressionDictionaries.CAL, TsData.class, source -> source.getPreprocessing().getCalendarEffect(null));
         set(RegressionDictionaries.CAL + SeriesInfo.F_SUFFIX, TsData.class,

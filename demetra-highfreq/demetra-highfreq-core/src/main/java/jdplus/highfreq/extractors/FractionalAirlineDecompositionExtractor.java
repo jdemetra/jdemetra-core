@@ -14,6 +14,7 @@ import demetra.information.InformationMapping;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import java.util.List;
+import jdplus.highfreq.ExtendedAirlineEstimation;
 import jdplus.ucarima.UcarimaModel;
 import nbbrd.service.ServiceProvider;
 

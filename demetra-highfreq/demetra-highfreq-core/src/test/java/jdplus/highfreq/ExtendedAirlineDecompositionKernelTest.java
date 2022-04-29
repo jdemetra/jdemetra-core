@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import static jdplus.highfreq.ExtendedAirlineKernelTest.france;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -110,7 +111,9 @@ public class ExtendedAirlineDecompositionKernelTest {
         main.add(rslts.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Value));
         main.add(rslts.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
         main.add(rslts.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Value));
-        System.out.println(TsDataTable.of(main));
+ //       System.out.println(TsDataTable.of(main));
+       Map<String, Class> dictionary = rslts.getDictionary();
+        dictionary.keySet().forEach(v->System.out.println(v));
     }
     
 }

@@ -9,8 +9,8 @@ import jdplus.stl.IDataGetter;
 import jdplus.stl.IDataSelector;
 import jdplus.stl.LoessFilter;
 import demetra.stl.LoessSpecification;
-import jdplus.stl.StlPlusKernel;
-import demetra.stl.StlPlusSpecification;
+import jdplus.stl.StlKernel;
+import demetra.stl.StlSpecification;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.math.matrices.Matrix;
@@ -24,12 +24,12 @@ import demetra.stl.SeasonalSpecification;
 public class StlDecomposition {
 
     public Matrix process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
-        StlPlusSpecification spec = (robust ? StlPlusSpecification.robustBuilder() : StlPlusSpecification.builder())
+        StlSpecification spec = (robust ? StlSpecification.robustBuilder() : StlSpecification.builder())
                 .multiplicative(mul)
                 .trendSpec(LoessSpecification.defaultTrend(period, swindow))
                 .seasonalSpec(new SeasonalSpecification(period, swindow))
                 .build();
-        StlPlusKernel stl = new StlPlusKernel(spec);
+        StlKernel stl = new StlKernel(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
 
         int n = y.length();

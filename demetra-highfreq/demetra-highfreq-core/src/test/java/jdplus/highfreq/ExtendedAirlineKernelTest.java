@@ -30,6 +30,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.HolidaysOption;
 import demetra.timeseries.regression.ModellingContext;
+import java.util.Map;
 
 /**
  *
@@ -71,7 +72,8 @@ public class ExtendedAirlineKernelTest {
         ExtendedAirlineKernel kernel=new ExtendedAirlineKernel(spec, context);
         ExtendedRegAirlineModel rslt = kernel.process(EDF, ProcessingLog.dummy());
         assertTrue(rslt != null);
-
+        Map<String, Class> dictionary = rslt.getDictionary();
+        dictionary.keySet().forEach(v->System.out.println(v));
     }
 
     private static void addDefault(List<Holiday> holidays) {
