@@ -19,6 +19,7 @@ package demetra.benchmarking.r;
 import demetra.data.AggregationType;
 import demetra.data.Parameter;
 import demetra.ssf.SsfInitialization;
+import demetra.tempdisagg.univariate.ModelBasedDentonSpec;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationIResults;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
@@ -28,6 +29,10 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import jdplus.tempdisagg.univariate.ModelBasedDentonProcessor;
+import jdplus.tempdisagg.univariate.ModelBasedDentonResults;
 import jdplus.tempdisagg.univariate.ProcessorI;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationProcessor;
 
@@ -39,7 +44,7 @@ import jdplus.tempdisagg.univariate.TemporalDisaggregationProcessor;
 public class TemporalDisaggregation {
 
 
-    public TsData processI(TsData y, TsData indicator, String model, String aggregation, int obspos,
+    public TemporalDisaggregationIResults processI(TsData y, TsData indicator, String model, String aggregation, int obspos,
             double rho, boolean fixedrho, double truncatedRho) {
         TemporalDisaggregationISpec spec = TemporalDisaggregationISpec.builder()
                 .constant(true)
@@ -49,8 +54,21 @@ public class TemporalDisaggregation {
                 .parameter(fixedrho ? Parameter.fixed(rho) : Parameter.initial(rho))
                 .truncatedRho(truncatedRho)
                 .build();
-        TemporalDisaggregationIResults rslt = ProcessorI.process(y, indicator, spec);
-        return rslt.getDisaggregatedSeries();
+        return ProcessorI.process(y, indicator, spec);
+    }
+    
+    public ModelBasedDentonResults processModelBasedDenton(TsData y, TsData indicator, int differencing, String aggregation, int obspos, String[] odates, double[] ovar){
+        ModelBasedDentonSpec.Builder builder = ModelBasedDentonSpec.builder()
+                .aggregationType(AggregationType.valueOf(aggregation))
+                .differencing(differencing);
+        if (odates != null && ovar != null){
+            if (odates.length != ovar.length)
+                throw new IllegalArgumentException();
+            for (int i=0; i<odates.length; ++i){
+                builder.outlierVariance(LocalDate.parse(odates[i], DateTimeFormatter.ISO_DATE), ovar[i]);
+            }
+        }  
+        return ModelBasedDentonProcessor.process(y, indicator, builder.build());
     }
 
     public TemporalDisaggregationResults process(TsData y, boolean constant, boolean trend, TsData[] indicators,

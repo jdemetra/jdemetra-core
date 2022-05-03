@@ -42,21 +42,11 @@ public class DentonProcessor implements Denton.Processor {
         
         TsData naggregationConstraint;
         switch (spec.getAggregationType()){
-            case Sum:
-            case Average:
-                naggregationConstraint=BenchmarkingUtility.constraints(highFreqSeries, aggregationConstraint);
-                break;
-            case Last:
-                naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio-1);
-                break;
-            case First:
-                naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, 0);
-                break;
-            case UserDefined:
-                naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
-                break;
-            default:
-                throw new TsException(TsException.INVALID_OPERATION);
+            case Sum, Average -> naggregationConstraint=BenchmarkingUtility.constraints(highFreqSeries, aggregationConstraint);
+            case Last -> naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio-1);
+            case First -> naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, 0);
+            case UserDefined -> naggregationConstraint=BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
+            default -> throw new TsException(TsException.INVALID_OPERATION);
         }
         
   

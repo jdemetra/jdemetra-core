@@ -24,7 +24,7 @@ import java.time.LocalDate;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Preliminary)
+@Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.Builder
 public class CalendarizationResults {

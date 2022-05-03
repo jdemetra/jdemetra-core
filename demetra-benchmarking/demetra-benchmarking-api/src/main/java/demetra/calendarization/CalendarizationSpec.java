@@ -30,19 +30,33 @@ import java.time.LocalDate;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.Value
-@lombok.Builder(toBuilder=true,  buildMethodName="buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public class CalendarizationSpec implements ProcSpecification, Validatable<CalendarizationSpec> {
 
     public static final String FAMILY = "Benchmarking";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, "Calendarization", null);
-    
+
     /**
      * Weights of each week day, starting from Monday
      */
     private double[] dailyWeights;
+    /**
+     * Computes standard deviations
+     */
     private boolean stdev;
+    /**
+     * Aggregation unit
+     */
     private TsUnit aggregationUnit;
-    private LocalDate start, end;
+    /**
+     * First date of the calendarization (included)
+     */
+    private LocalDate start;
+
+    /**
+     * Last date of the calendarization (excluded)
+     */
+    private LocalDate end;
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
@@ -51,16 +65,17 @@ public class CalendarizationSpec implements ProcSpecification, Validatable<Calen
 
     @Override
     public CalendarizationSpec validate() throws IllegalArgumentException {
-        if (start != null && end != null && !start.isBefore(end))
+        if (start != null && end != null && !start.isBefore(end)) {
             throw new IllegalArgumentException("Invalide span");
+        }
         return this;
     }
-    
-    public static class Builder implements Validatable.Builder<CalendarizationSpec>{
-          
+
+    public static class Builder implements Validatable.Builder<CalendarizationSpec> {
+
     }
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder()
                 .stdev(true)
                 .aggregationUnit(TsUnit.UNDEFINED);

@@ -70,11 +70,11 @@ public class TramoSeatsSpecMapping {
 
     public static final String TRAMO = "tramo", SEATS = "seats", BENCH = "benchmarking", RSA = "method";
 
-        public InformationSet write(TramoSeatsSpec spec, boolean verbose, DemetraVersion version) {
-            switch (version){
-                case JD2: return writeLegacy(spec, verbose);
-                default: return write(spec, verbose);
-            }
+    public InformationSet write(TramoSeatsSpec spec, boolean verbose, DemetraVersion version) {
+        return switch (version) {
+            case JD2 -> writeLegacy(spec, verbose);
+            default -> write(spec, verbose);
+        };
         }
 
     public InformationSet write(TramoSeatsSpec spec, boolean verbose) {
@@ -162,8 +162,8 @@ public class TramoSeatsSpecMapping {
 
         @Override
         public InformationSet write(SaSpecification spec, boolean verbose, DemetraVersion version) {
-            if (spec instanceof TramoSeatsSpec) {
-                return TramoSeatsSpecMapping.write((TramoSeatsSpec) spec, verbose, version);
+            if (spec instanceof TramoSeatsSpec tramoSeatsSpec) {
+                return TramoSeatsSpecMapping.write(tramoSeatsSpec, verbose, version);
             } else {
                 return null;
             }

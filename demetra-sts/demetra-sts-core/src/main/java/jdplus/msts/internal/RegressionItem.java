@@ -84,7 +84,7 @@ public class RegressionItem extends StateItem {
                 mapping.add(v[i]);
             }
             mapping.add((p, builder) -> {
-                StateComponent cmp = Coefficients.timeVaryingCoefficients(   p.extract(0, v.length));
+                StateComponent cmp = Coefficients.timeVaryingCoefficients(p.extract(0, v.length));
                 builder.add(name, cmp, Loading.regression(x));
                 return v.length;
             });

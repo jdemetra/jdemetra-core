@@ -19,7 +19,6 @@ package jdplus.tempdisagg.univariate;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsUnit;
 import demetra.timeseries.regression.Variable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import jdplus.math.matrices.FastMatrix;
