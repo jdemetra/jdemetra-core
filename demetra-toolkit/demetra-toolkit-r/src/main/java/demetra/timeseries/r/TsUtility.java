@@ -17,11 +17,16 @@
 package demetra.timeseries.r;
 
 import demetra.data.AggregationType;
+import demetra.timeseries.CalendarPeriodObs;
+import demetra.timeseries.CalendarTimeSeries;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -85,4 +90,31 @@ public class TsUtility {
         return new int[]{freq, year, 1 + (mon - 1) / c};
     }
 
+    public CalendarTimeSeries of(String[] starts, double[] data) {
+        if (starts.length != data.length + 1) {
+            throw new IllegalArgumentException();
+        }
+        List<CalendarPeriodObs> entries = new ArrayList<>();
+        LocalDate e = LocalDate.parse(starts[0], DateTimeFormatter.ISO_DATE), s = null;
+        for (int i = 0; i < data.length; ++i) {
+            s = e;
+            entries.add(CalendarPeriodObs.of(s, e.plusDays(1), data[i]));
+        }
+        return CalendarTimeSeries.of(entries);
+    }
+
+    public CalendarTimeSeries of(String[] starts, String[] ends, double[] data) {
+        if (starts.length != data.length || ends.length != data.length) {
+            throw new IllegalArgumentException();
+        }
+        List<CalendarPeriodObs> entries = new ArrayList<>();
+
+        for (int i = 0; i < data.length; ++i) {
+            LocalDate s = LocalDate.parse(starts[i], DateTimeFormatter.ISO_DATE),
+                    e = LocalDate.parse(ends[i], DateTimeFormatter.ISO_DATE);
+            entries.add(CalendarPeriodObs.of(s, e.plusDays(1), data[i]));
+        }
+        return CalendarTimeSeries.of(entries);
+    }
+    
 }

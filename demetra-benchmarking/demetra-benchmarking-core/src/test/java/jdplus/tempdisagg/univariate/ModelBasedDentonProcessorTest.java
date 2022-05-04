@@ -35,7 +35,7 @@ public class ModelBasedDentonProcessorTest {
     @Test
     public void testSomeMethod() {
         TsData y = TsData.ofInternal(TsPeriod.yearly(1978),  Data.PCRA);
-        TsData q = TsData.ofInternal(TsPeriod.quarterly(1977, 1),  Data.IND_PCR);
+        TsData q = TsData.ofInternal(TsPeriod.monthly(1977, 1),  Data.IND_PCR);
         ModelBasedDentonSpec spec=ModelBasedDentonSpec.builder()
                 .aggregationType(AggregationType.Average)
                 .build();

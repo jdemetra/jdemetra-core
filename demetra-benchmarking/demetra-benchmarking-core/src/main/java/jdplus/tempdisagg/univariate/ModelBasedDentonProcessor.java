@@ -30,8 +30,11 @@ import java.util.Map.Entry;
 import jdplus.arima.ssf.Rw;
 import jdplus.benchmarking.ssf.SsfCumulator;
 import jdplus.benchmarking.univariate.BenchmarkingUtility;
+import jdplus.data.DataBlock;
+import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
+import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.implementations.Coefficients;
 import jdplus.ssf.implementations.Loading;
@@ -81,8 +84,11 @@ public class ModelBasedDentonProcessor {
 //                offset += spec.getObservationPosition();
 //        }
 //
+        DataBlock x=DataBlock.of(indicator.getValues());
+        AbsMeanNormalizer normalizer=new AbsMeanNormalizer();
+        double fx=normalizer.normalize(x);
         ISsf ssf;
-        ISsfLoading loading = Loading.regression(indicator.getValues());
+        ISsfLoading loading = Loading.regression(x);
         if (spec.getOutlierVariances().isEmpty()) {
             StateComponent c = Coefficients.timeVaryingCoefficients(DoubleSeq.of(1));
             StateComponent cc = SsfCumulator.of(c, loading, ratio, 0);
@@ -104,9 +110,9 @@ public class ModelBasedDentonProcessor {
             ssf = Ssf.of(cc, SsfCumulator.defaultLoading(loading, ratio, 0));
         }
 
-        DefaultSmoothingResults srslts = DkToolkit.sqrtSmooth(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
-        TsData biratios = TsData.of(indicator.getStart(), srslts.getComponent(1));
-        TsData ebiratios = TsData.of(indicator.getStart(), srslts.getComponentVariance(1).sqrt());
+        DefaultSmoothingResults srslts = DkToolkit.smooth(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
+        TsData biratios = TsData.of(indicator.getStart(), srslts.getComponent(1).times(fx));
+        TsData ebiratios = TsData.of(indicator.getStart(), srslts.getComponentVariance(1).fn(q->Math.sqrt(q)*fx));
         
         // Not optimal
         DiffuseLikelihood ll = DkToolkit.likelihood(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
@@ -115,7 +121,7 @@ public class ModelBasedDentonProcessor {
 
         return ModelBasedDentonResults.builder()
                 .disaggregatedSeries(TsData.multiply(biratios, indicator))
-                .stdevDisaggregatedSeries(TsData.multiply(biratios, indicator.abs()))
+                .stdevDisaggregatedSeries(TsData.multiply(ebiratios, indicator.abs()))
                 .biRatios(biratios)
                 .stdevBiRatios(ebiratios)
                 .likelihood(ll.stats(0, 0))

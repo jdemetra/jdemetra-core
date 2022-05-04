@@ -16,6 +16,7 @@
  */
 package demetra.calendarization;
 
+import demetra.information.GenericExplorable;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import java.time.LocalDate;
@@ -27,10 +28,8 @@ import java.time.LocalDate;
 @Development(status = Development.Status.Release)
 @lombok.Value
 @lombok.Builder
-public class CalendarizationResults {
-    @lombok.NonNull 
+public class CalendarizationResults implements GenericExplorable {
     private LocalDate start;
-    @lombok.NonNull 
     private double[] dailyData, dailyStdev;
     private TsData aggregatedSeries;
     private TsData stdevAggregatedSeries;

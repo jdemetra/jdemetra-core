@@ -54,7 +54,7 @@ public class DefaultAugmentedFilteringResults extends DefaultFilteringResults im
         ISsfInitialization initialization = ssf.initialization();
         int dim = initialization.getStateDim(), n = initialization.getDiffuseDim();
         B.prepare(dim, n, 0, n);
-        E.prepare(n, 0, n);
+        E.prepare(dim, 0, n);
     }
 
     @Override
