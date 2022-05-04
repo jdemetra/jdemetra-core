@@ -7,13 +7,14 @@ package jdplus.highfreq.extractors;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import jdplus.highfreq.FractionalAirlineDecomposition;
+import jdplus.highfreq.LightExtendedAirlineDecomposition;
 import demetra.highfreq.SeriesComponent;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import java.util.List;
+import jdplus.highfreq.ExtendedAirlineEstimation;
 import jdplus.ucarima.UcarimaModel;
 import nbbrd.service.ServiceProvider;
 
@@ -22,14 +23,14 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(InformationExtractor.class)
-public class FractionalAirlineDecompositionExtractor extends InformationMapping<FractionalAirlineDecomposition> {
+public class FractionalAirlineDecompositionExtractor extends InformationMapping<LightExtendedAirlineDecomposition> {
 
     static final String Y = "y", T = "t", S = "s", I = "i", SA = "sa", T_E = "t_stde", S_E = "s_stde", I_E = "i_stde",
             NCMPS = "ncmps", CMP = "cmp", CMP_E = "cmp_stde",
             UCARIMA = "ucarima", ARIMA = "arima",
             PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score";
 
-    public double[] data(FractionalAirlineDecomposition decomp, String cmp) {
+    public double[] data(LightExtendedAirlineDecomposition decomp, String cmp) {
         SeriesComponent c = decomp.component(cmp);
         if (c == null) {
             return null;
@@ -38,7 +39,7 @@ public class FractionalAirlineDecompositionExtractor extends InformationMapping<
         }
     }
 
-    public double[] sa(FractionalAirlineDecomposition decomp) {
+    public double[] sa(LightExtendedAirlineDecomposition decomp) {
         SeriesComponent n = decomp.component("n");
         if (n != null) {
             return n.getData().toArray();
@@ -59,11 +60,11 @@ public class FractionalAirlineDecompositionExtractor extends InformationMapping<
         return cur.toArray();
     }
 
-    public boolean isNoisy(FractionalAirlineDecomposition decomp) {
+    public boolean isNoisy(LightExtendedAirlineDecomposition decomp) {
         return decomp.getComponents().size() == 1 + decomp.getModel().getPeriodicities().length;
     }
 
-    public double[] stde(FractionalAirlineDecomposition decomp, String cmp) {
+    public double[] stde(LightExtendedAirlineDecomposition decomp, String cmp) {
         SeriesComponent c = decomp.component(cmp);
         if (c == null) {
             return null;
@@ -98,6 +99,6 @@ public class FractionalAirlineDecompositionExtractor extends InformationMapping<
 
     @Override
     public Class getSourceClass() {
-        return FractionalAirlineDecomposition.class;
+        return LightExtendedAirlineDecomposition.class;
     }
 }

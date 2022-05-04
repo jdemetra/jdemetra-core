@@ -19,6 +19,7 @@ package jdplus.x13.regarima;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
+import demetra.processing.ProcessingLog;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.EasterSpec.Type;
 import demetra.regarima.RegArimaSpec;
@@ -132,7 +133,7 @@ class X13ModelBuilder implements IModelBuilder {
     }
 
     @Override
-    public ModelDescription build(TsData series, InformationSet log) {
+    public ModelDescription build(TsData series, ProcessingLog log) {
         TsData nseries = TsDataToolkit.select(series, spec.getBasic().getSpan());
         TsDomain edom = nseries.getDomain().select(spec.getEstimate().getSpan());
         ModelDescription cur = new ModelDescription(nseries, edom);

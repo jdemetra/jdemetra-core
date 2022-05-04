@@ -25,7 +25,7 @@ import java.time.format.DateTimeParseException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
+ * Period defined by a starting date (included) and an ending date (excluded)
  * @author Jean Palate
  */
 @lombok.Value(staticConstructor = "of")

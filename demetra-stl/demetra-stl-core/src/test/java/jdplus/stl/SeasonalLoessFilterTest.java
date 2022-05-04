@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import org.junit.Test;

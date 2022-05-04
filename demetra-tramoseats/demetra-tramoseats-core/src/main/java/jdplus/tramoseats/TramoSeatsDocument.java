@@ -55,10 +55,12 @@ public class TramoSeatsDocument extends AbstractTsDocument<TramoSeatsSpec, Tramo
 
     @Override
     public SaEstimation getEstimation() {
-        if (getStatus() != ProcessingStatus.Valid)
+        if (getStatus() != ProcessingStatus.Valid) {
             return null;
-         List<ProcDiagnostic> tests = new ArrayList<>();
-       TramoSeatsResults result = getResult();
+        }
+        List<ProcDiagnostic> tests = new ArrayList<>();
+        TramoSeatsResults result = getResult();
+        TramoSeatsFactory.INSTANCE.fillDiagnostics(tests, result);
         SaSpecification pspec = TramoSeatsFactory.INSTANCE.generateSpec(getSpecification(), result);
         ProcQuality quality = ProcDiagnostic.summary(tests);
         return SaEstimation.builder()

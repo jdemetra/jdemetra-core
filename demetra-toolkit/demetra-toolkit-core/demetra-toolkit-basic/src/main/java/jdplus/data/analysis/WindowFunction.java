@@ -35,74 +35,75 @@ public enum WindowFunction {
     Parzen;
 
     /**
-     * Returns the window function, defined on ]-1, 1[ 
-     * The window function is strictly positive,  even (f(-x)=f(x)) and
-     * reaches its max at 0, with f(0)=1
-     * 
-     * @return The function
+     * Returns the normalized window function, defined on [-1, 1].
+     * We must have that f(-1)=f(1)=0
+     * The window function is even, so that f(-x)=f(x)
+     * It should be noted that the functions don't check the validity of the input
+     *
+     * @return
      */
     public DoubleUnaryOperator window() {
         switch (this) {
             case Welch:
-                return x-> 1.0 - x*x;
+                return x -> 1.0 - x * x;
             case Tukey:
-                return x->0.5 * (1 + Math.cos(Math.PI * x));
+                return x -> 0.5 * (1 + Math.cos(Math.PI * x));
             case Bartlett:
-                return x->1-x;
+                return x -> x < 0 ? 1 + x : 1 - x;
             case Hamming:
-                return x->0.54 + 0.46 * Math.cos(Math.PI * x);
+                return x -> 0.54 + 0.46 * Math.cos(Math.PI * x);
             case Parzen:
-                return x-> x<=.5 ? (1.0 - 6.0 * Math.pow(x, 2.0) + 6 * Math.pow(x, 3.0)) 
-                        :2 * Math.pow(1.0 - x, 3);
+                return x -> {
+                    double x1 = x < 0 ? -x : x;
+                    if (x <= .5) {
+                        double x2 = x1 * x1, x3 = x1 * x2;
+                        return 1.0 - 6.0 * x2 + 6.0 * x3;
+                    } else {
+                        double y = 1 - x1;
+                        return 2.0 * y * y * y;
+                    }
+                };
             case Square:
-                return x->1;
+                return x -> 1;
         }
         return null;
     }
-    
+
     /**
-     * Return the weights of the half of the window
-     * (the full window length is 2*windowLength-1)
-     * @param length The number of items to be returned 
-     * @return w[0],...,w[(windowLength-1)/windowLength]
+     * Computes w[i]=f(i/m)
+     *
+     * @param m The length of the half-window. 
+     * @return The returned array contains exactly m elements
+     * they correspond to wnd(0)... f(m-1/m)
      */
-    public double[] discreteWindow(int length){
-        double[] win=new double[length];
-        double dlen=length;
-        DoubleUnaryOperator fn=window();
-        for (int i=0; i<win.length; ++i){
-            win[i]=fn.applyAsDouble(i/dlen);
+    public double[] discreteWindow(int m) {
+        double[] win = new double[m];
+        double dlen = m;
+        DoubleUnaryOperator fn = window();
+        for (int i = 0; i < m; ++i) {
+            win[i] = fn.applyAsDouble(i / dlen);
         }
         return win;
     }
-    
+
     /**
-     * Applies the window on a given even function
-     * @param fn An even function (f(x)=f(-x))
-     * @param windowLength 
-     * @return w[-len]f(-len)+...+w[0]f(0)+...w[len]f(len) =
-     *    w[0]f(0)+2*w[1]f(1)+...+2*w[len]f(len)
+     *
+     * @param fn The input series, which
+     * @param N The window length. Should be odd
+     *
+     * @return computes sum(fn(i)*w(i)).
      */
-    public double computeSymmetric(IntToDoubleFunction fn, int windowLength){
-        double[] window=discreteWindow(windowLength);
-        double v=fn.applyAsDouble(0)*window[0];
-        for (int i=1; i<windowLength; ++i){
-            v+=2*window[i]*fn.applyAsDouble(i);
+    public double compute(IntToDoubleFunction fn, int N) {
+        if (N % 2 == 0) {
+            throw new IllegalArgumentException("Window length should be odd");
         }
-        return v;
-    }
-    
-    /**
-     * Applies the window on a given function
-     * @param fn A function
-     * @param windowLength 
-     * @return w[-len]f(-len)+...+w[0]f(0)+...w[len]f(len) 
-      */
-    public double compute(IntToDoubleFunction fn, int windowLength){
-        double[] window=discreteWindow(windowLength);
-        double v=fn.applyAsDouble(0)*window[0];
-        for (int i=1; i<windowLength; ++i){
-            v+=window[i]*(fn.applyAsDouble(i)+fn.applyAsDouble(-i));
+        int win2 = N / 2;
+        double dlen = win2;
+        DoubleUnaryOperator wfn = window();
+
+        double v = fn.applyAsDouble(0) * wfn.applyAsDouble(0);
+        for (int i = 1; i < win2; ++i) {
+            v += wfn.applyAsDouble(i / dlen) * (fn.applyAsDouble(i) + fn.applyAsDouble(-i));
         }
         return v;
     }

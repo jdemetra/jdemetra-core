@@ -32,7 +32,6 @@ import demetra.timeseries.regression.PeriodicOutlier;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.SwitchOutlier;
 import demetra.timeseries.regression.TransitoryChange;
-import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.TrigonometricVariables;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -19,6 +19,7 @@ package jdplus.tramo;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
+import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SaVariable;
 import demetra.timeseries.TsData;
@@ -127,7 +128,7 @@ class TramoModelBuilder implements IModelBuilder {
     }
 
     @Override
-    public ModelDescription build(TsData series, InformationSet log) {
+    public ModelDescription build(TsData series, ProcessingLog log) {
         TsData nseries = TsDataToolkit.select(series, spec.getTransform().getSpan());
         TsDomain edom = nseries.getDomain().select(spec.getEstimate().getSpan());
         ModelDescription cur = new ModelDescription(nseries, edom);

@@ -52,19 +52,20 @@ public class SsfCalendarizationEx {
      * @param weights The weights of each observation
      * @return
      */
-    public ISsf of(@NonNull final int[] starts, final int[] astarts, final double[] weights) {
-        Data data = new Data(starts, astarts, weights);
+    public ISsf of(@NonNull final int[] starts, final int[] astarts, final double[] weights, final double var) {
+        Data data = new Data(starts, astarts, weights, var);
         return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
     }
 
     static class Data {
 
+        final double v, e;
         final double[] weights;
         final HashSet<Integer> starts = new HashSet<>(), ends = new HashSet<>();
         final HashSet<Integer> astarts = new HashSet<>(), aends = new HashSet<>();
         int curpos = -1, curtype = -1, apos = -1, aggtype = -1;
 
-        Data(int[] starts, int[] astarts, double[] weights) {
+        Data(int[] starts, int[] astarts, double[] weights, final double var) {
             this.weights = weights;
             for (int i = 0; i < starts.length; ++i) {
                 int cur = starts[i];
@@ -80,6 +81,8 @@ public class SsfCalendarizationEx {
                     this.aends.add(cur - 1);
                 }
             }
+            this.v = var;
+            this.e = Math.sqrt(var);
         }
 
         private int posType(int pos) {
@@ -159,7 +162,6 @@ public class SsfCalendarizationEx {
          */
         @Override
         public void Pf0(FastMatrix pf0) {
-            pf0.set(2, 2, 1);
         }
 
         /**
@@ -205,7 +207,7 @@ public class SsfCalendarizationEx {
          */
         @Override
         public void V(int pos, FastMatrix qm) {
-            qm.set(2, 2, 1);
+            qm.set(2, 2, info.v);
         }
 
         /**
@@ -246,32 +248,22 @@ public class SsfCalendarizationEx {
             int postype = info.posType(pos);
             double s = info.mweight(pos, x.get(2));
             switch (postype) {
-                case LAST:
+                case LAST ->
                     x.set(0, 0);
-                    break;
-                case FIRST:
-                    // case II.
+                case FIRST -> // case II.
                     x.set(0, s);
-                    break;
-                default:
-                    // case III
+                default -> // case III
                     x.add(0, s);
-                    break;
             }
             // case I
             int atype = info.aggType(pos);
             switch (atype) {
-                case LAST:
+                case LAST ->
                     x.set(1, 0);
-                    break;
-                case FIRST:
-                    // case II.
+                case FIRST -> // case II.
                     x.set(1, s);
-                    break;
-                default:
-                    // case III
+                default -> // case III
                     x.add(1, s);
-                    break;
             }
         }
 
@@ -286,35 +278,34 @@ public class SsfCalendarizationEx {
             // case I: 0, x1
             int postype = info.posType(pos);
             switch (postype) {
-                // case II: 0, w x0 + x1
-                case LAST:
+                case LAST ->
                     x.set(0, 0);
-                    break;
-                // case III: x0, w x0 + x1
-                case FIRST:
+                case FIRST -> {
                     x.add(2, info.mweight(pos, x.get(0)));
                     x.set(0, 0);
-                    break;
-                default:
+                }
+                default ->
                     x.add(2, info.mweight(pos, x.get(0)));
-                    break;
             }
+            // case II: 0, w x0 + x1
+            // case III: x0, w x0 + x1
             int atype = info.aggType(pos);
-            if (atype == LAST) {
-                x.set(1, 0);
-            } // case II: 0, w x0 + x1
-            else if (postype == FIRST) {
-                x.add(2, info.mweight(pos, x.get(1)));
-                x.set(1, 0);
-            } // case III: x0, w x0 + x1
-            else {
-                x.add(2, info.mweight(pos, x.get(1)));
+            switch (atype) {
+                case LAST ->
+                    x.set(1, 0);
+                case FIRST -> {
+                    x.add(2, info.mweight(pos, x.get(1)));
+                    x.set(1, 0);
+                }
+                default ->
+                    x.add(2, info.mweight(pos, x.get(1)));
+
             }
         }
 
         @Override
         public void S(int pos, FastMatrix cm) {
-            cm.set(2, 0, 1);
+            cm.set(2, 0, info.e);
         }
 
         @Override
@@ -334,17 +325,17 @@ public class SsfCalendarizationEx {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(2, u.get(0));
+            x.add(2, info.e * u.get(0));
         }
 
         @Override
         public void addV(int pos, FastMatrix p) {
-            p.add(2, 2, 1);
+            p.add(2, 2, info.v);
         }
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(0, x.get(2));
+            xs.set(0, info.e * x.get(2));
         }
 
     }
@@ -365,7 +356,6 @@ public class SsfCalendarizationEx {
          */
         @Override
         public void VpZdZ(int pos, FastMatrix vm, double d) {
-
             vm.add(2, 2, info.mweight2(pos, d));
             int postype = info.posType(pos);
             if (postype != FIRST) {

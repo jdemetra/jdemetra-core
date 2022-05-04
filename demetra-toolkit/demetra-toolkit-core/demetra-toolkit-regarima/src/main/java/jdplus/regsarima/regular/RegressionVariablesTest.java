@@ -48,7 +48,7 @@ public class RegressionVariablesTest {
     public static class Builder {
 
         private double ftd = 0;
-        private double tmu = CVAL, ttd = CVAL, tmh = CVAL;
+        private double tmu = 0, ttd = 0, tmh = 0;
         private boolean derived;
 
         public Builder meanTest(double t) {

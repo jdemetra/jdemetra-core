@@ -1,10 +1,23 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2022 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -65,7 +78,7 @@ public class LoessFilter {
                     ys.set(i, ys.get(i - 1));
                 }
             }
-        } else if (newnj == 1) {
+        } else if (newnj == 0) {
             int nsh = (win - 1) >> 1;
             nleft = i0;
             nright = i0 + win - 1;
@@ -103,12 +116,12 @@ public class LoessFilter {
                 }
             }
         }
-        if (newnj != 1) {
-
+        if (newnj != 0) {
+            int step=newnj+1;
             int i = i0;
-            for (; i < i1 - newnj; i += newnj) {
-                double delta = (ys.get(i + newnj) - ys.get(i)) / newnj;
-                for (int j = i + 1; j < i + newnj; ++j) {
+            for (; i < i1 - step; i += step) {
+                double delta = (ys.get(i + step) - ys.get(i)) / newnj;
+                for (int j = i + 1; j < i + step; ++j) {
                     ys.set(j, ys.get(i) + delta * (j - i));
                 }
             }
@@ -127,7 +140,7 @@ public class LoessFilter {
             }
         }
         nleft = i0;
-        nright = i0 + Math.min(win - 1, n-1);
+        nright = i0 + Math.min(win - 1, n - 1);
         // complete the backcasts, forecasts (without jumps)
         for (int i = i0 - 1; i >= j0; --i) {
             double yscur = loess(y, i, nleft, nright, userWeights);
@@ -150,34 +163,35 @@ public class LoessFilter {
         return true;
     }
 
-    private double loess(IDataGetter y, double xs, int nleft, int nright, IntToDoubleFunction userWeights) {
+    private double loess(IDataGetter y, int ix, int nleft, int nright, IntToDoubleFunction userWeights) {
         int n = y.getLength();
         int nw = nright - nleft + 1;
         double[] w = new double[nw];
         double range = n - 1;
-        double h = Math.max(xs - nleft, nright - xs);
+        double h = Math.max(ix - nleft, nright - ix);
         if (spec.getWindow() > n) {
             h += (spec.getWindow() - n) * .5;
         }
-        double h9 = 0.999 * h;
-        double h1 = 0.001 * h;
+//        double h9 = 0.999 * h;
+//        double h1 = 0.001 * h;
         double a = 0;
+        DoubleUnaryOperator weights = spec.weights();
         for (int j = nleft, jw = 0; j <= nright; ++j, ++jw) {
             boolean ok = Double.isFinite(y.get(j));
             if (ok) {
-                double r = Math.abs(j - xs);
-                if (r < h9) {
-                    if (r < h1) {
-                        w[jw] = 1;
-                    } else {
-                        w[jw] = spec.getWeights().applyAsDouble(r / h);
-                    }
+                double r = Math.abs(j - ix);
+//                if (r < h9) {
+//                    if (r < h1) {
+//                        w[jw] = 1;
+//                    } else {
+                w[jw] = weights.applyAsDouble(r / h);
+//                    }
 
-                    if (userWeights != null) {
-                        w[jw] *= userWeights.applyAsDouble(j);
-                    }
-                    a += w[jw];
+                if (userWeights != null) {
+                    w[jw] *= userWeights.applyAsDouble(j);
                 }
+                a += w[jw];
+//                }
             }
         }
 
@@ -194,7 +208,7 @@ public class LoessFilter {
                         a += w[j] * j;
                     }
                 }
-                double b = xs - nleft - a;
+                double b = ix - nleft - a;
                 double c = 0;
                 for (int j = 0; j < nw; ++j) {
                     if (w[j] != 0) {

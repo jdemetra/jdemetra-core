@@ -40,7 +40,7 @@ public class CalendarTimeSeries implements TimeSeriesData<CalendarPeriod, Calend
         }
         return new CalendarTimeSeries(CalendarPeriods.of(periods), DoubleSeq.of(v));
     }
-
+    
     private CalendarTimeSeries(CalendarPeriods domain, DoubleSeq values) {
         this.domain = domain;
         this.values = values;

@@ -123,5 +123,15 @@ public class PrespecifiedHoliday implements Holiday {
         }
     }
 
-    
+     @Override
+    public String display() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(event.name());
+        if (offset<0)
+            builder.append(offset);
+        else if (offset>0)
+            builder.append('+').append(offset);
+        return builder.toString();
+    }
+   
 }

@@ -35,24 +35,28 @@ public class SeatsExtractor extends InformationMapping<SeatsResults>{
         set(ModellingDictionary.Y_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Series, ComponentInformation.StdevBackcast));
 
         set(SaDictionaries.T_LIN, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Value));
+        set(SaDictionaries.T_LIN_E, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Stdev));
         set(SaDictionaries.T_LIN + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Forecast));
         set(SaDictionaries.T_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevForecast));
         set(SaDictionaries.T_LIN + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.Backcast));
         set(SaDictionaries.T_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 
         set(SaDictionaries.SA_LIN, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value));
+        set(SaDictionaries.SA_LIN_E, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Stdev));
         set(SaDictionaries.SA_LIN + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast));
         set(SaDictionaries.SA_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevForecast));
         set(SaDictionaries.SA_LIN + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Backcast));
         set(SaDictionaries.SA_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.StdevBackcast));
 
         set(SaDictionaries.S_LIN, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
+        set(SaDictionaries.S_LIN_E, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Stdev));
         set(SaDictionaries.S_LIN + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Forecast));
         set(SaDictionaries.S_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevForecast));
         set(SaDictionaries.S_LIN + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.Backcast));
         set(SaDictionaries.S_LIN + SeriesInfo.EB_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Seasonal, ComponentInformation.StdevBackcast));
 
         set(SaDictionaries.I_LIN, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Value));
+        set(SaDictionaries.I_LIN_E, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Stdev));
         set(SaDictionaries.I_LIN + SeriesInfo.F_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Forecast));
         set(SaDictionaries.I_LIN + SeriesInfo.EF_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.StdevForecast));
         set(SaDictionaries.I_LIN + SeriesInfo.B_SUFFIX, TsData.class, source -> source.getInitialComponents().getSeries(ComponentType.Irregular, ComponentInformation.Backcast));

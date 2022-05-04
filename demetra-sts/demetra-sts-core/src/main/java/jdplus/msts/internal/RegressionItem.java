@@ -75,7 +75,7 @@ public class RegressionItem extends StateItem {
         } else if (v.length == 1) {
             mapping.add(v[0]);
             mapping.add((p, builder) -> {
-                StateComponent cmp = Coefficients.timeVaryingCoefficients(DoubleSeq.of(p.get(0)));
+                StateComponent cmp = Coefficients.timeVaryingCoefficients(DoubleSeq.onMapping(x.getColumnsCount(), j->p.get(0)));
                 builder.add(name, cmp, Loading.regression(x));
                 return 1;
             });
@@ -84,7 +84,7 @@ public class RegressionItem extends StateItem {
                 mapping.add(v[i]);
             }
             mapping.add((p, builder) -> {
-                StateComponent cmp = Coefficients.timeVaryingCoefficients(   p.extract(0, v.length));
+                StateComponent cmp = Coefficients.timeVaryingCoefficients(p.extract(0, v.length));
                 builder.add(name, cmp, Loading.regression(x));
                 return v.length;
             });
@@ -106,7 +106,9 @@ public class RegressionItem extends StateItem {
     public StateComponent build(DoubleSeq p) {
         if (v == null) {
             return Coefficients.fixedCoefficients(x.getColumnsCount());
-        } else {
+        } else if (v.length == 1){
+            return Coefficients.timeVaryingCoefficients(DoubleSeq.onMapping(x.getColumnsCount(), j->p.get(0)));
+        } else{
             return Coefficients.timeVaryingCoefficients(p.extract(0, v.length));
         }
     }

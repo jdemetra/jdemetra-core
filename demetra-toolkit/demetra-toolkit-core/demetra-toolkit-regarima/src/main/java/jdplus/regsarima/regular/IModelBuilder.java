@@ -18,9 +18,8 @@
 
 package jdplus.regsarima.regular;
 
-import jdplus.regsarima.regular.ModelDescription;
 import nbbrd.design.Development;
-import demetra.information.InformationSet;
+import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 
 /**
@@ -31,5 +30,5 @@ import demetra.timeseries.TsData;
 @Development(status = Development.Status.Preliminary)
 public interface IModelBuilder {
 
-     ModelDescription build(TsData series, InformationSet log);
+     ModelDescription build(TsData series, ProcessingLog log);
 }

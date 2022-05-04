@@ -523,7 +523,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
                     }
                 }
                 if (n == 0) {
-                    return null;
+                    return TsData.empty(NO_DATA_CAUSE);
                 }
                 double[] d = new double[n];
 

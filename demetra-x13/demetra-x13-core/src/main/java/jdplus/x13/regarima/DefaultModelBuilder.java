@@ -5,7 +5,7 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.information.InformationSet;
+import demetra.processing.ProcessingLog;
 import jdplus.regsarima.regular.IModelBuilder;
 import jdplus.regsarima.regular.ModelDescription;
 import demetra.timeseries.TsData;
@@ -20,7 +20,7 @@ class DefaultModelBuilder implements IModelBuilder {
     }
 
     @Override
-    public ModelDescription build(TsData series, InformationSet log) {
+    public ModelDescription build(TsData series, ProcessingLog log) {
         ModelDescription model=new ModelDescription(series, null);
         model.setAirline(series.getAnnualFrequency()>1);
         model.setMean(true);

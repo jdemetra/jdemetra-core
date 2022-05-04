@@ -55,33 +55,19 @@ public class ProcessorI {
 
         TsData naggregatedSeries;
         switch (spec.getAggregationType()) {
-            case Sum:
-            case Average:
-                naggregatedSeries = BenchmarkingUtility.constraints(indicator, aggregatedSeries);
-                break;
-            case Last:
-                naggregatedSeries = BenchmarkingUtility.constraintsByPosition(indicator, aggregatedSeries, ratio - 1);
-                break;
-            case First:
-                naggregatedSeries = BenchmarkingUtility.constraintsByPosition(indicator, aggregatedSeries, 0);
-                break;
-            case UserDefined:
-                naggregatedSeries = BenchmarkingUtility.constraintsByPosition(indicator, aggregatedSeries, spec.getObservationPosition());
-                break;
-            default:
-                throw new TsException(TsException.INVALID_OPERATION);
+            case Sum, Average -> naggregatedSeries = BenchmarkingUtility.constraints(indicator, aggregatedSeries);
+            case Last -> naggregatedSeries = BenchmarkingUtility.constraintsByPosition(indicator, aggregatedSeries, ratio - 1);
+            case First -> naggregatedSeries = BenchmarkingUtility.constraintsByPosition(indicator, aggregatedSeries, 0);
+            case UserDefined -> naggregatedSeries = BenchmarkingUtility.constraintsByPosition(indicator, aggregatedSeries, spec.getObservationPosition());
+            default -> throw new TsException(TsException.INVALID_OPERATION);
         }
 
         TsPeriod sh = indicator.getStart();
         TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregatedSeries.getStart().start());
         int offset = sh.until(sl);
         switch (spec.getAggregationType()) {
-            case Last:
-                offset += ratio - 1;
-                break;
-            case UserDefined:
-                offset += spec.getObservationPosition();
-                break;
+            case Last -> offset += ratio - 1;
+            case UserDefined -> offset += spec.getObservationPosition();
         }
 
         boolean cumul = spec.getAggregationType() == AggregationType.Average
@@ -151,7 +137,7 @@ public class ProcessorI {
         if (spec.isConstant()) {
             ++np;
         }
-
+        
         return TemporalDisaggregationIResults.builder()
                 .a(a)
                 .b(b)
@@ -181,14 +167,11 @@ public class ProcessorI {
     }
 
     private Parameter parameter(TemporalDisaggregationISpec spec) {
-        switch (spec.getResidualsModel()) {
-            case Rw:
-                return Parameter.fixed(1);
-            case Ar1:
-                return spec.getParameter();
-            default:
-                return Parameter.fixed(0);
-        }
+        return switch (spec.getResidualsModel()) {
+            case Rw -> Parameter.fixed(1);
+            case Ar1 -> spec.getParameter();
+            default -> Parameter.fixed(0);
+        };
     }
 
 }
@@ -294,12 +277,12 @@ class FunctionI implements IFunction {
             } else {
                 z = z(b);
                 Ssf ssf;
-                SsfData data = new SsfData(getZ());
+                SsfData data = new SsfData(z);
                 if (agg) {
-                    ssf = Ssf.of(SsfCumulator.of(new StateComponent(new IInitialization(getRho()), new IDynamics(getRho())),
+                    ssf = Ssf.of(SsfCumulator.of(new StateComponent(new IInitialization(rho), new IDynamics(rho)),
                             Loading.sum(), ratio, 0), SsfCumulator.defaultLoading(Loading.sum(), ratio, 0));
                 } else {
-                    ssf = Ssf.of(new IInitialization(getRho()), new IDynamics(getRho()), Loading.sum());
+                    ssf = Ssf.of(new IInitialization(rho), new IDynamics(rho), Loading.sum());
                 }
                 ll = DkToolkit.likelihood(ssf, data, true, false);
             }

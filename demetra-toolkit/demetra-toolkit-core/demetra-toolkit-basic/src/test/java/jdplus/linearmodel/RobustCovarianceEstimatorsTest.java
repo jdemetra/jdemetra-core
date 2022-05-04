@@ -22,10 +22,9 @@ import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.linearmodel.Ols;
 import jdplus.data.DataBlock;
 import demetra.data.DataSets;
-import jdplus.data.analysis.WindowFunction;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import demetra.data.DoubleSeq;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.math.matrices.FastMatrix;
 
 /**

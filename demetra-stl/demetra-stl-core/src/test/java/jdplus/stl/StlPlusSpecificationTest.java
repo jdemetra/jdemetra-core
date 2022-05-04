@@ -16,6 +16,9 @@
  */
 package jdplus.stl;
 
+import demetra.stl.StlSpecification;
+import demetra.stl.LoessSpecification;
+import demetra.stl.SeasonalSpecification;
 import demetra.data.Doubles;
 import jdplus.math.matrices.FastMatrix;
 import org.junit.Test;
@@ -27,58 +30,65 @@ import demetra.data.DoubleSeq;
  * @author Jean Palate
  */
 public class StlPlusSpecificationTest {
-    
+
     public StlPlusSpecificationTest() {
     }
 
     @Test
     public void testDefault() {
-        DoubleSeq data= Doubles.of(WeeklyData.US_CLAIMS2);
+        DoubleSeq data = Doubles.of(WeeklyData.US_CLAIMS2);
         // Creates a default stl specification
-        StlPlusSpecification spec = StlPlusSpecification.createDefault(52, true);
-        spec.setMultiplicative(true);
-        StlPlus stl = spec.build();
+        StlSpecification spec = StlSpecification.robustBuilder()
+                .multiplicative(false)
+                .trendSpec(LoessSpecification.defaultTrend(52, 7))
+                .seasonalSpec(new SeasonalSpecification(52, 7))
+                .build();
+
+        StlKernel stl = new StlKernel(spec);
         stl.process(data);
-        FastMatrix m=FastMatrix.make(data.length(), 4);
+        FastMatrix m = FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
         m.column(3).copyFrom(stl.getIrr(), 0);
 //        System.out.println(m);
     }
-    
+
     @Test
     public void testDefaultMul() {
-        DoubleSeq data= Doubles.of(WeeklyData.US_CLAIMS);
+        DoubleSeq data = Doubles.of(WeeklyData.US_CLAIMS);
         // Creates a default stl specification
-        StlPlusSpecification spec = StlPlusSpecification.createDefault(52, true);
-        spec.setMultiplicative(true);
-        StlPlus stl = spec.build();
-        
+        StlSpecification spec = StlSpecification.robustBuilder()
+                .multiplicative(true)
+                .trendSpec(LoessSpecification.defaultTrend(52, 7))
+                .seasonalSpec(new SeasonalSpecification(52, 7))
+                .build();
+
+        StlKernel stl = new StlKernel(spec);
+
         stl.process(data);
-        FastMatrix m=FastMatrix.make(data.length(), 4);
+        FastMatrix m = FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);
         m.column(3).copyFrom(stl.getIrr(), 0);
         //System.out.println(m);
     }
-    
+
     @Test
     public void testCustom() {
-        DoubleSeq data= Doubles.of(WeeklyData.US_CLAIMS);
+        DoubleSeq data = Doubles.of(WeeklyData.US_CLAIMS);
         // Creates an empty robust stl specification (robust means 15 outer loops, 1 inner loop).
-        StlPlusSpecification spec = new StlPlusSpecification(true);
-        // We put the seasonal specification
-        SeasonalSpecification sspec=new SeasonalSpecification(52, LoessSpecification.defaultSeasonal(9), LoessSpecification.defaultLowPass(52));
-        spec.add(sspec);
-        // Trend specification
-        spec.setTrendSpec( LoessSpecification.of(105, 1, 1, null));
-        spec.setMultiplicative(true);
-        StlPlus stl = spec.build();
+        SeasonalSpecification sspec = new SeasonalSpecification(52, LoessSpecification.defaultSeasonal(9), LoessSpecification.defaultLowPass(52));
+        StlSpecification spec = StlSpecification.robustBuilder()
+                .multiplicative(true)
+                .trendSpec(LoessSpecification.of(105, 1, 1, null))
+                .seasonalSpec(sspec)
+                .build();
+        StlKernel stl = new StlKernel(spec);
         stl.process(data);
-        
-        FastMatrix m=FastMatrix.make(data.length(), 4);
+
+        FastMatrix m = FastMatrix.make(data.length(), 4);
         m.column(0).copyFrom(stl.getY(), 0);
         m.column(1).copyFrom(stl.getTrend(), 0);
         m.column(2).copyFrom(stl.getSeason(0), 0);

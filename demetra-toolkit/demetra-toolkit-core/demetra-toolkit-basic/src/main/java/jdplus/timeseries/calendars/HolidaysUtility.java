@@ -31,7 +31,12 @@ import java.util.Iterator;
 import java.util.Map;
 import jdplus.math.matrices.FastMatrix;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.FixedWeekDay;
+import demetra.timeseries.calendars.HolidaysOption;
+import java.time.temporal.ChronoUnit;
+import jdplus.data.DataBlock;
+import jdplus.data.DataBlockIterator;
 
 /**
  *
@@ -48,6 +53,98 @@ public class HolidaysUtility {
             }
         }
         return false;
+    }
+
+    public FastMatrix regressionVariables(Holiday[] holidays, TsDomain domain, HolidaysOption option, int[] nonworking, boolean single) {
+
+        // Fill the full matrix
+        TsPeriod P0 = domain.getStartPeriod();
+        int nhol = holidays.length;
+
+        FastMatrix M = FastMatrix.make(domain.getLength(), single ? 1 : nhol);
+        fill(holidays, P0, option, nonworking, M);
+        return M;
+    }
+
+    public boolean fill(Holiday[] holidays, TsPeriod P0, HolidaysOption option, int[] nonworking, FastMatrix M) {
+        int nhol = M.getColumnsCount(), n = M.getRowsCount();
+        LocalDate start = P0.start().toLocalDate(), end = P0.plus(n).start().toLocalDate();
+        int length = (int) start.until(end, ChronoUnit.DAYS);
+
+        FastMatrix A = FastMatrix.make(length, nhol);
+        switch (option) {
+            case Previous -> fillPreviousWorkingDays(holidays, A, start, nonworking);
+            case Next -> fillNextWorkingDays(holidays, A, start, nonworking);
+            case Skip -> fillDays(holidays, A, start, nonworking, true);
+            default -> fillDays(holidays, A, start, nonworking, false);
+        }
+        TsPeriod p = P0;
+        boolean ok = false;
+        for (int i = 0; i < n; ++i) {
+            int j0 = (int) start.until(p.start().toLocalDate(), ChronoUnit.DAYS);
+            int j1 = (int) start.until(p.end().toLocalDate(), ChronoUnit.DAYS);
+            FastMatrix a = A.extract(j0, j1 - j0, 0, nhol);
+            // Avoid doubles
+            // We just keep the first holiday when several holidays fall the same day
+            DataBlockIterator arows = a.rowsIterator();
+            if (nhol == 1) {
+                double v = 0;
+                while (arows.hasNext()) {
+                    v += vrow(arows.next());
+                }
+                if (v > 0) {
+                    ok = true;
+                    M.set(i, 0, v);
+                }
+            } else {
+                DataBlock mrow = M.row(i);
+                while (arows.hasNext()) {
+                    if (addrow(arows.next(), mrow)) {
+                        ok = true;
+                    }
+                }
+            }
+            p = p.next();
+        }
+        return ok;
+    }
+
+    private double vrow(DataBlock row) {
+        double[] pdata = row.getStorage();
+        double x = 0;
+        for (int j = row.getStartPosition(); j < row.getEndPosition(); j += row.getIncrement()) {
+            double s = pdata[j];
+            if (s > x) {
+                x = s;
+            }
+        }
+        return x;
+    }
+
+    private boolean addrow(DataBlock row, DataBlock srow) {
+        double[] pdata = row.getStorage();
+        double x = 0;
+        int l = -1;
+        for (int j = row.getStartPosition(), k = 0; j < row.getEndPosition(); j += row.getIncrement(), ++k) {
+            double s = pdata[j];
+            if (s > x) {
+                x = s;
+                l = k;
+            }
+        }
+        if (x > 0) {
+            srow.add(l, x);
+            return true;
+        }
+        return false;
+    }
+
+    public String[] names(Holiday[] hol) {
+        String[] n = new String[hol.length];
+        for (int i = 0; i < hol.length; ++i) {
+            n[i] = hol[i].display();
+        }
+        return n;
     }
 
     public void fillDays(Holiday[] holidays, final FastMatrix D, final LocalDate start, int[] nonworking, final boolean skip) {

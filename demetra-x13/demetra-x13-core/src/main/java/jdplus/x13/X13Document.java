@@ -60,6 +60,7 @@ public class X13Document extends AbstractTsDocument<X13Spec, X13Results> impleme
         }
         List<ProcDiagnostic> tests = new ArrayList<>();
         X13Results result = getResult();
+        X13Factory.INSTANCE.fillDiagnostics(tests, result);
         SaSpecification pspec = X13Factory.INSTANCE.generateSpec(getSpecification(), result);
         ProcQuality quality = ProcDiagnostic.summary(tests);
         return SaEstimation.builder()

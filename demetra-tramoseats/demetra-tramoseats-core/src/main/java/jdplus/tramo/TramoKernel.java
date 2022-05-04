@@ -223,7 +223,7 @@ public class TramoKernel implements RegSarimaProcessor {
         return rslt;
     }
 
-    private ModelDescription build(TsData originalTs, InformationSet log) {
+    private ModelDescription build(TsData originalTs, ProcessingLog log) {
         TramoModelBuilder builder = new TramoModelBuilder(spec, modellingContext);
         return builder.build(originalTs, log);
     }

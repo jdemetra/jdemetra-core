@@ -1,13 +1,13 @@
 /*
- * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
+ * Copyright 2022 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
- * http://ec.europa.eu/idabc/eupl
- * 
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -54,12 +55,12 @@ public class SeasonalLoessFilter {
     }
 
     public boolean filter(IDataGetter y, IntToDoubleFunction userWeights, IDataSelector ys) {
-        IPeriodicDataGetters yp = organizer.getters(y);
-        IPeriodicDataSelectors ysp = organizer.selectors(ys);
         int np = organizer.getPeriod();
         if (np < 1) {
             return false;
         }
+        IPeriodicDataGetters yp = organizer.getters(y);
+        IPeriodicDataSelectors ysp = organizer.selectors(ys);
         for (int j = 0; j < np; ++j) {
             // last index fo period j (excluded)
             IDataGetter src = yp.get(j);

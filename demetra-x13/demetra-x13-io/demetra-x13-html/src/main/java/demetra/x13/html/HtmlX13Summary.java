@@ -19,69 +19,74 @@ package demetra.x13.html;
 import demetra.html.AbstractHtmlElement;
 import demetra.html.HtmlStream;
 import demetra.html.HtmlTag;
+import demetra.html.core.HtmlDiagnosticsSummary;
+import demetra.html.core.HtmlProcessingLog;
 import demetra.html.modelling.HtmlRegSarima;
-import jdplus.x11.X11Results;
+import demetra.processing.ProcDiagnostic;
+import demetra.processing.ProcessingLog;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.x11.X11Results;
+import jdplus.x13.X13Factory;
+import jdplus.x13.X13Results;
 
 /**
  *
  * @author Kristof Bayens
  */
-public class HtmlX13Summary extends AbstractHtmlElement  {
+public class HtmlX13Summary extends AbstractHtmlElement {
 
-//    private final List<ProcessingInformation> infos_;
-//    private final PreprocessingModel preprocessing_;
-//    private final X11Results decomposition_;
-//    private final InformationSet diags_;
-//    private final String title_;
-//
-//    public HtmlX13Summary(String title, CompositeResults results, InformationSet diags) {
-//        title_ = title;
-//        infos_ = results.getProcessingInformation();
-//        preprocessing_ = GenericSaResults.getPreprocessingModel(results);
-//        decomposition_ = GenericSaResults.getDecomposition(results, X11Results.class);
-//        if (diags != null) {
-//            diags_ = diags;
-//        } else {
-//            diags_ = SaManager.createDiagnostics(results);
-//        }
-//    }
+    private final ProcessingLog infos_;
+    private final RegSarimaModel preprocessing_;
+    private final X11Results decomposition_;
+    private final List<ProcDiagnostic> diags_ = new ArrayList<>();
+    private final String title_;
+
+    public HtmlX13Summary(String title, X13Results results) {
+        title_ = title;
+        preprocessing_ = results.getPreprocessing();
+        decomposition_ = results.getDecomposition();
+        X13Factory.INSTANCE.fillDiagnostics(diags_, results);
+        infos_ = results.getLog();
+    }
 
     @Override
     public void write(HtmlStream stream) throws IOException {
-//        writeTitle(stream);
-//        writeInformation(stream);
-//        if (preprocessing_ == null && decomposition_ == null)
-//            return;
-//        writePreprocessing(stream);
-//        writeDiagnostics(stream);
+        writeTitle(stream);
+        writeInformation(stream);
+        if (preprocessing_ == null && decomposition_ == null) {
+            return;
+        }
+        writePreprocessing(stream);
+        writeDiagnostics(stream);
     }
 
-//    private void writeTitle(HtmlStream stream) throws IOException {
-//        if (title_ != null) {
-//            stream.write(HtmlTag.HEADER1, title_).newLine();
-//        }
-//    }
-//
-//    private void writeInformation(HtmlStream stream) throws IOException {
-//        stream.write(new HtmlProcessingInformation(infos_));
-//    }
-//
-//    private void writePreprocessing(HtmlStream stream) throws IOException {
-//        if (preprocessing_ == null) {
-//            stream.write(HtmlTag.HEADER2, "No pre-processing").newLine();
-//        } else {
-//            stream.write(HtmlTag.HEADER2, "Pre-processing (RegArima)").newLine();
-//            stream.write(new HtmlRegSarima(preprocessing_, true));
-//        }
-//    }
-//
-//    private void writeDecomposition(HtmlStream stream) throws IOException {
-//    }
-//
-//    private void writeDiagnostics(HtmlStream stream) throws IOException {
-//        stream.write(HtmlTag.HEADER2, "Diagnostics").newLine();
-//        stream.write(new HtmlDiagnosticSummary(diags_));
-//    }
+    private void writeTitle(HtmlStream stream) throws IOException {
+        if (title_ != null) {
+            stream.write(HtmlTag.HEADER1, title_).newLine();
+        }
+    }
+
+    private void writeInformation(HtmlStream stream) throws IOException {
+        stream.write(new HtmlProcessingLog(infos_));
+    }
+
+    private void writePreprocessing(HtmlStream stream) throws IOException {
+        if (preprocessing_ == null) {
+            stream.write(HtmlTag.HEADER2, "No pre-processing").newLine();
+        } else {
+            stream.write(HtmlTag.HEADER2, "Pre-processing (RegArima)").newLine();
+            stream.write(new HtmlRegSarima(preprocessing_, true));
+        }
+    }
+
+    private void writeDecomposition(HtmlStream stream) throws IOException {
+    }
+
+    private void writeDiagnostics(HtmlStream stream) throws IOException {
+        stream.write(HtmlTag.HEADER2, "Diagnostics").newLine();
+        stream.write(new HtmlDiagnosticsSummary(diags_));
+    }
 }

@@ -18,7 +18,6 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsKernel;

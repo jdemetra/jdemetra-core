@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.calendars;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -38,4 +39,13 @@ public class FixedWeekDayTest {
         }
     }
 
+    @Test
+    public void testLastDate() {
+        FixedWeekDay fwd=new FixedWeekDay(1, -1, DayOfWeek.SATURDAY);
+        for (int i = 2010; i < 2030; ++i) {
+            LocalDate date = fwd.calcDate(i);
+            System.out.println(date);
+            assertTrue(date.getDayOfMonth() > 24);
+        }
+    }
 }

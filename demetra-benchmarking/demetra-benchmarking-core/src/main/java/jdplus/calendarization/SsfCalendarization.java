@@ -56,14 +56,14 @@ public class SsfCalendarization {
      * @param weights The weights of each observation
      * @return 
      */
-    public ISsf of(@NonNull final int[] starts, final double[] weights){
-        Data data=new Data(starts, weights);
+    public ISsf of(@NonNull final int[] starts, final double[] weights, final double var){
+        Data data=new Data(starts, weights, var);
         return Ssf.of(new Initialization(), new Dynamics(data), new Loading(data));
      }
 
     static class Data {
 
-        Data(final int[] starts, final double[] weights) {
+        Data(final int[] starts, final double[] weights, final double var) {
             this.weights = weights;
             for (int i = 0; i < starts.length; ++i) {
                 int cur = starts[i];
@@ -72,8 +72,11 @@ public class SsfCalendarization {
                     this.ends.add(cur - 1);
                 }
             }
+            this.v=var;
+            this.e=Math.sqrt(var);
         }
 
+        private final double v, e;
         private final double[] weights;
         private final HashSet<Integer> starts = new HashSet<>();
         private final HashSet<Integer> ends = new HashSet<>();
@@ -196,7 +199,7 @@ public class SsfCalendarization {
          */
         @Override
         public void V(int pos, FastMatrix qm) {
-            qm.set(1, 1, 1);
+            qm.set(1, 1, info.v);
         }
 
         @Override
@@ -206,7 +209,7 @@ public class SsfCalendarization {
 
         @Override
         public void S(int pos, FastMatrix cm) {
-            cm.set(1, 0, 1);
+            cm.set(1, 0, info.e);
         }
 
         @Override
@@ -279,12 +282,12 @@ public class SsfCalendarization {
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.add(1, u.get(0));
+            x.add(1, info.e*u.get(0));
         }
 
         @Override
         public void addV(int pos, FastMatrix p) {
-            p.add(1, 1, 1);
+            p.add(1, 1, info.v);
         }
 
         @Override
@@ -309,7 +312,7 @@ public class SsfCalendarization {
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.set(0, x.get(1));
+            xs.set(0, info.e*x.get(1));
         }
 
         @Override

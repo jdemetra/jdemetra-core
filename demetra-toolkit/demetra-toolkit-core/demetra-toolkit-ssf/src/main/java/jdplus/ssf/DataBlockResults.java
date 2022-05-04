@@ -86,7 +86,7 @@ public class DataBlockResults {
         }
         int capacity=data.getCapacity();
         if (capacity<=st){
-            data.resize(capacity<<1);
+            data.resize(st+1);
         }
         data.save(st, P);
     }

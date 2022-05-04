@@ -155,11 +155,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         if (test < 0) {
             return null;
         }
-        if (test > 0) {
-            cmvx = true;
-        } else {
-            cmvx = false;
-        }
+        cmvx = test > 0;
 
         FastOutliersDetector.Builder builder = FastOutliersDetector.builder()
                 .singleOutlierDetector(factories(desc.getAnnualFrequency()))

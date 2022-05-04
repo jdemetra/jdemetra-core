@@ -73,11 +73,11 @@ public class HtmlArima extends AbstractHtmlElement implements HtmlElement {
         }
     }
 
-//    public void writeShortModel(HtmlStream stream) throws IOException {
-//        double var = model.getInnovationVariance();
-//        if (Math.abs(var - 1) > EPS) {
-//            String val = new Formatter().format("%.5f", var).toString();
-//            stream.write(". " + VAR).write(val);
-//        }
-//    }
+    public void writeShortModel(HtmlStream stream) throws IOException {
+        double var = model.getInnovationVariance();
+        if (Math.abs(var - 1) > EPS) {
+            String val = new Formatter().format("%.5f", var).toString();
+            stream.write(". " + VAR).write(val);
+        }
+    }
 }

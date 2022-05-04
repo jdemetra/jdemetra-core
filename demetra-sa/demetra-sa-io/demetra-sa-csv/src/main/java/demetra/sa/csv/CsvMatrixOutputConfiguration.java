@@ -27,47 +27,45 @@ public class CsvMatrixOutputConfiguration implements Cloneable {
 
     public static final String NAME = "demetra_m";
 
-    private String[] items_;
-    private File folder_;
-    private String name_ = NAME;
-    private boolean fullName_;
+    private String[] items;
+    private File folder;
+    private String name = NAME;
+    private boolean fullName;
 
     public CsvMatrixOutputConfiguration() {
-//        List<String> details = allDetails(true, SaManager.instance.getProcessors(), SaManager.instance.getDiagnostics());
-//        items_ = details.toArray(new String[details.size()]);
-        fullName_ = true;
+        fullName = true;
     }
 
     public File getFolder() {
-        return folder_;
+        return folder;
     }
 
     public void setFolder(File value) {
-        folder_ = value;
+        folder = value;
     }
 
     public String getFileName() {
-        return name_;
+        return name;
     }
 
     public void setFileName(String value) {
-        name_ = value;
+        name = value;
     }
 
     public List<String> getItems() {
-        return Arrays.asList(items_);
+        return Arrays.asList(items);
     }
 
     public void setItems(List<String> value) {
-        items_ = value.toArray(new String[value.size()]);
+        items = value.toArray(new String[value.size()]);
     }
 
     public boolean isFullName() {
-        return fullName_;
+        return fullName;
     }
 
     public void setFullName(boolean fullName) {
-        this.fullName_ = fullName;
+        this.fullName = fullName;
     }
 
     @Override

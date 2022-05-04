@@ -16,10 +16,10 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.sa.tests.CanovaHansen2;
 import demetra.data.WeeklyData;
 import org.junit.Test;
 import demetra.data.DoubleSeq;
+import jdplus.data.analysis.WindowFunction;
 
 /**
  *
@@ -32,17 +32,28 @@ public class CanovaHansen2Test {
 
     @Test
     public void test_USClaims() {
-         double[] x = new double[WeeklyData.US_CLAIMS.length - 1];
+         double[] x = new double[WeeklyData.US_CLAIMS2.length];
         for (int i = 0; i < x.length; ++i) {
-            x[i] = Math.log(WeeklyData.US_CLAIMS[i + 1]) - Math.log(WeeklyData.US_CLAIMS[i]);
+            x[i] = WeeklyData.US_CLAIMS2[i];
         }
 //        double[] x=WeeklyData.US_CLAIMS;
-         for (int i=2; i<=553; ++i){
+         for (double i=2; i<=105; ++i){
             double z = CanovaHansen2.of(DoubleSeq.of(x))
                     .periodicity(i)
+                    .truncationLag(53)
+                    .windowFunction(WindowFunction.Welch)
+                    .lag1(true)
                     .compute();
-//            System.out.println(z);
+            System.out.println(z);
         }
-    }
+         System.out.println();
+            double z = CanovaHansen2.of(DoubleSeq.of(x))
+                    .periodicity(365.25/7)
+                    .truncationLag(53)
+                    .windowFunction(WindowFunction.Welch)
+                    .lag1(true)
+                    .compute();
+            System.out.println(z);
+   }
     
 }

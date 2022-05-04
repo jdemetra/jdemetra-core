@@ -80,7 +80,7 @@ public interface GenericOutliersDetection<T extends IArimaModel> {
      * @return The actual critical value
      */
     public static double criticalValue(int nobs, double alpha) {
-        double pmod = - 2 - Math.sqrt(1 + alpha);
+        double pmod =  2 - Math.sqrt(1 + alpha);
         double acv = Math.sqrt(2 * Math.log(nobs));
         double bcv = acv - (Math.log(Math.log(nobs)) + Math.log(2 * Constants.TWOPI)) / (2 * acv);
         double xcv = -Math.log(-0.5 * Math.log(pmod));

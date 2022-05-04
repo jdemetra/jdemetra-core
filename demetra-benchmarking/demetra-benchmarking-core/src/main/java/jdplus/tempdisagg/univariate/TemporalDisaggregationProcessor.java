@@ -36,7 +36,6 @@ import jdplus.ssf.univariate.SsfRegressionModel;
 import jdplus.stats.tests.NiidTests;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import nbbrd.service.ServiceProvider;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec.Model;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -46,7 +45,6 @@ import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
-import demetra.tempdisagg.univariate.TemporalDisaggregation;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
 import jdplus.math.matrices.FastMatrix;
@@ -111,17 +109,11 @@ public class TemporalDisaggregationProcessor {
     }
 
     private TemporalDisaggregationResults compute(DisaggregationModel model, TemporalDisaggregationSpec spec) {
-        switch (spec.getAggregationType()) {
-            case Sum:
-            case Average:
-                return disaggregate(model, spec);
-            case First:
-            case Last:
-            case UserDefined:
-                return interpolate(model, spec);
-            default:
-                return null;
-        }
+        return switch (spec.getAggregationType()) {
+            case Sum, Average -> disaggregate(model, spec);
+            case First, Last, UserDefined -> interpolate(model, spec);
+            default -> null;
+        };
     }
 
     private TemporalDisaggregationResults interpolate(DisaggregationModel model, TemporalDisaggregationSpec spec) {
@@ -168,16 +160,11 @@ public class TemporalDisaggregationProcessor {
         ISsf rssf = RegSsf.ssf(nmodel, model.getHX());
         SsfData ssfdata = new SsfData(model.getHY());
         DefaultSmoothingResults srslts;
-        switch (spec.getAlgorithm()) {
-            case Augmented:
-                srslts = AkfToolkit.smooth(rssf, ssfdata, true, false, true);
-                break;
-            case Diffuse:
-                srslts = DkToolkit.smooth(rssf, ssfdata, true, false);
-                break;
-            default:
-                srslts = DkToolkit.smooth(rssf, ssfdata, true, false);
-        }
+        srslts = switch (spec.getAlgorithm()) {
+            case Augmented -> AkfToolkit.smooth(rssf, ssfdata, true, false, true);
+            case Diffuse -> DkToolkit.smooth(rssf, ssfdata, true, false);
+            default -> DkToolkit.smooth(rssf, ssfdata, true, false);
+        };
         double[] Y = model.getHY();
         double[] O = model.getHO();
         double[] yh = new double[Y.length];
@@ -269,16 +256,11 @@ public class TemporalDisaggregationProcessor {
         Ssf ssf = Ssf.of(SsfCumulator.of(rcmp, rloading, model.getFrequencyRatio(), model.getStart()),
                 SsfCumulator.defaultLoading(rloading, model.getFrequencyRatio(), model.getStart()));
         DefaultSmoothingResults srslts;
-        switch (spec.getAlgorithm()) {
-            case Augmented:
-                srslts = AkfToolkit.smooth(ssf, ssfdata, true, false, true);
-                break;
-            case Diffuse:
-                srslts = DkToolkit.smooth(ssf, ssfdata, true, false);
-                break;
-            default:
-                srslts = DkToolkit.smooth(ssf, ssfdata, true, false);
-        }
+        srslts = switch (spec.getAlgorithm()) {
+            case Augmented -> AkfToolkit.smooth(ssf, ssfdata, true, false, true);
+            case Diffuse -> DkToolkit.smooth(ssf, ssfdata, true, false);
+            default -> DkToolkit.smooth(ssf, ssfdata, true, false);
+        };
 
         double[] yh = new double[model.getHY().length];
         double[] vyh = new double[model.getHY().length];
@@ -323,49 +305,58 @@ public class TemporalDisaggregationProcessor {
 
     private StateComponent noiseComponent(TemporalDisaggregationSpec spec) {
         switch (spec.getResidualsModel()) {
-            case Wn:
+            case Wn -> {
                 return Noise.of(1);
-            case Ar1:
+            }
+            case Ar1 -> {
                 return AR1.of(spec.getParameter().getValue(), 1, spec.isZeroInitialization());
-            case RwAr1:
+            }
+            case RwAr1 -> {
                 return Arima_1_1_0.of(spec.getParameter().getValue(), 1, spec.isZeroInitialization());
-            case Rw:
+            }
+            case Rw -> {
                 return Rw.of(1, spec.isZeroInitialization());
-            default:
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            default -> throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 
     private Ssf noiseModel(TemporalDisaggregationSpec spec) {
         switch (spec.getResidualsModel()) {
-            case Wn:
+            case Wn -> {
                 return Ssf.of(Noise.of(1), Noise.defaultLoading());
-            case Ar1:
+            }
+            case Ar1 -> {
                 return Ssf.of(AR1.of(spec.getParameter().getValue(), 1, spec.isZeroInitialization()),
                         AR1.defaultLoading());
-            case RwAr1:
+            }
+            case RwAr1 -> {
                 return Ssf.of(Arima_1_1_0.of(spec.getParameter().getValue(), 1, spec.isZeroInitialization()),
                         Arima_1_1_0.defaultLoading());
-            case Rw:
+            }
+            case Rw -> {
                 return Ssf.of(Rw.of(1, spec.isZeroInitialization()),
                         Rw.defaultLoading());
-            default:
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            default -> throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 
     private ISsfLoading noiseLoading(TemporalDisaggregationSpec spec) {
         switch (spec.getResidualsModel()) {
-            case Wn:
+            case Wn -> {
                 return Noise.defaultLoading();
-            case Ar1:
+            }
+            case Ar1 -> {
                 return AR1.defaultLoading();
-            case RwAr1:
+            }
+            case RwAr1 -> {
                 return Arima_1_1_0.defaultLoading();
-            case Rw:
+            }
+            case Rw -> {
                 return Rw.defaultLoading();
-            default:
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            default -> throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 

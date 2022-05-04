@@ -40,7 +40,6 @@ import demetra.timeseries.regression.ResidualsType;
 import demetra.toolkit.dictionaries.ResidualsDictionaries;
 import demetra.util.Arrays2;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +47,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.dstats.LogNormal;
 import jdplus.dstats.T;
@@ -59,7 +57,7 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.GeneralLinearModel;
 import jdplus.modelling.LightweightLinearModel;
 import jdplus.modelling.Residuals;
-import jdplus.modelling.regression.Regression;
+import jdplus.modelling.regression.RegressionDesc;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaForecasts;
 import jdplus.regarima.RegArimaModel;
@@ -223,24 +221,10 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                 .build();
     }
 
-    private final ConcurrentMap<String, Object> cache = new ConcurrentHashMap<String, Object>();
+    private final ConcurrentMap<String, Object> cache = new ConcurrentHashMap<>();
 
     @lombok.Singular
     private Map<String, Object> additionalResults;
-
-    @lombok.Value
-    public static class RegressionDesc {
-
-        ITsVariable core;
-        int item;
-        int position;
-
-        double coef, stderr, pvalue;
-
-        public double getTStat() {
-            return coef / stderr;
-        }
-    }
 
     @lombok.Value
     @lombok.Builder
@@ -453,7 +437,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         for (RegressionDesc desc : items) {
             if (pred.test(desc.getCore())) {
                 if (item == curitem) {
-                    return new RegressionItem(desc.coef, desc.stderr, desc.pvalue, desc.core.description(desc.item, estimation.getDomain()));
+                    return new RegressionItem(desc.getCoef(), desc.getStderr(), desc.getPvalue(), desc.getCore().description(desc.getItem(), estimation.getDomain()));
                 } else {
                     ++curitem;
                 }

@@ -30,54 +30,54 @@ public class CsvOutputConfiguration implements Cloneable {
     public static final String NAME="series";
 
     public static final String[] defOutput = {"y", "t", "sa", "s", "i", "ycal"};
-    private CsvLayout layout_ = CsvLayout.List;
-    private File folder_ ;
-    private String name_=NAME;
-    private String[] series_;
-    private boolean fullName_;
+    private CsvLayout layout = CsvLayout.List;
+    private File folder ;
+    private String name=NAME;
+    private String[] series;
+    private boolean fullName;
 
     public CsvOutputConfiguration() {
-        series_ = defOutput;
-        fullName_ = true;
+        series = defOutput;
+        fullName = true;
     }
 
     public CsvLayout getPresentation() {
-        return layout_;
+        return layout;
     }
 
     public void setPresentation(CsvLayout value) {
-        layout_ = value;
+        layout = value;
     }
 
     public File getFolder() {
-        return folder_;
+        return folder;
     }
 
     public void setFolder(File value) {
-        folder_ = value;
+        folder = value;
     }
 
      public String getFilePrefix() {
-        return name_;
+        return name;
     }
     public void setFilePrefix(String value) {
-        name_ = value;
+        name = value;
     }
 
     public List<String> getSeries() {
-        return Arrays.asList(series_);
+        return Arrays.asList(series);
     }
 
     public void setSeries(List<String> value) {
-        series_ =  value.toArray(new String[value.size()]);
+        series =  value.toArray(new String[value.size()]);
     }
 
     public boolean isFullName() {
-        return fullName_;
+        return fullName;
     }
 
     public void setFullName(boolean fullName) {
-        this.fullName_ = fullName;
+        this.fullName = fullName;
     }
 
     @Override

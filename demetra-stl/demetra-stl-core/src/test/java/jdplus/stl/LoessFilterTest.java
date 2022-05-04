@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import org.junit.Test;
@@ -52,8 +53,8 @@ public class LoessFilterTest {
         LoessFilter filter=new LoessFilter(spec);
         int nf=5;
         double[] sd=new double[d.length+2*nf];
-        filter.filter(IDataGetter.of(d), null, IDataSelector.of(sd, nf));
-//        System.out.println(DataBlock.of(d));
-//        System.out.println(DataBlock.of(sd));
+        filter.filter(IDataGetter.of(d), null, IDataSelector.of(sd, -nf));
+//        System.out.println(DoubleSeq.of(d));
+//        System.out.println(DoubleSeq.of(sd));
     }
 }

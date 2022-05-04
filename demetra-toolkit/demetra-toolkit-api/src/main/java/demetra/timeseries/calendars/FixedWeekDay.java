@@ -28,15 +28,15 @@ import nbbrd.design.Development;
  */
 @Development(status = Development.Status.Release)
 @lombok.Value
-public class FixedWeekDay implements Holiday{
+public class FixedWeekDay implements Holiday {
 
     private int month;
     private int place;
     private DayOfWeek dayOfWeek;
     private double weight;
     private ValidityPeriod validityPeriod;
-    
-   /**
+
+    /**
      *
      * @param month Month, 1-based
      * @param place place, 1-based
@@ -55,9 +55,9 @@ public class FixedWeekDay implements Holiday{
      * @param validityPeriod
      */
     public FixedWeekDay(int month, int place, DayOfWeek day, double weight, ValidityPeriod validityPeriod) {
-        this.place=place;
+        this.place = place;
         this.month = month;
-        this.dayOfWeek=day;
+        this.dayOfWeek = day;
         this.weight = weight;
         this.validityPeriod = validityPeriod;
     }
@@ -81,9 +81,9 @@ public class FixedWeekDay implements Holiday{
 
     /**
      * Return the first Day in the given month of the given year which is a
- specified day of place
+     * specified day of week
      *
-     * @param day Day of place
+     * @param day Day of week
      * @param year
      * @param month
      * @return
@@ -103,14 +103,48 @@ public class FixedWeekDay implements Holiday{
         return start;
     }
 
+    /**
+     * Return the first Day in the given month of the given year which is a
+     * specified day of week
+     *
+     * @param day Day of week
+     * @param year
+     * @param month
+     * @return
+     */
+    public static LocalDate lastWeekDate(DayOfWeek day, int year, int month) {
+        TsPeriod m = TsPeriod.monthly(year, month);
+        LocalDate end = m.end().toLocalDate();
+        DayOfWeek dow = end.getDayOfWeek();
+        int istart = dow.getValue(); // 1 for monday
+        int n = day.getValue() - istart;
+        if (n >= 0) {
+            n -= 7;
+        }
+        if (n != 0) {
+            end = end.plusDays(n);
+        }
+        return end;
+    }
+
     public LocalDate calcDate(int year) {
+        if (place < 0){
+            return lastWeekDate(dayOfWeek, year, month);
+        }
         LocalDate d = firstWeekDate(dayOfWeek, year, month);
         if (place > 1) {
-            d = d.plusDays((place-1) * 7);
+            d = d.plusDays((place - 1) * 7);
         }
         return d;
     }
 
+    @Override
+    public String display() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(place).append('-').append(dayOfWeek).append('-').append(month);
+        return builder.toString();
+    }
+
     public static final FixedWeekDay LABORDAY = new FixedWeekDay(9, 1, DayOfWeek.MONDAY),
-            THANKSGIVING = new FixedWeekDay(11, 4, DayOfWeek.THURSDAY), BLACKFRIDAY=new FixedWeekDay(11, 4, DayOfWeek.FRIDAY);
+            THANKSGIVING = new FixedWeekDay(11, 4, DayOfWeek.THURSDAY), BLACKFRIDAY = new FixedWeekDay(11, 4, DayOfWeek.FRIDAY);
 }

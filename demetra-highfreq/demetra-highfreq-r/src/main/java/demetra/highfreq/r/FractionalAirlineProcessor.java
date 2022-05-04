@@ -17,11 +17,13 @@
 package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
-import jdplus.highfreq.FractionalAirlineDecomposition;
-import jdplus.highfreq.FractionalAirlineEstimation;
-import demetra.highfreq.FractionalAirlineSpec;
+import demetra.data.Parameter;
+import jdplus.highfreq.LightExtendedAirlineDecomposition;
+import jdplus.highfreq.ExtendedAirlineEstimation;
+import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.math.matrices.Matrix;
-import jdplus.fractionalairline.FractionalAirlineKernel;
+import jdplus.highfreq.ExtendedAirlineDecomposer;
+import jdplus.highfreq.ExtendedAirlineKernel;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
 
 /**
@@ -31,36 +33,30 @@ import jdplus.ssf.extractors.SsfUcarimaEstimation;
 @lombok.experimental.UtilityClass
 public class FractionalAirlineProcessor {
 
-    public FractionalAirlineDecomposition decompose(double[] s, double period, boolean sn, boolean cov, int nb, int nf) {
+    public LightExtendedAirlineDecomposition decompose(double[] s, double period, boolean sn, boolean cov, int nb, int nf) {
         int iperiod = (int) period;
         if (Math.abs(period - iperiod) < 1e-9) {
             period = iperiod;
         }
-        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), period, sn, cov, nb, nf);
+        return ExtendedAirlineDecomposer.decompose(DoubleSeq.of(s), period, sn, cov, nb, nf);
     }
 
-    public FractionalAirlineDecomposition decompose(double[] s, double[] periods, int ndiff, boolean ar, boolean cov, int nb, int nf) {
-        return FractionalAirlineKernel.decompose(DoubleSeq.of(s), periods, ndiff, ar, cov, nb, nf);
+    public LightExtendedAirlineDecomposition decompose(double[] s, double[] periods, int ndiff, boolean ar, boolean cov, int nb, int nf) {
+        return ExtendedAirlineDecomposer.decompose(DoubleSeq.of(s), periods, ndiff, ar, cov, nb, nf);
     }
 
-    public FractionalAirlineEstimation estimate(double[] y, Matrix x, boolean mean, double[] periods, int ndiff, boolean ar, String[] outliers, double cv, double precision, boolean approximateHessian) {
-        FractionalAirlineSpec spec = FractionalAirlineSpec.builder()
-                .y(y)
-                .X(x)
-                .meanCorrection(mean)
+    public ExtendedAirlineEstimation estimate(double[] y, Matrix x, boolean mean, double[] periods, int ndiff, boolean ar, String[] outliers, double cv, double precision, boolean approximateHessian) {
+        ExtendedAirlineSpec spec = ExtendedAirlineSpec.builder()
                 .periodicities(periods)
                 .differencingOrder(ndiff)
-                .ar(ar)
-                .outliers(outliers)
-                .criticalValue(cv)
+                .phi(ar ? Parameter.undefined() : null)
+                .theta(ar ? null : Parameter.undefined())
                 .adjustToInt(false)
-                .precision(precision)
-                .approximateHessian(approximateHessian)
                 .build();
-        return FractionalAirlineKernel.process(spec);
+        return ExtendedAirlineKernel.fastProcess(DoubleSeq.of(y), x, mean, outliers, cv, spec, precision);
     }
 
-    public SsfUcarimaEstimation ssfDetails(FractionalAirlineDecomposition fad) {
+    public SsfUcarimaEstimation ssfDetails(LightExtendedAirlineDecomposition fad) {
         return new SsfUcarimaEstimation(fad.getUcarima(), fad.getY());
     }
 }

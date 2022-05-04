@@ -5,7 +5,7 @@
  */
 package jdplus.highfreq.extractors;
 
-import jdplus.highfreq.FractionalAirlineEstimation;
+import jdplus.highfreq.ExtendedAirlineEstimation;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import jdplus.stats.likelihood.LikelihoodStatistics;
@@ -18,11 +18,11 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(InformationExtractor.class)
-public class FractionalAirlineEstimationExtractor extends InformationMapping<FractionalAirlineEstimation> {
+public class FractionalAirlineEstimationExtractor extends InformationMapping<ExtendedAirlineEstimation> {
 
     @Override
-    public Class<FractionalAirlineEstimation> getSourceClass() {
-        return FractionalAirlineEstimation.class;
+    public Class<ExtendedAirlineEstimation> getSourceClass() {
+        return ExtendedAirlineEstimation.class;
     }
 
     private static final String PARAMETERS = "parameters", LL = "likelihood", PCOV = "pcov", SCORE = "score",

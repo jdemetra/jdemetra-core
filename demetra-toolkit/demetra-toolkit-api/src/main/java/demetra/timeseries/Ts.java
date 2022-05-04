@@ -96,6 +96,7 @@ public class Ts {
         putFreezeMeta(builder, moniker);
 
         return builder.moniker(TsMoniker.of())
+                .name(name + (" (frozen)"))
                 .type(TsInformationType.UserDefined)
                 .build();
     }

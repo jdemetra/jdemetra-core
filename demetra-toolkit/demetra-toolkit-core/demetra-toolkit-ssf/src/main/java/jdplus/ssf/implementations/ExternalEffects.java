@@ -23,7 +23,6 @@ import jdplus.math.matrices.MatrixWindow;
 import jdplus.math.matrices.QuadraticForm;
 import demetra.data.DoubleSeqCursor;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.math.matrices.FastMatrix;
 
 /**

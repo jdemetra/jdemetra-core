@@ -16,6 +16,7 @@
  */
 package jdplus.tempdisagg.univariate;
 
+import demetra.information.GenericExplorable;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.timeseries.TsData;
@@ -26,7 +27,7 @@ import demetra.timeseries.TsData;
  */
 @lombok.Value
 @lombok.Builder
-public class TemporalDisaggregationIResults {
+public class TemporalDisaggregationIResults implements GenericExplorable {
 
     private @lombok.NonNull
     TsData disaggregatedSeries;

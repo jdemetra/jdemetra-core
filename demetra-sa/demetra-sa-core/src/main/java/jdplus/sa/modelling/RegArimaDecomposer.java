@@ -23,6 +23,7 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import java.util.function.Predicate;
+import jdplus.modelling.GeneralLinearModel;
 import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
@@ -38,6 +39,7 @@ public class RegArimaDecomposer {
      * estimated
      * regression effects
      *
+     * @param <M>
      * @param model
      * @param domain The requested time domain
      * @param type The type of the component
@@ -50,7 +52,7 @@ public class RegArimaDecomposer {
      * length of period pre-adjustment.
      * @return
      */
-    public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed) {
+    public <M> TsData deterministicEffect(GeneralLinearModel<M> model, TsDomain domain, ComponentType type, boolean transformed) {
         TsData f = model.deterministicEffect(domain, v ->  SaVariable.isRegressionEffect(v, type) );
         if (f != null && !transformed) {
             f = model.backTransform(f, type == ComponentType.CalendarEffect);
@@ -63,6 +65,7 @@ public class RegArimaDecomposer {
      * type and verifying the given test.It includes the pre-specified
  (fixed) regression effects and the estimated regression effects
      *
+     * @param <M>
      * @param model
      * @param domain The requested time domain
      * @param type The type of the component
@@ -73,7 +76,7 @@ public class RegArimaDecomposer {
      * @param test The selection test
      * @return
      */
-    public TsData deterministicEffect(RegSarimaModel model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
+    public <M> TsData deterministicEffect(GeneralLinearModel<M> model, TsDomain domain, ComponentType type, boolean transformed, Predicate<Variable> test) {
         TsData f = model.deterministicEffect(domain, v -> test.test(v) && SaVariable.isRegressionEffect(v, type));
         if (f != null && !transformed) {
             f = model.backTransform(f, false);

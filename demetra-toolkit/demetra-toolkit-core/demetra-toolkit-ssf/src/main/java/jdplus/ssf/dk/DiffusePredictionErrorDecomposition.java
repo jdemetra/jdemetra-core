@@ -17,13 +17,11 @@
 package jdplus.ssf.dk;
 
 import jdplus.ssf.likelihood.DiffuseLikelihood;
-import jdplus.data.DataBlock;
 import jdplus.stats.likelihood.DeterminantalTerm;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.akf.AugmentedState;
 import jdplus.ssf.dk.sqrt.IDiffuseSquareRootFilteringResults;
 import jdplus.ssf.univariate.PredictionErrorDecomposition;
-import jdplus.stats.likelihood.Likelihood;
 
 /**
  *

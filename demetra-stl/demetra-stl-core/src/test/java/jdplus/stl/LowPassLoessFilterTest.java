@@ -16,6 +16,7 @@
  */
 package jdplus.stl;
 
+import demetra.stl.LoessSpecification;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import org.junit.Test;
@@ -43,8 +44,8 @@ public class LowPassLoessFilterTest {
         LowPassLoessFilter lfilter = new LowPassLoessFilter(lspec, 12);
         lfilter.filter(IDataGetter.of(sd), IDataSelector.of(l));
 //        System.out.println(s);
-//        System.out.println(DataBlock.of(sd));
-//        System.out.println(DataBlock.of(l));
+//        System.out.println(DoubleSeq.of(sd));
+//        System.out.println(DoubleSeq.of(l));
     }
 
 }

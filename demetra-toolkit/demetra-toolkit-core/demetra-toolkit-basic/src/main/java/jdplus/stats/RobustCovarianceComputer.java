@@ -17,12 +17,12 @@
 package jdplus.stats;
 
 import demetra.stats.AutoCovariances;
-import jdplus.data.analysis.WindowFunction;
 import jdplus.math.matrices.SymmetricMatrix;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
+import jdplus.data.analysis.WindowFunction;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.GeneralMatrix;
 
@@ -46,7 +46,6 @@ public class RobustCovarianceComputer {
         DoubleUnaryOperator w = winFunction.window();
         int n = x.getRowsCount(), nx = x.getColumnsCount();
         FastMatrix s = SymmetricMatrix.XtX(x);
-        s.mul(w.applyAsDouble(0));
         double q = 1+truncationLag;
         for (int l = 1; l <= truncationLag; ++l) {
             double wl = w.applyAsDouble(l / q);

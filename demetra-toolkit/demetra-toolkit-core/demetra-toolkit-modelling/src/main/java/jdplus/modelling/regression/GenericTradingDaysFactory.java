@@ -16,23 +16,23 @@
  */
 package jdplus.modelling.regression;
 
-import jdplus.data.DataBlock;
 import demetra.data.DoubleSeqCursor;
-import nbbrd.design.Development;
-import demetra.timeseries.regression.GenericTradingDaysVariable;
-import jdplus.math.matrices.FastMatrix;
+import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.time.LocalDate;
-import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.timeseries.regression.GenericTradingDaysVariable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import jdplus.data.DataBlock;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
-import demetra.timeseries.TimeSeriesInterval;
+import nbbrd.design.Development;
 
 /**
  *
@@ -125,7 +125,8 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     @Override
     public boolean fill(GenericTradingDaysVariable var, TsPeriod start, FastMatrix buffer) {
-
+//        if (start.annualFrequency() == 1)
+//            return false;
         if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             dataContrast(var.getClustering(), start, buffer);
         } else {
