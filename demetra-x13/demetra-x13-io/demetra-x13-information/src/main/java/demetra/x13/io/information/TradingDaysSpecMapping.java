@@ -48,12 +48,47 @@ class TradingDaysSpecMapping {
 //        dic.put(InformationSet.item(prefix, CHANGEOFREGIME), String.class);
     }
 
-    String lpName() {
-        return "lp";
+    static final String LEGACY_LP = "lp";
+    static final String LEGACY_WD = "td";
+    static final String LEGACY_TD = "td#6";
+    static final String LEGACY_STOCK = LEGACY_TD;
+
+    static final String legacyUserTradingDaysName(String username) {
+        username = username.replace('.', '@');
+        if (!username.startsWith("td|")) {
+            username = "td|" + username;
+        }
+        return username;
     }
 
-    String tdName() {
-        return "td";
+    static final String[] legacyUserTradingDaysNames(String[] users) {
+        if (users == null) {
+            return null;
+        }
+        String[] usersc = new String[users.length];
+        for (int i = 0; i < users.length; ++i) {
+            usersc[i] = legacyUserTradingDaysName(users[i]);
+        }
+        return usersc;
+    }
+
+    static final String cleanTradingDaysName(String username) {
+        if (username.startsWith("td|")) {
+            username = username.substring(3);
+        }
+        return username;
+        //return username.replace('@', '.');
+    }
+
+    static final String[] cleanTradingDaysNames(String[] users) {
+        if (users == null) {
+            return null;
+        }
+        String[] usersc = new String[users.length];
+        for (int i = 0; i < users.length; ++i) {
+            usersc[i] = cleanTradingDaysName(users[i]);
+        }
+        return usersc;
     }
 
     void writeLegacy(InformationSet regInfo, TradingDaysSpec spec, boolean verbose) {
@@ -64,9 +99,21 @@ class TradingDaysSpecMapping {
         writeProperties(tdInfo, spec, verbose, false);
 
         Parameter lcoef = spec.getLpCoefficient();
-        RegressionSpecMapping.set(regInfo, lpName(), lcoef);
+        RegressionSpecMapping.set(regInfo, LEGACY_LP, lcoef);
         Parameter[] tcoef = spec.getTdCoefficients();
-        RegressionSpecMapping.set(regInfo, tdName(), tcoef);
+        if (tcoef != null) {
+            if (spec.isUserDefined()) {
+                String[] uv = spec.getUserVariables();
+                for (int i = 0; i < uv.length; ++i) {
+                    RegressionSpecMapping.set(regInfo, legacyUserTradingDaysName(uv[i]), tcoef[i]);
+                }
+            }
+            if (tcoef.length == 1) {
+                RegressionSpecMapping.set(regInfo, LEGACY_WD, tcoef[0]);
+            } else {
+                RegressionSpecMapping.set(regInfo, LEGACY_TD, tcoef);
+            }
+        }
     }
 
     InformationSet write(TradingDaysSpec spec, boolean verbose) {
@@ -90,10 +137,11 @@ class TradingDaysSpecMapping {
 
     void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose, boolean v3) {
         if (verbose || spec.getTradingDaysType() != TradingDaysType.NONE) {
-            if (v3)
+            if (v3) {
                 tdInfo.add(TDOPTION, spec.getTradingDaysType().name());
-            else
+            } else {
                 tdInfo.add(TDOPTION, tdToString(spec.getTradingDaysType()));
+            }
         }
         if (verbose || spec.getLengthOfPeriodType() != LengthOfPeriodType.None) {
             tdInfo.add(LPOPTION, spec.getLengthOfPeriodType().name());
@@ -120,10 +168,85 @@ class TradingDaysSpecMapping {
         if (tdInfo == null) {
             return TradingDaysSpec.none();
         }
-        Parameter lcoef = RegressionSpecMapping.coefficientOf(regInfo, lpName());
-        Parameter[] tdcoef = RegressionSpecMapping.coefficientsOf(regInfo, tdName());
+        TradingDaysType tdtype = TradingDaysType.NONE;
+        LengthOfPeriodType lptype = LengthOfPeriodType.None;
+        String td = tdInfo.get(TDOPTION, String.class);
+        Parameter lcoef;
+        Parameter[] tdcoef;
+        if (td != null) {
+            tdtype = tdOf(td);
+        }
+        String lp = tdInfo.get(LPOPTION, String.class);
+        if (lp != null) {
+            lptype = LengthOfPeriodType.valueOf(lp);
+            lcoef = RegressionSpecMapping.coefficientOf(regInfo, LEGACY_LP);
+        } else {
+            lcoef = null;
+        }
+        boolean auto = true;
+        Boolean adj = tdInfo.get(ADJUST, Boolean.class);
+        if (adj != null) {
+            auto = adj;
+        }
+        String holidays = tdInfo.get(HOLIDAYS, String.class);
+        String[] users = tdInfo.get(USER, String[].class);
+        Integer w = tdInfo.get(W, Integer.class);
+        RegressionTestSpec rtest = RegressionTestSpec.None;
+        String test = tdInfo.get(TEST, String.class);
+        if (test != null) {
+            rtest = RegressionTestSpec.valueOf(test);
+        }
 
-        return readProperties(tdInfo, lcoef, tdcoef, false);
+        if (users != null) {
+            // clean users names from "td|"
+            users = cleanTradingDaysNames(users);
+            tdcoef = new Parameter[users.length];
+            boolean ok = false;
+            for (int j = 0; j < users.length; ++j) {
+                Parameter p = RegressionSpecMapping.coefficientOf(regInfo, legacyUserTradingDaysName(users[j]));
+                if (p != null) {
+                    ok = true;
+                    tdcoef[j] = p;
+                }
+            }
+            if (!ok) {
+                tdcoef = null;
+            }
+
+            if (tdcoef != null) {
+                return TradingDaysSpec.userDefined(users, tdcoef);
+            } else {
+                return TradingDaysSpec.userDefined(users, rtest);
+            }
+        } else if (w != null && w != 0) {
+            tdcoef = RegressionSpecMapping.coefficientsOf(regInfo, LEGACY_TD);
+            if (tdcoef != null) {
+                return TradingDaysSpec.stockTradingDays(w, tdcoef);
+            } else {
+                return TradingDaysSpec.stockTradingDays(w, rtest);
+            }
+        } else if (tdtype == TradingDaysType.NONE && lptype == LengthOfPeriodType.None) {
+            return TradingDaysSpec.none();
+        }
+        if (tdtype == TradingDaysType.TD2) {
+            Parameter wdcoef = RegressionSpecMapping.coefficientOf(regInfo, LEGACY_WD);
+            tdcoef = wdcoef == null ? null : new Parameter[]{wdcoef};
+        } else {
+            tdcoef = RegressionSpecMapping.coefficientsOf(regInfo, LEGACY_TD);
+        }
+        if (holidays != null) {
+            if (tdcoef != null || lcoef != null) {
+                return TradingDaysSpec.holidays(holidays, tdtype, lptype, tdcoef, lcoef);
+            } else {
+                return TradingDaysSpec.holidays(holidays, tdtype, lptype, rtest, auto);
+            }
+        } else {
+            if (tdcoef != null || lcoef != null) {
+                return TradingDaysSpec.td(tdtype, lptype, tdcoef, lcoef);
+            } else {
+                return TradingDaysSpec.td(tdtype, lptype, rtest, auto);
+            }
+        }
     }
 
     TradingDaysSpec read(InformationSet tdInfo) {
@@ -133,18 +256,11 @@ class TradingDaysSpecMapping {
         Parameter lcoef = tdInfo.get(LPCOEF, Parameter.class);
         Parameter[] tdcoef = tdInfo.get(TDCOEF, Parameter[].class);
 
-        return readProperties(tdInfo, lcoef, tdcoef, true);
-    }
-
-    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef, boolean v3) {
         TradingDaysType tdtype = TradingDaysType.NONE;
         LengthOfPeriodType lptype = LengthOfPeriodType.None;
         String td = tdInfo.get(TDOPTION, String.class);
         if (td != null) {
-            if (v3)
             tdtype = TradingDaysType.valueOf(td);
-            else
-                tdtype= tdOf(td);
         }
         String lp = tdInfo.get(LPOPTION, String.class);
         if (lp != null) {
@@ -157,7 +273,6 @@ class TradingDaysSpecMapping {
         }
         String holidays = tdInfo.get(HOLIDAYS, String.class);
         String[] users = tdInfo.get(USER, String[].class);
-        int ws = 0;
         Integer w = tdInfo.get(W, Integer.class);
         RegressionTestSpec rtest = RegressionTestSpec.None;
         String test = tdInfo.get(TEST, String.class);
@@ -193,27 +308,29 @@ class TradingDaysSpecMapping {
             }
         }
     }
-    
-        private TradingDaysType tdOf(String str){
-        switch (str){
-            case "TradingDays":
-                return TradingDaysType.TD7;
-            case "WorkingDays":
-                return TradingDaysType.TD2;
-            default: 
-                return TradingDaysType.NONE;
-        }
+
+    private TradingDaysType tdOf(String str) {
+        return switch (str) {
+            case "TradingDays" ->
+                TradingDaysType.TD7;
+            case "WorkingDays" ->
+                TradingDaysType.TD2;
+            default ->
+                TradingDaysType.NONE;
+        };
     }
 
-    private String tdToString(TradingDaysType type){
-        switch (type){
-            case TD7: return "TradingDays";
-             case TD2 : return "WorkingDays";
-             case NONE: return "None";
-             default:
-                 throw new X13Exception("Illegal conversion");
-        }
+    private String tdToString(TradingDaysType type) {
+        return switch (type) {
+            case TD7 ->
+                "TradingDays";
+            case TD2 ->
+                "WorkingDays";
+            case NONE ->
+                "None";
+            default ->
+                throw new X13Exception("Illegal conversion");
+        };
     }
-
 
 }

@@ -58,17 +58,12 @@ class RegressionSpecMapping {
 //        InterventionVariableMapping.fillDictionary(InformationSet.item(prefix, INTERVENTIONS), dic);
 ////        TsContextVariableMapping.fillDictionary(InformationSet.item(prefix, USERS), dic);
 //    }
-
     Parameter coefficientOf(InformationSet regInfo, String name) {
         InformationSet scoefs = regInfo.getSubSet(RegressionSpecMapping.COEFF);
         if (scoefs != null) {
-            double[] coef = scoefs.get(name, double[].class);
+            Double coef = scoefs.get(name, Double.class);
             if (coef != null) {
-                if (coef.length == 1) {
-                    return Parameter.estimated(coef[0]);
-                } else {
-                    return null;
-                }
+                return Parameter.estimated(coef);
             }
         }
         return fixedCoefficientOf(regInfo, name);
@@ -117,7 +112,7 @@ class RegressionSpecMapping {
         }
         InformationSet scoefs = regInfo.subSet(p.isFixed() ? FCOEFF
                 : COEFF);
-        scoefs.set(name, new double[]{p.getValue()});
+        scoefs.set(name, p.getValue());
     }
 
     void set(InformationSet regInfo, String name, Parameter[] p) {

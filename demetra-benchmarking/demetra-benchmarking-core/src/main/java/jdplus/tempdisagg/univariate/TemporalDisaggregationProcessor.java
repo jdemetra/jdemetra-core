@@ -110,9 +110,12 @@ public class TemporalDisaggregationProcessor {
 
     private TemporalDisaggregationResults compute(DisaggregationModel model, TemporalDisaggregationSpec spec) {
         return switch (spec.getAggregationType()) {
-            case Sum, Average -> disaggregate(model, spec);
-            case First, Last, UserDefined -> interpolate(model, spec);
-            default -> null;
+            case Sum, Average ->
+                disaggregate(model, spec);
+            case First, Last, UserDefined ->
+                interpolate(model, spec);
+            default ->
+                null;
         };
     }
 
@@ -161,9 +164,12 @@ public class TemporalDisaggregationProcessor {
         SsfData ssfdata = new SsfData(model.getHY());
         DefaultSmoothingResults srslts;
         srslts = switch (spec.getAlgorithm()) {
-            case Augmented -> AkfToolkit.smooth(rssf, ssfdata, true, false, true);
-            case Diffuse -> DkToolkit.smooth(rssf, ssfdata, true, false);
-            default -> DkToolkit.smooth(rssf, ssfdata, true, false);
+            case Augmented ->
+                AkfToolkit.smooth(rssf, ssfdata, true, false, true);
+            case Diffuse ->
+                DkToolkit.smooth(rssf, ssfdata, true, false);
+            default ->
+                DkToolkit.smooth(rssf, ssfdata, true, false);
         };
         double[] Y = model.getHY();
         double[] O = model.getHO();
@@ -250,16 +256,19 @@ public class TemporalDisaggregationProcessor {
         // large values in the regression variables. Two solutions: rescaling of the 
         // regression variables (no garantee) or use of the augmented Kalman smoother (default solution)
         // A square root form of the diffuse smoothing should also be investigated.
-        StateComponent rcmp = RegSsf.of(ncmp, model.getHX());
-        ISsfLoading rloading = RegSsf.defaultLoading(ncmp.dim(), nloading, model.getHX());
+        StateComponent rcmp = (model.getHX() == null || model.getHX().isEmpty()) ? ncmp : RegSsf.of(ncmp, model.getHX());
+        ISsfLoading rloading = (model.getHX() == null || model.getHX().isEmpty()) ? nloading : RegSsf.defaultLoading(ncmp.dim(), nloading, model.getHX());
         SsfData ssfdata = new SsfData(model.getHY());
         Ssf ssf = Ssf.of(SsfCumulator.of(rcmp, rloading, model.getFrequencyRatio(), model.getStart()),
                 SsfCumulator.defaultLoading(rloading, model.getFrequencyRatio(), model.getStart()));
         DefaultSmoothingResults srslts;
         srslts = switch (spec.getAlgorithm()) {
-            case Augmented -> AkfToolkit.smooth(ssf, ssfdata, true, false, true);
-            case Diffuse -> DkToolkit.smooth(ssf, ssfdata, true, false);
-            default -> DkToolkit.smooth(ssf, ssfdata, true, false);
+            case Augmented ->
+                AkfToolkit.smooth(ssf, ssfdata, true, false, true);
+            case Diffuse ->
+                DkToolkit.smooth(ssf, ssfdata, true, false);
+            default ->
+                DkToolkit.smooth(ssf, ssfdata, true, false);
         };
 
         double[] yh = new double[model.getHY().length];
@@ -317,7 +326,8 @@ public class TemporalDisaggregationProcessor {
             case Rw -> {
                 return Rw.of(1, spec.isZeroInitialization());
             }
-            default -> throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            default ->
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 
@@ -338,7 +348,8 @@ public class TemporalDisaggregationProcessor {
                 return Ssf.of(Rw.of(1, spec.isZeroInitialization()),
                         Rw.defaultLoading());
             }
-            default -> throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            default ->
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 
@@ -356,7 +367,8 @@ public class TemporalDisaggregationProcessor {
             case Rw -> {
                 return Rw.defaultLoading();
             }
-            default -> throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            default ->
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 
@@ -409,11 +421,13 @@ public class TemporalDisaggregationProcessor {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
         FastMatrix hx = model.getHEX();
-        for (int i = 0; i < hy.length; ++i) {
-            if (Double.isFinite(hy[i])) {
-                y[i] = hy[i] - hx.row(i).dot(coeff);
-            } else {
-                y[i] = Double.NaN;
+        if (hx != null) {
+            for (int i = 0; i < hy.length; ++i) {
+                if (Double.isFinite(hy[i])) {
+                    y[i] = hy[i] - hx.row(i).dot(coeff);
+                } else {
+                    y[i] = Double.NaN;
+                }
             }
         }
         return TsData.ofInternal(model.getLEDom().getStartPeriod(), y);

@@ -81,18 +81,20 @@ public class SeasonalityTests {
                 .build();
     }
 
-    public double[] canovaHansenTest(double[] s, int start, int end, boolean original) {
+    public double[] canovaHansenTest(double[] s, double start, double end, int n, boolean original) {
         DoubleSeq x = DoubleSeq.of(s).cleanExtremities();
-        double[] rslt = new double[end - start];
-        for (int i = start; i < end; ++i) {
+        double[] rslt = new double[n];
+        double step=(end-start)/(n-1);
+        for (int i = 0; i < n; ++i) {
+            double p=start+i*step;
             if (original) {
-                rslt[i - start] = CanovaHansen.test(x)
-                        .specific(i, 1)
+                rslt[i] = CanovaHansen.test(x)
+                        .specific(p, 1)
                         .build()
                         .testAll();
             } else {
-                rslt[i - start] = CanovaHansen2.of(x)
-                        .periodicity(i)
+                rslt[i] = CanovaHansen2.of(x)
+                        .periodicity(p)
                         .compute();
             }
         }

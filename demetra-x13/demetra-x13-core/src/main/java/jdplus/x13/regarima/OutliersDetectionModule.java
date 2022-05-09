@@ -162,7 +162,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         if (freq > 1 && so) {
             factory.add(new PeriodicOutlierFactory(freq, true));
         }
-        sod.setOutlierFactories(factory.toArray(new IOutlierFactory[factory.size()]));
+        sod.setOutlierFactories(factory.toArray(IOutlierFactory[]::new));
         return sod;
     }
 
