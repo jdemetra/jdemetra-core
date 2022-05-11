@@ -14,6 +14,7 @@ import demetra.timeseries.TsPeriod;
 import java.time.LocalDateTime;
 import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TimeSeriesInterval;
+import demetra.timeseries.TsException;
 
 /**
  *
@@ -23,6 +24,15 @@ public class TransitoryChangeFactory implements IOutlierFactory {
 
     private final double coefficient;
     static double ZERO = 1e-15;
+
+    public static double rate(int period, double monthlyRate) {
+        if (period == 12)
+            return monthlyRate;
+        if (12 % period != 0) {
+            throw new TsException(TsException.INVALID_FREQ);
+        }
+        return Math.pow(monthlyRate, 12 / period);
+    }
 
     public TransitoryChangeFactory(double coefficient) {
         this.coefficient = coefficient;
@@ -72,9 +82,10 @@ class TCFactory implements RegressionVariableFactory<TransitoryChange> {
 
     static double ZERO = 1e-15;
 
-    static TCFactory FACTORY=new TCFactory();
+    static TCFactory FACTORY = new TCFactory();
 
-    private TCFactory(){}
+    private TCFactory() {
+    }
 
     @Override
     public boolean fill(TransitoryChange var, TsPeriod start, FastMatrix m) {
@@ -84,7 +95,7 @@ class TCFactory implements RegressionVariableFactory<TransitoryChange> {
     }
 
     @Override
-    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>>  boolean fill(TransitoryChange var, D domain, FastMatrix m) {
+    public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(TransitoryChange var, D domain, FastMatrix m) {
         fill(var, domain.indexOf(var.getPosition()), m.column(0));
         return true;
     }

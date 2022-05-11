@@ -130,9 +130,10 @@ public final class SaItem {
                 estimation = SaManager.process(definition, context, verbose);
             } else {
                 // workaround against incomplete estimation
-                SaSpecification pointSpec = estimation.getPointSpec();
-                if (pointSpec == null)
-                    pointSpec=definition.activeSpecification();
+                // Unoptimized solution
+                // SaSpecification pointSpec = estimation.getPointSpec();
+                //if (pointSpec == null)
+                SaSpecification pointSpec=definition.activeSpecification();
                 SaDefinition pdef = SaDefinition.builder()
                         .ts(definition.getTs())
                         .domainSpec(pointSpec)

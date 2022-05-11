@@ -40,11 +40,11 @@ public class CanovaHansen2Test {
          for (double i=2; i<=105; ++i){
             double z = CanovaHansen2.of(DoubleSeq.of(x))
                     .periodicity(i)
-                    .truncationLag(53)
+                    .truncationLag(12)
                     .windowFunction(WindowFunction.Welch)
                     .lag1(true)
                     .compute();
-            System.out.println(z);
+//            System.out.println(z);
         }
          System.out.println();
             double z = CanovaHansen2.of(DoubleSeq.of(x))
@@ -53,7 +53,7 @@ public class CanovaHansen2Test {
                     .windowFunction(WindowFunction.Welch)
                     .lag1(true)
                     .compute();
-            System.out.println(z);
+//            System.out.println(z);
    }
     
 }
