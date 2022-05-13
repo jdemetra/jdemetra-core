@@ -16,6 +16,7 @@
  */
 package jdplus.timeseries.calendars;
 
+import demetra.timeseries.ValidityPeriod;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.FixedWeekDay;
 import java.time.DayOfWeek;
@@ -57,6 +58,11 @@ class FixedWeekDayInfo implements HolidayInfo {
 
         FixedWeekDayIterable(FixedWeekDay fday, LocalDate fstart, LocalDate fend) {
             this.fday = fday;
+            ValidityPeriod vp = fday.getValidityPeriod();
+            if (vp.getStart().isAfter(fstart))
+                fstart=vp.getStart();
+            if (vp.getEnd().isBefore(fend))
+                fend=vp.getEnd();
             int ystart = fstart.getYear(), yend = fend.getYear();
             LocalDate xday = fday.calcDate(ystart);
             LocalDate yday = fday.calcDate(yend);

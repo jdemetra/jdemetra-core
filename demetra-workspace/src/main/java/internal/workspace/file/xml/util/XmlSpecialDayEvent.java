@@ -36,7 +36,8 @@ public class XmlSpecialDayEvent implements IXmlConverter<demetra.timeseries.cale
         @XmlElement(name = "fixedDay", type = XmlFixedDay.class),
         @XmlElement(name = "fixedWeekDay", type = XmlFixedWeekDay.class),
         @XmlElement(name = "easterRelatedDay", type = XmlEasterRelatedDay.class),
-        @XmlElement(name = "specialCalendarDay", type = XmlSpecialCalendarDay.class)
+        @XmlElement(name = "specialCalendarDay", type = XmlSpecialCalendarDay.class),
+        @XmlElement(name = "singleDate", type = XmlSingleDate.class)
     })
     public AbstractXmlDay sday;
     

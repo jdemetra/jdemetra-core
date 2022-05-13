@@ -18365,6 +18365,699 @@ public final class ToolkitProtos {
 
   }
 
+  public interface SingleDateOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.SingleDate)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.jd3.Date date = 1;</code>
+     * @return Whether the date field is set.
+     */
+    boolean hasDate();
+    /**
+     * <code>.jd3.Date date = 1;</code>
+     * @return The date.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Date getDate();
+    /**
+     * <code>.jd3.Date date = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getDateOrBuilder();
+
+    /**
+     * <code>double weight = 2;</code>
+     * @return The weight.
+     */
+    double getWeight();
+  }
+  /**
+   * Protobuf type {@code jd3.SingleDate}
+   */
+  public static final class SingleDate extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.SingleDate)
+      SingleDateOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SingleDate.newBuilder() to construct.
+    private SingleDate(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SingleDate() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SingleDate();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SingleDate(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder subBuilder = null;
+              if (date_ != null) {
+                subBuilder = date_.toBuilder();
+              }
+              date_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Date.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(date_);
+                date_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 17: {
+
+              weight_ = input.readDouble();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_SingleDate_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_SingleDate_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.class, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder.class);
+    }
+
+    public static final int DATE_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Date date_;
+    /**
+     * <code>.jd3.Date date = 1;</code>
+     * @return Whether the date field is set.
+     */
+    @java.lang.Override
+    public boolean hasDate() {
+      return date_ != null;
+    }
+    /**
+     * <code>.jd3.Date date = 1;</code>
+     * @return The date.
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Date getDate() {
+      return date_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : date_;
+    }
+    /**
+     * <code>.jd3.Date date = 1;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getDateOrBuilder() {
+      return getDate();
+    }
+
+    public static final int WEIGHT_FIELD_NUMBER = 2;
+    private double weight_;
+    /**
+     * <code>double weight = 2;</code>
+     * @return The weight.
+     */
+    @java.lang.Override
+    public double getWeight() {
+      return weight_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (date_ != null) {
+        output.writeMessage(1, getDate());
+      }
+      if (weight_ != 0D) {
+        output.writeDouble(2, weight_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (date_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getDate());
+      }
+      if (weight_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(2, weight_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate other = (demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate) obj;
+
+      if (hasDate() != other.hasDate()) return false;
+      if (hasDate()) {
+        if (!getDate()
+            .equals(other.getDate())) return false;
+      }
+      if (java.lang.Double.doubleToLongBits(getWeight())
+          != java.lang.Double.doubleToLongBits(
+              other.getWeight())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasDate()) {
+        hash = (37 * hash) + DATE_FIELD_NUMBER;
+        hash = (53 * hash) + getDate().hashCode();
+      }
+      hash = (37 * hash) + WEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getWeight()));
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.SingleDate}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.SingleDate)
+        demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_SingleDate_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_SingleDate_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.class, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (dateBuilder_ == null) {
+          date_ = null;
+        } else {
+          date_ = null;
+          dateBuilder_ = null;
+        }
+        weight_ = 0D;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_SingleDate_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate result = new demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate(this);
+        if (dateBuilder_ == null) {
+          result.date_ = date_;
+        } else {
+          result.date_ = dateBuilder_.build();
+        }
+        result.weight_ = weight_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.getDefaultInstance()) return this;
+        if (other.hasDate()) {
+          mergeDate(other.getDate());
+        }
+        if (other.getWeight() != 0D) {
+          setWeight(other.getWeight());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Date date_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> dateBuilder_;
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       * @return Whether the date field is set.
+       */
+      public boolean hasDate() {
+        return dateBuilder_ != null || date_ != null;
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       * @return The date.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date getDate() {
+        if (dateBuilder_ == null) {
+          return date_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : date_;
+        } else {
+          return dateBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      public Builder setDate(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (dateBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          date_ = value;
+          onChanged();
+        } else {
+          dateBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      public Builder setDate(
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder builderForValue) {
+        if (dateBuilder_ == null) {
+          date_ = builderForValue.build();
+          onChanged();
+        } else {
+          dateBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      public Builder mergeDate(demetra.toolkit.io.protobuf.ToolkitProtos.Date value) {
+        if (dateBuilder_ == null) {
+          if (date_ != null) {
+            date_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.newBuilder(date_).mergeFrom(value).buildPartial();
+          } else {
+            date_ = value;
+          }
+          onChanged();
+        } else {
+          dateBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      public Builder clearDate() {
+        if (dateBuilder_ == null) {
+          date_ = null;
+          onChanged();
+        } else {
+          date_ = null;
+          dateBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder getDateBuilder() {
+        
+        onChanged();
+        return getDateFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getDateOrBuilder() {
+        if (dateBuilder_ != null) {
+          return dateBuilder_.getMessageOrBuilder();
+        } else {
+          return date_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : date_;
+        }
+      }
+      /**
+       * <code>.jd3.Date date = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder> 
+          getDateFieldBuilder() {
+        if (dateBuilder_ == null) {
+          dateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.Date, demetra.toolkit.io.protobuf.ToolkitProtos.Date.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder>(
+                  getDate(),
+                  getParentForChildren(),
+                  isClean());
+          date_ = null;
+        }
+        return dateBuilder_;
+      }
+
+      private double weight_ ;
+      /**
+       * <code>double weight = 2;</code>
+       * @return The weight.
+       */
+      @java.lang.Override
+      public double getWeight() {
+        return weight_;
+      }
+      /**
+       * <code>double weight = 2;</code>
+       * @param value The weight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWeight(double value) {
+        
+        weight_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double weight = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWeight() {
+        
+        weight_ = 0D;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.SingleDate)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.SingleDate)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SingleDate>
+        PARSER = new com.google.protobuf.AbstractParser<SingleDate>() {
+      @java.lang.Override
+      public SingleDate parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SingleDate(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SingleDate> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SingleDate> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface FixedDayOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.FixedDay)
       com.google.protobuf.MessageOrBuilder {
@@ -23120,6 +23813,30 @@ public final class ToolkitProtos {
      */
     demetra.toolkit.io.protobuf.ToolkitProtos.PrespecifiedHolidayOrBuilder getPrespecifiedHolidaysOrBuilder(
         int index);
+
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> 
+        getSingleDatesList();
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getSingleDates(int index);
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    int getSingleDatesCount();
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder> 
+        getSingleDatesOrBuilderList();
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder getSingleDatesOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code jd3.Calendar}
@@ -23138,6 +23855,7 @@ public final class ToolkitProtos {
       easterRelatedDays_ = java.util.Collections.emptyList();
       fixedWeekDays_ = java.util.Collections.emptyList();
       prespecifiedHolidays_ = java.util.Collections.emptyList();
+      singleDates_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -23207,6 +23925,15 @@ public final class ToolkitProtos {
                   input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.PrespecifiedHoliday.parser(), extensionRegistry));
               break;
             }
+            case 42: {
+              if (!((mutable_bitField0_ & 0x00000010) != 0)) {
+                singleDates_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              singleDates_.add(
+                  input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.parser(), extensionRegistry));
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
@@ -23233,6 +23960,9 @@ public final class ToolkitProtos {
         }
         if (((mutable_bitField0_ & 0x00000008) != 0)) {
           prespecifiedHolidays_ = java.util.Collections.unmodifiableList(prespecifiedHolidays_);
+        }
+        if (((mutable_bitField0_ & 0x00000010) != 0)) {
+          singleDates_ = java.util.Collections.unmodifiableList(singleDates_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -23411,6 +24141,46 @@ public final class ToolkitProtos {
       return prespecifiedHolidays_.get(index);
     }
 
+    public static final int SINGLE_DATES_FIELD_NUMBER = 5;
+    private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> singleDates_;
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    @java.lang.Override
+    public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> getSingleDatesList() {
+      return singleDates_;
+    }
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder> 
+        getSingleDatesOrBuilderList() {
+      return singleDates_;
+    }
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    @java.lang.Override
+    public int getSingleDatesCount() {
+      return singleDates_.size();
+    }
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getSingleDates(int index) {
+      return singleDates_.get(index);
+    }
+    /**
+     * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+     */
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder getSingleDatesOrBuilder(
+        int index) {
+      return singleDates_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -23437,6 +24207,9 @@ public final class ToolkitProtos {
       for (int i = 0; i < prespecifiedHolidays_.size(); i++) {
         output.writeMessage(4, prespecifiedHolidays_.get(i));
       }
+      for (int i = 0; i < singleDates_.size(); i++) {
+        output.writeMessage(5, singleDates_.get(i));
+      }
       unknownFields.writeTo(output);
     }
 
@@ -23462,6 +24235,10 @@ public final class ToolkitProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, prespecifiedHolidays_.get(i));
       }
+      for (int i = 0; i < singleDates_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, singleDates_.get(i));
+      }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
@@ -23485,6 +24262,8 @@ public final class ToolkitProtos {
           .equals(other.getFixedWeekDaysList())) return false;
       if (!getPrespecifiedHolidaysList()
           .equals(other.getPrespecifiedHolidaysList())) return false;
+      if (!getSingleDatesList()
+          .equals(other.getSingleDatesList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -23511,6 +24290,10 @@ public final class ToolkitProtos {
       if (getPrespecifiedHolidaysCount() > 0) {
         hash = (37 * hash) + PRESPECIFIED_HOLIDAYS_FIELD_NUMBER;
         hash = (53 * hash) + getPrespecifiedHolidaysList().hashCode();
+      }
+      if (getSingleDatesCount() > 0) {
+        hash = (37 * hash) + SINGLE_DATES_FIELD_NUMBER;
+        hash = (53 * hash) + getSingleDatesList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -23644,6 +24427,7 @@ public final class ToolkitProtos {
           getEasterRelatedDaysFieldBuilder();
           getFixedWeekDaysFieldBuilder();
           getPrespecifiedHolidaysFieldBuilder();
+          getSingleDatesFieldBuilder();
         }
       }
       @java.lang.Override
@@ -23672,6 +24456,12 @@ public final class ToolkitProtos {
           bitField0_ = (bitField0_ & ~0x00000008);
         } else {
           prespecifiedHolidaysBuilder_.clear();
+        }
+        if (singleDatesBuilder_ == null) {
+          singleDates_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
+        } else {
+          singleDatesBuilder_.clear();
         }
         return this;
       }
@@ -23735,6 +24525,15 @@ public final class ToolkitProtos {
           result.prespecifiedHolidays_ = prespecifiedHolidays_;
         } else {
           result.prespecifiedHolidays_ = prespecifiedHolidaysBuilder_.build();
+        }
+        if (singleDatesBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0)) {
+            singleDates_ = java.util.Collections.unmodifiableList(singleDates_);
+            bitField0_ = (bitField0_ & ~0x00000010);
+          }
+          result.singleDates_ = singleDates_;
+        } else {
+          result.singleDates_ = singleDatesBuilder_.build();
         }
         onBuilt();
         return result;
@@ -23885,6 +24684,32 @@ public final class ToolkitProtos {
                    getPrespecifiedHolidaysFieldBuilder() : null;
             } else {
               prespecifiedHolidaysBuilder_.addAllMessages(other.prespecifiedHolidays_);
+            }
+          }
+        }
+        if (singleDatesBuilder_ == null) {
+          if (!other.singleDates_.isEmpty()) {
+            if (singleDates_.isEmpty()) {
+              singleDates_ = other.singleDates_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+            } else {
+              ensureSingleDatesIsMutable();
+              singleDates_.addAll(other.singleDates_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.singleDates_.isEmpty()) {
+            if (singleDatesBuilder_.isEmpty()) {
+              singleDatesBuilder_.dispose();
+              singleDatesBuilder_ = null;
+              singleDates_ = other.singleDates_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+              singleDatesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getSingleDatesFieldBuilder() : null;
+            } else {
+              singleDatesBuilder_.addAllMessages(other.singleDates_);
             }
           }
         }
@@ -24876,6 +25701,246 @@ public final class ToolkitProtos {
           prespecifiedHolidays_ = null;
         }
         return prespecifiedHolidaysBuilder_;
+      }
+
+      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> singleDates_ =
+        java.util.Collections.emptyList();
+      private void ensureSingleDatesIsMutable() {
+        if (!((bitField0_ & 0x00000010) != 0)) {
+          singleDates_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate>(singleDates_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder> singleDatesBuilder_;
+
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> getSingleDatesList() {
+        if (singleDatesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(singleDates_);
+        } else {
+          return singleDatesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public int getSingleDatesCount() {
+        if (singleDatesBuilder_ == null) {
+          return singleDates_.size();
+        } else {
+          return singleDatesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getSingleDates(int index) {
+        if (singleDatesBuilder_ == null) {
+          return singleDates_.get(index);
+        } else {
+          return singleDatesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder setSingleDates(
+          int index, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate value) {
+        if (singleDatesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSingleDatesIsMutable();
+          singleDates_.set(index, value);
+          onChanged();
+        } else {
+          singleDatesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder setSingleDates(
+          int index, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder builderForValue) {
+        if (singleDatesBuilder_ == null) {
+          ensureSingleDatesIsMutable();
+          singleDates_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          singleDatesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder addSingleDates(demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate value) {
+        if (singleDatesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSingleDatesIsMutable();
+          singleDates_.add(value);
+          onChanged();
+        } else {
+          singleDatesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder addSingleDates(
+          int index, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate value) {
+        if (singleDatesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSingleDatesIsMutable();
+          singleDates_.add(index, value);
+          onChanged();
+        } else {
+          singleDatesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder addSingleDates(
+          demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder builderForValue) {
+        if (singleDatesBuilder_ == null) {
+          ensureSingleDatesIsMutable();
+          singleDates_.add(builderForValue.build());
+          onChanged();
+        } else {
+          singleDatesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder addSingleDates(
+          int index, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder builderForValue) {
+        if (singleDatesBuilder_ == null) {
+          ensureSingleDatesIsMutable();
+          singleDates_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          singleDatesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder addAllSingleDates(
+          java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> values) {
+        if (singleDatesBuilder_ == null) {
+          ensureSingleDatesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, singleDates_);
+          onChanged();
+        } else {
+          singleDatesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder clearSingleDates() {
+        if (singleDatesBuilder_ == null) {
+          singleDates_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
+          onChanged();
+        } else {
+          singleDatesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public Builder removeSingleDates(int index) {
+        if (singleDatesBuilder_ == null) {
+          ensureSingleDatesIsMutable();
+          singleDates_.remove(index);
+          onChanged();
+        } else {
+          singleDatesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder getSingleDatesBuilder(
+          int index) {
+        return getSingleDatesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder getSingleDatesOrBuilder(
+          int index) {
+        if (singleDatesBuilder_ == null) {
+          return singleDates_.get(index);  } else {
+          return singleDatesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder> 
+           getSingleDatesOrBuilderList() {
+        if (singleDatesBuilder_ != null) {
+          return singleDatesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(singleDates_);
+        }
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder addSingleDatesBuilder() {
+        return getSingleDatesFieldBuilder().addBuilder(
+            demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder addSingleDatesBuilder(
+          int index) {
+        return getSingleDatesFieldBuilder().addBuilder(
+            index, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .jd3.SingleDate single_dates = 5;</code>
+       */
+      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder> 
+           getSingleDatesBuilderList() {
+        return getSingleDatesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder> 
+          getSingleDatesFieldBuilder() {
+        if (singleDatesBuilder_ == null) {
+          singleDatesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder>(
+                  singleDates_,
+                  ((bitField0_ & 0x00000010) != 0),
+                  getParentForChildren(),
+                  isClean());
+          singleDates_ = null;
+        }
+        return singleDatesBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -32506,6 +33571,11 @@ public final class ToolkitProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_ValidityPeriod_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_SingleDate_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_SingleDate_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_FixedDay_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -32646,75 +33716,77 @@ public final class ToolkitProtos {
       "\024.jd3.StatisticalTest\0223\n\025box_pierce_on_s" +
       "quares\030\016 \001(\0132\024.jd3.StatisticalTest\"B\n\016Va" +
       "lidityPeriod\022\030\n\005start\030\001 \001(\0132\t.jd3.Date\022\026" +
-      "\n\003end\030\002 \001(\0132\t.jd3.Date\"]\n\010FixedDay\022\r\n\005mo" +
-      "nth\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%" +
-      "\n\010validity\030\004 \001(\0132\023.jd3.ValidityPeriod\"i\n" +
-      "\020EasterRelatedDay\022\016\n\006offset\030\001 \001(\005\022\016\n\006jul" +
-      "ian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001\022%\n\010validity\030\004 " +
-      "\001(\0132\023.jd3.ValidityPeriod\"\177\n\023Prespecified" +
-      "Holiday\022!\n\005event\030\001 \001(\0162\022.jd3.CalendarEve" +
-      "nt\022\016\n\006offset\030\002 \001(\005\022\016\n\006weight\030\003 \001(\001\022%\n\010va" +
-      "lidity\030\004 \001(\0132\023.jd3.ValidityPeriod\"w\n\014Fix" +
-      "edWeekDay\022\r\n\005month\030\001 \001(\005\022\020\n\010position\030\002 \001" +
-      "(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006weight\030\004 \001(\001\022%\n\010v" +
-      "alidity\030\005 \001(\0132\023.jd3.ValidityPeriod\"\253\001\n\022C" +
-      "alendarDefinition\022!\n\010calendar\030\001 \001(\0132\r.jd" +
-      "3.CalendarH\000\0222\n\021weighted_calendar\030\002 \001(\0132" +
-      "\025.jd3.WeightedCalendarH\000\0220\n\020chained_cale" +
-      "ndar\030\003 \001(\0132\024.jd3.ChainedCalendarH\000B\014\n\nde" +
-      "finition\"\306\001\n\010Calendar\022!\n\nfixed_days\030\001 \003(" +
-      "\0132\r.jd3.FixedDay\0222\n\023easter_related_days\030" +
-      "\002 \003(\0132\025.jd3.EasterRelatedDay\022*\n\017fixed_we" +
-      "ek_days\030\003 \003(\0132\021.jd3.FixedWeekDay\0227\n\025pres" +
-      "pecified_holidays\030\004 \003(\0132\030.jd3.Prespecifi" +
-      "edHoliday\"\200\001\n\020WeightedCalendar\022)\n\005items\030" +
-      "\001 \003(\0132\032.jd3.WeightedCalendar.Item\032A\n\004Ite" +
-      "m\022)\n\010calendar\030\001 \001(\0132\027.jd3.CalendarDefini" +
-      "tion\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017ChainedCalendar" +
-      "\022*\n\tcalendar1\030\001 \001(\0132\027.jd3.CalendarDefini" +
-      "tion\022*\n\tcalendar2\030\002 \001(\0132\027.jd3.CalendarDe" +
-      "finition\022\030\n\005break\030\003 \001(\0132\t.jd3.Date\"\216\002\n\020M" +
-      "odellingContext\0227\n\tcalendars\030\001 \003(\0132$.jd3" +
-      ".ModellingContext.CalendarsEntry\0227\n\tvari" +
-      "ables\030\002 \003(\0132$.jd3.ModellingContext.Varia" +
-      "blesEntry\032I\n\016CalendarsEntry\022\013\n\003key\030\001 \001(\t" +
-      "\022&\n\005value\030\002 \001(\0132\027.jd3.CalendarDefinition" +
-      ":\0028\001\032=\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022\032\n\005v" +
-      "alue\030\002 \001(\0132\013.jd3.TsData:\0028\001\"\320\001\n\020Processi" +
-      "ngDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsDataH\000\022\035\n\005a" +
-      "rray\030\002 \001(\0132\014.jd3.DoublesH\000\022\035\n\006matrix\030\003 \001" +
-      "(\0132\013.jd3.MatrixH\000\022$\n\004test\030\004 \001(\0132\024.jd3.St" +
-      "atisticalTestH\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n\006iv" +
-      "alue\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000B\006\n\004data\"\216" +
-      "\001\n\025ProcessingInformation\022\014\n\004name\030\001 \001(\t\022\016" +
-      "\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004 \001(" +
-      "\0162\024.jd3.InformationType\022&\n\007details\030\005 \003(\013" +
-      "2\025.jd3.ProcessingDetail\"9\n\016ProcessingLog" +
-      "s\022\'\n\003log\030\001 \003(\0132\032.jd3.ProcessingInformati" +
-      "on*\215\001\n\rSelectionType\022\014\n\010SPAN_ALL\020\000\022\r\n\tSP" +
-      "AN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN_BETWEEN\020\003" +
-      "\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SPAN_" +
-      "EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n\rParameter" +
-      "Type\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023PARAMETER_" +
-      "UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021PARA" +
-      "METER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMATED\020\004" +
-      "*\244\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECIFIE" +
-      "D\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHRO" +
-      "VEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003\022\030\n" +
-      "\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EASTE" +
-      "R\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022\032\n\026HOLIDAY" +
-      "_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_GOODFRIDAY\020" +
-      "\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n\021HOLIDAY_A" +
-      "SCENSION\020\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025HOL" +
-      "IDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITMOND" +
-      "AY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSU" +
-      "MPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOLIDA" +
-      "Y_HALLOWEEN\020\021\022\030\n\024HOLIDAY_ALLSAINTSDAY\020\022\022" +
-      "\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKS" +
-      "GIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Infor" +
-      "mationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Err" +
-      "or\020\002B,\n\033demetra.toolkit.io.protobufB\rToo" +
-      "lkitProtosb\006proto3"
+      "\n\003end\030\002 \001(\0132\t.jd3.Date\"5\n\nSingleDate\022\027\n\004" +
+      "date\030\001 \001(\0132\t.jd3.Date\022\016\n\006weight\030\002 \001(\001\"]\n" +
+      "\010FixedDay\022\r\n\005month\030\001 \001(\005\022\013\n\003day\030\002 \001(\005\022\016\n" +
+      "\006weight\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.Va" +
+      "lidityPeriod\"i\n\020EasterRelatedDay\022\016\n\006offs" +
+      "et\030\001 \001(\005\022\016\n\006julian\030\002 \001(\010\022\016\n\006weight\030\003 \001(\001" +
+      "\022%\n\010validity\030\004 \001(\0132\023.jd3.ValidityPeriod\"" +
+      "\177\n\023PrespecifiedHoliday\022!\n\005event\030\001 \001(\0162\022." +
+      "jd3.CalendarEvent\022\016\n\006offset\030\002 \001(\005\022\016\n\006wei" +
+      "ght\030\003 \001(\001\022%\n\010validity\030\004 \001(\0132\023.jd3.Validi" +
+      "tyPeriod\"w\n\014FixedWeekDay\022\r\n\005month\030\001 \001(\005\022" +
+      "\020\n\010position\030\002 \001(\005\022\017\n\007weekday\030\003 \001(\005\022\016\n\006we" +
+      "ight\030\004 \001(\001\022%\n\010validity\030\005 \001(\0132\023.jd3.Valid" +
+      "ityPeriod\"\253\001\n\022CalendarDefinition\022!\n\010cale" +
+      "ndar\030\001 \001(\0132\r.jd3.CalendarH\000\0222\n\021weighted_" +
+      "calendar\030\002 \001(\0132\025.jd3.WeightedCalendarH\000\022" +
+      "0\n\020chained_calendar\030\003 \001(\0132\024.jd3.ChainedC" +
+      "alendarH\000B\014\n\ndefinition\"\355\001\n\010Calendar\022!\n\n" +
+      "fixed_days\030\001 \003(\0132\r.jd3.FixedDay\0222\n\023easte" +
+      "r_related_days\030\002 \003(\0132\025.jd3.EasterRelated" +
+      "Day\022*\n\017fixed_week_days\030\003 \003(\0132\021.jd3.Fixed" +
+      "WeekDay\0227\n\025prespecified_holidays\030\004 \003(\0132\030" +
+      ".jd3.PrespecifiedHoliday\022%\n\014single_dates" +
+      "\030\005 \003(\0132\017.jd3.SingleDate\"\200\001\n\020WeightedCale" +
+      "ndar\022)\n\005items\030\001 \003(\0132\032.jd3.WeightedCalend" +
+      "ar.Item\032A\n\004Item\022)\n\010calendar\030\001 \001(\0132\027.jd3." +
+      "CalendarDefinition\022\016\n\006weight\030\002 \001(\001\"\203\001\n\017C" +
+      "hainedCalendar\022*\n\tcalendar1\030\001 \001(\0132\027.jd3." +
+      "CalendarDefinition\022*\n\tcalendar2\030\002 \001(\0132\027." +
+      "jd3.CalendarDefinition\022\030\n\005break\030\003 \001(\0132\t." +
+      "jd3.Date\"\216\002\n\020ModellingContext\0227\n\tcalenda" +
+      "rs\030\001 \003(\0132$.jd3.ModellingContext.Calendar" +
+      "sEntry\0227\n\tvariables\030\002 \003(\0132$.jd3.Modellin" +
+      "gContext.VariablesEntry\032I\n\016CalendarsEntr" +
+      "y\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.jd3.Cale" +
+      "ndarDefinition:\0028\001\032=\n\016VariablesEntry\022\013\n\003" +
+      "key\030\001 \001(\t\022\032\n\005value\030\002 \001(\0132\013.jd3.TsData:\0028" +
+      "\001\"\320\001\n\020ProcessingDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3" +
+      ".TsDataH\000\022\035\n\005array\030\002 \001(\0132\014.jd3.DoublesH\000" +
+      "\022\035\n\006matrix\030\003 \001(\0132\013.jd3.MatrixH\000\022$\n\004test\030" +
+      "\004 \001(\0132\024.jd3.StatisticalTestH\000\022\021\n\007message" +
+      "\030\005 \001(\tH\000\022\020\n\006ivalue\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001" +
+      "(\001H\000B\006\n\004data\"\216\001\n\025ProcessingInformation\022\014" +
+      "\n\004name\030\001 \001(\t\022\016\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(" +
+      "\t\022\"\n\004type\030\004 \001(\0162\024.jd3.InformationType\022&\n" +
+      "\007details\030\005 \003(\0132\025.jd3.ProcessingDetail\"9\n" +
+      "\016ProcessingLogs\022\'\n\003log\030\001 \003(\0132\032.jd3.Proce" +
+      "ssingInformation*\215\001\n\rSelectionType\022\014\n\010SP" +
+      "AN_ALL\020\000\022\r\n\tSPAN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014" +
+      "SPAN_BETWEEN\020\003\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FI" +
+      "RST\020\005\022\022\n\016SPAN_EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007" +
+      "*\203\001\n\rParameterType\022\024\n\020PARAMETER_UNUSED\020\000" +
+      "\022\027\n\023PARAMETER_UNDEFINED\020\001\022\023\n\017PARAMETER_F" +
+      "IXED\020\002\022\025\n\021PARAMETER_INITIAL\020\003\022\027\n\023PARAMET" +
+      "ER_ESTIMATED\020\004*\244\004\n\rCalendarEvent\022\027\n\023HOLI" +
+      "DAY_UNSPECIFIED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030" +
+      "\n\024HOLIDAY_SHROVEMONDAY\020\002\022\031\n\025HOLIDAY_SHRO" +
+      "VETUESDAY\020\003\022\030\n\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n" +
+      "\016HOLIDAY_EASTER\020\005\022\030\n\024HOLIDAY_JULIANEASTE" +
+      "R\020\006\022\032\n\026HOLIDAY_MAUNDYTHURSDAY\020\007\022\026\n\022HOLID" +
+      "AY_GOODFRIDAY\020\010\022\030\n\024HOLIDAY_EASTERMONDAY\020" +
+      "\t\022\025\n\021HOLIDAY_ASCENSION\020\n\022\025\n\021HOLIDAY_PENT" +
+      "ECOST\020\013\022\031\n\025HOLIDAY_CORPUSCHRISTI\020\014\022\026\n\022HO" +
+      "LIDAY_WHITMONDAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026" +
+      "\n\022HOLIDAY_ASSUMPTION\020\017\022\024\n\020HOLIDAY_LABORD" +
+      "AY\020\020\022\025\n\021HOLIDAY_HALLOWEEN\020\021\022\030\n\024HOLIDAY_A" +
+      "LLSAINTSDAY\020\022\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024" +
+      "HOLIDAY_THANKSGIVING\020\024\022\025\n\021HOLIDAY_CHRIST" +
+      "MAS\020\025*3\n\017InformationType\022\010\n\004Info\020\000\022\013\n\007Wa" +
+      "rning\020\001\022\t\n\005Error\020\002B,\n\033demetra.toolkit.io" +
+      ".protobufB\rToolkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -32816,44 +33888,50 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ValidityPeriod_descriptor,
         new java.lang.String[] { "Start", "End", });
-    internal_static_jd3_FixedDay_descriptor =
+    internal_static_jd3_SingleDate_descriptor =
       getDescriptor().getMessageTypes().get(16);
+    internal_static_jd3_SingleDate_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_SingleDate_descriptor,
+        new java.lang.String[] { "Date", "Weight", });
+    internal_static_jd3_FixedDay_descriptor =
+      getDescriptor().getMessageTypes().get(17);
     internal_static_jd3_FixedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedDay_descriptor,
         new java.lang.String[] { "Month", "Day", "Weight", "Validity", });
     internal_static_jd3_EasterRelatedDay_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_jd3_EasterRelatedDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_EasterRelatedDay_descriptor,
         new java.lang.String[] { "Offset", "Julian", "Weight", "Validity", });
     internal_static_jd3_PrespecifiedHoliday_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_jd3_PrespecifiedHoliday_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_PrespecifiedHoliday_descriptor,
         new java.lang.String[] { "Event", "Offset", "Weight", "Validity", });
     internal_static_jd3_FixedWeekDay_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_jd3_FixedWeekDay_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_FixedWeekDay_descriptor,
         new java.lang.String[] { "Month", "Position", "Weekday", "Weight", "Validity", });
     internal_static_jd3_CalendarDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_jd3_CalendarDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_CalendarDefinition_descriptor,
         new java.lang.String[] { "Calendar", "WeightedCalendar", "ChainedCalendar", "Definition", });
     internal_static_jd3_Calendar_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(22);
     internal_static_jd3_Calendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_Calendar_descriptor,
-        new java.lang.String[] { "FixedDays", "EasterRelatedDays", "FixedWeekDays", "PrespecifiedHolidays", });
+        new java.lang.String[] { "FixedDays", "EasterRelatedDays", "FixedWeekDays", "PrespecifiedHolidays", "SingleDates", });
     internal_static_jd3_WeightedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_jd3_WeightedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_WeightedCalendar_descriptor,
@@ -32865,13 +33943,13 @@ public final class ToolkitProtos {
         internal_static_jd3_WeightedCalendar_Item_descriptor,
         new java.lang.String[] { "Calendar", "Weight", });
     internal_static_jd3_ChainedCalendar_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_jd3_ChainedCalendar_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ChainedCalendar_descriptor,
         new java.lang.String[] { "Calendar1", "Calendar2", "Break", });
     internal_static_jd3_ModellingContext_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_jd3_ModellingContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ModellingContext_descriptor,
@@ -32889,19 +33967,19 @@ public final class ToolkitProtos {
         internal_static_jd3_ModellingContext_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_jd3_ProcessingDetail_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_jd3_ProcessingDetail_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingDetail_descriptor,
         new java.lang.String[] { "Ts", "Array", "Matrix", "Test", "Message", "Ivalue", "Dvalue", "Data", });
     internal_static_jd3_ProcessingInformation_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_jd3_ProcessingInformation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingInformation_descriptor,
         new java.lang.String[] { "Name", "Origin", "Msg", "Type", "Details", });
     internal_static_jd3_ProcessingLogs_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_jd3_ProcessingLogs_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingLogs_descriptor,

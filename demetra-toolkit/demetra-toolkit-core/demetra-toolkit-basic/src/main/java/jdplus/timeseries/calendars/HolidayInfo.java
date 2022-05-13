@@ -16,12 +16,14 @@
  */
 package jdplus.timeseries.calendars;
 
+import demetra.timeseries.ValidityPeriod;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
+import demetra.timeseries.calendars.SingleDate;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -163,16 +165,20 @@ public interface HolidayInfo {
     static Iterable<HolidayInfo> iterable(Holiday holiday, LocalDate fstart, LocalDate fend) {
         if (holiday instanceof FixedDay) {
             return new FixedDayInfo.FixedDayIterable((FixedDay) holiday, fstart, fend);
-        } else if (holiday instanceof EasterRelatedDay) {
-            EasterRelatedDay eday = (EasterRelatedDay) holiday;
-            return new EasterDayInfo.EasterDayList(eday.getOffset(), eday.isJulian(), fstart, fend);
-        } else if (holiday instanceof FixedWeekDay) {
-            FixedWeekDay fwd = (FixedWeekDay) holiday;
+        } else if (holiday instanceof EasterRelatedDay eday) {
+             ValidityPeriod vp = eday.getValidityPeriod();
+            if (vp.getStart().isAfter(fstart))
+                fstart=vp.getStart();
+            if (vp.getEnd().isBefore(fend))
+                fend=vp.getEnd();
+           return new EasterDayInfo.EasterDayList(eday.getOffset(), eday.isJulian(), fstart, fend);
+        } else if (holiday instanceof FixedWeekDay fwd) {
             return new FixedWeekDayInfo.FixedWeekDayIterable(fwd, fstart, fend);
-        } else if (holiday instanceof PrespecifiedHoliday) {
-            PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
+        } else if (holiday instanceof PrespecifiedHoliday ph) {
             return iterable(ph.rawHoliday(), fstart, fend);
-        }
+        } else if (holiday instanceof SingleDate fd) {
+            return new SingleDateInfo.SingleDateIterable(fd, fstart, fend);
+       }
         throw new IllegalArgumentException();
     }
 

@@ -340,9 +340,7 @@ public class HolidaysUtility {
                 end = dend;
             }
             if (start.isBefore(end)) {
-                Iterator<HolidayInfo> iter = HolidayInfo.iterable(cur, start, end).iterator();
-                while (iter.hasNext()) {
-                    HolidayInfo info = iter.next();
+                for (HolidayInfo info : HolidayInfo.iterable(cur, start, end)) {
                     LocalDate curday = info.getDay();
                     Double Weight = used.get(curday);
                     double weight = cur.getWeight();
@@ -372,7 +370,7 @@ public class HolidaysUtility {
             PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
             return longTermMean(ph.rawHoliday(), freq);
         }
-        throw new IllegalArgumentException();
+        return null;
 
     }
 
