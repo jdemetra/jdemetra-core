@@ -25,6 +25,7 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
+import demetra.timeseries.calendars.SingleDate;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,18 +64,29 @@ public class CalendarProtosUtility {
         return new FixedDay(ed.getMonth(), ed.getDay(), ed.getWeight(), convert(ed.getValidity()));
     }
 
+    public ToolkitProtos.SingleDate convert(@NonNull SingleDate sd) {
+        return ToolkitProtos.SingleDate.newBuilder()
+                .setDate(ToolkitProtosUtility.convert(sd.getDate()))
+                .setWeight(sd.getWeight())
+                .build();
+    }
+
+    public SingleDate convert(ToolkitProtos.SingleDate sd) {
+        return new SingleDate(ToolkitProtosUtility.convert(sd.getDate()), sd.getWeight());
+    }
+
     public ToolkitProtos.FixedWeekDay convert(@NonNull FixedWeekDay fd) {
         return ToolkitProtos.FixedWeekDay.newBuilder()
                 .setMonth(fd.getMonth())
                 .setWeekday(fd.getDayOfWeek().getValue())
-                .setPosition(fd.getPlace())                
+                .setPosition(fd.getPlace())
                 .setWeight(fd.getWeight())
                 .setValidity(convert(fd.getValidityPeriod()))
                 .build();
     }
 
     public FixedWeekDay convert(ToolkitProtos.FixedWeekDay ed) {
-        return new FixedWeekDay(ed.getMonth(), ed.getPosition(), DayOfWeek.of(ed.getWeekday()) , ed.getWeight(), convert(ed.getValidity()));
+        return new FixedWeekDay(ed.getMonth(), ed.getPosition(), DayOfWeek.of(ed.getWeekday()), ed.getWeight(), convert(ed.getValidity()));
     }
 
     public ToolkitProtos.EasterRelatedDay convert(@NonNull EasterRelatedDay ed) {
@@ -95,97 +107,55 @@ public class CalendarProtosUtility {
     }
 
     public ToolkitProtos.CalendarEvent convert(DayEvent hol) {
-        switch (hol) {
-            case NewYear:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_NEWYEAR;
-            case ShroveMonday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_SHROVEMONDAY;
-            case ShroveTuesday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_SHROVETUESDAY;
-            case AshWednesday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_ASHWEDNESDAY;
-            case Easter:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_EASTER;
-            case MaundyThursday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_MAUNDYTHURSDAY;
-            case GoodFriday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_GOODFRIDAY;
-            case EasterMonday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_EASTERMONDAY;
-            case Ascension:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_ASCENSION;
-            case Pentecost:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_PENTECOST;
-            case CorpusChristi:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_CORPUSCHRISTI;
-            case WhitMonday:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_WHITMONDAY;
-            case MayDay:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_MAYDAY;
-            case Assumption:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_ASSUMPTION;
-            case LaborDay:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_LABORDAY;
-            case Halloween:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_HALLOWEEN;
-            case AllSaintsDay:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_ALLSAINTSDAY;
-            case Armistice:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_ARMISTICE;
-            case ThanksGiving:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_THANKSGIVING;
-            case Christmas:
-                return ToolkitProtos.CalendarEvent.HOLIDAY_CHRISTMAS;
-            default:
-                return null;
-        }
+        return switch (hol) {
+            case NewYear -> ToolkitProtos.CalendarEvent.HOLIDAY_NEWYEAR;
+            case ShroveMonday -> ToolkitProtos.CalendarEvent.HOLIDAY_SHROVEMONDAY;
+            case ShroveTuesday -> ToolkitProtos.CalendarEvent.HOLIDAY_SHROVETUESDAY;
+            case AshWednesday -> ToolkitProtos.CalendarEvent.HOLIDAY_ASHWEDNESDAY;
+            case Easter -> ToolkitProtos.CalendarEvent.HOLIDAY_EASTER;
+            case MaundyThursday -> ToolkitProtos.CalendarEvent.HOLIDAY_MAUNDYTHURSDAY;
+            case GoodFriday -> ToolkitProtos.CalendarEvent.HOLIDAY_GOODFRIDAY;
+            case EasterMonday -> ToolkitProtos.CalendarEvent.HOLIDAY_EASTERMONDAY;
+            case Ascension -> ToolkitProtos.CalendarEvent.HOLIDAY_ASCENSION;
+            case Pentecost -> ToolkitProtos.CalendarEvent.HOLIDAY_PENTECOST;
+            case CorpusChristi -> ToolkitProtos.CalendarEvent.HOLIDAY_CORPUSCHRISTI;
+            case WhitMonday -> ToolkitProtos.CalendarEvent.HOLIDAY_WHITMONDAY;
+            case MayDay -> ToolkitProtos.CalendarEvent.HOLIDAY_MAYDAY;
+            case Assumption -> ToolkitProtos.CalendarEvent.HOLIDAY_ASSUMPTION;
+            case LaborDay -> ToolkitProtos.CalendarEvent.HOLIDAY_LABORDAY;
+            case Halloween -> ToolkitProtos.CalendarEvent.HOLIDAY_HALLOWEEN;
+            case AllSaintsDay -> ToolkitProtos.CalendarEvent.HOLIDAY_ALLSAINTSDAY;
+            case Armistice -> ToolkitProtos.CalendarEvent.HOLIDAY_ARMISTICE;
+            case ThanksGiving -> ToolkitProtos.CalendarEvent.HOLIDAY_THANKSGIVING;
+            case Christmas -> ToolkitProtos.CalendarEvent.HOLIDAY_CHRISTMAS;
+            default -> null;
+        };
     }
 
     public DayEvent convert(ToolkitProtos.CalendarEvent hol) {
-        switch (hol) {
-            case HOLIDAY_NEWYEAR:
-                return DayEvent.NewYear;
-            case HOLIDAY_SHROVEMONDAY:
-                return DayEvent.ShroveMonday;
-            case HOLIDAY_SHROVETUESDAY:
-                return DayEvent.ShroveTuesday;
-            case HOLIDAY_ASHWEDNESDAY:
-                return DayEvent.AshWednesday;
-            case HOLIDAY_EASTER:
-                return DayEvent.Easter;
-            case HOLIDAY_MAUNDYTHURSDAY:
-                return DayEvent.MaundyThursday;
-            case HOLIDAY_GOODFRIDAY:
-                return DayEvent.GoodFriday;
-            case HOLIDAY_EASTERMONDAY:
-                return DayEvent.EasterMonday;
-            case HOLIDAY_ASCENSION:
-                return DayEvent.Ascension;
-            case HOLIDAY_PENTECOST:
-                return DayEvent.Pentecost;
-            case HOLIDAY_CORPUSCHRISTI:
-                return DayEvent.CorpusChristi;
-            case HOLIDAY_WHITMONDAY:
-                return DayEvent.WhitMonday;
-            case HOLIDAY_MAYDAY:
-                return DayEvent.MayDay;
-            case HOLIDAY_ASSUMPTION:
-                return DayEvent.Assumption;
-            case HOLIDAY_LABORDAY:
-                return DayEvent.LaborDay;
-            case HOLIDAY_HALLOWEEN:
-                return DayEvent.Halloween;
-            case HOLIDAY_ALLSAINTSDAY:
-                return DayEvent.AllSaintsDay;
-            case HOLIDAY_ARMISTICE:
-                return DayEvent.Armistice;
-            case HOLIDAY_THANKSGIVING:
-                return DayEvent.ThanksGiving;
-            case HOLIDAY_CHRISTMAS:
-                return DayEvent.Christmas;
-            default:
-                return null;
-        }
+        return switch (hol) {
+            case HOLIDAY_NEWYEAR -> DayEvent.NewYear;
+            case HOLIDAY_SHROVEMONDAY -> DayEvent.ShroveMonday;
+            case HOLIDAY_SHROVETUESDAY -> DayEvent.ShroveTuesday;
+            case HOLIDAY_ASHWEDNESDAY -> DayEvent.AshWednesday;
+            case HOLIDAY_EASTER -> DayEvent.Easter;
+            case HOLIDAY_MAUNDYTHURSDAY -> DayEvent.MaundyThursday;
+            case HOLIDAY_GOODFRIDAY -> DayEvent.GoodFriday;
+            case HOLIDAY_EASTERMONDAY -> DayEvent.EasterMonday;
+            case HOLIDAY_ASCENSION -> DayEvent.Ascension;
+            case HOLIDAY_PENTECOST -> DayEvent.Pentecost;
+            case HOLIDAY_CORPUSCHRISTI -> DayEvent.CorpusChristi;
+            case HOLIDAY_WHITMONDAY -> DayEvent.WhitMonday;
+            case HOLIDAY_MAYDAY -> DayEvent.MayDay;
+            case HOLIDAY_ASSUMPTION -> DayEvent.Assumption;
+            case HOLIDAY_LABORDAY -> DayEvent.LaborDay;
+            case HOLIDAY_HALLOWEEN -> DayEvent.Halloween;
+            case HOLIDAY_ALLSAINTSDAY -> DayEvent.AllSaintsDay;
+            case HOLIDAY_ARMISTICE -> DayEvent.Armistice;
+            case HOLIDAY_THANKSGIVING -> DayEvent.ThanksGiving;
+            case HOLIDAY_CHRISTMAS -> DayEvent.Christmas;
+            default -> null;
+        };
     }
 
     public ToolkitProtos.PrespecifiedHoliday convert(PrespecifiedHoliday ph) {
@@ -230,14 +200,16 @@ public class CalendarProtosUtility {
         ToolkitProtos.Calendar.Builder builder = ToolkitProtos.Calendar.newBuilder();
         Holiday[] holidays = calendar.getHolidays();
         for (int i = 0; i < holidays.length; ++i) {
-            if (holidays[i] instanceof FixedDay) {
-                builder.addFixedDays(convert((FixedDay) holidays[i]));
-            } else if (holidays[i] instanceof FixedWeekDay) {
-                builder.addFixedWeekDays(convert((FixedWeekDay) holidays[i]));
-            } else if (holidays[i] instanceof EasterRelatedDay) {
-                builder.addEasterRelatedDays(convert((EasterRelatedDay) holidays[i]));
-            } else if (holidays[i] instanceof PrespecifiedHoliday) {
-                builder.addPrespecifiedHolidays(convert((PrespecifiedHoliday) holidays[i]));
+            if (holidays[i] instanceof FixedDay fixedDay) {
+                builder.addFixedDays(convert(fixedDay));
+            } else if (holidays[i] instanceof FixedWeekDay fixedWeekDay) {
+                builder.addFixedWeekDays(convert(fixedWeekDay));
+            } else if (holidays[i] instanceof EasterRelatedDay easterRelatedDay) {
+                builder.addEasterRelatedDays(convert(easterRelatedDay));
+            } else if (holidays[i] instanceof PrespecifiedHoliday prespecifiedHoliday) {
+                builder.addPrespecifiedHolidays(convert(prespecifiedHoliday));
+            } else if (holidays[i] instanceof SingleDate singleDate) {
+                builder.addSingleDates(convert(singleDate));
             }
         }
         return builder.build();
@@ -257,7 +229,10 @@ public class CalendarProtosUtility {
         calendar.getPrespecifiedHolidaysList().forEach(pd -> {
             hol.add(convert(pd));
         });
-        return new Calendar(hol.toArray(new Holiday[hol.size()]));
+        calendar.getSingleDatesList().forEach(sd -> {
+            hol.add(convert(sd));
+        });
+        return new Calendar(hol.toArray(Holiday[]::new));
     }
 
     public ToolkitProtos.CalendarDefinition convert(CalendarDefinition cd) {

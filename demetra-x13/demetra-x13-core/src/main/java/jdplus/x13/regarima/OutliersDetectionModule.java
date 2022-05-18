@@ -152,17 +152,13 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
             factory.add(LevelShiftFactory.FACTORY_ZEROENDED);
         }
         if (tc) {
-            double c = tcrate;
-            int r = 12 / freq;
-            if (r > 1) {
-                c = Math.pow(c, r);
-            }
+            double c = TransitoryChangeFactory.rate(freq, tcrate);
             factory.add(new TransitoryChangeFactory(c));
         }
         if (freq > 1 && so) {
             factory.add(new PeriodicOutlierFactory(freq, true));
         }
-        sod.setOutlierFactories(factory.toArray(new IOutlierFactory[factory.size()]));
+        sod.setOutlierFactories(factory.toArray(IOutlierFactory[]::new));
         return sod;
     }
 

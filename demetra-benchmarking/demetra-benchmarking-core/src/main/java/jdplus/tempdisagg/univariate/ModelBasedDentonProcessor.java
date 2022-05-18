@@ -100,7 +100,7 @@ public class ModelBasedDentonProcessor {
             }
             TsDomain domain = indicator.getDomain();
             for (Entry<LocalDate, Double> entry : spec.getOutlierVariances().entrySet()) {
-                int idx = domain.indexOf(entry.getKey().atStartOfDay());
+                int idx = domain.indexOf(entry.getKey().atStartOfDay())-1;
                 if (idx >= 0 && idx < stde.length) {
                     stde[idx] = Math.sqrt(entry.getValue());
                 }

@@ -66,9 +66,9 @@ public class CanovaHansen2 {
         LeastSquaresResults olsResults = Ols.compute(lm);
         DoubleSeq e = lm.calcResiduals(olsResults.getCoefficients());
         double rvar = RobustCovarianceComputer.covariance(e, winFunction, truncationLag);
-         int n = lm.getObservationsCount();
-      FastMatrix xe = lag1 ? x.extract(1, n, 0, x.getColumnsCount()) :  x;
- 
+        int n = lm.getObservationsCount();
+        FastMatrix xe = lag1 ? x.extract(1, n, 0, x.getColumnsCount()) : x;
+
         // multiply the columns of x by e
         xe.applyByColumns(c -> c.apply(e, (a, b) -> a * b));
         xe.applyByColumns(c -> c.cumul());

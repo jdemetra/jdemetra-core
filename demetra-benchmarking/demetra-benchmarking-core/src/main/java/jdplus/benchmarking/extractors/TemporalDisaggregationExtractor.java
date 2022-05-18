@@ -61,8 +61,11 @@ public class TemporalDisaggregationExtractor extends InformationMapping<Temporal
             return (H == null || H.isEmpty()) ? Double.NaN : Math.sqrt(1 / source.getMaximum().getHessian().get(0, 0));
         });
         set(SPART, Double.class, source -> {
+            TsData re = source.getRegressionEffects();
+            if (re == null)
+                return null;
             DoubleSeq T = source.getDisaggregatedSeries().getValues();
-            DoubleSeq R = source.getRegressionEffects().getValues();
+            DoubleSeq R = re.getValues();
             DoubleSeq S = DoublesMath.subtract(T, R);
             double vart = T.ssq();
             double vars = S.ssq();

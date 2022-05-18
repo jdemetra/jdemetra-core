@@ -23,6 +23,7 @@ import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
+import demetra.timeseries.calendars.SingleDate;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -73,6 +74,12 @@ public abstract class AbstractXmlDay {
         {
             XmlSpecialCalendarDay sday=new XmlSpecialCalendarDay();
             sday.copy((PrespecifiedHoliday)day);
+            return sday;
+        }
+        if (day instanceof SingleDate)
+        {
+            XmlSingleDate sday=new XmlSingleDate();
+            sday.copy((SingleDate)day);
             return sday;
         }
         return null;

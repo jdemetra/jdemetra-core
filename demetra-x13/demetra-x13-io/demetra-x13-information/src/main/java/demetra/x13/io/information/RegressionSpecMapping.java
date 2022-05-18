@@ -59,14 +59,10 @@ class RegressionSpecMapping {
     Parameter coefficientOf(InformationSet regInfo, String name) {
         InformationSet scoefs = regInfo.getSubSet(RegressionSpecMapping.COEFF);
         if (scoefs != null) {
-            double[] coef = scoefs.get(name, double[].class);
+            Double coef = scoefs.get(name, Double.class);
             if (coef != null) {
-                if (coef.length == 1) {
-                    return Parameter.estimated(coef[0]);
-                } else {
-                    return null;
-                }
-            }
+                return Parameter.estimated(coef);
+            } 
         }
         return fixedCoefficientOf(regInfo, name);
     }
@@ -85,13 +81,9 @@ class RegressionSpecMapping {
     Parameter fixedCoefficientOf(InformationSet regInfo, String name) {
         InformationSet fcoefs = regInfo.getSubSet(RegressionSpecMapping.FCOEFF);
         if (fcoefs != null) {
-            double[] coef = fcoefs.get(name, double[].class);
+            Double coef = fcoefs.get(name, Double.class);
             if (coef != null) {
-                if (coef.length == 1) {
-                    return Parameter.fixed(coef[0]);
-                } else {
-                    return null;
-                }
+                return Parameter.fixed(coef);
             }
         }
         return null;
@@ -114,7 +106,7 @@ class RegressionSpecMapping {
         }
         InformationSet scoefs = regInfo.subSet(p.isFixed() ? FCOEFF
                 : COEFF);
-        scoefs.set(name, new double[]{p.getValue()});
+        scoefs.set(name, p.getValue());
     }
 
     void set(InformationSet regInfo, String name, Parameter[] p) {

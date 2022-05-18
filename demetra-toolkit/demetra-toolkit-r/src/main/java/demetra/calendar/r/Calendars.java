@@ -90,22 +90,15 @@ public class Calendars {
         return M.unmodifiable();
     }
 
-    public Matrix holidays(Calendar calendar, String date, int length, int[] nonworking, String type) {
+    public Matrix holidays(Calendar calendar, String date, int length, int[] nonworking, String type, boolean single) {
         LocalDate start = LocalDate.parse(date);
         Holiday[] elements = calendar.getHolidays();
-        FastMatrix m = FastMatrix.make(length, elements.length);
+        FastMatrix m = single ? FastMatrix.make(length, 1) : FastMatrix.make(length, elements.length);
         switch (type) {
-            case "Skip":
-                HolidaysUtility.fillDays(elements, m, start, nonworking, true);
-                break;
-            case "NextWorkingDay":
-                HolidaysUtility.fillNextWorkingDays(elements, m, start, nonworking);
-                break;
-            case "PreviousWorkingDay":
-                HolidaysUtility.fillPreviousWorkingDays(elements, m, start, nonworking);
-                break;
-            default:
-                HolidaysUtility.fillDays(elements, m, start, nonworking, false);
+            case "Skip" -> HolidaysUtility.fillDays(elements, m, start, nonworking, true);
+            case "NextWorkingDay" -> HolidaysUtility.fillNextWorkingDays(elements, m, start, nonworking);
+            case "PreviousWorkingDay" -> HolidaysUtility.fillPreviousWorkingDays(elements, m, start, nonworking);
+            default -> HolidaysUtility.fillDays(elements, m, start, nonworking, false);
         }
         return m.unmodifiable();
     }

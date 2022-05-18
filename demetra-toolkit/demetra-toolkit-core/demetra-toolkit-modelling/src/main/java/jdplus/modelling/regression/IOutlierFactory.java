@@ -39,7 +39,7 @@ public interface IOutlierFactory {
 
     /**
      * Fills the buffer with an outlier positioned at outlierPosition. The
-     * position should be insied the buffer
+     * position should be inside the buffer
      *
      * @param outlierPosition
      * @param buffer
