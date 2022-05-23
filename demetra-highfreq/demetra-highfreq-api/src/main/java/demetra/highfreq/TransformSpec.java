@@ -37,7 +37,7 @@ public class TransformSpec {
     private double aicDiff;
     
     public static Builder builder(){
-        return new Builder().span(TimeSelector.all());
+        return new Builder().function(TransformationType.None).span(TimeSelector.all());
     }
     
 }
