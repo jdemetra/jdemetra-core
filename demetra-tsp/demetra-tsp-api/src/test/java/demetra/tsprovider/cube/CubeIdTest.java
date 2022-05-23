@@ -1,158 +1,240 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.tsprovider.cube;
 
-import java.util.Arrays;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+
 /**
- *
  * @author Philippe Charles
  */
 public class CubeIdTest {
 
-    public static final CubeId EMPTY = CubeId.root();
-    public static final CubeId SECTOR_REGION = CubeId.root("sector", "region");
-    public static final CubeId INDUSTRY = SECTOR_REGION.child("industry");
-    public static final CubeId INDUSTRY_BE = INDUSTRY.child("be");
+    static final CubeId DIM0_LEV0 = CubeId.root();
+
+    static final CubeId DIM1_LEV0 = CubeId.root("sector");
+    static final CubeId DIM1_LEV1 = DIM1_LEV0.child("industry");
+
+    static final CubeId DIM2_LEV0 = CubeId.root("sector", "region");
+    static final CubeId DIM2_LEV1 = DIM2_LEV0.child("industry");
+    static final CubeId DIM2_LEV2 = DIM2_LEV1.child("be");
 
     @Test
     @SuppressWarnings("null")
     public void testFactories() {
-        assertThatThrownBy(() -> CubeId.root((String[]) null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> CubeId.root("hello", (String) null)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> CubeId.root((List<String>) null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> CubeId.root(Arrays.asList("hello", null))).isInstanceOf(IllegalArgumentException.class);
+        assertThatNullPointerException().isThrownBy(() -> CubeId.root((String[]) null));
+        assertThatIllegalArgumentException().isThrownBy(() -> CubeId.root("hello", (String) null));
+        assertThatNullPointerException().isThrownBy(() -> CubeId.root((List<String>) null));
+        assertThatIllegalArgumentException().isThrownBy(() -> CubeId.root(Arrays.asList("hello", null)));
     }
 
     @Test
     public void testGetLevel() {
-        assertThat(EMPTY.getLevel()).isEqualTo(0);
-        assertThat(SECTOR_REGION.getLevel()).isEqualTo(0);
-        assertThat(INDUSTRY.getLevel()).isEqualTo(1);
+        assertThat(DIM0_LEV0.getLevel()).isEqualTo(0);
+
+        assertThat(DIM1_LEV0.getLevel()).isEqualTo(0);
+        assertThat(DIM1_LEV1.getLevel()).isEqualTo(1);
+
+        assertThat(DIM2_LEV0.getLevel()).isEqualTo(0);
+        assertThat(DIM2_LEV1.getLevel()).isEqualTo(1);
+        assertThat(DIM2_LEV2.getLevel()).isEqualTo(2);
     }
 
     @Test
     public void testGetMaxLevel() {
-        assertThat(EMPTY.getMaxLevel()).isEqualTo(0);
-        assertThat(SECTOR_REGION.getMaxLevel()).isEqualTo(2);
+        assertThat(DIM0_LEV0.getMaxLevel()).isEqualTo(0);
+
+        assertThat(DIM1_LEV0.getMaxLevel()).isEqualTo(1);
+        assertThat(DIM1_LEV1.getMaxLevel()).isEqualTo(1);
+
+        assertThat(DIM2_LEV0.getMaxLevel()).isEqualTo(2);
+        assertThat(DIM2_LEV1.getMaxLevel()).isEqualTo(2);
+        assertThat(DIM2_LEV2.getMaxLevel()).isEqualTo(2);
     }
 
     @Test
     public void testGetDimensionValue() {
-        assertThatThrownBy(() -> SECTOR_REGION.getDimensionValue(-1)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThatThrownBy(() -> SECTOR_REGION.getDimensionValue(0)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThat(INDUSTRY.getDimensionValue(0)).isEqualTo("industry");
+        assertThatThrownBy(() -> DIM2_LEV0.getDimensionValue(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> DIM2_LEV0.getDimensionValue(0)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> DIM2_LEV0.getDimensionValue(1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> DIM2_LEV0.getDimensionValue(2)).isInstanceOf(IndexOutOfBoundsException.class);
+
+        assertThatThrownBy(() -> DIM2_LEV1.getDimensionValue(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(DIM2_LEV1.getDimensionValue(0)).isEqualTo("industry");
+        assertThatThrownBy(() -> DIM2_LEV1.getDimensionValue(1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> DIM2_LEV1.getDimensionValue(2)).isInstanceOf(IndexOutOfBoundsException.class);
+
+        assertThatThrownBy(() -> DIM2_LEV2.getDimensionValue(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(DIM2_LEV2.getDimensionValue(0)).isEqualTo("industry");
+        assertThat(DIM2_LEV2.getDimensionValue(1)).isEqualTo("be");
+        assertThatThrownBy(() -> DIM2_LEV2.getDimensionValue(2)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testGetDimensionId() {
-        assertThatThrownBy(() -> SECTOR_REGION.getDimensionId(-1)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThatThrownBy(() -> SECTOR_REGION.getDimensionId(2)).isInstanceOf(IndexOutOfBoundsException.class);
-        assertThat(SECTOR_REGION.getDimensionId(0)).isEqualTo("sector");
+        assertThatThrownBy(() -> DIM2_LEV0.getDimensionId(-1)).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(DIM2_LEV0.getDimensionId(0)).isEqualTo("sector");
+        assertThat(DIM2_LEV0.getDimensionId(1)).isEqualTo("region");
+        assertThatThrownBy(() -> DIM2_LEV0.getDimensionId(2)).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     @Test
     public void testGetDepth() {
-        assertThat(EMPTY.getDepth()).isEqualTo(0);
-        assertThat(SECTOR_REGION.getDepth()).isEqualTo(2);
-        assertThat(INDUSTRY.getDepth()).isEqualTo(1);
+        assertThat(DIM0_LEV0.getDepth()).isEqualTo(0);
+
+        assertThat(DIM1_LEV0.getDepth()).isEqualTo(1);
+        assertThat(DIM1_LEV1.getDepth()).isEqualTo(0);
+
+        assertThat(DIM2_LEV0.getDepth()).isEqualTo(2);
+        assertThat(DIM2_LEV1.getDepth()).isEqualTo(1);
+        assertThat(DIM2_LEV2.getDepth()).isEqualTo(0);
     }
 
     @Test
     public void testIsRoot() {
-        assertThat(EMPTY.isRoot()).isTrue();
-        assertThat(SECTOR_REGION.isRoot()).isTrue();
-        assertThat(INDUSTRY.isRoot()).isFalse();
+        assertThat(DIM0_LEV0.isRoot()).isTrue();
+
+        assertThat(DIM1_LEV0.isRoot()).isTrue();
+        assertThat(DIM1_LEV1.isRoot()).isFalse();
+
+        assertThat(DIM2_LEV0.isRoot()).isTrue();
+        assertThat(DIM2_LEV1.isRoot()).isFalse();
+        assertThat(DIM2_LEV2.isRoot()).isFalse();
     }
 
     @Test
     public void testIsSeries() {
-        assertThat(EMPTY.isSeries()).isTrue();
-        assertThat(SECTOR_REGION.isSeries()).isFalse();
-        assertThat(INDUSTRY.isSeries()).isFalse();
-        assertThat(INDUSTRY.child("be").isSeries()).isTrue();
+        assertThat(DIM0_LEV0.isSeries()).isTrue();
+
+        assertThat(DIM1_LEV0.isSeries()).isFalse();
+        assertThat(DIM1_LEV1.isSeries()).isTrue();
+
+        assertThat(DIM2_LEV0.isSeries()).isFalse();
+        assertThat(DIM2_LEV1.isSeries()).isFalse();
+        assertThat(DIM2_LEV2.isSeries()).isTrue();
     }
 
     @Test
     public void testIsVoid() {
-        assertThat(EMPTY.isVoid()).isTrue();
-        assertThat(SECTOR_REGION.isVoid()).isFalse();
-        assertThat(INDUSTRY.isVoid()).isFalse();
+        assertThat(DIM0_LEV0.isVoid()).isTrue();
+
+        assertThat(DIM1_LEV0.isVoid()).isFalse();
+        assertThat(DIM1_LEV1.isVoid()).isFalse();
+
+        assertThat(DIM2_LEV0.isVoid()).isFalse();
+        assertThat(DIM2_LEV1.isVoid()).isFalse();
+        assertThat(DIM2_LEV2.isVoid()).isFalse();
     }
 
     @Test
     public void testChild() {
-        assertThatThrownBy(() -> EMPTY.child("hello")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> EMPTY.child((String) null)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> EMPTY.child("hello", null)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> EMPTY.child((String[]) null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> DIM0_LEV0.child("hello")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> DIM0_LEV0.child((String) null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> DIM0_LEV0.child("hello", null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> DIM0_LEV0.child((String[]) null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
     public void testGetParent() {
-        assertThat(EMPTY.getParent()).isNull();
-        assertThat(SECTOR_REGION.getParent()).isNull();
-        assertThat(INDUSTRY.getParent()).isEqualTo(SECTOR_REGION);
+        assertThat(DIM0_LEV0.getParent()).isNull();
+
+        assertThat(DIM1_LEV0.getParent()).isNull();
+        assertThat(DIM1_LEV1.getParent()).isEqualTo(DIM1_LEV0);
+
+        assertThat(DIM2_LEV0.getParent()).isNull();
+        assertThat(DIM2_LEV1.getParent()).isEqualTo(DIM2_LEV0);
+        assertThat(DIM2_LEV2.getParent()).isEqualTo(DIM2_LEV1);
     }
 
     @Test
     public void testGetAncestor() {
-        assertThat(EMPTY.getAncestor(0)).isNull();
-        assertThat(SECTOR_REGION.getAncestor(0)).isNull();
-        assertThat(INDUSTRY.getAncestor(0)).isEqualTo(SECTOR_REGION);
-        assertThat(INDUSTRY.getAncestor(1)).isNull();
-        assertThat(INDUSTRY_BE.getAncestor(0)).isEqualTo(SECTOR_REGION);
-        assertThat(INDUSTRY_BE.getAncestor(1)).isEqualTo(INDUSTRY);
-        assertThat(INDUSTRY_BE.getAncestor(2)).isNull();
+        assertThat(DIM0_LEV0.getAncestor(0)).isNull();
+
+        assertThat(DIM1_LEV0.getAncestor(0)).isNull();
+        assertThat(DIM1_LEV1.getAncestor(0)).isEqualTo(DIM1_LEV0);
+        assertThat(DIM1_LEV1.getAncestor(1)).isNull();
+
+        assertThat(DIM2_LEV0.getAncestor(0)).isNull();
+        assertThat(DIM2_LEV1.getAncestor(0)).isEqualTo(DIM2_LEV0);
+        assertThat(DIM2_LEV1.getAncestor(1)).isNull();
+        assertThat(DIM2_LEV2.getAncestor(0)).isEqualTo(DIM2_LEV0);
+        assertThat(DIM2_LEV2.getAncestor(1)).isEqualTo(DIM2_LEV1);
+        assertThat(DIM2_LEV2.getAncestor(2)).isNull();
     }
 
     @Test
     @SuppressWarnings("null")
     public void testIsAncestorOf() {
-        assertThatThrownBy(() -> EMPTY.isAncestorOf(null)).isInstanceOf(NullPointerException.class);
-        assertThat(EMPTY.isAncestorOf(EMPTY)).isFalse();
-        assertThat(SECTOR_REGION.isAncestorOf(SECTOR_REGION)).isFalse();
-        assertThat(SECTOR_REGION.isAncestorOf(INDUSTRY)).isTrue();
-        assertThat(INDUSTRY.isAncestorOf(SECTOR_REGION)).isFalse();
+        assertThatNullPointerException().isThrownBy(() -> DIM0_LEV0.isAncestorOf(null));
+
+        assertThat(DIM0_LEV0.isAncestorOf(DIM0_LEV0)).isFalse();
+
+        assertThat(DIM1_LEV0.isAncestorOf(DIM1_LEV0)).isFalse();
+        assertThat(DIM1_LEV0.isAncestorOf(DIM1_LEV1)).isTrue();
+        assertThat(DIM1_LEV1.isAncestorOf(DIM1_LEV0)).isFalse();
+
+        assertThat(DIM2_LEV0.isAncestorOf(DIM2_LEV0)).isFalse();
+        assertThat(DIM2_LEV0.isAncestorOf(DIM2_LEV1)).isTrue();
+        assertThat(DIM2_LEV1.isAncestorOf(DIM2_LEV0)).isFalse();
+        assertThat(DIM2_LEV0.isAncestorOf(DIM2_LEV2)).isTrue();
+        assertThat(DIM2_LEV2.isAncestorOf(DIM2_LEV0)).isFalse();
+        assertThat(DIM2_LEV1.isAncestorOf(DIM2_LEV2)).isTrue();
+        assertThat(DIM2_LEV2.isAncestorOf(DIM2_LEV1)).isFalse();
     }
 
     @Test
     public void testEquals() {
-        assertThat(EMPTY).isEqualTo(CubeId.root());
-        assertThat(EMPTY).isNotEqualTo(null);
-        assertThat(EMPTY).isNotEqualTo(SECTOR_REGION);
-        assertThat(SECTOR_REGION).isEqualTo(CubeId.root("sector", "region"));
-        assertThat(SECTOR_REGION).isNotEqualTo(INDUSTRY);
+        assertThat(DIM0_LEV0)
+                .isEqualTo(CubeId.root())
+                .isNotEqualTo(null)
+                .isEqualTo(DIM0_LEV0)
+                .isNotEqualTo(DIM1_LEV0)
+                .isNotEqualTo(DIM1_LEV1)
+                .isNotEqualTo(DIM2_LEV0)
+                .isNotEqualTo(DIM2_LEV1)
+                .isNotEqualTo(DIM2_LEV2);
+
+        assertThat(DIM2_LEV0)
+                .isEqualTo(CubeId.root("sector", "region"))
+                .isNotEqualTo(null)
+                .isNotEqualTo(DIM0_LEV0)
+                .isNotEqualTo(DIM1_LEV0)
+                .isNotEqualTo(DIM1_LEV1)
+                .isEqualTo(DIM2_LEV0)
+                .isNotEqualTo(DIM2_LEV1)
+                .isNotEqualTo(DIM2_LEV2);
     }
 
     @Test
     public void testHashCode() {
-        assertThat(EMPTY.hashCode())
-                .isEqualTo(EMPTY.hashCode())
-                .isNotEqualTo(SECTOR_REGION.hashCode());
-        assertThat(SECTOR_REGION.hashCode())
-                .isEqualTo(SECTOR_REGION.hashCode())
-                .isNotEqualTo(INDUSTRY.hashCode());
-        assertThat(INDUSTRY.hashCode())
-                .isEqualTo(INDUSTRY.hashCode())
-                .isEqualTo(SECTOR_REGION.child("industry").hashCode());
+        assertThat(DIM0_LEV0.hashCode())
+                .isEqualTo(DIM0_LEV0.hashCode())
+                .isNotEqualTo(DIM2_LEV0.hashCode());
+
+        assertThat(DIM2_LEV0.hashCode())
+                .isEqualTo(DIM2_LEV0.hashCode())
+                .isNotEqualTo(DIM2_LEV1.hashCode());
+
+        assertThat(DIM2_LEV1.hashCode())
+                .isEqualTo(DIM2_LEV1.hashCode())
+                .isEqualTo(DIM2_LEV0.child("industry").hashCode());
     }
 }

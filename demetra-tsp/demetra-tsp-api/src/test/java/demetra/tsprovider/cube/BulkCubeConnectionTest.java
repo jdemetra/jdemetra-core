@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class BulkCubeConnectionTest {
 
     private static CubeConnection newSample() {
-        return new XCubeConnection(SECTOR_REGION, new ResourceWatcher());
+        return new XCubeConnection(DIM2_LEV0, new ResourceWatcher());
     }
 
     @Test
@@ -59,31 +59,31 @@ public class BulkCubeConnectionTest {
                 return new BulkCubeConnection(newSample(), o, cache);
             };
 
-            factory.apply(0).getSeriesWithData(INDUSTRY_BE);
+            factory.apply(0).getSeriesWithData(DIM2_LEV2);
             assertThat(x).isEmpty();
 
-            factory.apply(0).getAllSeriesWithData(INDUSTRY).close();
+            factory.apply(0).getAllSeriesWithData(DIM2_LEV1).close();
             assertThat(x).isEmpty();
 
-            factory.apply(0).getAllSeriesWithData(SECTOR_REGION).close();
+            factory.apply(0).getAllSeriesWithData(DIM2_LEV0).close();
             assertThat(x).isEmpty();
 
-            factory.apply(1).getSeriesWithData(INDUSTRY_BE);
+            factory.apply(1).getSeriesWithData(DIM2_LEV2);
             assertThat(x).isNotEmpty();
 
-            factory.apply(1).getAllSeriesWithData(INDUSTRY).close();
+            factory.apply(1).getAllSeriesWithData(DIM2_LEV1).close();
             assertThat(x).isNotEmpty();
 
-            factory.apply(1).getAllSeriesWithData(SECTOR_REGION).close();
+            factory.apply(1).getAllSeriesWithData(DIM2_LEV0).close();
             assertThat(x).isEmpty();
 
-            factory.apply(2).getSeriesWithData(INDUSTRY_BE);
+            factory.apply(2).getSeriesWithData(DIM2_LEV2);
             assertThat(x).isNotEmpty();
 
-            factory.apply(2).getAllSeriesWithData(INDUSTRY).close();
+            factory.apply(2).getAllSeriesWithData(DIM2_LEV1).close();
             assertThat(x).isNotEmpty();
 
-            factory.apply(2).getAllSeriesWithData(SECTOR_REGION).close();
+            factory.apply(2).getAllSeriesWithData(DIM2_LEV0).close();
             assertThat(x).isNotEmpty();
         }
     }
@@ -93,8 +93,8 @@ public class BulkCubeConnectionTest {
         ResourceWatcher watcher = new ResourceWatcher();
         ConcurrentMap x = new ConcurrentHashMap<>();
         try (IOCache cache = new FakeCache(x)) {
-            BulkCubeConnection accessor = new BulkCubeConnection(new XCubeConnection(SECTOR_REGION, watcher), 1, cache);
-            accessor.getSeriesWithData(INDUSTRY_BE);
+            BulkCubeConnection accessor = new BulkCubeConnection(new XCubeConnection(DIM2_LEV0, watcher), 1, cache);
+            accessor.getSeriesWithData(DIM2_LEV2);
             assertThat(x).isNotEmpty();
             assertThat(watcher.isLeaking()).isFalse();
         }
