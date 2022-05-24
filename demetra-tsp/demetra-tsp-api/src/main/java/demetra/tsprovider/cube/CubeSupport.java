@@ -23,8 +23,8 @@ import demetra.tsprovider.HasDataDisplayName;
 import demetra.tsprovider.HasDataHierarchy;
 import demetra.tsprovider.stream.DataSetTs;
 import demetra.tsprovider.stream.HasTsStream;
-import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.DataSetConversion;
+import demetra.tsprovider.util.DataSourcePreconditions;
 import demetra.tsprovider.util.ResourceFactory;
 import demetra.tsprovider.util.ResourcePool;
 import internal.util.Strings;
@@ -80,7 +80,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
             }
 
             try (Stream<CubeId> children = connection.getChildren(root)) {
-                DataSet.Builder builder = DataSet.builder(dataSource, DataSet.Kind.COLLECTION);
+                DataSet.Builder builder = DataSet.builder(dataSource, getDataSetKind(root));
                 return children
                         .map(toDataSetFunc(builder, cubeId.getConverter(connection)))
                         .collect(Collectors.toList());
@@ -104,7 +104,7 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
             CubeId parentId = cubeIdConverter.get(parent);
 
             try (Stream<CubeId> children = connection.getChildren(parentId)) {
-                DataSet.Builder builder = parent.toBuilder(parentId.getDepth() > 1 ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES);
+                DataSet.Builder builder = parent.toBuilder(getDataSetKind(parentId));
                 return children
                         .map(toDataSetFunc(builder, cubeIdConverter))
                         .collect(Collectors.toList());
@@ -112,6 +112,10 @@ public final class CubeSupport implements HasDataHierarchy, HasTsStream, HasData
                 throw ex.getCause();
             }
         }
+    }
+
+    private static DataSet.Kind getDataSetKind(CubeId cubeId) {
+        return cubeId.getDepth() > 1 ? DataSet.Kind.COLLECTION : DataSet.Kind.SERIES;
     }
     //</editor-fold>
 
