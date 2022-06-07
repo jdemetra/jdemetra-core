@@ -22,7 +22,7 @@ import demetra.timeseries.TsMoniker;
 import static demetra.tsprovider.util.DataSourcePreconditions.checkProvider;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

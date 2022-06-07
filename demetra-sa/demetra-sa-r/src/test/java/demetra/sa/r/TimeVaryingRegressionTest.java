@@ -7,8 +7,7 @@ package demetra.sa.r;
 
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
-import org.junit.Test;
-import demetra.data.Doubles;
+import org.junit.jupiter.api.Test;
 
 /**
  *

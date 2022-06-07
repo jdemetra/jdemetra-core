@@ -25,8 +25,8 @@ import jdplus.ssf.implementations.TimeInvariantSsf;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -47,7 +47,7 @@ public class SsfArimaTest {
     public SsfArimaTest() {
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testStressLikelihood() {
         long t0 = System.currentTimeMillis();

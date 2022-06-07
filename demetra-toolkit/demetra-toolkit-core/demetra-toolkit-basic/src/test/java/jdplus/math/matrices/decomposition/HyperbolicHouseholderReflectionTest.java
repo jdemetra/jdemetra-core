@@ -7,9 +7,10 @@ package jdplus.math.matrices.decomposition;
 
 import demetra.data.Doubles;
 import jdplus.data.DataBlock;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
+import org.junit.jupiter.api.Test;
 
 /**
  *

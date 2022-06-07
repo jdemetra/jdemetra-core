@@ -18,9 +18,11 @@ package demetra.tsprovider.legacy;
 
 import demetra.tsprovider.DataSource;
 import org.junit.AfterClass;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,13 +36,13 @@ public class LegacyFileIdTest {
 
     static File FILE, OTHER;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws IOException {
         FILE = File.createTempFile("123", "456");
         OTHER = File.createTempFile("aaa", "bbb");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         FILE.delete();
         OTHER.delete();
@@ -55,37 +57,37 @@ public class LegacyFileIdTest {
     @Test
     public void testFromFile() {
         LegacyFileId sourceId = LegacyFileId.of(FILE);
-        Assert.assertNotNull(sourceId);
-        Assert.assertEquals(FILE, new File(sourceId.getFile()));
+        Assertions.assertNotNull(sourceId);
+        Assertions.assertEquals(FILE, new File(sourceId.getFile()));
     }
 
     @Test
     public void testParseString() {
         LegacyFileId sourceId = LegacyFileId.parse(FILE.getPath());
-        Assert.assertNotNull(sourceId);
-        Assert.assertEquals(FILE, new File(sourceId.getFile()));
+        Assertions.assertNotNull(sourceId);
+        Assertions.assertEquals(FILE, new File(sourceId.getFile()));
     }
 
     @Test
     public void testParseCharSequence() {
         LegacyFileId sourceId = LegacyFileId.parse((CharSequence) FILE.getPath());
-        Assert.assertNotNull(sourceId);
-        Assert.assertEquals(FILE, new File(sourceId.getFile()));
+        Assertions.assertNotNull(sourceId);
+        Assertions.assertEquals(FILE, new File(sourceId.getFile()));
     }
 
     @Test
     public void testEquals() throws IOException {
         LegacyFileId sourceId = LegacyFileId.of(FILE);
 
-        Assert.assertEquals(sourceId, LegacyFileId.of(FILE));
-        Assert.assertNotSame(sourceId, LegacyFileId.of(FILE));
-        Assert.assertFalse(sourceId.equals(LegacyFileId.of(OTHER)));
+        Assertions.assertEquals(sourceId, LegacyFileId.of(FILE));
+        Assertions.assertNotSame(sourceId, LegacyFileId.of(FILE));
+        Assertions.assertFalse(sourceId.equals(LegacyFileId.of(OTHER)));
 
-        Assert.assertEquals(sourceId, LegacyFileId.parse(FILE.getPath()));
-        Assert.assertNotSame(sourceId, LegacyFileId.parse(FILE.getPath()));
-        Assert.assertFalse(sourceId.equals(LegacyFileId.parse(OTHER.getPath())));
+        Assertions.assertEquals(sourceId, LegacyFileId.parse(FILE.getPath()));
+        Assertions.assertNotSame(sourceId, LegacyFileId.parse(FILE.getPath()));
+        Assertions.assertFalse(sourceId.equals(LegacyFileId.parse(OTHER.getPath())));
 
-        Assert.assertEquals(sourceId, LegacyFileId.parse((CharSequence) sourceId));
-        Assert.assertSame(sourceId, LegacyFileId.parse((CharSequence) sourceId));
+        Assertions.assertEquals(sourceId, LegacyFileId.parse((CharSequence) sourceId));
+        Assertions.assertSame(sourceId, LegacyFileId.parse((CharSequence) sourceId));
     }
 }

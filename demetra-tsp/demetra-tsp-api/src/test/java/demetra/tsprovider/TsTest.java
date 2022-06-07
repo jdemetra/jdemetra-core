@@ -22,7 +22,7 @@ import demetra.timeseries.TsMoniker;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsUnit;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

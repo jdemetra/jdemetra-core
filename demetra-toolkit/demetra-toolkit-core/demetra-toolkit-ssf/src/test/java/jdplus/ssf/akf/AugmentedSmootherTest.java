@@ -18,7 +18,7 @@ import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

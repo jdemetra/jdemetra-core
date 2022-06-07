@@ -19,16 +19,15 @@ package jdplus.sts;
 import demetra.data.Data;
 import demetra.data.Parameter;
 import demetra.sts.BsmSpec;
-import demetra.sts.Component;
 import demetra.sts.SeasonalModel;
 import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.ckms.CkmsToolkit;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.SsfData;
-import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  *

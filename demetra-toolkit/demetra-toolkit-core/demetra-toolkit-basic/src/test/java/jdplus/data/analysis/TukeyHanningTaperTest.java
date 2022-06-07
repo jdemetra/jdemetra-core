@@ -19,8 +19,6 @@ package jdplus.data.analysis;
 import jdplus.data.DataBlock;
 import nbbrd.design.Demo;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

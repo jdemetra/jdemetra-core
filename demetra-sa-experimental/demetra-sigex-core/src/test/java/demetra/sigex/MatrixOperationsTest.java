@@ -7,9 +7,9 @@ package demetra.sigex;
 
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
+import org.junit.jupiter.api.Test;
+
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

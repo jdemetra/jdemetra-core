@@ -35,7 +35,7 @@ import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
 import nbbrd.io.xml.bind.Jaxb;
 import org.assertj.core.util.Files;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -44,7 +44,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *

@@ -7,14 +7,15 @@ package jdplus.data;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import java.util.Random;
 import jdplus.math.matrices.FastMatrix;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoublePredicate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
-import org.junit.Ignore;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import static jdplus.data.DataBlock.of;
 
 /**
@@ -29,7 +30,7 @@ public class DataBlockTest {
     static long K = 100000000;
 
     @Test
-    @Ignore
+    @Disabled
     public void testDummy() {
         System.out.println(DataBlock.of(getSample(20), 0, 10, 2).toString());
         System.out.println(DataBlock.of(getSample(20), 2, 8, 2).toString());
@@ -38,7 +39,7 @@ public class DataBlockTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testSomeMethod() {
         DataBlock x = DataBlock.make(50);
         DataBlock y = DataBlock.make(50);
@@ -813,14 +814,14 @@ public class DataBlockTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testWindow() {
         assertThat(of(getSample(10), 0, 10, 1).window())
                 .isInstanceOf(DataWindow.class);
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testWindowWithStartEnd() {
         assertThat(of(getSample(10), 0, 10, 1).window(2, 3))
                 .isInstanceOf(DataWindow.class);
@@ -829,7 +830,7 @@ public class DataBlockTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLeft() {
         assertThat(of(getSample(10), 0, 10, 1).left())
                 .isInstanceOf(DataWindow.class);

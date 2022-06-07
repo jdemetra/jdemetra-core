@@ -6,14 +6,13 @@
 package jdplus.tramo.spi;
 
 import demetra.data.Data;
-import demetra.information.Explorable;
 import demetra.processing.ProcResults;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  *

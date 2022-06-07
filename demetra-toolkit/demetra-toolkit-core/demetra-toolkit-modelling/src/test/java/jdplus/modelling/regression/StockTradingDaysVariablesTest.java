@@ -7,8 +7,8 @@ package jdplus.modelling.regression;
 
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.timeseries.regression.StockTradingDays;
 import jdplus.math.matrices.FastMatrix;
 

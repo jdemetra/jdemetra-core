@@ -23,7 +23,7 @@ import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.DataSourceProvider;
 import demetra.tsprovider.tck.DataSourceProviderAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Optional;

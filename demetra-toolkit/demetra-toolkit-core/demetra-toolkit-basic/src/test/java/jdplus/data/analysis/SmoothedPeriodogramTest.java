@@ -18,7 +18,7 @@ package jdplus.data.analysis;
 
 import demetra.data.Data;
 import demetra.data.Doubles;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

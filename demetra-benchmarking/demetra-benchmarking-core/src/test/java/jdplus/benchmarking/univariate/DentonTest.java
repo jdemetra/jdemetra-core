@@ -20,14 +20,15 @@ import demetra.benchmarking.univariate.Denton;
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
+import org.junit.jupiter.api.Test;
+
 import java.time.temporal.ChronoUnit;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *

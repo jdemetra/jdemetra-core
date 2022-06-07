@@ -21,7 +21,7 @@ import demetra.stl.LoessSpecification;
 import demetra.stl.SeasonalSpecification;
 import demetra.data.Doubles;
 import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.WeeklyData;
 import demetra.data.DoubleSeq;
 

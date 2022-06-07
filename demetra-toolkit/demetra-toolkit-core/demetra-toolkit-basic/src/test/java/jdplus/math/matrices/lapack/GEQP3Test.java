@@ -7,8 +7,7 @@ package jdplus.math.matrices.lapack;
 
 import java.util.Random;
 import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

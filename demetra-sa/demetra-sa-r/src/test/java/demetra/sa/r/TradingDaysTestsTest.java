@@ -32,8 +32,7 @@ import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
-import org.junit.Test;
-import demetra.data.Doubles;
+import org.junit.jupiter.api.Test;
 
 /**
  *

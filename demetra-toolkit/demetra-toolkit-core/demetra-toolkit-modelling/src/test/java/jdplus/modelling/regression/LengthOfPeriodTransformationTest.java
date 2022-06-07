@@ -11,10 +11,9 @@ import demetra.timeseries.TsPeriod;
 import jdplus.timeseries.simplets.TsDataTransformation;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import jdplus.timeseries.simplets.Transformations;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 
 /**
  *

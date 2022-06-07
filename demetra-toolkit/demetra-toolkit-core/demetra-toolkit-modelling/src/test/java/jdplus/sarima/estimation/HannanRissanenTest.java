@@ -16,9 +16,8 @@
  */
 package jdplus.sarima.estimation;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import demetra.arima.SarmaOrders;
 import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaSeriesGenerator;
@@ -55,7 +54,7 @@ public class HannanRissanenTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testAirline() {
         HannanRissanen hr = HannanRissanen.builder().build();
         SarmaOrders spec = new SarmaOrders(12);
@@ -67,7 +66,7 @@ public class HannanRissanenTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void test3101() {
         HannanRissanen hr = HannanRissanen.builder().build();
         SarmaOrders spec = new SarmaOrders(12);
@@ -80,7 +79,7 @@ public class HannanRissanenTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void test3101_burg() {
         HannanRissanen hr = HannanRissanen.builder().finalCorrection(false).initialization(HannanRissanen.Initialization.Burg).build();
         SarmaOrders spec = new SarmaOrders(12);
@@ -93,7 +92,7 @@ public class HannanRissanenTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLegacyAirline() {
         ec.tstoolkit.sarima.estimation.HannanRissanen hr = new ec.tstoolkit.sarima.estimation.HannanRissanen();
         ec.tstoolkit.sarima.SarmaSpecification spec = new ec.tstoolkit.sarima.SarmaSpecification(12);
@@ -105,7 +104,7 @@ public class HannanRissanenTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLegacy3101() {
         ec.tstoolkit.sarima.estimation.HannanRissanen hr = new ec.tstoolkit.sarima.estimation.HannanRissanen();
         ec.tstoolkit.sarima.SarmaSpecification spec = new ec.tstoolkit.sarima.SarmaSpecification(12);
@@ -118,7 +117,7 @@ public class HannanRissanenTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void stressTest() {
         int K = 100000;
         for (int q = 0; q < 2; ++q) {

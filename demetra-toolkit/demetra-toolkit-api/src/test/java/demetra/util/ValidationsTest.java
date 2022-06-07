@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

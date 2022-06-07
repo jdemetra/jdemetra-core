@@ -5,8 +5,7 @@
  */
 package internal.jdplus.math.functions.gsl.roots;
 
-import internal.jdplus.math.functions.gsl.roots.BrentSolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

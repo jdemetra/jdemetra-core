@@ -10,8 +10,8 @@ import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixUtility;
 import jdplus.random.JdkRNG;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

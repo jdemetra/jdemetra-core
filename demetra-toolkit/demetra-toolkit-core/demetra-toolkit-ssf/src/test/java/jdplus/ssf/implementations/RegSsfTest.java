@@ -20,9 +20,10 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import jdplus.math.matrices.FastMatrix;
+import org.junit.jupiter.api.Test;
 
 /**
  *

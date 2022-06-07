@@ -21,7 +21,7 @@ import demetra.data.Doubles;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

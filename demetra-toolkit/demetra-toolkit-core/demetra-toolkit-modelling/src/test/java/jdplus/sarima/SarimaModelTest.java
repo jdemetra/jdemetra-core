@@ -17,8 +17,7 @@
 package jdplus.sarima;
 
 import demetra.arima.SarimaOrders;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

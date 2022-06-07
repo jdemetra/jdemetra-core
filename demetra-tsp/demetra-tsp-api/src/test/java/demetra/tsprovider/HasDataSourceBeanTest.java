@@ -19,7 +19,7 @@ package demetra.tsprovider;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import nbbrd.io.text.Property;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Objects;

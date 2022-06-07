@@ -7,8 +7,8 @@ package demetra.tramoseats.io.information;
 
 import demetra.information.InformationSet;
 import demetra.tramo.AutoModelSpec;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -28,8 +28,8 @@ import demetra.stats.StatisticalTest;
 import jdplus.stats.DescriptiveStatistics;
 import jdplus.stats.samples.Population;
 import jdplus.stats.samples.Sample;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

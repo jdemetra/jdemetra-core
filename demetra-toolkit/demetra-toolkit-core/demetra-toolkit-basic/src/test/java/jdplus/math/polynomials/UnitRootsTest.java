@@ -6,8 +6,9 @@ package jdplus.math.polynomials;
 
 import demetra.math.Complex;
 import jdplus.data.analysis.Periodogram;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

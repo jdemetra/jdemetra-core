@@ -19,7 +19,7 @@ package demetra.benchmarking.r;
 import demetra.calendarization.CalendarizationResults;
 import demetra.timeseries.CalendarTimeSeries;
 import demetra.timeseries.r.TsUtility;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

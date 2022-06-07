@@ -23,7 +23,7 @@ import static java.time.temporal.ChronoUnit.*;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

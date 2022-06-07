@@ -28,10 +28,8 @@ import demetra.highfreq.TransformSpec;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.ComponentInformation;
 import demetra.modelling.TransformationType;
-import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.timeseries.TsData;
-import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.Holiday;
@@ -43,8 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static jdplus.highfreq.ExtendedAirlineKernelTest.france;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

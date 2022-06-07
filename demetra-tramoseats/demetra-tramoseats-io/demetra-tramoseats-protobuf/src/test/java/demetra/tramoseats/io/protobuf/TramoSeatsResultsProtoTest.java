@@ -23,8 +23,9 @@ import demetra.timeseries.TsPeriod;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

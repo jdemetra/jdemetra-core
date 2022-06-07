@@ -1,10 +1,10 @@
 package demetra.saexperimental.r;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.DoubleUnaryOperator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
 *

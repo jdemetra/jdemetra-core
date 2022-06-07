@@ -19,7 +19,7 @@ package demetra.x13.r;
 import demetra.data.Data;
 import jdplus.x11.X11Results;
 import demetra.x11.X11Spec;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.math.matrices.Matrix;
 
 /**

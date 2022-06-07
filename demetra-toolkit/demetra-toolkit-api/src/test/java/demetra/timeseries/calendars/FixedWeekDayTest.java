@@ -16,10 +16,12 @@
  */
 package demetra.timeseries.calendars;
 
+import org.junit.jupiter.api.Test;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

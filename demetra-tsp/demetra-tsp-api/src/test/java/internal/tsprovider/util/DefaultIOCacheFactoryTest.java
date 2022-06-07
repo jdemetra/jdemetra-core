@@ -2,12 +2,12 @@ package internal.tsprovider.util;
 
 import com.google.common.io.Files;
 import nbbrd.design.MightBePromoted;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -22,9 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 @SuppressWarnings("ConstantConditions")
 public class DefaultIOCacheFactoryTest {
-
-    @Rule
-    public final TemporaryFolder temp = new TemporaryFolder();
 
     @Test
     public void testOfTtl() {
@@ -51,8 +48,8 @@ public class DefaultIOCacheFactoryTest {
     }
 
     @Test
-    public void testFileValidator() throws IOException {
-        File file = temp.newFile();
+    public void testFileValidator(@TempDir Path temp) throws IOException {
+        File file = java.nio.file.Files.createFile(temp.resolve("fileValidator")).toFile();
         assertThat(file).exists();
 
         FakeClock clock = new FakeClock().set(file.lastModified());

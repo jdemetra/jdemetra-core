@@ -22,9 +22,9 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.math.matrices.SymmetricMatrix;
-import jdplus.math.matrices.UpperTriangularMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

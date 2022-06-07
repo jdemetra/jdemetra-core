@@ -16,7 +16,6 @@
  */
 package jdplus.highfreq;
 
-import jdplus.highfreq.ExtendedAirlineMapping;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import demetra.data.DoubleSeq;
@@ -36,9 +35,9 @@ import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
 import java.io.IOException;
 import java.util.function.Consumer;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 import demetra.ssf.SsfInitialization;
 import java.io.InputStream;
 import jdplus.data.DataBlockStorage;
@@ -59,6 +58,7 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.WienerKolmogorovEstimators;
 import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.math.matrices.Matrix;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -257,7 +257,7 @@ public class MultiPeriodicAirlineMappingTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testOutliers() throws IOException {
         InputStream stream = ExtendedAirlineMapping.class.getResourceAsStream("/births.txt");
         Matrix edf = MatrixSerializer.read(stream);

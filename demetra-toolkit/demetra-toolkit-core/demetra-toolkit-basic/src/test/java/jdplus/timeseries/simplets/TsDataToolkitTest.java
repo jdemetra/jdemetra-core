@@ -18,8 +18,9 @@ package jdplus.timeseries.simplets;
 
 import demetra.timeseries.TsData;
 import demetra.data.Data;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import static jdplus.timeseries.simplets.TsDataToolkit.log;
 import static jdplus.timeseries.simplets.TsDataToolkit.commit;
 import static jdplus.timeseries.simplets.TsDataToolkit.normalize;
@@ -29,7 +30,7 @@ import jdplus.math.linearfilters.SymmetricFilter;
 import demetra.timeseries.TsDomain;
 import static jdplus.timeseries.simplets.TsDataToolkit.fitToDomain;
 import nbbrd.design.Demo;
-import org.junit.Ignore;
+
 import static jdplus.timeseries.simplets.TsDataToolkit.*;
 import static jdplus.timeseries.simplets.TsDataToolkit.delta;
 import demetra.data.DoubleSeq;
@@ -62,7 +63,7 @@ public class TsDataToolkitTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void stressTest() {
         int K = 2000000;
         long t0 = System.currentTimeMillis();

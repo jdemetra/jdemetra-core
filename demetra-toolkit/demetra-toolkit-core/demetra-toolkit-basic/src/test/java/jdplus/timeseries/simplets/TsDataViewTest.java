@@ -23,9 +23,8 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Assert;
-import org.junit.Test;
-import demetra.data.Doubles;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -46,7 +45,7 @@ public class TsDataViewTest {
                 d.set(k -> beg + k);
                 TsData s = TsData.of(p.plus(-i), d);
                 TsDataView fy = TsDataView.fullYears(s);
-                Assert.assertTrue(fy.getData().length() % 12 == 0);
+                Assertions.assertTrue(fy.getData().length() % 12 == 0);
 //                Assert.assertTrue(((int) fy.getData().get(0)) % 12 == 0);
             }
         }

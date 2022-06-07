@@ -24,11 +24,12 @@ import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.regsarima.GlsSarimaComputer;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import jdplus.regsarima.internal.HannanRissanenInitializer;
 import jdplus.sarima.estimation.SarimaMapping;
+import org.junit.jupiter.api.Test;
 
 /**
  *

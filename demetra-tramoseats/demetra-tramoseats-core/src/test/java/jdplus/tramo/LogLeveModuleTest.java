@@ -16,14 +16,13 @@
  */
 package jdplus.tramo;
 
-import jdplus.tramo.LogLevelModule;
 import demetra.data.Data;
 import ec.tstoolkit.modelling.DefaultTransformationType;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
-import jdplus.regarima.ami.GenericLogLevelModule;
+import org.junit.jupiter.api.Test;
 
 /**
  *

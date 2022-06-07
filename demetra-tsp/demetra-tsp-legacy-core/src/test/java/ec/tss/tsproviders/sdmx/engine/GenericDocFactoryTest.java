@@ -23,8 +23,8 @@ import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsDomain;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -8,8 +8,7 @@ package jdplus.ml;
 import demetra.data.DoubleSeq;
 import demetra.util.IntList;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 import demetra.math.matrices.Matrix;
 
 /**

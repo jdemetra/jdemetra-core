@@ -26,8 +26,8 @@ import demetra.timeseries.calendars.TradingDaysType;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.x13.regarima.RegArimaFactory;
 import jdplus.x13.regarima.RegArimaKernel;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -8,12 +8,11 @@ package jdplus.dstats;
 import demetra.dstats.DStatException;
 import demetra.dstats.Distribution;
 import demetra.stats.ProbabilityType;
-import java.util.Random;
 import jdplus.random.JdkRNG;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.dstats.RandomNumberGenerator;
 
 /**

@@ -9,11 +9,12 @@ import demetra.arima.SarimaOrders;
 import demetra.data.Data;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.sarima.SarimaModel;
+import org.junit.jupiter.api.Test;
 
 /**
  *

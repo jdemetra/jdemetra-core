@@ -21,8 +21,8 @@ import demetra.data.Data;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -18,9 +18,9 @@ package jdplus.x13.regarima;
 
 import demetra.data.Data;
 import ec.tstoolkit.modelling.DefaultTransformationType;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import demetra.data.DoubleSeq;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import demetra.timeseries.TsData;
 import ec.tstoolkit.data.ReadDataBlock;
 

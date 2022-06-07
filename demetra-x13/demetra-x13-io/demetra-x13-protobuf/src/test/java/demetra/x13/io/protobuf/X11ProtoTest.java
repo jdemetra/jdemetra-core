@@ -7,8 +7,8 @@ package demetra.x13.io.protobuf;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.x11.X11Spec;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

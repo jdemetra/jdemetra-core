@@ -18,8 +18,9 @@ import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
 import jdplus.ucarima.ssf.SsfUcarima;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

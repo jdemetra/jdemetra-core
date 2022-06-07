@@ -18,7 +18,7 @@ package demetra.tsprovider;
 
 import java.io.File;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

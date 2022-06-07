@@ -7,11 +7,12 @@ package jdplus.stats.tests;
 
 import demetra.stats.StatisticalTest;
 import jdplus.data.DataBlock;
+import org.junit.jupiter.api.Test;
+
 import java.util.Random;
 import java.util.function.DoubleSupplier;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

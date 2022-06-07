@@ -7,8 +7,6 @@ package jdplus.math.linearfilters;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import jdplus.data.analysis.DiscreteKernel;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

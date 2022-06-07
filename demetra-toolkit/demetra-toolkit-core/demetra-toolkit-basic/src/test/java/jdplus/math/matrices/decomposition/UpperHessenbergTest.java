@@ -5,14 +5,10 @@
  */
 package jdplus.math.matrices.decomposition;
 
-import jdplus.math.matrices.decomposition.EigenRoutines;
-import jdplus.math.matrices.decomposition.UpperHessenberg;
-import java.util.Random;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixUtility;
 import jdplus.random.JdkRNG;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

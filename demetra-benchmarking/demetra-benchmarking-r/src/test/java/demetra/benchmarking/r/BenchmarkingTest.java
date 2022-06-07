@@ -17,14 +17,13 @@
 package demetra.benchmarking.r;
 
 import demetra.data.AggregationType;
-import demetra.data.Data;
 import jdplus.data.DataBlock;
 import demetra.data.Doubles;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsUnit;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

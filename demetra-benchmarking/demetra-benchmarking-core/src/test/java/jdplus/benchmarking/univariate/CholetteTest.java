@@ -22,15 +22,14 @@ import demetra.benchmarking.univariate.Denton;
 import demetra.benchmarking.univariate.DentonSpec;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
-import demetra.data.Doubles;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
 import java.time.temporal.ChronoUnit;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -145,7 +144,7 @@ public class CholetteTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void test1Legacy() {
         ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(20);
         y.set(i -> (1 + i));

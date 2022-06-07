@@ -6,8 +6,8 @@
 package demetra.x13.io.protobuf;
 
 import demetra.regarima.RegArimaSpec;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -9,8 +9,7 @@ import java.util.Random;
 import java.util.function.DoubleSupplier;
 
 import jdplus.data.DataBlock;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -12,7 +12,7 @@ import demetra.timeseries.TsDataTable;
 import demetra.x13.X13Spec;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

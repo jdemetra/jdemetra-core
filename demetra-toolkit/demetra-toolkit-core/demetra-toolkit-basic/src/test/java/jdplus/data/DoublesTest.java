@@ -10,9 +10,10 @@ import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import jdplus.math.matrices.FastMatrix;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  *

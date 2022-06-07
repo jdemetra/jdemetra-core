@@ -7,7 +7,7 @@ package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
 import jdplus.data.DataBlock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -11,8 +11,9 @@ import jdplus.math.matrices.SymmetricMatrix;
 import java.util.Random;
 import jdplus.math.matrices.MatrixNorms;
 import jdplus.ssf.StateComponent;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

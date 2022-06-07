@@ -13,8 +13,8 @@ import demetra.timeseries.calendars.Holiday;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.highfreq.ExtendedAirlineModellingSpec;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.highfreq.HolidaysSpec;
@@ -30,6 +30,8 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.HolidaysOption;
 import demetra.timeseries.regression.ModellingContext;
+import org.junit.jupiter.api.Test;
+
 import java.util.Map;
 
 /**

@@ -17,7 +17,7 @@
 package jdplus.sa.tests;
 
 import demetra.data.WeeklyData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.DoubleSeq;
 import jdplus.data.analysis.WindowFunction;
 

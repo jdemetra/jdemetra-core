@@ -20,12 +20,13 @@ import jdplus.stats.linearmodel.LinearModel;
 import jdplus.stats.linearmodel.LeastSquaresResults;
 import jdplus.stats.linearmodel.Ols;
 import demetra.data.DataSets;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
 import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
+import org.junit.jupiter.api.Test;
 
 /**
  *

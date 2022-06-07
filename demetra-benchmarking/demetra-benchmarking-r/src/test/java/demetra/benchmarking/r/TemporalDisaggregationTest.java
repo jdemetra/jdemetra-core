@@ -20,7 +20,7 @@ import demetra.data.Data;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.Doubles;
 
 /**

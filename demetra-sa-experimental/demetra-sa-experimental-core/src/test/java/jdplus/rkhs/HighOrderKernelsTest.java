@@ -17,8 +17,8 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.stats.Kernel;
 import jdplus.stats.Kernels;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

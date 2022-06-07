@@ -6,11 +6,10 @@
 package jdplus.sa;
 
 import demetra.data.Data;
-import demetra.data.Doubles;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

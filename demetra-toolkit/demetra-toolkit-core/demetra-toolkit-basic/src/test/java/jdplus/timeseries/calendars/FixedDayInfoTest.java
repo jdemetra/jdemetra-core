@@ -21,8 +21,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

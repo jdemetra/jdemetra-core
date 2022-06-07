@@ -21,8 +21,8 @@ import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsData;
 import java.time.LocalDate;
 import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

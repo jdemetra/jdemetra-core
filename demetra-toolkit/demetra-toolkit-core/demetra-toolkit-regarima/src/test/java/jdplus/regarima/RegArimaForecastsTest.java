@@ -34,8 +34,7 @@ import jdplus.modelling.regression.Regression;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

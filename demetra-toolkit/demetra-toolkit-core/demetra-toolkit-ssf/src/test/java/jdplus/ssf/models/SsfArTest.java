@@ -6,14 +6,13 @@
 package jdplus.ssf.models;
 
 import jdplus.arima.ssf.SsfAr;
-import jdplus.arima.AutoCovarianceFunction;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
-import jdplus.math.polynomials.Polynomial;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.StationaryInitialization;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

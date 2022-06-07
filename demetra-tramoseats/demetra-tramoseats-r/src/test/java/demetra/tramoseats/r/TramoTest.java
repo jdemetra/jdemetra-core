@@ -23,12 +23,12 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import jdplus.tramo.TramoOutput;
 import demetra.tramo.TramoSpec;
-import java.util.Arrays;
+
 import java.util.Map;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

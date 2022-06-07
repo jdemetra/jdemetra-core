@@ -26,7 +26,7 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArimaUtility;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

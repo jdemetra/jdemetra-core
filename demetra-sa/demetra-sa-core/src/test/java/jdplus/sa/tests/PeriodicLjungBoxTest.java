@@ -18,10 +18,10 @@ package jdplus.sa.tests;
 
 import demetra.data.WeeklyData;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
+import org.junit.jupiter.api.Test;
 
 /**
  *

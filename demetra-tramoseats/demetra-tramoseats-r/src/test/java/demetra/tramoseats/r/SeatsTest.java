@@ -17,14 +17,13 @@
 package demetra.tramoseats.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import java.util.Map;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsResults;
 import jdplus.ucarima.UcarimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

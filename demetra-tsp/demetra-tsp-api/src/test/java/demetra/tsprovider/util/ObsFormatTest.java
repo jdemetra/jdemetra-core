@@ -17,7 +17,7 @@
 package demetra.tsprovider.util;
 
 import org.assertj.core.util.DateUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.*;
 import java.time.LocalDate;

@@ -19,7 +19,7 @@ package demetra.tsprovider;
 import com.google.common.collect.ImmutableSortedMap;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 

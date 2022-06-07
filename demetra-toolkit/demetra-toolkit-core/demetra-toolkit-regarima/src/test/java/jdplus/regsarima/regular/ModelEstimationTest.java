@@ -30,8 +30,8 @@ import java.util.List;
 import jdplus.data.interpolation.AverageInterpolator;
 import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regsarima.RegSarimaComputer;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  *

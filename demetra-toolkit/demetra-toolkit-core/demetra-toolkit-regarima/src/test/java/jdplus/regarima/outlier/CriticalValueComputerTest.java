@@ -16,10 +16,11 @@
  */
 package jdplus.regarima.outlier;
 
-import jdplus.regarima.outlier.CriticalValueComputer;
+import org.junit.jupiter.api.Test;
+
 import java.util.function.IntToDoubleFunction;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

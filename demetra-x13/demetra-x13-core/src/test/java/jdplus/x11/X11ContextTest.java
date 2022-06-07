@@ -8,8 +8,8 @@ package jdplus.x11;
 import demetra.data.DoubleSeq;
 import ec.satoolkit.x11.DefaultX11Utilities;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -55,7 +55,7 @@ public class X11ContextTest {
         ec.satoolkit.x11.IX11Utilities x11Utilities = new DefaultX11Utilities();
         ec.tstoolkit.timeseries.simplets.TsData oldTs = new ec.tstoolkit.timeseries.simplets.TsData(TsFrequency.Monthly, 1900, 0, data, true);
         x11Utilities.checkPositivity(oldTs);
-        Assert.assertArrayEquals(messages, oldTs.internalStorage(), dsResults.toArray(), DELTA);
+        org.junit.Assert.assertArrayEquals(messages, oldTs.internalStorage(), dsResults.toArray(), DELTA);
 
     }
 

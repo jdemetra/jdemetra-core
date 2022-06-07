@@ -16,18 +16,16 @@
  */
 package jdplus.modelling.regression;
 
-import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
-import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import ec.tstoolkit.timeseries.calendars.DefaultGregorianCalendarProvider;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
-import org.junit.Test;
-import org.junit.Ignore;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -67,7 +65,7 @@ public class GenericTradingDaysTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void stressTestTD() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000000; ++i) {

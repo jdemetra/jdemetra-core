@@ -6,9 +6,10 @@
 package jdplus.x11.extremevaluecorrector;
 
 import jdplus.x11.X11Context;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 import demetra.data.DoubleSeq;
 
 /**
@@ -54,7 +55,7 @@ public class CochranTest {
         double[] actualStandardDeviation = cochran.getStandardDeviation();
         double[] expectedStandardDeviation = {3535.889, 4465.5955, 9870.1095, 13583.4685, 13937.615, 15341.996, 16068.224, 14279.8785, 17062.8645, 16839.1775, 15099.7847, 6722.4789};
 
-        Assert.assertArrayEquals(expectedStandardDeviation, actualStandardDeviation, 0.0001);
+        org.junit.Assert.assertArrayEquals(expectedStandardDeviation, actualStandardDeviation, 0.0001);
         assertEquals(0.116226, cochran.getTestValue(), 0.000001);
         assertEquals(0.166, cochran.getCriticalValue(), 0.000001);
         assertEquals(true, cochran.getTestResult());
@@ -73,7 +74,7 @@ public class CochranTest {
         double[] actualStandardDeviation = cochran.getStandardDeviation();
         double[] expectedStandardDeviation = {16068.224, 14279.8785, 17062.8645, 16839.1775, 15099.7847, 6722.4789, 3535.889, 4465.5955, 9870.1095, 13583.4685, 13937.615, 15341.996};
 
-        Assert.assertArrayEquals(expectedStandardDeviation, actualStandardDeviation, 0.0001);
+        org.junit.Assert.assertArrayEquals(expectedStandardDeviation, actualStandardDeviation, 0.0001);
 
         assertEquals(0.116226, cochran.getTestValue(), 0.000001);
         assertEquals(0.166, cochran.getCriticalValue(), 0.000001);

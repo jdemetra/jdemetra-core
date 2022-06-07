@@ -29,8 +29,8 @@ import demetra.x13.X13;
 import demetra.x13.X13Dictionaries;
 import demetra.x13.X13Spec;
 import java.util.Map;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

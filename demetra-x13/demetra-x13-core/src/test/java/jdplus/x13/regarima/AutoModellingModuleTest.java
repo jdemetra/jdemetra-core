@@ -13,8 +13,8 @@ import ec.tstoolkit.sarima.SarimaSpecification;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import static jdplus.x13.regarima.Converter.convert;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

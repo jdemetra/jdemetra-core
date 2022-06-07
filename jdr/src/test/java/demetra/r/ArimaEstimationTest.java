@@ -17,10 +17,11 @@
 package demetra.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedHashMap;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

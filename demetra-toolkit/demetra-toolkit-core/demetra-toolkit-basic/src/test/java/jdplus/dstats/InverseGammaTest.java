@@ -17,8 +17,7 @@
 package jdplus.dstats;
 
 import demetra.stats.ProbabilityType;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

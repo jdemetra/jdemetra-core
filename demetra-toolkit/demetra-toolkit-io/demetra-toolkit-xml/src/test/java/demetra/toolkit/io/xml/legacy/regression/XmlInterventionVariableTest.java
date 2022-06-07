@@ -24,8 +24,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -39,7 +39,7 @@ public class XmlInterventionVariableTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testFile() throws FileNotFoundException, JAXBException, IOException {
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInterventionVariable.class);

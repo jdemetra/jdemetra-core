@@ -8,10 +8,9 @@ package jdplus.math.functions;
 import demetra.data.DoubleSeq;
 import java.util.Random;
 import java.util.function.DoubleUnaryOperator;
-import jdplus.data.DataBlock;
-import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

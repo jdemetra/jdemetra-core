@@ -18,18 +18,17 @@ package jdplus.calendarization;
 
 import demetra.calendarization.CalendarizationResults;
 import demetra.calendarization.CalendarizationSpec;
-import jdplus.calendarization.CalendarizationProcessor;
 import demetra.timeseries.CalendarPeriodObs;
 import demetra.timeseries.CalendarTimeSeries;
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsUnit;
+import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -19,10 +19,10 @@ package demetra.timeseries.calendars;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import org.junit.Assert;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -38,16 +38,16 @@ public class EasterTest {
         for (int i = 1900; i < 4100; ++i) {
             LocalDate easter = Easter.easter(i);
             LocalDate easter2 = Easter.easter2(i);
-            Assert.assertEquals(easter, easter2);
+            Assertions.assertEquals(easter, easter2);
         }
     }
 
     @Test
     public void testJulianEaster() {
-        Assert.assertEquals(Easter.julianEaster(2008, true), LocalDate.of(2008, 4, 27));
-        Assert.assertEquals(Easter.julianEaster(2009, true), LocalDate.of(2009, 4, 19));
-        Assert.assertEquals(Easter.julianEaster(2010, true), LocalDate.of(2010, 4, 4));
-        Assert.assertEquals(Easter.julianEaster(2011, true), LocalDate.of(2011, 4, 24));
+        Assertions.assertEquals(Easter.julianEaster(2008, true), LocalDate.of(2008, 4, 27));
+        Assertions.assertEquals(Easter.julianEaster(2009, true), LocalDate.of(2009, 4, 19));
+        Assertions.assertEquals(Easter.julianEaster(2010, true), LocalDate.of(2010, 4, 4));
+        Assertions.assertEquals(Easter.julianEaster(2011, true), LocalDate.of(2011, 4, 24));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class EasterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void computeJulianEasterDistribution() {
         System.out.println("");
         int[] prob = new int[50];
@@ -76,7 +76,7 @@ public class EasterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void computeJulianEasterMeanCorrections() {
         // we compute the occurences of julian Easter (in gregorian dates)
         // from 1 April to 20 Mey, from 1583 to 1583*2*532

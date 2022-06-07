@@ -21,7 +21,7 @@ import jdplus.data.DataBlock;
 import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.random.JdkRNG;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

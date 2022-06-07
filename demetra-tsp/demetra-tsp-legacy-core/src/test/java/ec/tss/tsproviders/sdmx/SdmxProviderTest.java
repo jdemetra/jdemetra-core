@@ -19,7 +19,7 @@ package ec.tss.tsproviders.sdmx;
 import demetra.bridge.ToFileBean;
 import demetra.bridge.ToFileLoader;
 import demetra.tsprovider.tck.FileLoaderAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 

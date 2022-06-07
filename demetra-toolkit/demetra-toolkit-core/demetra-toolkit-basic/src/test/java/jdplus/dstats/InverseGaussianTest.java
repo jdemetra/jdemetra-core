@@ -18,8 +18,7 @@ package jdplus.dstats;
 
 import java.util.Arrays;
 import jdplus.random.MersenneTwister;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

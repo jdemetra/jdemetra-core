@@ -13,8 +13,9 @@ import jdplus.math.matrices.decomposition.Gauss;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.math.matrices.decomposition.QRDecomposition;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

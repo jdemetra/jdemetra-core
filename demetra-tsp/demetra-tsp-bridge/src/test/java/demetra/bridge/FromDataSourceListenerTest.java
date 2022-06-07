@@ -3,7 +3,7 @@ package demetra.bridge;
 import _util.MockedDataSourceListener;
 import demetra.tsprovider.DataSource;
 import ec.tss.tsproviders.IDataSourceListener;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

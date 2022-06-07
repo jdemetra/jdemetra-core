@@ -11,8 +11,8 @@ import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.stats.Kernels;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

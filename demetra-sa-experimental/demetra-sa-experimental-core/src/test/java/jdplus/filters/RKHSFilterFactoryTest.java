@@ -9,8 +9,6 @@ import jdplus.rkhs.RKHSFilterSpec;
 import jdplus.rkhs.RKHSFilterFactory;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

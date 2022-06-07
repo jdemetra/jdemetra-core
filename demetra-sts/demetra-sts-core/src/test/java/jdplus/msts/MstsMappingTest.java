@@ -31,7 +31,7 @@ import jdplus.ssf.univariate.ISsfData;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.Matrix;
 

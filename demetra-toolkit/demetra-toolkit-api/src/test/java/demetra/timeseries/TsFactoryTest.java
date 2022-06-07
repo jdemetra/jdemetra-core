@@ -2,7 +2,7 @@ package demetra.timeseries;
 
 import _util.FailingTsProvider;
 import _util.MockedTsProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;

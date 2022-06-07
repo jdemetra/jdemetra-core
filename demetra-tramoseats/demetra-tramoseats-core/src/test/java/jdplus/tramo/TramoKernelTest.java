@@ -37,8 +37,8 @@ import ec.tstoolkit.timeseries.Month;
 import java.util.ArrayList;
 import java.util.List;
 import jdplus.regsarima.regular.RegSarimaModel;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  *

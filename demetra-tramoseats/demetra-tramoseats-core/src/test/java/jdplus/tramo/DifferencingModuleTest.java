@@ -19,8 +19,8 @@ package jdplus.tramo;
 import demetra.data.Doubles;
 import jdplus.tramo.internal.DifferencingModule;
 import demetra.data.Data;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

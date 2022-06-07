@@ -18,9 +18,11 @@ package jdplus.stats;
 
 import jdplus.data.DataBlock;
 import jdplus.data.analysis.WindowFunction;
+import org.junit.jupiter.api.Test;
+
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

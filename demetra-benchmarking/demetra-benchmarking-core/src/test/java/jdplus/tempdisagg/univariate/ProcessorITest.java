@@ -7,14 +7,12 @@ package jdplus.tempdisagg.univariate;
 
 import demetra.data.AggregationType;
 import demetra.data.Data;
-import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.tempdisagg.univariate.TemporalDisaggregationISpec;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

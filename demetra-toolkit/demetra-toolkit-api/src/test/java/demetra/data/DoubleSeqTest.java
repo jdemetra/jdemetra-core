@@ -20,7 +20,7 @@ import nbbrd.design.Demo;
 import java.util.stream.DoubleStream;
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

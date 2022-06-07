@@ -5,10 +5,8 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.sa.tests.KruskalWallis;
 import demetra.data.Data;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

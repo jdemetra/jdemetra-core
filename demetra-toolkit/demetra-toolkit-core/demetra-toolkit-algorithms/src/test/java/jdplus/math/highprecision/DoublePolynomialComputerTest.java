@@ -23,8 +23,7 @@ import java.util.function.DoubleSupplier;
 import jdplus.data.DataBlock;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.PolynomialComputer;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -12,9 +12,9 @@ import demetra.timeseries.TsPeriod;
 import demetra.tramo.RegressionSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
-import java.util.Map;
-import static org.junit.Assert.*;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

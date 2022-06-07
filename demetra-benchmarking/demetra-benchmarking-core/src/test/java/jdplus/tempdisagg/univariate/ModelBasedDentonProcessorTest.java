@@ -21,7 +21,7 @@ import demetra.data.Data;
 import demetra.tempdisagg.univariate.ModelBasedDentonSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

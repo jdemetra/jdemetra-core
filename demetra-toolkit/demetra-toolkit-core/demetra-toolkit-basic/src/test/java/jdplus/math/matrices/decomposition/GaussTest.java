@@ -10,8 +10,9 @@ import jdplus.math.matrices.GeneralMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

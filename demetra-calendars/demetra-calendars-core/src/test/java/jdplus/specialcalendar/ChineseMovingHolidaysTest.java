@@ -22,7 +22,7 @@ import demetra.timeseries.calendars.HolidayPattern;
 import demetra.timeseries.regression.MovingHolidayVariable;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.Regression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -10,8 +10,8 @@ import jdplus.math.matrices.MatrixNorms;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

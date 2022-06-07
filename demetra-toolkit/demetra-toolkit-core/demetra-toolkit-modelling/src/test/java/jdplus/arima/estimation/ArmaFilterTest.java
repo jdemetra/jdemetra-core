@@ -8,15 +8,16 @@ package jdplus.arima.estimation;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
 import demetra.arima.SarimaOrders;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 import demetra.data.DoubleSeq;
 import internal.jdplus.arima.KalmanFilter;
 import jdplus.arima.IArimaModel;
 import jdplus.arima.StationaryTransformation;
 import jdplus.sarima.SarimaModel;
 import jdplus.sarima.SarimaUtility;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -241,7 +242,7 @@ public class ArmaFilterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testAO() {
         int POS=35;
         double[] ao = new double[120];
@@ -269,7 +270,7 @@ public class ArmaFilterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLS() {
         int POS=35;
         double[] ls = new double[120];

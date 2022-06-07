@@ -12,8 +12,8 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.util.IntList;
 import jdplus.data.interpolation.ConstInterpolator;
 import jdplus.data.transformation.LogJacobian;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

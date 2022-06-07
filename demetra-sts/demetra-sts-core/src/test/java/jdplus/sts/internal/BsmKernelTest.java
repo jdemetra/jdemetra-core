@@ -23,7 +23,7 @@ import demetra.sts.BsmEstimationSpec;
 import demetra.sts.BsmSpec;
 import demetra.sts.SeasonalModel;
 import ec.tstoolkit.structural.ComponentUse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

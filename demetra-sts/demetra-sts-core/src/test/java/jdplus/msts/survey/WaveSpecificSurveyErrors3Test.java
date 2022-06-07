@@ -11,10 +11,10 @@ import jdplus.ssf.StateComponent;
 import java.util.Random;
 import java.util.function.DoubleSupplier;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import jdplus.math.matrices.FastMatrix;
 import demetra.math.matrices.Matrix;
+import org.junit.jupiter.api.Test;
 
 /**
  *

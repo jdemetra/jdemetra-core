@@ -16,10 +16,8 @@
  */
 package internal.jdplus.ar;
 
-import static internal.jdplus.ar.BurgAlgorithmTest.X;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 import jdplus.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
 

@@ -8,8 +8,8 @@ package jdplus.tramo;
 import jdplus.sa.tests.SeasonalityTests;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -16,7 +16,6 @@
  */
 package jdplus.ucarima.ssf;
 
-import jdplus.ucarima.ssf.SsfUcarima;
 import demetra.data.Data;
 import jdplus.data.DataBlockStorage;
 import jdplus.sarima.SarimaModel;
@@ -30,8 +29,9 @@ import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

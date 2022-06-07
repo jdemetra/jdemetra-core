@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import test.tsprovider.grid.ArrayGridInput;
 import test.tsprovider.grid.Data;
 

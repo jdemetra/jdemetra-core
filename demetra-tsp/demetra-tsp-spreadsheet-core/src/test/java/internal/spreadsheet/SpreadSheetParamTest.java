@@ -23,7 +23,7 @@ import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.HasDataSourceBean;
 import demetra.tsprovider.util.ObsFormat;
 import nbbrd.io.text.Parser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.function.Supplier;

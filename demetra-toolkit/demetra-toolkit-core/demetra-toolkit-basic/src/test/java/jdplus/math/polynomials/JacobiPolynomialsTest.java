@@ -5,9 +5,6 @@
  */
 package jdplus.math.polynomials;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 /**
  *
  * @author Jean Palate

@@ -5,12 +5,11 @@
  */
 package demetra.businesscycle.r;
 
-import demetra.businesscycle.r.HodrickPrescott;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.matrices.Matrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import org.assertj.core.api.Assertions;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -62,12 +62,12 @@ public class UriBuilderTest {
         assertEquals(scheme, uri.getScheme());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void testSchemeEmpty() {
         new UriBuilder("", host).build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void testSchemeNull() {
         new UriBuilder(null, host).build();
     }
@@ -78,12 +78,12 @@ public class UriBuilderTest {
         assertEquals(host, uri.getHost());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void testHostEmpty() {
         new UriBuilder(scheme, "").build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void testHostNull() {
         new UriBuilder("", null).build();
     }

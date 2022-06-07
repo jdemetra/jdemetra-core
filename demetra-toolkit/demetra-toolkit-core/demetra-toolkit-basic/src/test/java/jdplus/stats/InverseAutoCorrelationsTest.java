@@ -19,8 +19,6 @@ package jdplus.stats;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import java.util.function.IntToDoubleFunction;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
