@@ -63,7 +63,7 @@ public class KalmanEstimator implements IComponentsEstimator {
                 nb = model.extrapolationCount(nbcasts);
 
         ComponentType[] cmps = model.componentsType();
-        UcarimaModel ucm = model.compactUcarimaModel(true);
+        UcarimaModel ucm = model.compactUcarimaModel(true, true);
 
         CompositeSsf ssf = SsfUcarima.of(ucm);
         // compute KS

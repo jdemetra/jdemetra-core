@@ -181,19 +181,18 @@ public class SeatsModel {
     /**
      * Gets the compact form of the model.The returned UCARIMA model is modified
      * as follows:
-     * - if need be, the mean correction is replaced by unit roots in the
-     * auto-regressive
-     * and
-     * moving average parts.
+     * - if need be (see mean), the mean correction is replaced by unit roots in the
+     * auto-regressive and moving average parts.
      * - the transitory component and the noise are added up
-     * - empty (null) components are removed
+     * - if need be (see clean) empty (null) components are removed
      * The components in the compact form can be retrieved by means of the
      * componentsType method
      *
-     * @param mean Pu the mean correction in the model (for estimation only)
+     * @param mean Put the mean correction in the model (for estimation only)
+     * @param clean remove empty components
      * @return
      */
-    public UcarimaModel compactUcarimaModel(boolean mean) {
+    public UcarimaModel compactUcarimaModel(boolean mean, boolean clean) {
         if (ucarimaModel == null) {
             return null;
         }
@@ -218,7 +217,7 @@ public class SeatsModel {
         if (ucm.getComponentsCount() > 3) {
             ucm = ucm.compact(2, 2);
         }
-        return ucm.simplify();
+        return clean ? ucm.simplify() : ucm;
     }
 
     public ComponentType[] componentsType() {

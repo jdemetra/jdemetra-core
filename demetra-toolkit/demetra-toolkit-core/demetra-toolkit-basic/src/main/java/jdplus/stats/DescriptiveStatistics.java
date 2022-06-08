@@ -21,7 +21,6 @@ import nbbrd.design.Immutable;
 import demetra.math.Constants;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
-import nbbrd.design.SkipProcessing;
 import demetra.data.DoubleSeq;
 
 /**

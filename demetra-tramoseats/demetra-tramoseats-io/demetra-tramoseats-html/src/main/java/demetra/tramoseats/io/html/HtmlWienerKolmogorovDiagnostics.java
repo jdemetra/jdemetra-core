@@ -26,7 +26,9 @@ import demetra.html.HtmlTable;
 import demetra.html.HtmlTableCell;
 import demetra.html.HtmlTableHeader;
 import demetra.html.HtmlTag;
+import demetra.stats.AutoCovariances;
 import java.io.IOException;
+import java.util.function.IntToDoubleFunction;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.BartlettApproximation;
 import jdplus.arima.LinearProcess;
@@ -143,15 +145,15 @@ public class HtmlWienerKolmogorovDiagnostics extends AbstractHtmlElement impleme
                 stream.close(HtmlTag.TABLEROW);
 
                 double tvar = cmodel.getAutoCovarianceFunction().get(0);
-                double evar = emodel.getAutoCovarianceFunction().get(0);
                 DoubleSeq data = diags_.getStationaryEstimate(i);
-                BartlettApproximation.AutoCorrelation ac = new BartlettApproximation.AutoCorrelation(emodel);
+                BartlettApproximation.AutoCorrelation bac=new BartlettApproximation.AutoCorrelation(emodel);
+                IntToDoubleFunction ac = AutoCovariances.autoCorrelationFunction(data, 0);
                 for (int l = 1; l <= freq_; ++l) {
                     stream.open(HtmlTag.TABLEROW);
                     double tcor = cmodel.getAutoCovarianceFunction().get(l) / tvar;
-                    double ecor = emodel.getAutoCovarianceFunction().get(l) / evar;
-                    double cor = ac.get(l);
-                    double sd = BartlettApproximation.standardDeviationOfVariance(emodel, data.length());
+                    double ecor = bac.get(l);
+                    double cor = ac.applyAsDouble(l);
+                    double sd = bac.standardDeviation(l, data.length());
                     double z = Math.abs(ecor - cor) / sd;
                     double pval = 1 - dist.getProbabilityForInterval(-z, z);
                     stream.write(new HtmlTableCell(Integer.toString(l)));
