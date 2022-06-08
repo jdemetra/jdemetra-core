@@ -33,11 +33,9 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.random.MersenneTwister;
 import demetra.dstats.RandomNumberGenerator;
 import demetra.stats.StatisticalTest;
-import demetra.stats.TestType;
 import jdplus.stats.DescriptiveStatistics;
-import jdplus.stats.tests.TestsUtility;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

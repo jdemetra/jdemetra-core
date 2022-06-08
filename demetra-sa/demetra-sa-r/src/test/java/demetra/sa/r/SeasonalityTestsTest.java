@@ -21,8 +21,9 @@ import demetra.data.DoubleSeq;
 import demetra.sa.diagnostics.CombinedSeasonalityTest.IdentifiableSeasonality;
 import demetra.stats.StatisticalTest;
 import jdplus.sa.tests.CombinedSeasonality;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

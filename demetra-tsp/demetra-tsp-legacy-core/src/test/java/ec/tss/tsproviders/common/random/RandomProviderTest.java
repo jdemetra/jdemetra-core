@@ -24,9 +24,9 @@ import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.TsProviders;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Jean Palate

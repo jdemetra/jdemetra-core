@@ -27,7 +27,7 @@ import ec.tss.TsCollectionInformation;
 import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.time.LocalDate;

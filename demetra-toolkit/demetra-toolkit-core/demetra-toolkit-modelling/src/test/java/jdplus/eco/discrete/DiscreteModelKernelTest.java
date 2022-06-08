@@ -24,8 +24,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Random;
 import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.math.matrices.Matrix;
 
 /**

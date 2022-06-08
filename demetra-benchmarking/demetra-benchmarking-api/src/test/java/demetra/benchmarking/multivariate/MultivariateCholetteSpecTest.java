@@ -5,8 +5,7 @@
  */
 package demetra.benchmarking.multivariate;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

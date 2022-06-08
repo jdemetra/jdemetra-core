@@ -7,8 +7,9 @@ package jdplus.regarima;
 
 import jdplus.data.DataBlock;
 import jdplus.math.linearfilters.BackFilter;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

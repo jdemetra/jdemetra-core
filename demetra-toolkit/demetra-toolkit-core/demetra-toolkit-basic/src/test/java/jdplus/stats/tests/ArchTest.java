@@ -19,8 +19,7 @@ package jdplus.stats.tests;
 import demetra.stats.StatisticalTest;
 import java.util.Random;
 import jdplus.data.DataBlock;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

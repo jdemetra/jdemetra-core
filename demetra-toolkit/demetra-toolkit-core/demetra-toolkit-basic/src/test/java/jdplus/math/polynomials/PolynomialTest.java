@@ -18,9 +18,9 @@ package jdplus.math.polynomials;
 
 import demetra.math.Complex;
 import jdplus.math.ComplexMath;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import demetra.data.DoubleSeq;
 
 /**

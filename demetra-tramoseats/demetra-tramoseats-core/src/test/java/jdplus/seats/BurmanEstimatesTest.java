@@ -24,7 +24,7 @@ import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

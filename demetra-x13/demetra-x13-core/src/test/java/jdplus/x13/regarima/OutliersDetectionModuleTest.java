@@ -16,9 +16,8 @@ import jdplus.regsarima.internal.HannanRissanenInitializer;
 import demetra.timeseries.TsPeriod;
 import ec.tstoolkit.timeseries.regression.IOutlierVariable;
 import java.util.List;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.Variable;
 import static jdplus.x13.regarima.OutliersDetectionModule.EPS;
@@ -32,6 +31,8 @@ import jdplus.regarima.outlier.SingleOutlierDetector;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.estimation.SarimaMapping;
+import org.junit.jupiter.api.Test;
+
 import static jdplus.x13.regarima.Converter.convert;
 
 /**

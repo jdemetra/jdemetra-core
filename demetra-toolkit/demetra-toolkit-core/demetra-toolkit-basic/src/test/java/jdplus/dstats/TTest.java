@@ -12,8 +12,8 @@ import jdplus.random.JdkRNG;
 import org.assertj.core.api.Assertions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import demetra.dstats.RandomNumberGenerator;
 
 /**
@@ -304,7 +304,7 @@ public class TTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testRandomVarianceT_2() {
         int iterations = 10000;
         T t = new T(2);

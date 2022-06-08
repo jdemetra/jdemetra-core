@@ -19,8 +19,8 @@ package demetra.tsprovider;
 import com.google.common.collect.ImmutableSortedMap;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 
@@ -123,14 +123,14 @@ public class DataSetTest {
     public void testUriFormatter() {
         DataSet dataSet = newSample();
         Formatter<DataSet> formatter = Formatter.of(DataSet::toString);
-        Assert.assertNotNull(formatter.format(dataSet));
+        Assertions.assertNotNull(formatter.format(dataSet));
 
         DataSet d1 = new DataSet(id, DataSet.Kind.COLLECTION, content);
         DataSet d2 = new DataSet(id, DataSet.Kind.COLLECTION, content);
-        Assert.assertEquals(formatter.format(d1), formatter.format(d2));
+        Assertions.assertEquals(formatter.format(d1), formatter.format(d2));
 
         DataSet empty = new DataSet(id, DataSet.Kind.COLLECTION, emptyContent);
-        Assert.assertEquals("demetra://tsprovider/SPREADSHEET/20111209/COLLECTION?datePattern=yyyy-MM-dd&file=c%3A%5Cdata.txt&locale=fr_BE#", formatter.format(empty));
+        Assertions.assertEquals("demetra://tsprovider/SPREADSHEET/20111209/COLLECTION?datePattern=yyyy-MM-dd&file=c%3A%5Cdata.txt&locale=fr_BE#", formatter.format(empty));
     }
 
     @Test
@@ -139,9 +139,9 @@ public class DataSetTest {
         Parser<DataSet> dataSetParser = Parser.of(DataSet::parse);
 
         DataSet dataSet = newSample();
-        Assert.assertEquals(dataSet, dataSetParser.parse(dataSetFormatter.formatValue(dataSet).get()));
+        Assertions.assertEquals(dataSet, dataSetParser.parse(dataSetFormatter.formatValue(dataSet).get()));
 
         DataSet empty = new DataSet(id, DataSet.Kind.COLLECTION, emptyContent);
-        Assert.assertEquals(empty, dataSetParser.parse(dataSetFormatter.formatValue(empty).get()));
+        Assertions.assertEquals(empty, dataSetParser.parse(dataSetFormatter.formatValue(empty).get()));
     }
 }

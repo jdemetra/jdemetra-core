@@ -16,8 +16,9 @@
  */
 package demetra.tramo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -43,7 +44,7 @@ public class EasterSpecTest {
         assertEquals(spec, spec.toBuilder().build());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void testValidation() {
         EasterSpec.builder()
                 .duration(0)

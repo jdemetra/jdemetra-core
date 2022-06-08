@@ -21,7 +21,7 @@ import demetra.timeseries.TsCollection;
 import demetra.tsprovider.grid.GridReader;
 import demetra.tsprovider.util.IOCache;
 import internal.spreadsheet.grid.SheetGrid;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;

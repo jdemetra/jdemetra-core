@@ -9,8 +9,8 @@ import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.Complex;
 import jdplus.data.analysis.DiscreteKernel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

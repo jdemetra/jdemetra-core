@@ -8,8 +8,9 @@ package demetra.x13.r;
 import demetra.data.Data;
 import demetra.x13.X13Spec;
 import demetra.x13.io.protobuf.X13Output;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

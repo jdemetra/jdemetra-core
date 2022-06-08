@@ -20,7 +20,7 @@ import jdplus.ssf.implementations.Noise;
 import jdplus.sts.LocalLevel;
 import jdplus.sts.LocalLinearTrend;
 import jdplus.sts.SeasonalComponent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

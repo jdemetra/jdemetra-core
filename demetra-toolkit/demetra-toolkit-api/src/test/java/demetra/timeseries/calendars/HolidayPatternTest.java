@@ -7,8 +7,9 @@ package demetra.timeseries.calendars;
 
 import demetra.data.DoubleSeq;
 import demetra.timeseries.calendars.HolidayPattern.Shape;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

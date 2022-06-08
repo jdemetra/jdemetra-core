@@ -22,8 +22,8 @@ import demetra.processing.ProcessingLog;
 import demetra.seats.DecompositionSpec;
 import demetra.seats.DecompositionSpec.ComponentsEstimationMethod;
 import demetra.seats.SeatsModelSpec;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

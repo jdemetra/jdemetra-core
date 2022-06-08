@@ -20,8 +20,9 @@ import demetra.data.Data;
 import demetra.processing.DefaultProcessingLog;
 import demetra.x13.X13Spec;
 import ec.tstoolkit.algorithm.CompositeResults;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

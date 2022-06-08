@@ -16,9 +16,9 @@
  */
 package jdplus.data.analysis;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -98,7 +98,7 @@ public class DFTTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void stressTest() {
         double[] r = new double[10000];
         double[] im = new double[r.length];

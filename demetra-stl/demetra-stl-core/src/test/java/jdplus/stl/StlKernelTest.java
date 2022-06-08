@@ -18,15 +18,14 @@ package jdplus.stl;
 
 import demetra.stl.StlSpecification;
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.stl.LoessSpecification;
 import demetra.stl.SeasonalSpecification;
 import jdplus.data.DataBlock;
 import java.util.Random;
 
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -112,7 +111,7 @@ public class StlKernelTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void stressTest() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {

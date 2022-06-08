@@ -17,14 +17,11 @@
 package jdplus.modelling.regression;
 
 import demetra.timeseries.regression.PeriodicContrasts;
-import jdplus.modelling.regression.Regression;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import jdplus.data.DataBlockIterator;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import jdplus.math.matrices.FastMatrix;
 
 /**

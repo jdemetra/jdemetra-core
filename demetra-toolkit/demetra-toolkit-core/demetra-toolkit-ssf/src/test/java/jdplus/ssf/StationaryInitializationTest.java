@@ -5,15 +5,14 @@
  */
 package jdplus.ssf;
 
-import jdplus.ssf.StationaryInitialization;
-import jdplus.ssf.StateComponent;
 import jdplus.arima.ssf.SsfArima;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixNorms;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

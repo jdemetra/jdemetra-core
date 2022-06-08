@@ -9,8 +9,8 @@ import demetra.stats.ProbabilityType;
 import jdplus.data.DataBlock;
 import jdplus.dstats.Chi2;
 import jdplus.random.MersenneTwister;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

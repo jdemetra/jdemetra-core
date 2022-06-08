@@ -28,19 +28,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Validator;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 import xml.Schemas;
-import xml.TestErrorHandler;
 import xml.TestValidationEventHandler;
 
 /**
@@ -83,7 +82,7 @@ public class XmlRegressionTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testMarshal() throws FileNotFoundException, JAXBException, IOException {
 
         JAXBContext jaxb = XmlRegression.context();

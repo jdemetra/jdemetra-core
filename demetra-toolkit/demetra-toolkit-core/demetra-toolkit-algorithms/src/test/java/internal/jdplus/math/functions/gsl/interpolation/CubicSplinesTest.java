@@ -7,8 +7,9 @@ package internal.jdplus.math.functions.gsl.interpolation;
 import demetra.data.DoubleSeq;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.math.functions.CubicSpline;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

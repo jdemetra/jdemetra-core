@@ -5,17 +5,15 @@
  */
 package jdplus.filters;
 
-import demetra.data.DoubleSeq;
 import java.util.Arrays;
 import jdplus.filters.FSTFilter.SmoothnessCriterion;
 import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
-import jdplus.math.matrices.FastMatrix;
-import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

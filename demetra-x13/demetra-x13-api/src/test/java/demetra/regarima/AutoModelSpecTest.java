@@ -16,8 +16,8 @@
  */
 package demetra.regarima;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -38,7 +38,7 @@ public class AutoModelSpecTest {
                 .build().isDefault());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidArmaSignificance() {
         AutoModelSpec.builder()
                 .armaSignificance(0.3)
@@ -59,7 +59,7 @@ public class AutoModelSpecTest {
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidPercentRSE() {
         AutoModelSpec.builder()
                 .percentRSE(0)
@@ -73,14 +73,14 @@ public class AutoModelSpecTest {
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidPredCV1() {
         AutoModelSpec.builder()
                 .predcv(0.02)
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidPredCV2() {
         AutoModelSpec.builder()
                 .predcv(3.4)
@@ -94,7 +94,7 @@ public class AutoModelSpecTest {
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidUb1() {
         AutoModelSpec.builder()
                 .ub1(1)
@@ -108,7 +108,7 @@ public class AutoModelSpecTest {
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidUb2() {
         AutoModelSpec.builder()
                 .ub2(1)
@@ -122,21 +122,21 @@ public class AutoModelSpecTest {
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidUbFinal() {
         AutoModelSpec.builder()
                 .ubfinal(-1)
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidCancel1() {
         AutoModelSpec.builder()
                 .cancel(-1.4)
                 .build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidCancel2() {
         AutoModelSpec.builder()
                 .cancel(.3)

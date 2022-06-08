@@ -22,11 +22,10 @@ import nbbrd.design.Demo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import static demetra.timeseries.TsPeriod.DEFAULT_EPOCH;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
 
 /**
  *

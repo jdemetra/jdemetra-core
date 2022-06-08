@@ -19,7 +19,7 @@ package demetra.timeseries;
 import static demetra.timeseries.TsDomain.of;
 import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static demetra.timeseries.TsUnit.HOUR;
 import java.time.LocalDate;
 import java.time.Month;

@@ -18,10 +18,12 @@ package jdplus.stats;
 
 import demetra.stats.AutoCovariances;
 import demetra.data.DoubleSeq;
+import org.junit.jupiter.api.Test;
+
 import java.util.Random;
 import java.util.function.IntToDoubleFunction;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

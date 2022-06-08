@@ -7,8 +7,8 @@ package jdplus.math.matrices;
 
 import jdplus.data.DataBlock;
 import static jdplus.math.matrices.GeneralMatrix.transpose;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

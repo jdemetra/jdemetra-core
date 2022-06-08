@@ -27,10 +27,11 @@ import ec.benchmarking.simplets.TsMultiBenchmarking;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -106,7 +107,7 @@ public class MultivariateCholetteTest {
     }
     
     @Test
-    @Ignore
+    @Disabled
     public void testOldTable() {
         TsMultiBenchmarking bench = new TsMultiBenchmarking();
         ec.tstoolkit.timeseries.simplets.TsData s11 = oldRandomM(120, 0);

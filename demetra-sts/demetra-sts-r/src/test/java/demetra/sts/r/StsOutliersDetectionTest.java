@@ -6,12 +6,11 @@
 package demetra.sts.r;
 
 import demetra.data.Data;
-import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import java.util.Random;
 import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

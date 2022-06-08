@@ -8,8 +8,6 @@ package jdplus.sts;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.sts.BsmSpec;
-import demetra.sts.Component;
-import demetra.sts.ComponentUse;
 import demetra.sts.SeasonalModel;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
@@ -25,17 +23,15 @@ import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.random.JdkRNG;
 import demetra.dstats.RandomNumberGenerator;
 import jdplus.ssf.akf.AkfToolkit;
-import jdplus.ssf.akf.AugmentedSmoother;
 import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.akf.SmoothingOutput;
-import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.RandomSsfGenerator;
 import jdplus.ssf.implementations.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.internal.BsmMapping;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

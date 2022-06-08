@@ -5,13 +5,11 @@
  */
 package jdplus.math.matrices;
 
-import ec.tstoolkit.maths.matrices.SubMatrix;
-import ec.tstoolkit.random.JdkRNG;
 import jdplus.data.DataBlock;
 import static jdplus.math.matrices.GeneralMatrix.transpose;
 import static jdplus.math.matrices.LowerTriangularMatrix.solveLX;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

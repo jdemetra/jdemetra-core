@@ -9,7 +9,7 @@ import demetra.data.Data;
 import demetra.data.WeeklyData;
 import demetra.sa.DecompositionMode;
 import ec.satoolkit.x11.X11Results;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
@@ -34,7 +34,7 @@ import jdplus.math.linearfilters.AsymmetricFiltersFactory;
 import jdplus.math.linearfilters.IFiniteFilter;
 import jdplus.rkhs.RKHSFilterFactory;
 import jdplus.rkhs.RKHSFilterSpec;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 /**
  *
@@ -161,7 +161,7 @@ public class X11KernelTest {
         return model;
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testLP() {
         TsData test = Data.surveys()[9];
@@ -422,7 +422,7 @@ public class X11KernelTest {
     };
 
     @Test
-    @Ignore
+    @Disabled
     public void testFilters() {
         int h = 6;
         IFiltering[] ff = new IFiltering[]{lp_c0(h), lp_c1(h, 10), musgrave(h), lp_quad(h, 1, 10),

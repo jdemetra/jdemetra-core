@@ -12,8 +12,8 @@ import demetra.tramo.TramoSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
 import jdplus.tramoseats.TramoSeatsResults;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

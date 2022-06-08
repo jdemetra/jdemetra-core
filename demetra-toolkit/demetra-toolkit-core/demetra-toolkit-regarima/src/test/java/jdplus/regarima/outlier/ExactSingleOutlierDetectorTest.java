@@ -21,10 +21,7 @@ import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.DayClustering;
-import jdplus.data.DataBlock;
-import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
 import jdplus.modelling.regression.GenericTradingDaysFactory;
 import jdplus.modelling.regression.IOutlierFactory;
@@ -32,8 +29,6 @@ import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.regarima.RegArimaModel;
 import jdplus.sarima.SarimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

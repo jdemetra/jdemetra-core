@@ -21,8 +21,8 @@ import jdplus.data.DataBlock;
 import java.util.Random;
 import java.util.function.DoubleSupplier;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

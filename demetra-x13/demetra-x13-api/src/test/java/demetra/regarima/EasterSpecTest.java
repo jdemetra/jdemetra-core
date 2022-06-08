@@ -16,7 +16,7 @@
  */
 package demetra.regarima;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -31,7 +31,7 @@ public class EasterSpecTest {
                 .build();
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @org.junit.Test(expected = IllegalArgumentException.class)
     public void invalidDuration() {
         EasterSpec.builder()
                 .duration(0)

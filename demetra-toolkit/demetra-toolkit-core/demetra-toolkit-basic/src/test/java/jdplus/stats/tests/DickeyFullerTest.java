@@ -22,8 +22,9 @@ import jdplus.data.DataBlock;
 import jdplus.dstats.Normal;
 import jdplus.random.MersenneTwister;
 import jdplus.stats.tests.DickeyFuller.DickeyFullerType;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

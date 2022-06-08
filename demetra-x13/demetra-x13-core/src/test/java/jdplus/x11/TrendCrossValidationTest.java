@@ -7,10 +7,9 @@ package jdplus.x11;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import jdplus.data.analysis.DiscreteKernel;
-import jdplus.math.linearfilters.HendersonFilters;
 import jdplus.math.linearfilters.LocalPolynomialFilters;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

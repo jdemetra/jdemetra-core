@@ -17,11 +17,11 @@
 package jdplus.math.polynomials.spi;
 
 import demetra.data.DoubleSeq;
-import demetra.math.Complex;
 import demetra.advanced.math.Polynomials;
 import jdplus.math.polynomials.Polynomial;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

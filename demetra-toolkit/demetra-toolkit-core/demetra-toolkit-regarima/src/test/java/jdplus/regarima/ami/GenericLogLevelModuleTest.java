@@ -18,8 +18,6 @@ package jdplus.regarima.ami;
 
 import demetra.data.Data;
 import demetra.timeseries.TsData;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

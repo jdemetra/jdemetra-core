@@ -31,7 +31,8 @@ import jdplus.x13.X13Results;
 import nbbrd.io.xml.bind.Jaxb;
 import org.assertj.core.util.Files;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -62,8 +63,8 @@ public class X13SpecMappingTest {
         infoV2X11.remove(FCASTS);// The default value could be 0 vor X11 or -1 for X13 this is not saved in the SA Processiong of Version 2
 
         X13Spec specV3 = X13SpecMapping.readLegacy(infoV2);
-        Assert.assertNull("Sigmavec is not null and Calendarsigma is default", specV3.getX11().getSigmaVec());
-        Assert.assertEquals("Forecast horizon is wrong: ", -1, specV3.getX11().getForecastHorizon());
+        org.junit.Assert.assertNull("Sigmavec is not null and Calendarsigma is default", specV3.getX11().getSigmaVec());
+        org.junit.Assert.assertEquals("Forecast horizon is wrong: ", -1, specV3.getX11().getForecastHorizon());
 
     }
 
@@ -77,7 +78,7 @@ public class X13SpecMappingTest {
         // The default value could be 0 vor X11 or -1 for X13 this is not saved in the SA Processiong of Version 2
 
         X13Spec specV3 = X13SpecMapping.readLegacy(infoV2);
-        Assert.assertEquals("Forecast horizon is wrong: ", -2, specV3.getX11().getForecastHorizon());
+        org.junit.Assert.assertEquals("Forecast horizon is wrong: ", -2, specV3.getX11().getForecastHorizon());
 
     }
 

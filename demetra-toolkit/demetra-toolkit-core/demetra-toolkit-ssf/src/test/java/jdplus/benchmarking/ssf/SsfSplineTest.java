@@ -23,9 +23,9 @@ import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
 import java.util.function.DoubleUnaryOperator;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import demetra.data.DoubleSeq;
 import jdplus.ssf.univariate.Ssf;
 

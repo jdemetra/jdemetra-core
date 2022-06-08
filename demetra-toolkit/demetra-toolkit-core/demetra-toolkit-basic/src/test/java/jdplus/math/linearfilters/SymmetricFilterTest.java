@@ -7,11 +7,12 @@ package jdplus.math.linearfilters;
 
 import jdplus.data.DataBlock;
 import demetra.data.DoubleSeq;
+import org.junit.jupiter.api.Test;
+
 import java.util.Random;
 import java.util.function.DoubleSupplier;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

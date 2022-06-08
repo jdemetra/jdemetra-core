@@ -20,8 +20,8 @@ import demetra.timeseries.regression.PeriodicDummies;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlockIterator;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import jdplus.math.matrices.FastMatrix;
 
 /**

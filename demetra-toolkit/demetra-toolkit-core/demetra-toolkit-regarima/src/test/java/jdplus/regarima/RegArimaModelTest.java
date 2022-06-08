@@ -9,8 +9,7 @@ import demetra.data.Data;
 import jdplus.data.DataBlock;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.DoubleSeq;
 
 /**

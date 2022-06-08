@@ -6,7 +6,6 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.data.DataSets;
-import static demetra.data.DataSets.lre;
 import demetra.data.DoubleSeq;
 import java.util.Random;
 import java.util.function.DoubleSupplier;
@@ -15,8 +14,7 @@ import jdplus.data.DataBlock;
 import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.linearsystem.QRLeastSquaresSolver;
 import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

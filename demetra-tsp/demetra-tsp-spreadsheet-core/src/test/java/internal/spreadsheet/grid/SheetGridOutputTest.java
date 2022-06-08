@@ -20,7 +20,7 @@ import demetra.tsprovider.grid.GridOutput;
 import ec.util.spreadsheet.helpers.ArraySheet;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

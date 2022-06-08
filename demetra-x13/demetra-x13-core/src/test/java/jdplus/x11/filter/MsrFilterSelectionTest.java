@@ -16,8 +16,8 @@ import ec.satoolkit.x11.MsrTable;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -216,7 +216,7 @@ public class MsrFilterSelectionTest {
         MsrTable oldMsrTable = doOldMSR(s, ec.satoolkit.DecompositionMode.valueOf(modeName), context);
         double newMSR = table.getGlobalMsr();
         double oldMSR = oldMsrTable.getGlobalMsr();
-        Assert.assertEquals("Error in MSR", oldMSR, newMSR, DELTA);
+        org.junit.Assert.assertEquals("Error in MSR", oldMSR, newMSR, DELTA);
     }
 
     private MsrTable doOldMSR(ec.tstoolkit.timeseries.simplets.TsData s, ec.satoolkit.DecompositionMode mode, X11Context context) {

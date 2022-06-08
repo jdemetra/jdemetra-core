@@ -9,14 +9,10 @@ import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.math.functions.Optimizer;
 import demetra.ssf.SsfInitialization;
-import jdplus.arima.ssf.SsfAr;
-import jdplus.benchmarking.ssf.SsfCumulator;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.ssf.CompositeLoading;
 import jdplus.ssf.StateStorage;
-import jdplus.ssf.implementations.Loading;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

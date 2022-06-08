@@ -25,7 +25,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.tck.FileLoaderAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

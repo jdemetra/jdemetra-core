@@ -30,7 +30,7 @@ import static internal.spreadsheet.Top5Browsers.top5Xmlss;
 import internal.spreadsheet.grid.SheetGrid;
 import java.io.File;
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

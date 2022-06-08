@@ -13,7 +13,7 @@ import jdplus.math.matrices.FastMatrix;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import jdplus.ssf.StateStorage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

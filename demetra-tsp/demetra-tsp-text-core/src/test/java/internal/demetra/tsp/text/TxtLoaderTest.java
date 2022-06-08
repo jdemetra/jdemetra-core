@@ -22,7 +22,7 @@ import demetra.timeseries.util.ObsGathering;
 import demetra.tsp.text.TxtBean;
 import demetra.tsprovider.HasFilePaths;
 import demetra.tsprovider.util.ObsFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Philippe Charles

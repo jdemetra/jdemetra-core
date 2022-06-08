@@ -10,8 +10,7 @@ import demetra.timeseries.TsUnit;
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.DataSource;
 import demetra.tsprovider.legacy.LegacyHandler;
-import internal.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 

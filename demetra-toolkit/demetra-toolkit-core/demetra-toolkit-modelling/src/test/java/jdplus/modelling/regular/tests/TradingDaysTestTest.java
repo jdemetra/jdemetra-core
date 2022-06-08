@@ -19,8 +19,9 @@ package jdplus.modelling.regular.tests;
 import demetra.data.Data;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

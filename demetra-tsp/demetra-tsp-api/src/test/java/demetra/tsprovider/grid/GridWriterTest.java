@@ -19,13 +19,11 @@ package demetra.tsprovider.grid;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsCollection;
 import demetra.tsprovider.util.ObsFormat;
-import internal.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import test.tsprovider.grid.ArrayGridOutput;
 
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.Set;
 
 import static _util.FixAssertj.assertDeepEqualTo;

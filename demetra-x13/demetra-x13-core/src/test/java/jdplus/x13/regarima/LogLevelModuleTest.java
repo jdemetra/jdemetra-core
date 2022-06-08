@@ -32,9 +32,10 @@ import ec.tstoolkit.modelling.arima.PreadjustmentType;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
+import org.junit.jupiter.api.Test;
+
 import static jdplus.x13.regarima.Converter.convert;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

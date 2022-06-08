@@ -17,7 +17,8 @@
 package internal.tsprovider.grid;
 
 import java.io.IOException;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import test.tsprovider.grid.ArrayGridInput;
 import static test.tsprovider.grid.Data.*;
 import static org.assertj.core.api.Assertions.*;

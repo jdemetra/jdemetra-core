@@ -16,11 +16,13 @@
  */
 package demetra.util;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.Collections;
 import java.util.function.Function;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
-import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.*;
 
 /**

@@ -20,17 +20,13 @@ import demetra.data.DoubleSeq;
 import demetra.data.MatrixSerializer;
 import demetra.highfreq.DecompositionSpec;
 import demetra.math.matrices.Matrix;
-import demetra.modelling.ComponentInformation;
 import demetra.processing.ProcessingLog;
-import demetra.sa.ComponentType;
-import demetra.timeseries.TsData;
-import demetra.timeseries.TsPeriod;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

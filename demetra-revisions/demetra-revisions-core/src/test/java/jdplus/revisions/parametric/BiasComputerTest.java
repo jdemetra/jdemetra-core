@@ -22,7 +22,7 @@ import jdplus.dstats.Normal;
 import jdplus.random.MersenneTwister;
 import jdplus.stats.samples.Population;
 import jdplus.stats.samples.Sample;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

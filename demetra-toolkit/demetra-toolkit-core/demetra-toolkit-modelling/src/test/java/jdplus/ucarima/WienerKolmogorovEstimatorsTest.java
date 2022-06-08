@@ -20,8 +20,8 @@ import jdplus.arima.ArimaModel;
 import jdplus.math.linearfilters.RationalFilter;
 import static jdplus.ucarima.UcarimaModelTest.ucm3111;
 import static jdplus.ucarima.UcarimaModelTest.ucmAirline;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

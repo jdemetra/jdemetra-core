@@ -2,18 +2,13 @@ package jdplus.dfa;
 
 import java.util.function.DoubleUnaryOperator;
 
-import org.junit.Test;
-
-import demetra.data.DoubleSeq;
-import jdplus.data.analysis.DiscreteKernel;
-import jdplus.filters.FSTFilter;
 import jdplus.filters.IFiltering;
 import jdplus.filters.ISymmetricFiltering;
-import jdplus.math.linearfilters.FiniteFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.filters.LocalPolynomialFilterFactory;
 import jdplus.filters.LocalPolynomialFilterSpec;
 import jdplus.filters.SpectralDensity;
+import org.junit.jupiter.api.Test;
 
 public class DFAFilterTest {
 	

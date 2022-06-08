@@ -8,8 +8,8 @@ package jdplus.modelling.regression;
 import demetra.timeseries.TsPeriod;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.regression.JulianEasterVariable;
 

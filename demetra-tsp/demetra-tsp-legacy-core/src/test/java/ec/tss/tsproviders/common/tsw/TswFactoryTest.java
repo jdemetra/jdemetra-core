@@ -24,8 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.util.Arrays.asList;
 import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -106,7 +106,7 @@ public class TswFactoryTest {
         }
     }
 
-    @Test(expected = IOException.class)
+    @org.junit.Test(expected = IOException.class)
     public void testBinFile() throws URISyntaxException, IOException {
         Path file = getResource("blog_16x16.png");
         for (TswFactory factory : asList(oldFactory, newFactory)) {

@@ -20,7 +20,7 @@ import demetra.tsprovider.grid.GridDataType;
 import demetra.tsprovider.grid.GridLayout;
 import demetra.tsprovider.grid.GridOutput;
 import demetra.tsprovider.util.ObsFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import test.tsprovider.grid.ArrayGridInput;
 import test.tsprovider.grid.ArrayGridOutput;
 

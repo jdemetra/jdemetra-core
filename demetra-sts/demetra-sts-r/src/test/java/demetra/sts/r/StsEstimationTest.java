@@ -17,11 +17,10 @@
 package demetra.sts.r;
 
 import demetra.data.Data;
-import demetra.timeseries.TsData;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

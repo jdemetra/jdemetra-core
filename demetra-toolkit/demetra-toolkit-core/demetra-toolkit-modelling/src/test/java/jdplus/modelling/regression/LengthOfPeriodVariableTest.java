@@ -6,14 +6,12 @@
 package jdplus.modelling.regression;
 
 import demetra.timeseries.regression.LengthOfPeriod;
-import jdplus.modelling.regression.Regression;
 import jdplus.data.DataBlock;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import java.util.Collections;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

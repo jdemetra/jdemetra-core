@@ -16,12 +16,11 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.sa.tests.CanovaHansen;
 import demetra.data.Data;
 import demetra.data.WeeklyData;
 import static jdplus.timeseries.simplets.TsDataToolkit.delta;
 import static jdplus.timeseries.simplets.TsDataToolkit.log;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import demetra.data.DoubleSeq;
 
 /**

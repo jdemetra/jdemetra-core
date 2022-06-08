@@ -16,12 +16,11 @@
  */
 package jdplus.sa.tests;
 
-import jdplus.sa.tests.Qs;
 import demetra.data.Data;
 import demetra.timeseries.TsData;
 import jdplus.timeseries.simplets.TsDataToolkit;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

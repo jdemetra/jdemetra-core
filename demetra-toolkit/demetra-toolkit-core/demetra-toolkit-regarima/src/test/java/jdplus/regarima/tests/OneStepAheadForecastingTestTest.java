@@ -10,8 +10,9 @@ import jdplus.regarima.RegArimaModel;
 import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.RegSarimaComputerTest;
 import jdplus.sarima.SarimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

@@ -24,8 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.junit.Test;
+
 import demetra.math.matrices.Matrix;
+import org.junit.jupiter.api.Test;
 
 /**
  *

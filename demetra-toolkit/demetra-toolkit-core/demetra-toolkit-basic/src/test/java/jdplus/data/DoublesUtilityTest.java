@@ -17,10 +17,8 @@
 package jdplus.data;
 
 import demetra.data.DoubleSeqCursor;
-import jdplus.data.DataBlock;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -32,7 +30,7 @@ public class DoublesUtilityTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testSomeMethod() {
 
         int N = 100, K = 1000;

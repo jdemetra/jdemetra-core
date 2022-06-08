@@ -20,8 +20,7 @@ import demetra.data.Range;
 import demetra.timeseries.regression.InterventionVariable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

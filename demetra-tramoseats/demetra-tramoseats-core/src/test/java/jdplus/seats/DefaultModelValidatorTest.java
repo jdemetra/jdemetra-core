@@ -19,8 +19,8 @@ package jdplus.seats;
 import demetra.arima.SarimaOrders;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

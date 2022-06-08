@@ -17,11 +17,10 @@
 package internal.jdplus.ar;
 
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import jdplus.ar.AutoRegressiveEstimation;
 import demetra.data.DoubleSeq;
-import internal.jdplus.ar.LevinsonAlgorithm;
 
 /**
  *

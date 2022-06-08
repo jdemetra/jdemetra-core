@@ -18,7 +18,7 @@ package demetra.tsprovider.grid;
 
 import demetra.timeseries.TsCollection;
 import demetra.timeseries.TsInformationType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

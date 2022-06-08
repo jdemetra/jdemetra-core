@@ -21,8 +21,8 @@ import ec.tss.tsproviders.sdmx.model.SdmxSeries;
 import ec.tss.tsproviders.sdmx.model.SdmxSource;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *

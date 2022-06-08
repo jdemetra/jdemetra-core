@@ -16,11 +16,10 @@
  */
 package internal.jdplus.ar;
 
-import jdplus.data.DataBlock;
 import java.util.Random;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 import demetra.data.DoubleSeq;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -35,7 +35,7 @@ import jdplus.regsarima.RegSarimaComputer;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sarima.SarimaModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

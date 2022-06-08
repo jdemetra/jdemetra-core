@@ -18,7 +18,7 @@ package internal.jdplus.math.functions.gsl.roots;
 
 import java.util.function.DoubleUnaryOperator;
 import internal.jdplus.math.functions.gsl.Utility;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *

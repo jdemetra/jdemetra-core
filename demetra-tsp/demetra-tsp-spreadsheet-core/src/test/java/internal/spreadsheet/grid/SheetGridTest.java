@@ -20,7 +20,7 @@ import demetra.timeseries.TsCollection;
 import java.io.File;
 import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import _test.DataForTest;
 import demetra.tsprovider.grid.GridReader;
 import ec.util.spreadsheet.html.HtmlBookFactory;

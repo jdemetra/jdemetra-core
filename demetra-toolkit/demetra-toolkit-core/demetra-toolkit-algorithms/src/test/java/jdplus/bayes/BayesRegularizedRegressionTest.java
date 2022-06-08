@@ -18,8 +18,8 @@ import jdplus.bayes.BayesRegularizedRegressionModel.ModelType;
 import jdplus.bayes.BayesRegularizedRegressionModel.Prior;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.stats.samples.Moments;
-import org.junit.Test;
 import demetra.math.matrices.Matrix;
+import org.junit.jupiter.api.Test;
 
 /**
  *

@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import java.beans.IntrospectionException;
 import java.io.StringWriter;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

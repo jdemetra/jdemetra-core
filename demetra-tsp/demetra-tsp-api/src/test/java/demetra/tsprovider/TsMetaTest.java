@@ -16,6 +16,8 @@
  */
 package demetra.tsprovider;
 
+import org.junit.jupiter.api.Test;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
@@ -23,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
-import org.junit.Test;
 
 /**
  *

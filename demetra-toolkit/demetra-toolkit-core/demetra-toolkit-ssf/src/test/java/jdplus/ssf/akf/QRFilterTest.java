@@ -5,7 +5,6 @@
  */
 package jdplus.ssf.akf;
 
-import jdplus.ssf.likelihood.MarginalLikelihood;
 import jdplus.arima.ssf.SsfArima;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
@@ -14,8 +13,8 @@ import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
