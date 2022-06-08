@@ -16,7 +16,7 @@
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
-        <spreadsheet4j.version>2.2.6</spreadsheet4j.version>
+        <spreadsheet4j.version>2.3.0</spreadsheet4j.version>
     </properties>
 
     <dependencies>
