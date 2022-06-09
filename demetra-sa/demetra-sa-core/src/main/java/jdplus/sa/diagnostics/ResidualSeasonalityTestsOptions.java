@@ -18,7 +18,6 @@ package jdplus.sa.diagnostics;
 
 import demetra.arima.SarimaOrders;
 import java.util.concurrent.atomic.AtomicReference;
-import jdplus.sa.tests.FTest;
 import nbbrd.design.Development;
 
 /**
@@ -35,7 +34,7 @@ public class ResidualSeasonalityTestsOptions {
     public static final SarimaOrders.Prespecified DEF_FTEST_MODEL = SarimaOrders.Prespecified.AR;
     
     private static final AtomicReference<ResidualSeasonalityTestsOptions> DEFAULT
-            = new AtomicReference<ResidualSeasonalityTestsOptions>(builder().build());
+            = new AtomicReference<>(builder().build());
 
     public static void setDefault(ResidualSeasonalityTestsOptions config) {
         DEFAULT.set(config);
