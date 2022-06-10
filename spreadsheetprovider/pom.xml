@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -15,9 +16,17 @@
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
-    <properties>
-        <spreadsheet4j.version>2.3.0</spreadsheet4j.version>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.nbbrd.spreadsheet4j</groupId>
+                <artifactId>spreadsheet-bom</artifactId>
+                <version>2.3.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- compile only -->
@@ -36,27 +45,22 @@
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-api</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-html</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-od</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-poi</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-xmlss</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
