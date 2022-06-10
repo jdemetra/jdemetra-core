@@ -31,15 +31,15 @@ public class UnitRootsSolver {
 
     private static double pnorm(final Polynomial p, final int n) {
         switch (n) {
-            case 1: {
+            case 1 -> {
                 double x = p.evaluateAt(1);
                 return Math.abs(x);
             }
-            case 2: {
+            case 2 -> {
                 double x = p.evaluateAt(-1);
                 return Math.abs(x);
             }
-            default: {
+            default -> {
                 double x = Math.PI * 2 / n;
                 final Complex c = Complex.cart(Math.cos(x), Math.sin(x));
                 Complex val = p.evaluateAt(c);

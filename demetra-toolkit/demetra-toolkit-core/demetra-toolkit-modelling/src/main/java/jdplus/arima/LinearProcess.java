@@ -16,10 +16,14 @@
  */
 package jdplus.arima;
 
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.linearfilters.ForeFilter;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import jdplus.math.linearfilters.IRationalFilter;
+import jdplus.math.linearfilters.RationalBackFilter;
 import jdplus.math.linearfilters.RationalFilter;
+import jdplus.math.linearfilters.RationalForeFilter;
 import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.polynomials.Polynomial;
 
@@ -49,25 +53,26 @@ public final class LinearProcess implements ILinearProcess {
 //     *
 //     * @return
 //     */
-//    public Model doStationary() {
-//        RationalBackFilter rb = rf.getRationalBackFilter();
-//        BackFilter bdenom = rb.getDenominator();
-//        BackFilter.StationaryTransformation bst = new BackFilter.StationaryTransformation();
-//        if (bst.transform(bdenom)) {
-//            bdenom = bst.stationaryFilter;
-//        }
-//
-//        RationalForeFilter rf = this.rf.getRationalForeFilter();
-//        ForeFilter fdenom = rf.getDenominator();
-//        ForeFilter.StationaryTransformation fst = new ForeFilter.StationaryTransformation();
-//        if (fst.transform(fdenom)) {
-//            fdenom = fst.stationaryFilter;
-//        }
-//
-//        RationalFilter stfilter = new RationalFilter(this.rf.getNumerator(), bdenom, fdenom);
-//        return new Model(stfilter, var);
-//    }
-//
+    public LinearProcess doStationary() {
+        RationalBackFilter rb = rf.getRationalBackFilter();
+        BackFilter bdenom = rb.getDenominator();
+        
+        BackFilter.StationaryTransformation bst = new BackFilter.StationaryTransformation();
+        if (bst.transform(bdenom)) {
+            bdenom = bst.stationaryFilter;
+        }
+
+        RationalForeFilter rf = this.rf.getRationalForeFilter();
+        ForeFilter fdenom = rf.getDenominator();
+        ForeFilter.StationaryTransformation fst = new ForeFilter.StationaryTransformation();
+        if (fst.transform(fdenom)) {
+            fdenom = fst.stationaryFilter;
+        }
+
+        RationalFilter stfilter = new RationalFilter(this.rf.getNumerator(), bdenom, fdenom);
+        return new LinearProcess(stfilter, var);
+    }
+
     /**
      *
      * @return
