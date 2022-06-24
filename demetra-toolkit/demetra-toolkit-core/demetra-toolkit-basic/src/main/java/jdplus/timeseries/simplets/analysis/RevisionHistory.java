@@ -22,9 +22,10 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import nbbrd.design.Development;
 
 /**
@@ -33,10 +34,9 @@ import nbbrd.design.Development;
  * @param <T>
  */
 @Development(status = Development.Status.Preliminary)
-public class RevisionHistory<T extends Explorable> {
-    
+public class RevisionHistory<T> {
 
-    private final ITsProcessing<T> m_processing;
+    private final Function<TsDomain, T> m_processing;
 
     private final HashMap<TsDomain, T> m_cache = new HashMap<>();
 
@@ -47,18 +47,18 @@ public class RevisionHistory<T extends Explorable> {
      * @param processing
      * @param domain
      */
-    public RevisionHistory(ITsProcessing<T> processing,
+    public RevisionHistory(Function<TsDomain, T> processing,
             TsDomain domain) {
         m_processing = processing;
         m_domainT = domain;
-        m_cache.put(m_domainT, processing.process(m_domainT));
+        m_cache.put(m_domainT, processing.apply(m_domainT));
     }
 
     /**
      *
      * @return
      */
-    public ITsProcessing<T> getProcessing() {
+    public Function<TsDomain, T> getProcessing() {
         return m_processing;
     }
 
@@ -78,88 +78,58 @@ public class RevisionHistory<T extends Explorable> {
         return tsInfo(m_domainT);
     }
 
-    // / <summary>
-    // / Computes
-    // / </summary>
-    // / <param name="series"></param>
-    // / <param name="period"></param>
-    // / <param name="lag"></param>
-    // / <param name="count"></param>
-    // / <param name="mode"></param>
-    // / <param name="target"></param>
-    // / <returns></returns>
     /**
      *
-     * @param series
      * @param period
      * @param lag
      * @param count
      * @param mode
      * @param target
+     * @param extractor
      * @return
      */
-    public double[] laggedSeriesRevision(String series, TsPeriod period,
-            int lag, int count, DiagnosticInfo mode, DiagnosticTarget target) {
+    public double[] laggedSeriesRevision(TsPeriod period,
+            int lag, int count, DiagnosticInfo mode, DiagnosticTarget target, Function<T, TsData> extractor) {
         TsPeriod start = m_domainT.getStartPeriod();
         TsDomain domain = TsDomain.of(start, start.until(period) + 1);
-        Explorable[] ilag = new Explorable[count];
+        List<T> ilag = new ArrayList<>(count);
         TsDomain ldomain = domain;
         for (int i = 0; i < count; ++i) {
             ldomain = ldomain.extend(0, lag);
-            ilag[i] = tsInfo(ldomain);
+            ilag.add(tsInfo(ldomain));
         }
         double[] rslt = new double[count];
         if (target == DiagnosticTarget.Final) {
             T iT = tsInfo(m_domainT);
-            TsData Tdata = iT != null ? iT.getData(series, TsData.class) : null;
+            TsData Tdata = iT != null ? extractor.apply(iT) : null;
             if (Tdata == null) {
                 return null;
             }
             for (int i = 0; i < count; ++i) {
                 rslt[i] = Double.NaN;
-                if (ilag[i] != null) {
-                    TsData tdata = ilag[i].getData(series, TsData.class);
+                T cur = ilag.get(i);
+                if (cur != null) {
+                    TsData tdata = extractor.apply(cur);
                     if (tdata != null) {
                         int idx = tdata.length() - 1;
-                        rslt[i]=mode.asFunction().apply(Tdata, tdata, idx);
-//                        double dt = tdata.get(idx), dT = Tdata.get(idx);
-//                        if (mode == DiagnosticInfo.RelativeDifference) {
-//                            rslt[i] = (dT - dt) / dt;
-//                        } else if (mode == DiagnosticInfo.AbsoluteDifference) {
-//                            rslt[i] = dT - dt;
-//                        } else // PtoP growth difference
-//                        {
-//                            double dt0 = tdata.get(idx - 1), dT0 = Tdata
-//                                    .get(idx - 1);
-//                            rslt[i] = (dT - dT0) / dT0 - (dt - dt0) / dt0;
-//                        }
+                        rslt[i] = mode.asFunction().apply(Tdata, tdata, idx);
                     }
                 }
             }
         } else {
             T it = tsInfo(domain);
-            TsData cdata = it != null ? it.getData(series, TsData.class) : null;
+            TsData cdata = it != null ? extractor.apply(it) : null;
             if (cdata == null) {
                 return null;
             }
             for (int i = 0; i < count; ++i) {
                 rslt[i] = Double.NaN;
-                if (ilag[i] != null) {
-                    TsData tdata = ilag[i].getData(series, TsData.class);
+                T cur = ilag.get(i);
+                if (cur != null) {
+                    TsData tdata = extractor.apply(cur);
                     if (tdata != null) {
                         int idx = tdata.length() - 1;
-                        rslt[i]=mode.asFunction().apply(cdata, tdata, idx);
-//                        double dt = tdata.get(idx), dc = cdata.get(idx);
-//                        if (mode == DiagnosticInfo.RelativeDifference) {
-//                            rslt[i] = (dt - dc) / dc;
-//                        } else if (mode == DiagnosticInfo.AbsoluteDifference) {
-//                            rslt[i] = dt - dc;
-//                        } else // PtoP growth difference
-//                        {
-//                            double dt0 = tdata.get(idx - 1), dc0 = cdata
-//                                    .get(idx - 1);
-//                            rslt[i] = (dt - dt0) / dt0 - (dc - dc0) / dc0;
-//                        }
+                        rslt[i] = mode.asFunction().apply(cdata, tdata, idx);
                     }
                 }
             }
@@ -169,21 +139,21 @@ public class RevisionHistory<T extends Explorable> {
 
     /**
      *
-     * @param series
+     * @param extractor
      * @return
      */
-    public TsData referenceSeries(String series) {
+    public TsData referenceSeries(Function<T, TsData> extractor) {
         T it = tsInfo(m_domainT);
-        return it == null ? null : it.getData(series, TsData.class);
+        return it == null ? null : extractor.apply(it);
     }
 
     /**
      *
-     * @param item
      * @param start
+     * @param extractor
      * @return
      */
-    public TsData revision(String item, TsPeriod start) {
+    public TsData revision(TsPeriod start, ToDoubleFunction<T> extractor) {
         TsPeriod p0 = m_domainT.getStartPeriod();
         double[] x = new double[start.until(m_domainT.getEndPeriod())];
         int len = p0.until(start) + 1;
@@ -191,39 +161,13 @@ public class RevisionHistory<T extends Explorable> {
             TsDomain rdom = TsDomain.of(p0, len);
             T output = tsInfo(rdom);
             if (output != null) {
-                Double d = output.getData(item, double.class);
-                if (d != null) {
-                    x[i]=d;
-                } else {
-                    x[i]=Double.NaN;
-                }
+                x[i] = extractor.applyAsDouble(output);
             }
         }
         return TsData.ofInternal(start, x);
     }
 
-    // / <summary>
-    // / Returns a list with the first estimations of the ts identified by
-    // "item",
-    // / during a timespan defined by [beg, end].
-    // / </summary>
-    // / <param name="item"></param>
-    // / <param name="start"></param>
-    // / <param name="beg"></param>
-    // / <returns></returns>
-    /**
-     *
-     * @param item
-     * @param beg
-     * @param end
-     * @return
-     */
-    @Deprecated
-    public List<TsData> Select(String item, LocalDate beg, LocalDate end) {
-        return select(item, beg, end);
-    }
-
-    public List<TsData> select(String item, LocalDate beg, LocalDate end) {
+    public List<TsData> select(LocalDate beg, LocalDate end, Function<T, TsData> extractor) {
         ArrayList<TsData> s = new ArrayList<>();
         TsPeriod start = m_domainT.getStartPeriod();
         TsPeriod pbeg = start.withDate(beg.atStartOfDay());
@@ -239,7 +183,7 @@ public class RevisionHistory<T extends Explorable> {
                     TsDomain dom = TsDomain.of(start, len++);
                     T output = tsInfo(dom);
                     if (output != null) {
-                        TsData q = output.getData(item, TsData.class);
+                        TsData q = extractor.apply(output);
                         if (q != null) {
                             s.add(q);
                         }
@@ -253,18 +197,18 @@ public class RevisionHistory<T extends Explorable> {
 
     /**
      *
-     * @param series
      * @param period
+     * @param extractor
      * @return
      */
-    public TsData series(String series, TsPeriod period) {
+    public TsData series(TsPeriod period, Function<T, TsData> extractor) {
         TsPeriod start = m_domainT.getStartPeriod();
         TsDomain domain = TsDomain.of(start, start.until(period) + 1);
         T it = tsInfo(domain);
         if (it == null) {
             return null;
         }
-        return it.getData(series, TsData.class);
+        return extractor.apply(it);
     }
 
     // / <summary>
@@ -276,18 +220,18 @@ public class RevisionHistory<T extends Explorable> {
     // / <returns></returns>
     /**
      *
-     * @param series
      * @param period
+     * @param extractor
      * @param mode
      * @return
      */
-    public double seriesRevision(String series, TsPeriod period,
-            DiagnosticInfo mode) {
-        return seriesRevision(series, period, mode.asFunction());
+    public double seriesRevision(TsPeriod period,
+            DiagnosticInfo mode, Function<T, TsData> extractor) {
+        return seriesRevision(period, mode.asFunction(), extractor);
     }
 
-    public double seriesRevision(String series, TsPeriod period,
-            DiagnosticTsFunction fn) {
+    public double seriesRevision(TsPeriod period,
+            DiagnosticTsFunction fn, Function<T, TsData> extractor) {
         TsPeriod start = m_domainT.getStartPeriod();
         TsDomain domain = TsDomain.of(start, start.until(period) + 1);
         T it = tsInfo(domain);
@@ -295,7 +239,7 @@ public class RevisionHistory<T extends Explorable> {
             return Double.NaN;
         }
         T iT = tsInfo(m_domainT);
-        TsData tdata = it.getData(series, TsData.class), Tdata = iT.getData(series, TsData.class);
+        TsData tdata = extractor.apply(it), Tdata = extractor.apply(iT);
         if (tdata == null || Tdata == null) {
             return Double.NaN;
         }
@@ -309,12 +253,14 @@ public class RevisionHistory<T extends Explorable> {
      * @return
      */
     public T tsInfo(TsDomain domain) {
-        T info = m_cache.get(domain);
-        if (info == null) {
-            info = m_processing.process(domain);
-            m_cache.put(domain, info);
+        synchronized (m_cache) {
+            T info = m_cache.get(domain);
+            if (info == null) {
+                info = m_processing.apply(domain);
+                m_cache.put(domain, info);
+            }
+            return info;
         }
-        return info;
     }
 
     // / <summary>
@@ -331,12 +277,12 @@ public class RevisionHistory<T extends Explorable> {
     // / <returns></returns>
     /**
      *
-     * @param item
      * @param period
      * @param start
+     * @param extractor
      * @return
      */
-    public TsData tsRevision(String item, TsPeriod period, TsPeriod start) {
+    public TsData tsRevision(TsPeriod period, TsPeriod start, Function<T, TsData> extractor) {
         TsPeriod p0 = m_domainT.getStartPeriod();
         int pos = p0.until(period);
         double[] x = new double[start.until(m_domainT.getEndPeriod())];
@@ -345,31 +291,31 @@ public class RevisionHistory<T extends Explorable> {
             TsDomain rdom = TsDomain.of(p0, len);
             T output = tsInfo(rdom);
             if (output != null) {
-                TsData t = output.getData(item, TsData.class);
+                TsData t = extractor.apply(output);
                 if (t != null) {
-                    x[i]= t.getValue(pos);
+                    x[i] = t.getValue(pos);
                 } else {
-                    x[i]=Double.NaN;
+                    x[i] = Double.NaN;
                 }
             }
         }
         return TsData.ofInternal(start, x);
     }
- 
-    public TsData tsRevision(String item, TsPeriod period, TsPeriod start, TsDataFunction fn ) {
+
+    public TsData tsRevision(TsPeriod period, TsPeriod start, TsDataFunction fn, Function<T, TsData> extractor) {
         TsPeriod p0 = m_domainT.getStartPeriod();
         int pos = p0.until(period);
-        double[] x=new double[start.until(m_domainT.getEndPeriod())];
+        double[] x = new double[start.until(m_domainT.getEndPeriod())];
         int len = p0.until(start) + 1;
         for (int i = 0; i < x.length; ++i, ++len) {
             TsDomain rdom = TsDomain.of(p0, len);
             T output = tsInfo(rdom);
             if (output != null) {
-                TsData t = output.getData(item, TsData.class);
+                TsData t = extractor.apply(output);
                 if (t != null) {
-                    x[i]=fn.apply(t, pos);
+                    x[i] = fn.apply(t, pos);
                 } else {
-                    x[i]=Double.NaN;
+                    x[i] = Double.NaN;
                 }
             }
         }

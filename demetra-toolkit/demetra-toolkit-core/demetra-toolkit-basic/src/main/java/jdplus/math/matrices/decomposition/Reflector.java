@@ -59,16 +59,16 @@ class Reflector {
         double x0 = x0();
         int m = n - 1;
         DataPointer v = v(), x=x();
-//        if (n == 1){
-//            alpha = Math.abs(x0);
-//            beta = 0;
-//            return;
-//        }
-//        if (v.test(m, w->w == 0)) {
-//            alpha = Math.abs(x0);
-//            beta = 0;
-//            x0(1);
-//        } else {
+        if (n == 1){
+            alpha = Math.abs(x0);
+            beta = 0;
+            return;
+        }
+        if (v.test(m, w->w == 0)) {
+            alpha = Math.abs(x0);
+            beta = 0;
+            x0(1);
+        } else {
             double nrm = x.norm2(n);
 //            double nrm = LapackUtility.lapy2(x0, vnrm);
             double eps = Constants.getEpsilon();
@@ -96,7 +96,7 @@ class Reflector {
             alpha = -nrm;
 
             // beta = -+ || x ||
-//        }
+        }
     }
 
     void lapply(FastMatrix M) {

@@ -29,7 +29,7 @@ public class CsvArrayOutputFactory implements SaOutputFactory {
     //public static final CsvOutputFactory Default = new CsvOutputFactory();
 
     public static final String NAME = "CsvArray";
-    private CsvArrayOutputConfiguration config;
+    private final CsvArrayOutputConfiguration config;
     private boolean enabled_ = true;
 
     public CsvArrayOutputFactory() {
@@ -67,29 +67,6 @@ public class CsvArrayOutputFactory implements SaOutputFactory {
     public void setEnabled(boolean enabled) {
         enabled_ = enabled;
     }
-
-//    @Override
-//    public Object getProperties() {
-//        try {
-//            return config.clone();
-//        }
-//        catch (Exception ex) {
-//            return null;
-//        }
-//    }
-//
-//    @Override
-//    public void setProperties(Object obj) {
-//        CsvOutputConfiguration config = (CsvOutputConfiguration) obj;
-//        if (config != null) {
-//            try {
-//                config = (CsvOutputConfiguration) config.clone();
-//            }
-//            catch (Exception ex) {
-//                config = null;
-//            }
-//        }
-//    }
 
     @Override
     public CsvArrayOutput create() {

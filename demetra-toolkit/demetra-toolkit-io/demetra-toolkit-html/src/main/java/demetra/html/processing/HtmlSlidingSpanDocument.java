@@ -32,6 +32,7 @@ import demetra.timeseries.TsPeriod;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.function.Function;
 import jdplus.stats.DescriptiveStatistics;
 import jdplus.timeseries.simplets.PeriodIterator;
 import jdplus.timeseries.simplets.TsDataView;
@@ -43,17 +44,17 @@ import jdplus.timeseries.simplets.analysis.SlidingSpans;
  *
  * @author Kristof Bayens
  */
-public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements HtmlElement {
+public class HtmlSlidingSpanDocument<I> extends AbstractHtmlElement implements HtmlElement {
 
-    private final SlidingSpans slidingspans_;
-    private final String name_;
-    private final DiagnosticInfo info_;
+    private final SlidingSpans<I> slidingspans;
+    private final Function<I, TsData> extractor;
+    private final DiagnosticInfo info;
     private double threshold_ = 0.03;
 
-    public HtmlSlidingSpanDocument(SlidingSpans slidingspans, String name, DiagnosticInfo info) {
-        slidingspans_ = slidingspans;
-        name_ = name;
-        info_ = info;
+    public HtmlSlidingSpanDocument(SlidingSpans slidingspans, DiagnosticInfo info, Function<I, TsData> extractor) {
+        this.slidingspans = slidingspans;
+        this.extractor = extractor;
+        this.info = info;
     }
 
     /**
@@ -63,7 +64,7 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements Html
      */
     @Override
     public void write(HtmlStream stream) throws IOException {
-        TsData s = slidingspans_.Statistics(name_, info_);
+        TsData s = slidingspans.statistics(info, extractor);
         if (s == null || s.getValues().count(x->Double.isNaN(x))== s.length())
             return;
 
@@ -81,7 +82,7 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements Html
 
         if (nabnormal != 0) {
             String title = "";
-            if (info_ == DiagnosticInfo.AbsoluteDifference || info_ == DiagnosticInfo.PeriodToPeriodDifference)
+            if (info == DiagnosticInfo.AbsoluteDifference || info == DiagnosticInfo.PeriodToPeriodDifference)
                 title = "Breakdowns of unstable factors and Average Maximum Differences across spans";
             else
                 title = "Breakdowns of unstable factors and Average Maximum Percent Differences across spans";
@@ -111,7 +112,7 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements Html
                 stream.open(HtmlTag.TABLEROW);
                 stream.write(new HtmlTableCell(Integer.toString(block.getStart().annualPosition()+1)).withClass(style));
                 stream.write(new HtmlTableCell(n + "").withClass(style));
-                if (info_ == DiagnosticInfo.AbsoluteDifference || info_ == DiagnosticInfo.PeriodToPeriodDifference)
+                if (info == DiagnosticInfo.AbsoluteDifference || info == DiagnosticInfo.PeriodToPeriodDifference)
                     stream.write(new HtmlTableCell(format.format(m)).withClass(style));
                 else
                     stream.write(new HtmlTableCell(format.format(100 * m)).withClass(style));
@@ -146,7 +147,7 @@ public class HtmlSlidingSpanDocument extends AbstractHtmlElement implements Html
                 stream.open(HtmlTag.TABLEROW);
                 stream.write(new HtmlTableCell(block.getStart().year() + "").withClass(style));
                 stream.write(new HtmlTableCell(n + "").withClass(style));
-                if (info_ == DiagnosticInfo.AbsoluteDifference || info_ == DiagnosticInfo.PeriodToPeriodDifference)
+                if (info == DiagnosticInfo.AbsoluteDifference || info == DiagnosticInfo.PeriodToPeriodDifference)
                     stream.write(new HtmlTableCell(format.format(m)).withClass(style));
                 else
                     stream.write(new HtmlTableCell(format.format(100 * m)).withClass(style));

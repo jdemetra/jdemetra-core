@@ -298,7 +298,7 @@ public final class ModelDescription {
             }
         }
         if (! excluded.isEmpty()){
-            variables.replaceAll(v->v.exclude(true));
+            variables.replaceAll(v->v.exclude(excluded.contains(v)));
         }
         return builder.build();
     }

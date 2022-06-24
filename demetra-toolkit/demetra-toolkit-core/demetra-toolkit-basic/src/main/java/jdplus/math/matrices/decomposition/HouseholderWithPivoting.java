@@ -52,10 +52,13 @@ public class HouseholderWithPivoting {
             hous.larfg();
             int nc = n - i - 1;
             if (nc > 0) {
-                hous.lapply(wnd.bhshrink());
+                FastMatrix m = wnd.bhshrink();
+                if (hous.beta != 0) {
+                    hous.lapply(m);
+                }
             }
             beta[i] = hous.beta;
-            qr[j]=hous.alpha;
+            qr[j] = hous.alpha;
             wnd.bvshrink();
 
         }
@@ -83,7 +86,7 @@ public class HouseholderWithPivoting {
 
         for (int i = nfixed; i < k; ++i, j += m + 1) {
             // search the column with the highest partial norm
-              int icur = i;
+            int icur = i;
             for (int l = i + 1; l < k; ++l) {
                 if (pnorm[l] > pnorm[icur]) {
                     icur = l;
@@ -101,26 +104,29 @@ public class HouseholderWithPivoting {
             hous.larfg();
             int nc = n - i - 1;
             if (nc > 0) {
-                hous.lapply(wnd.bhshrink());
+                FastMatrix fm = wnd.bhshrink();
+                if (hous.beta != 0) {
+                    hous.lapply(fm);
+                }
             }
             beta[i] = hous.beta;
-            qr[j]=hous.alpha;
+            qr[j] = hous.alpha;
             wnd.bvshrink();
             // update the norms of partial columns
             // pnorm(ci:n) = pnorm(H(i)c(i:n))-> pnorm(c(i+1:n))=sqrt(pnorm(ci:n)^2-H(i)c(i)^2)
             // =pnorm(ci:n)sqrt(1-tmp*tmp)
-            for (int l = i + 1, j0=j+m; l < k; ++l, j0+=m) {
-                if (pnorm[l] != 0){
-                    double tmp=qr[j0]/pnorm[l];
-                    tmp=Math.max(1-tmp*tmp,0);
-                    double rnorm=pnorm[l]/norm[l];
-                    double tmp2=tmp*rnorm*rnorm;
-                    if (tmp2 <= tol){
-                        c.pos(j0+1);
-                        double nrm=c.fastNorm2(m-i-1);
-                        norm[l]=pnorm[l]=nrm;
-                    }else{
-                        pnorm[l]*=Math.sqrt(tmp);
+            for (int l = i + 1, j0 = j + m; l < k; ++l, j0 += m) {
+                if (pnorm[l] != 0) {
+                    double tmp = qr[j0] / pnorm[l];
+                    tmp = Math.max(1 - tmp * tmp, 0);
+                    double rnorm = pnorm[l] / norm[l];
+                    double tmp2 = tmp * rnorm * rnorm;
+                    if (tmp2 <= tol) {
+                        c.pos(j0 + 1);
+                        double nrm = c.fastNorm2(m - i - 1);
+                        norm[l] = pnorm[l] = nrm;
+                    } else {
+                        pnorm[l] *= Math.sqrt(tmp);
                     }
                 }
             }

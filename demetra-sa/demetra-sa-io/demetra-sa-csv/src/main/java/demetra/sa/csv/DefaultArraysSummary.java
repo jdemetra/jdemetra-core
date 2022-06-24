@@ -30,18 +30,18 @@ import java.util.stream.Collectors;
  *
  * @author Kristof Bayens
  */
-public class DefaultCollectionSummary {
-    final List<SeriesSummary> items = new ArrayList<>();
+public class DefaultArraysSummary {
+    final List<ArraysSummary> items = new ArrayList<>();
 
     void add(String[] series, SaDocument rslts) {
         String name = rslts.getName();
         if (name == null)
-            name = "series" + Integer.toString(items.size() + 1);
-        items.add(new SeriesSummary(series, name, rslts));
+            name = "arrays" + Integer.toString(items.size() + 1);
+        items.add(new ArraysSummary(series, name, rslts));
     }
 
     List<String> getNames() {
-       return items.stream().map(summary->summary.getName()).toList();
+        return items.stream().map(summary->summary.getName()).toList();
     }
     
     List<String> getItems(){
@@ -52,7 +52,7 @@ public class DefaultCollectionSummary {
         return set.stream().collect(Collectors.toList());
     }
 
-    List<TsData> getSeries(String item) {
-        return items.stream().map(summary->summary.getSeries(item)).toList();
+    List<DoubleArray> getArrays(String item) {
+        return items.stream().map(summary->summary.getArray(item)).toList();
     }
 }

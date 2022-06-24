@@ -91,7 +91,7 @@ public final class ConcentratedLikelihoodComputer {
     private final boolean xfixed;
     private final boolean fullResiduals;
 
-    public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER = new ConcentratedLikelihoodComputer(null, RCOND, true, false);
+    public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER = new ConcentratedLikelihoodComputer(null, RCOND, false, true);
     public static final ConcentratedLikelihoodComputer DEFAULT_FULL_COMPUTER = new ConcentratedLikelihoodComputer(null, RCOND, false, true);
 
     public ConcentratedLikelihoodComputer(final ArmaFilter filter, double rcond, boolean xfixed, boolean fullResiduals) {

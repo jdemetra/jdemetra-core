@@ -64,12 +64,23 @@ public class QRLeastSquaresSolver {
         qr.applyQt(y);
         int m = qr.m(), n = qr.n();
         DoubleSeq e = DoubleSeq.of(y, rank, m - rank);
+        double ssq=e.ssq();
+        if (! Double.isFinite(ssq))
+            return null;
         // Solve R*X = Y;
         UpperTriangularMatrix.solveUx(qr.rawR().extract(0, rank, 0, rank), DataBlock.of(y));
         int[] pivot = qr.pivot();
         DoubleSeq b;
         if (pivot == null) {
-            b = DoubleSeq.of(y, 0, rank);
+            if (rank == n) {
+                b = DoubleSeq.of(y, 0, rank);
+            } else {
+                double[] tmp = new double[n];
+                for (int i = 0; i < rank; ++i) {
+                    tmp[i] = y[i];
+                }
+                b = DoubleSeq.of(tmp);
+            }
         } else {
             double[] tmp = new double[n];
             for (int i = 0; i < rank; ++i) {
@@ -78,7 +89,7 @@ public class QRLeastSquaresSolver {
             b = DoubleSeq.of(tmp);
         }
 
-        return new QRLeastSquaresSolution(qr, rank, b, e, e.ssq());
+        return new QRLeastSquaresSolution(qr, rank, b, e, ssq);
     }
 
 }

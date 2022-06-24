@@ -44,7 +44,7 @@ public class AdvancedResidualSeasonalityDiagnostics implements Diagnostics {
                 return null;
             TsData sa = rsa.getSeries();
             TsData i = ri.getSeries();
-            if (sa == null && i == null) {
+            if (sa == null || i == null) {
                 return null;
             }
             boolean isignif = SaDiagnosticsUtility.isSignificant(i.getValues(), sa.getValues());

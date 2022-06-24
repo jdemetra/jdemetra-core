@@ -13,8 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
+ */
 package demetra.sa.csv;
 
 import java.io.File;
@@ -23,21 +22,19 @@ import java.util.List;
 
 /**
  *
- * @author Jean Palate & BAYENSK
+ * @author Jean Palate
  */
-public class CsvArrayOutputConfiguration implements Cloneable {
-    
-    public static final String NAME="series";
+public final class CsvArrayOutputConfiguration implements Cloneable {
 
-    public static final String[] defOutput = {"y", "t", "sa", "s", "i", "ycal"};
+    public static final String NAME = "v";
+
     private CsvLayout layout = CsvLayout.List;
-    private File folder ;
-    private String name=NAME;
-    private String[] series;
+    private File folder;
+    private String name = NAME;
+    private String[] arrays;
     private boolean fullName;
 
     public CsvArrayOutputConfiguration() {
-        series = defOutput;
         fullName = true;
     }
 
@@ -57,19 +54,20 @@ public class CsvArrayOutputConfiguration implements Cloneable {
         folder = value;
     }
 
-     public String getFilePrefix() {
+    public String getFilePrefix() {
         return name;
     }
+
     public void setFilePrefix(String value) {
         name = value;
     }
 
-    public List<String> getSeries() {
-        return Arrays.asList(series);
+    public List<String> getArrays() {
+        return Arrays.asList(arrays);
     }
 
-    public void setSeries(List<String> value) {
-        series =  value.toArray(new String[value.size()]);
+    public void setArrays(List<String> value) {
+        arrays = value.toArray(String[]::new);
     }
 
     public boolean isFullName() {
@@ -84,8 +82,7 @@ public class CsvArrayOutputConfiguration implements Cloneable {
     public CsvArrayOutputConfiguration clone() {
         try {
             return (CsvArrayOutputConfiguration) super.clone();
-        }
-        catch (CloneNotSupportedException ex) {
+        } catch (CloneNotSupportedException ex) {
             return null;
         }
     }

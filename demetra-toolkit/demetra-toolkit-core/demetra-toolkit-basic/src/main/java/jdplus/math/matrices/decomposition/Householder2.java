@@ -50,7 +50,7 @@ public class Householder2 {
         qr = A.toArray();
         m = A.getRowsCount();
         n = A.getColumnsCount();
-        beta=new double[n];
+        beta = new double[n];
     }
 
     private void householder() {
@@ -63,10 +63,13 @@ public class Householder2 {
             hous.larfg();
             int nc = n - i - 1;
             if (nc > 0) {
-                hous.lapply(wnd.bhshrink());
+                FastMatrix fm = wnd.bhshrink();
+                if (hous.beta != 0) {
+                    hous.lapply(fm);
+                }
             }
             beta[i] = hous.beta;
-            qr[j]=hous.alpha;
+            qr[j] = hous.alpha;
             wnd.bvshrink();
         }
     }

@@ -34,41 +34,41 @@ import java.util.Optional;
  */
 public class CsvArrayOutput implements Output<SaDocument> {
 
-    CsvArrayOutputConfiguration config_;
-    DefaultCollectionSummary summary_;
-    private File folder_;
+    private final CsvArrayOutputConfiguration config;
+    private DefaultArraysSummary summary;
+    private File folder;
 
     public CsvArrayOutput(CsvArrayOutputConfiguration config) {
-        config_ = (CsvArrayOutputConfiguration) config.clone();
+        this.config = (CsvArrayOutputConfiguration) config.clone();
     }
 
     @Override
     public void process(SaDocument document) {
-        List<String> series = config_.getSeries();
-        summary_.add(series.toArray(String[]::new), document);
+        List<String> series = config.getArrays();
+        summary.add(series.toArray(String[]::new), document);
     }
 
     @Override
     public void start(Object context) {
-        summary_ = new DefaultCollectionSummary();
-        folder_ = Paths.folderFromContext(config_.getFolder(), context);
+        summary = new DefaultArraysSummary();
+        folder = Paths.folderFromContext(config.getFolder(), context);
     }
 
     @Override
     public void end(Object context) throws Exception {
 
-        for (String item : summary_.getItems()) {
-            List<TsData> series = summary_.getSeries(item);
-            Optional<TsData> any = series.stream().filter(s -> s != null && !s.isEmpty()).findAny();
+        for (String item : summary.getItems()) {
+            List<DoubleArray> arrays = summary.getArrays(item);
+            Optional<DoubleArray> any = arrays.stream().filter(s -> s != null && !s.isEmpty()).findAny();
             if (any.isPresent()) {
-                String nfile = config_.getFilePrefix();
+                String nfile = config.getFilePrefix();
                 String c = item.replaceAll("[?*.]", "_");
                 nfile += "_" + StringFormatter.cleanup(c);
                 nfile = Paths.changeExtension(nfile, "csv");
-                write(new File(Paths.folder(folder_), nfile), summary_.getNames(), series);
+                write(new File(Paths.folder(folder), nfile), summary.getNames(), arrays);
             }
         }
-        summary_ = null;
+        summary = null;
     }
 
     @Override
@@ -81,12 +81,12 @@ public class CsvArrayOutput implements Output<SaDocument> {
         return true;
     }
 
-    private void write(File file, List<String> names, List<TsData> s) throws Exception {
+    private void write(File file, List<String> names, List<DoubleArray> s) throws Exception {
         try ( FileOutputStream matrix = new FileOutputStream(file)) {
             try ( OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
-                TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
-                fmt.setFullName(config_.isFullName());
-                fmt.setPresentation(config_.getPresentation());
+                ArraysCsvFormatter fmt = new ArraysCsvFormatter();
+                fmt.setFullName(config.isFullName());
+                fmt.setPresentation(config.getPresentation());
                 fmt.write(s, names, writer);
             }
         }

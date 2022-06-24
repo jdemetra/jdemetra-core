@@ -22,6 +22,8 @@ import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import nbbrd.design.Development;
 
 /**
@@ -30,7 +32,7 @@ import nbbrd.design.Development;
  * @param <T>
  */
 @Development(status = Development.Status.Preliminary)
-public class MovingProcessing<T extends Explorable> {
+public class MovingProcessing<T> {
 
     //private ITsProcessing<T> m_processing;
     private final MovingProcessingFacade m_processing;
@@ -40,9 +42,9 @@ public class MovingProcessing<T extends Explorable> {
      * @param processing
      * @param domain
      */
-    public MovingProcessing(ITsProcessing<T> processing,
-            TsDomain domain) {
-        m_processing = new MovingProcessingFacade(processing, domain);
+    public MovingProcessing(
+            TsDomain domain, Function<TsDomain, T> processing) {
+        m_processing = new MovingProcessingFacade(domain, processing);
 
     }
 
@@ -50,7 +52,7 @@ public class MovingProcessing<T extends Explorable> {
      *
      * @return
      */
-    public ITsProcessing<T> getProcessing() {
+    public Function<TsDomain, T> getProcessing() {
         return m_processing.getProcessing();
     }
 
@@ -96,15 +98,14 @@ public class MovingProcessing<T extends Explorable> {
 
     /**
      *
-     * @param key
+     * @param extractor
      * @return
      */
     /*public double[] movingInfo(String key) {
         return movingInfo(key, m_processing.getStart(), m_processing.getLength(), m_processing.getIncrement());
     }*/
-    
-    public Map<TsDomain, Double> movingInfo(String key) {
-        return movingInfo(key, m_processing.getStart(), m_processing.getLength(), m_processing.getIncrement());
+    public Map<TsDomain, Double> movingInfo(ToDoubleFunction<T> extractor) {
+        return movingInfo(m_processing.getStart(), m_processing.getLength(), m_processing.getIncrement(), extractor);
     }
 
     /**
@@ -112,6 +113,7 @@ public class MovingProcessing<T extends Explorable> {
      * @param key
      * @param start
      * @param length
+     * @param extractor
      * @param increment
      * @return
      */
@@ -133,24 +135,17 @@ public class MovingProcessing<T extends Explorable> {
 
         return rslt.toArray();
     }*/
-    
-    public Map<TsDomain, Double> movingInfo(String key, TsPeriod start, int length,
-            int increment) {
+    public Map<TsDomain, Double> movingInfo(TsPeriod start, int length,
+            int increment, ToDoubleFunction<T> extractor) {
         Map<TsDomain, Double> map = new LinkedHashMap<>();
         DoubleList rslt = new DoubleList();
         TsDomain domain = TsDomain.of(start, length);
 
-        while (! domain.end().isAfter(m_processing.getDomain().end())) {
-            Double data = m_processing.getData(key, domain);
-
-            if (data != null) {
-                map.put(domain, data);
-            } else {
-                map.put(domain, Double.NaN);
-            }
+        while (!domain.end().isAfter(m_processing.getDomain().end())) {
+            double data = m_processing.getData(domain, extractor);
+            map.put(domain, data);
             domain = domain.move(increment);
         }
-
         return map;
     }
 

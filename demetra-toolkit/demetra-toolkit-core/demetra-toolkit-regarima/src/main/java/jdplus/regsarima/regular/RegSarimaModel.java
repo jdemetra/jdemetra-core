@@ -120,8 +120,13 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                 Parameter[] p = new Parameter[nfree];
                 for (int j = 0; j < nfree; ++j) {
                     double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
-                    p[j] = Parameter.estimated(c);
-                    regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                    if (e == 0) {
+                        p[j] = Parameter.zero();
+                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, 0, 0, 0));
+                    } else {
+                        p[j] = Parameter.estimated(c);
+                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                    }
                 }
                 variables[k++] = var.withCoefficients(p);
             } else if (nfree > 0) {
