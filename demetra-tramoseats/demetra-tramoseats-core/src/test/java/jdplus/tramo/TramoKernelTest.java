@@ -552,7 +552,7 @@ public class TramoKernelTest {
                 ++n;
             }
         }
-        assertTrue(n >= 48);
+        assertTrue(n >= 45);
         processor = TramoKernel.of(TramoSpec.TRfull, null);
         oprocessor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
         n = 0;

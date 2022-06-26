@@ -65,11 +65,11 @@ class Reflector {
 //            beta = 0;
 //            return;
 //        }
-        if (m > 0 && v.test(m, w -> w == 0)) {
-            alpha = Math.abs(x0);
-            beta = 0;
-            x0(1);
-        } else {
+//        if (m > 0 && v.test(m, w -> w == 0)) {
+//            alpha = Math.abs(x0);
+//            beta = 0;
+//            x0(1);
+//        } else {
             double nrm = x.norm2(n);
 //            double nrm = LapackUtility.lapy2(x0, vnrm);
             double eps = Constants.getEpsilon();
@@ -97,7 +97,7 @@ class Reflector {
             alpha = -nrm;
 
             // beta = -+ || x ||
-        }
+//        }
     }
 
     void lapply(FastMatrix M) {

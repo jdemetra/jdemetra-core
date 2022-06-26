@@ -26,12 +26,12 @@ import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
 import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.linearsystem.QRLeastSquaresSolver;
-import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import nbbrd.design.Immutable;
 
 /**
@@ -91,7 +91,7 @@ public final class ConcentratedLikelihoodComputer {
     private final boolean xfixed;
     private final boolean fullResiduals;
 
-    public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER = new ConcentratedLikelihoodComputer(null, RCOND, false, true);
+    public static final ConcentratedLikelihoodComputer DEFAULT_COMPUTER = new ConcentratedLikelihoodComputer(null, RCOND, true, false);
     public static final ConcentratedLikelihoodComputer DEFAULT_FULL_COMPUTER = new ConcentratedLikelihoodComputer(null, RCOND, false, true);
 
     public ConcentratedLikelihoodComputer(final ArmaFilter filter, double rcond, boolean xfixed, boolean fullResiduals) {
