@@ -60,32 +60,37 @@ public class TramoSeatsKernel {
         if (log == null) {
             log = ProcessingLog.dummy();
         }
-        // Step 0. Preliminary checks
-        TsData sc = preliminary.check(s, log);
-        // Step 1. Tramo
-        RegSarimaModel preprocessing = tramo.process(sc, log);
-        // Step 2. Link between tramo and seats
-        SeatsModelSpec smodel = of(preprocessing);
-        // Step 3. Seats
-        SeatsResults srslts = seats.process(smodel, log);
-        // Step 4. Final decomposition
-        SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
-        // Step 5. Diagnostics
-        TramoSeatsDiagnostics diagnostics=TramoSeatsDiagnostics.of(preprocessing, srslts, finals);
-        
-        return TramoSeatsResults.builder()
-                .preprocessing(preprocessing)
-                .decomposition(srslts)
-                .finals(finals)
-                .diagnostics(diagnostics)
-                .log(log)
-                .build();
+        try {
+            // Step 0. Preliminary checks
+            TsData sc = preliminary.check(s, log);
+            // Step 1. Tramo
+            RegSarimaModel preprocessing = tramo.process(sc, log);
+            // Step 2. Link between tramo and seats
+            SeatsModelSpec smodel = of(preprocessing);
+            // Step 3. Seats
+            SeatsResults srslts = seats.process(smodel, log);
+            // Step 4. Final decomposition
+            SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
+            // Step 5. Diagnostics
+            TramoSeatsDiagnostics diagnostics = TramoSeatsDiagnostics.of(preprocessing, srslts, finals);
+
+            return TramoSeatsResults.builder()
+                    .preprocessing(preprocessing)
+                    .decomposition(srslts)
+                    .finals(finals)
+                    .diagnostics(diagnostics)
+                    .log(log)
+                    .build();
+        } catch (Exception err) {
+            log.error(err);
+            return null;
+        }
     }
 
     private static SeatsModelSpec of(RegSarimaModel model) {
         TsData series = model.interpolatedSeries(false);
-        TsData det = model.deterministicEffect(null, v->! SaVariable.isRegressionEffect(v, ComponentType.Undefined)  );
-        det=model.backTransform(det, true);
+        TsData det = model.deterministicEffect(null, v -> !SaVariable.isRegressionEffect(v, ComponentType.Undefined));
+        det = model.backTransform(det, true);
         // we remove all the regression effects except the undefined ones (which will be included in the different components)
         if (model.getDescription().isLogTransformation()) {
             series = TsData.divide(series, det);

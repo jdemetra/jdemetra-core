@@ -143,7 +143,7 @@ public class SeatsKernel {
                 .parametersCutOff(model.isParametersCutOff())
                 .modelChanged(model.isModelChanged())
                 .ucarimaModel(model.getUcarimaModel())
-                .compactUcarimaModel(model.compactUcarimaModel(false))
+                .compactUcarimaModel(model.compactUcarimaModel(false, false))
                 .initialComponents(model.getInitialComponents())
                 .finalComponents(model.getFinalComponents())
                 .build();

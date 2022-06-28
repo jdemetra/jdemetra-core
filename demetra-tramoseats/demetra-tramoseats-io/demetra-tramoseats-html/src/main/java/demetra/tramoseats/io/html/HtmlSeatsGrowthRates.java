@@ -118,7 +118,7 @@ public class HtmlSeatsGrowthRates extends AbstractHtmlElement implements HtmlEle
         stream.close(HtmlTag.TABLEROW);
         for (int i = gs.length() - 1, j = 0; i >= gs.length() - np; --i, ++j) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(gs.getDomain().get(i).toString()).withWidth(100));
+            stream.write(new HtmlTableCell(gs.getDomain().get(i).display()).withWidth(100));
             if (mul) {
                 stream.write(new HtmlTableCell(pc2.format(gs.getValue(i) * .01)).withWidth(100));
                 stream.write(new HtmlTableCell(pc2.format(Math.exp(re[j]) - 1)).withWidth(100));

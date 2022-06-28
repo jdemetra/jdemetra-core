@@ -20,7 +20,6 @@ package demetra.sa.csv;
 
 import demetra.information.Explorable;
 import demetra.timeseries.TsData;
-import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -29,8 +28,7 @@ import java.util.*;
  */
 public class DefaultSummary {
     private LinkedHashMap<String, TsData> series_=new LinkedHashMap<>();
-    private String name_;
-    private String xmlmodel_;
+    private final String name_;
 
     public DefaultSummary(String name, Explorable results, List<String> items) {
         name_ = name;
@@ -38,16 +36,6 @@ public class DefaultSummary {
             items.forEach(o -> series_.put(o, results.getData(o, TsData.class)));
         }
     }
-
-//    public void setModel(ISaSpecification spec) {
-//        AbstractXmlSaSpecification xspec = AbstractXmlSaSpecification.create(spec);
-//        if (xspec != null) {
-//            StringWriter writer = new StringWriter();
-//            xspec.serialize(writer);
-//            writer.flush();
-//            xmlmodel_ = writer.toString();
-//        }
-//    }
 
     public TsData getSeries(String item) {
         return series_.get(item);
@@ -61,10 +49,4 @@ public class DefaultSummary {
         return name_;
     }
 
-    public String getXmlModel() {
-        return xmlmodel_;
-    }
-    public void setXmlModel(String value) {
-        xmlmodel_ = value;
-    }
 }

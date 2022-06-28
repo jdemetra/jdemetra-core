@@ -48,7 +48,7 @@ public class MatrixEstimator implements IComponentsEstimator {
         TsData s = model.getTransformedSeries();
         SeriesDecomposition.Builder builder = SeriesDecomposition.builder(DecompositionMode.Additive);
         ComponentType[] cmps = model.componentsType();
-        UcarimaModel ucm = model.compactUcarimaModel(true);
+        UcarimaModel ucm = model.compactUcarimaModel(true, true);
         McElroyEstimates mc = new McElroyEstimates();
         mc.setForecastsCount(model.extrapolationCount(nfcasts));
         // TODO backcasts

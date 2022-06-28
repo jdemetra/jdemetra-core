@@ -6,8 +6,8 @@
 package jdplus.math.matrices.decomposition;
 
 import demetra.math.Constants;
-import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.DataPointer;
+import jdplus.math.matrices.FastMatrix;
 
 /**
  *
@@ -54,17 +54,18 @@ class Reflector {
     }
 
     void larfg() {
-        if (n == 0)
+        if (n == 0) {
             return;
+        }
         double x0 = x0();
         int m = n - 1;
-        DataPointer v = v(), x=x();
+        DataPointer v = v(), x = x();
 //        if (n == 1){
 //            alpha = Math.abs(x0);
 //            beta = 0;
 //            return;
 //        }
-//        if (v.test(m, w->w == 0)) {
+//        if (m > 0 && v.test(m, w -> w == 0)) {
 //            alpha = Math.abs(x0);
 //            beta = 0;
 //            x0(1);

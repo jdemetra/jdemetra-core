@@ -236,6 +236,6 @@ public final class WienerKolmogorovDiagnostics {
     }
 
     public DoubleSeq getStationaryEstimate(int i) {
-        return DoubleSeq.of(m_stdata[i]);
+        return m_stdata[i] == null ? null : DoubleSeq.of(m_stdata[i]);
     }
 }

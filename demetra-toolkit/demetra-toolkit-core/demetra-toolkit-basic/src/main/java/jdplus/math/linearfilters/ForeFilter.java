@@ -23,6 +23,7 @@ import jdplus.math.polynomials.Polynomial;
 import java.util.function.IntToDoubleFunction;
 import jdplus.math.polynomials.RootsSolver;
 import jdplus.math.polynomials.PolynomialException;
+import jdplus.math.polynomials.UnitRootsSolver;
 
 /**
  *
@@ -296,54 +297,54 @@ public final class ForeFilter implements IFiniteFilter {
         return polynomial.toString('F', true);
     }
 
-//    /**
-//     *
-//     */
-//    public static class StationaryTransformation {
-//
-//        /**
-//         *
-//         */
-//        /**
-//         *
-//         */
-//        public ForeFilter unitRoots, stationaryFilter;
-//
-//        private int freq;
-//
-//        /**
-//         *
-//         */
-//        public StationaryTransformation() {
-//            this.freq = 0;
-//        }
-//
-//        /**
-//         *
-//         * @param freq
-//         */
-//        public StationaryTransformation(int freq) {
-//            this.freq = freq;
-//        }
-//
-//        /**
-//         *
-//         * @param f
-//         * @return
-//         */
-//        public boolean transform(ForeFilter f) {
-//            UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
-//                    : new UnitRootsSolver(freq);
-//            urs.factorize(f.polynomial);
-//            unitRoots = new ForeFilter(urs.getUnitRoots().toPolynomial());
-//            if (unitRoots.getDegree() == 0) {
-//                stationaryFilter = f;
-//                return false;
-//            } else {
-//                stationaryFilter = new ForeFilter(urs.remainder());
-//                return true;
-//            }
-//        }
-//    }
-//
+    /**
+     *
+     */
+    public static class StationaryTransformation {
+
+        /**
+         *
+         */
+        /**
+         *
+         */
+        public ForeFilter unitRoots, stationaryFilter;
+
+        private final int freq;
+
+        /**
+         *
+         */
+        public StationaryTransformation() {
+            this.freq = 0;
+        }
+
+        /**
+         *
+         * @param freq
+         */
+        public StationaryTransformation(int freq) {
+            this.freq = freq;
+        }
+
+        /**
+         *
+         * @param f
+         * @return
+         */
+        public boolean transform(ForeFilter f) {
+            UnitRootsSolver urs = freq == 0 ? new UnitRootsSolver()
+                    : new UnitRootsSolver(freq);
+            urs.factorize(f.polynomial);
+            unitRoots = new ForeFilter(urs.getUnitRoots().asPolynomial());
+            if (unitRoots.getDegree() == 0) {
+                stationaryFilter = f;
+                return false;
+            } else {
+                stationaryFilter = new ForeFilter(urs.remainder());
+                return true;
+            }
+        }
+    }
+
 }

@@ -17,7 +17,6 @@
 package jdplus.math.linearsystem;
 
 import demetra.data.DoubleSeq;
-import demetra.math.Constants;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.UpperTriangularMatrix;
@@ -69,7 +68,15 @@ public class QRLeastSquaresSolver {
         int[] pivot = qr.pivot();
         DoubleSeq b;
         if (pivot == null) {
-            b = DoubleSeq.of(y, 0, rank);
+            if (rank == n) {
+                b = DoubleSeq.of(y, 0, rank);
+            } else {
+                double[] tmp = new double[n];
+                for (int i = 0; i < rank; ++i) {
+                    tmp[i] = y[i];
+                }
+                b = DoubleSeq.of(tmp);
+            }
         } else {
             double[] tmp = new double[n];
             for (int i = 0; i < rank; ++i) {

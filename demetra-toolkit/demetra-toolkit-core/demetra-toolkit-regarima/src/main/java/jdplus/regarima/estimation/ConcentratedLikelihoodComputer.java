@@ -26,12 +26,12 @@ import jdplus.data.DataBlock;
 import jdplus.data.LogSign;
 import jdplus.math.linearsystem.QRLeastSquaresSolution;
 import jdplus.math.linearsystem.QRLeastSquaresSolver;
-import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.regarima.RegArimaModel;
 import jdplus.regarima.RegArmaModel;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import nbbrd.design.Immutable;
 
 /**

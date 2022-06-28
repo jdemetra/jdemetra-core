@@ -47,6 +47,10 @@ public class TramoSeatsDocument extends AbstractTsDocument<TramoSeatsSpec, Tramo
         super(TramoSeatsSpec.RSAfull);
         this.context = context;
     }
+    
+    public ModellingContext getContext(){
+        return context;
+    }
 
     @Override
     protected TramoSeatsResults internalProcess(TramoSeatsSpec spec, TsData data) {

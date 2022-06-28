@@ -41,6 +41,9 @@ import jdplus.data.DataBlockIterator;
 import jdplus.data.interpolation.DataInterpolator;
 import jdplus.data.transformation.LogJacobian;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.UpperTriangularMatrix;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
+import jdplus.math.matrices.decomposition.QRDecomposition;
 import jdplus.modelling.regression.Regression;
 import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
@@ -255,6 +258,7 @@ public final class ModelDescription {
      * @return
      */
     public RegArimaModel<SarimaModel> regarima() {
+        variables.replaceAll(v -> v.exclude(false));
         buildTransformation();
         sortVariables();
         TsDomain domain = getEstimationDomain();
@@ -297,9 +301,65 @@ public final class ModelDescription {
                 }
             }
         }
-        if (! excluded.isEmpty()){
-            variables.replaceAll(v->v.exclude(true));
+        if (!excluded.isEmpty()) {
+            variables.replaceAll(v -> v.exclude(excluded.contains(v)));
         }
+        return check(builder.build());
+    }
+
+    private RegArimaModel<SarimaModel> check(RegArimaModel<SarimaModel> reg0) {
+        FastMatrix x = reg0.differencedModel().getX();
+        HouseholderWithPivoting hous = new HouseholderWithPivoting();
+        int curx = reg0.getMissingValuesCount();
+        if (reg0.isMean())
+            ++curx;
+        int x0=curx;
+        QRDecomposition qr = hous.decompose(x, curx);
+        int rank = UpperTriangularMatrix.rank(qr.rawR(), 1e-12);
+        if (rank == qr.n()) {
+            return reg0;
+        }
+        RegArimaModel.Builder builder = RegArimaModel.<SarimaModel>builder()
+                .y(reg0.getY())
+                .missing(reg0.missing())
+                .meanCorrection(reg0.isMean())
+                .arima(reg0.arima());
+        List<Variable> nvars = new ArrayList<>();
+        int[] pivot = qr.pivot();
+        int[] pos = pivot == null ? null : new int[pivot.length];
+        if (pivot != null){
+            for (int i=0; i<pivot.length; ++i){
+                pos[pivot[i]]=i;
+            }
+        }
+        List<DoubleSeq> all = reg0.getX();
+        for (Variable v : variables) {
+            if (!v.isPreadjustment()) {
+                int dim = v.dim();
+                for (int k = 0; k < dim; ++k) {
+                    if (v.getCoefficient(k).isFree()) {
+                        boolean redundant = pos == null ? curx >= rank : pos[curx] >= rank;
+                        if (redundant) {
+                            Parameter[] c = v.getCoefficients();
+                            if (c == null) {
+                                c = Parameter.make(dim);
+                            }
+                            c[k] = Parameter.zero();
+                            v = v.withCoefficients(c);
+                        }else{
+                            builder.addX(all.get(curx-x0));
+                        }
+                        ++curx;
+                    }
+                }
+                if (v.isPreadjustment()) {
+                    v=v.exclude(true);
+                }
+            }
+            nvars.add(v);
+        }
+        variables.clear();
+        variables.addAll(nvars);
         return builder.build();
     }
 
@@ -596,9 +656,9 @@ public final class ModelDescription {
      * position take into account an eventual mean correction.
      *
      * @param variable
-     * @return -1 if not found, otherwise the position of the first
-     * free coefficient of the considered variable, corrected for the presence
-     * of a mean correction (which is always the first one).
+     * @return -1 if not found, otherwise the position of the first free
+     * coefficient of the considered variable, corrected for the presence of a
+     * mean correction (which is always the first one).
      */
     public int findPosition(ITsVariable variable) {
         sortVariables();

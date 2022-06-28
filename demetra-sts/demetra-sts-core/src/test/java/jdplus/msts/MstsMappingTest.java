@@ -6,11 +6,18 @@
 package jdplus.msts;
 
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
+import demetra.data.MatrixSerializer;
+import demetra.math.matrices.Matrix;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import jdplus.arima.ssf.SsfAr;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
-import demetra.data.MatrixSerializer;
 import jdplus.math.functions.IParametersDomain;
 import jdplus.math.functions.ParamValidation;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.estimation.SarimaMapping;
@@ -19,21 +26,13 @@ import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.implementations.Loading;
 import jdplus.ssf.implementations.MultivariateCompositeSsf;
-import jdplus.arima.ssf.SsfAr;
-import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
-import jdplus.sts.LocalLevel;
-import jdplus.sts.LocalLinearTrend;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.multivariate.SsfMatrix;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import org.junit.jupiter.api.Test;
-import demetra.data.DoubleSeq;
-import demetra.math.matrices.Matrix;
+import jdplus.sts.LocalLevel;
+import jdplus.sts.LocalLinearTrend;
 
 /**
  *
@@ -44,7 +43,7 @@ public class MstsMappingTest {
     public MstsMappingTest() {
     }
 
-    @Test
+    //@Test
     public void testSimple() throws URISyntaxException, IOException {
 
         File file = Data.copyToTempFile(MultivariateCompositeSsf.class.getResource("/mssf1"));

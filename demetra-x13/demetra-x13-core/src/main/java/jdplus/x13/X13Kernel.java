@@ -76,35 +76,42 @@ public class X13Kernel {
     }
 
     public X13Results process(TsData s, ProcessingLog log) {
-        // Step 0. Preliminary checks
-        TsData sc = preliminary.check(s, log);
-        // Step 1. Preprocessing
-        RegSarimaModel preprocessing = regarima.process(sc, log);
-        // Step 2. Link between regarima and x11
-        int nb = spec.getBackcastHorizon();
-        if (nb < 0) {
-            nb = -nb * s.getAnnualFrequency();
+        if (log == null)
+            log=ProcessingLog.dummy();
+        try {
+            // Step 0. Preliminary checks
+            TsData sc = preliminary.check(s, log);
+            // Step 1. Preprocessing
+            RegSarimaModel preprocessing = regarima.process(sc, log);
+            // Step 2. Link between regarima and x11
+            int nb = spec.getBackcastHorizon();
+            if (nb < 0) {
+                nb = -nb * s.getAnnualFrequency();
+            }
+            int nf = spec.getForecastHorizon();
+            if (nf < 0) {
+                nf = -nf * s.getAnnualFrequency();
+            }
+            X13Preadjustment.Builder builder = X13Preadjustment.builder();
+            TsData alin = initialStep(preprocessing, nb, nf, builder);
+            X13Preadjustment preadjustment = builder.build();
+            // Step 3. X11
+            X11Kernel x11 = new X11Kernel();
+            X11Spec nspec = updateSpec(spec, preprocessing);
+            X11Results xr = x11.process(alin, nspec);
+            X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
+            return X13Results.builder()
+                    .preprocessing(preprocessing)
+                    .preadjustment(preadjustment)
+                    .decomposition(xr)
+                    .finals(finals)
+                    .diagnostics(X13Diagnostics.of(preprocessing, preadjustment, xr, finals))
+                    .log(log)
+                    .build();
+        } catch (Exception err) {
+            log.error(err);
+            return null;
         }
-        int nf = spec.getForecastHorizon();
-        if (nf < 0) {
-            nf = -nf * s.getAnnualFrequency();
-        }
-        X13Preadjustment.Builder builder = X13Preadjustment.builder();
-        TsData alin = initialStep(preprocessing, nb, nf, builder);
-        X13Preadjustment preadjustment = builder.build();
-        // Step 3. X11
-        X11Kernel x11 = new X11Kernel();
-        X11Spec nspec = updateSpec(spec, preprocessing);
-        X11Results xr = x11.process(alin, nspec);
-        X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
-        return X13Results.builder()
-                .preprocessing(preprocessing)
-                .preadjustment(preadjustment)
-                .decomposition(xr)
-                .finals(finals)
-                .diagnostics(X13Diagnostics.of(preprocessing, preadjustment, xr, finals))
-                .log(log)
-                .build();
     }
 
     private TsData initialStep(RegSarimaModel model, int nb, int nf, X13Preadjustment.Builder astep) {

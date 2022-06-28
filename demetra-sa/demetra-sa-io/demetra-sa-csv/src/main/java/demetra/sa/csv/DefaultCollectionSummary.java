@@ -31,34 +31,28 @@ import java.util.stream.Collectors;
  * @author Kristof Bayens
  */
 public class DefaultCollectionSummary {
-    final List<SeriesSummary> items_ = new ArrayList<>();
+    final List<SeriesSummary> items = new ArrayList<>();
 
     void add(String[] series, SaDocument rslts) {
         String name = rslts.getName();
         if (name == null)
-            name = "series" + Integer.toString(items_.size() + 1);
-        items_.add(new SeriesSummary(series, name, rslts));
+            name = "series" + Integer.toString(items.size() + 1);
+        items.add(new SeriesSummary(series, name, rslts));
     }
 
     List<String> getNames() {
-        String[] names = new String[items_.size()];
-        for (int i = 0; i < names.length; ++i)
-            names[i] = items_.get(i).name;
-        return Arrays.asList(names);
+       return items.stream().map(summary->summary.getName()).toList();
     }
     
     List<String> getItems(){
         LinkedHashSet<String> set=new LinkedHashSet<>();
-        items_.stream().forEach((summary) -> {
+        items.stream().forEach((summary) -> {
             summary.fill(set);
         });
         return set.stream().collect(Collectors.toList());
     }
 
     List<TsData> getSeries(String item) {
-        TsData[] s = new TsData[items_.size()];
-        for (int i = 0; i < s.length; ++i)
-            s[i] = items_.get(i).getSeries(item);
-        return Arrays.asList(s);
+        return items.stream().map(summary->summary.getSeries(item)).toList();
     }
 }

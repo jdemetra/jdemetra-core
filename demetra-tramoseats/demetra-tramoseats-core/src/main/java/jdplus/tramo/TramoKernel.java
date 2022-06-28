@@ -18,7 +18,6 @@ package jdplus.tramo;
 
 import jdplus.tramo.internal.TramoUtility;
 import nbbrd.design.Development;
-import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.regression.ModellingContext;
 import jdplus.regsarima.regular.IRegressionModule;
@@ -209,8 +208,9 @@ public class TramoKernel implements RegSarimaProcessor {
 
     @Override
     public RegSarimaModel process(TsData originalTs, ProcessingLog log) {
-        if (log == null)
-            log=ProcessingLog.dummy();
+        if (log == null) {
+            log = ProcessingLog.dummy();
+        }
         log.push(TRAMO);
         ModelDescription desc = build(originalTs, null);
         if (desc == null) {
@@ -219,7 +219,7 @@ public class TramoKernel implements RegSarimaProcessor {
         RegSarimaModelling modelling = RegSarimaModelling.of(desc, log);
         RegSarimaModel rslt = ami(modelling, log);
         log.pop();
-        
+
         return rslt;
     }
 
@@ -436,7 +436,7 @@ public class TramoKernel implements RegSarimaProcessor {
     }
 
     private boolean needOutliers(ModelDescription desc) {
-        
+
         if (!isOutliersDetection()) {
             return false;
         }
@@ -548,7 +548,7 @@ public class TramoKernel implements RegSarimaProcessor {
         SarimaModel curmodel = context.getDescription().arima();
         SarimaOrders curspec = curmodel.orders();
 
-         ModelStatistics stats = ModelStatistics.of(context.getDescription(), context.getEstimation().getConcentratedLikelihood());
+        ModelStatistics stats = ModelStatistics.of(context.getDescription(), context.getEstimation().getConcentratedLikelihood());
         double plbox = 1 - stats.getLjungBoxPvalue();
         double rvr = stats.getSe();
         if (refAuto != null) {
@@ -685,7 +685,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private void testTransformation(RegSarimaModelling modelling) {
         TransformSpec tspec = spec.getTransform();
-         if (tspec.getFunction() == TransformationType.Auto) {
+        if (tspec.getFunction() == TransformationType.Auto) {
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
                     .estimationPrecision(options.intermediatePrecision)

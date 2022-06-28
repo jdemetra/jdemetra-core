@@ -30,12 +30,16 @@ import java.util.Set;
  */
 public class SeriesSummary {
 
-    public final String name;
+    private final String name;
     private final Map<String, TsData> series = new LinkedHashMap<>();
 
     public SeriesSummary(String[] items, String name, SaDocument document) {
         this.name = name;
         fillDictionary(items, document.getResults());
+    }
+
+    public String getName() {
+        return name;
     }
 
     private void fillDictionary(String[] items, Explorable results) {
@@ -45,7 +49,7 @@ public class SeriesSummary {
                 if (results != null) {
                     if (WildCards.hasWildCards(item)) {
                         Map<String, TsData> all = results.searchAll(item, TsData.class);
-                        all.keySet().forEach(s -> series.put(s, results.getData(s, TsData.class)));
+                        all.entrySet().forEach(entry -> series.put(entry.getKey(), entry.getValue()));
                     } else {
                         series.put(item, results.getData(item, TsData.class));
                     }

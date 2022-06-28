@@ -28,8 +28,8 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
     
-    private static AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration>(builder().build());
+    private static final AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<>(builder().build());
     
     public static void setDefault(AdvancedResidualSeasonalityDiagnosticsConfiguration config){
         DEFAULT.set(config);
