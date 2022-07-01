@@ -90,6 +90,27 @@ public final class SaItem {
     public SaItem withComment(String ncomment) {
         return new SaItem(name, definition, meta, ncomment, priority, estimation);
     }
+    
+    public SaItem withDomainSpecification(SaSpecification dspec){
+        return of(definition.getTs(), dspec);
+    }
+
+    /**
+     * Keep the domain specification and use the new estimationspec
+     * @param espec Estimation spec 
+     * @return 
+     */
+    public SaItem withSpecification(SaSpecification espec){
+        return SaItem.builder()
+                .name(name)
+                .definition(SaDefinition.builder()
+                        .ts(definition.getTs())
+                        .domainSpec(definition.getDomainSpec())
+                        .estimationSpec(espec)
+                        .policy(EstimationPolicyType.None)
+                        .build())
+                .build();
+    }
 
     public void accept() {
         synchronized (this) {

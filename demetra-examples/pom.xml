@@ -15,6 +15,7 @@
         <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
         <jd3-benchmarking.version>1.0.0-SNAPSHOT</jd3-benchmarking.version>
+        <jd2.version>2.2.3</jd2.version>
     </properties>
     
     <dependencies>
@@ -79,6 +80,17 @@
             <artifactId>demetra-benchmarking-core</artifactId>
             <version>${jd3-benchmarking.version}</version>            
         </dependency>
-        <!-- < modules 3.0 -->
+        <!-- < modules 2.2.3 -->
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tstoolkit</artifactId>
+            <version>${jd2.version}</version>            
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-tss</artifactId>
+            <version>${jd2.version}</version>            
+        </dependency>
+        
     </dependencies>   
 </project>
