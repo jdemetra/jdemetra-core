@@ -28,69 +28,64 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  *
  * @author PALATEJ
  */
 @lombok.Data
 public class MultiProcessing {
-    
-    public static MultiProcessing of(String name, SaItems processing){
-        MultiProcessing p=new MultiProcessing(name);
+
+    public static MultiProcessing of(String name, SaItems processing) {
+        MultiProcessing p = new MultiProcessing(name);
         p.metaData.putAll(processing.getMeta());
         p.items.addAll(processing.getItems());
         return p;
     }
-    
-    public MultiProcessing(String name){
-        this.name=name;
-    }
-    
-    public void compute(ModellingContext context){
-        items.parallelStream().forEach(v->v.compute(context, false));
+
+    public MultiProcessing(String name) {
+        this.name = name;
     }
 
-    public void process(ModellingContext context){
-        items.parallelStream().forEach(v->v.process(context, false));
+    public void compute(ModellingContext context) {
+        items.parallelStream().forEach(v -> v.compute(context, false));
     }
 
-    public void add(String name, TsData s, SaSpecification spec){
-        Ts ts = Ts.of(name, s);
-        SaDefinition definition=SaDefinition.builder()
-                .ts(ts)
-                .domainSpec(spec)
-                .build();
-        SaItem item = SaItem.builder()
-                .name(name)
-                .definition(definition)
-                .build();
+    public void process(ModellingContext context) {
+        items.parallelStream().forEach(v -> v.process(context, false));
+    }
+    
+    public void add(SaItem item){
         items.add(item);
     }
-   
-    public SaItem get(int pos){
+
+    public void add(String name, TsData s, SaSpecification spec) {
+        Ts ts = Ts.of(name, s);
+        SaItem item = SaItem.of(ts, spec);
+        items.add(item);
+    }
+
+    public SaItem get(int pos) {
         return items.get(pos);
     }
-    
-    public void set(int pos, SaItem newItem){
+
+    public void set(int pos, SaItem newItem) {
         items.set(pos, newItem);
     }
 
-    public int size(){
+    public int size() {
         return items.size();
     }
-    
-    public void remove(int pos){
+
+    public void remove(int pos) {
         items.remove(pos);
     }
-    
-    public void removeAll(){
+
+    public void removeAll() {
         items.clear();
     }
-    
 
     private final String name;
     private final Map<String, String> metaData = new HashMap<>();
     private final List<SaItem> items = new ArrayList<>();
-    
+
 }
