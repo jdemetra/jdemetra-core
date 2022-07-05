@@ -1,32 +1,37 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * https://joinup.ec.europa.eu/software/page/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import demetra.time.IsoConverter;
-import demetra.time.IsoIntervalConverter;
+import demetra.time.ISO_8601;
+import demetra.time.TimeIntervalAccessor;
+import demetra.time.TimeIntervalFormatter;
+import nbbrd.design.RepresentableAsString;
+import nbbrd.design.StaticFactoryMethod;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
  * @author Jean Palate
  */
+@ISO_8601
+@RepresentableAsString
 @lombok.Value(staticConstructor = "of")
 public class TimePeriod implements TimeSeriesInterval<Duration>, Comparable<TimePeriod> {
 
@@ -69,23 +74,18 @@ public class TimePeriod implements TimeSeriesInterval<Duration>, Comparable<Time
 
     @Override
     public String toString() {
-        return toISO8601();
+        return TimeIntervalFormatter.StartEnd.ISO_LOCAL_DATE_TIME.format(this);
     }
 
-    @Override
-    public String toISO8601() {
-        return CONVERTER.format(this).toString();
-    }
-
+    @StaticFactoryMethod
     @NonNull
     public static TimePeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
-        return CONVERTER.parse(text);
+        return TimeIntervalFormatter.StartEnd.ISO_LOCAL_DATE_TIME.parse(text, TimePeriod::from);
     }
 
-    private static TimePeriod make(LocalDateTime start, LocalDateTime end) {
-        return TimePeriod.of(start, end);
+    @StaticFactoryMethod
+    @NonNull
+    public static TimePeriod from(@NonNull TimeIntervalAccessor timeInterval) {
+        return TimePeriod.of(LocalDateTime.from(timeInterval.start()), LocalDateTime.from(timeInterval.end()));
     }
-
-    private static final IsoIntervalConverter<TimePeriod> CONVERTER
-            = new IsoIntervalConverter.StartEnd<>(IsoConverter.LOCAL_DATE_TIME, false, TimePeriod::make);
 }

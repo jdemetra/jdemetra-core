@@ -1,52 +1,45 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import demetra.time.IsoConverter;
-import demetra.time.IsoRepresentable;
+import demetra.time.ISO_8601;
+import lombok.AccessLevel;
+import nbbrd.design.RepresentableAsString;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.Duration;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nbbrd.design.RepresentableAsString;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import lombok.AccessLevel;
-
 /**
- *
  * @author Philippe Charles
  */
+@ISO_8601
 @RepresentableAsString
 @lombok.Value
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TsUnit implements TemporalAmount, IsoRepresentable {
-
-    static final IsoConverter<TsUnit> CONVERTER = IsoConverter.of(TsUnit::parse);
+public class TsUnit implements TemporalAmount {
 
     @NonNegative
     long amount;
@@ -103,8 +96,7 @@ public class TsUnit implements TemporalAmount, IsoRepresentable {
         return toISO8601();
     }
 
-    @Override
-    public String toISO8601() {
+    private String toISO8601() {
         switch (chronoUnit) {
             case FOREVER:
                 return "";

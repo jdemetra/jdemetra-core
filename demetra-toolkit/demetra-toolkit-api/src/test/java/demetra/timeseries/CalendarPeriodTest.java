@@ -30,10 +30,10 @@ public class CalendarPeriodTest {
     public void testISO() {
         CalendarPeriod x = CalendarPeriod.of(LocalDate.of(2010, 2, 17), LocalDate.of(2010, 3, 17));
 
-        assertThat(x.toISO8601())
-                .isEqualTo("2010-02-17T00:00/2010-03-17T00:00");
+        assertThat(x.toString())
+                .isEqualTo("2010-02-17T00:00:00/2010-03-17T00:00:00");
         
-        assertThat(CalendarPeriod.parse(x.toISO8601()))
+        assertThat(CalendarPeriod.parse(x.toString()))
                 .isEqualTo(x);
     }
 }

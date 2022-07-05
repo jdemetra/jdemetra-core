@@ -16,7 +16,8 @@
  */
 package demetra.timeseries;
 
-import demetra.time.IsoRecurrence;
+import demetra.time.ISO_8601;
+import demetra.time.TimeRecurrence;
 
 /**
  *
@@ -24,6 +25,7 @@ import demetra.time.IsoRecurrence;
  *
  * @author Philippe Charles
  */
-public interface TimeSeriesRecurrence<I extends TimeSeriesInterval<?>> extends TimeSeriesDomain<I>, IsoRecurrence<I> {
+@ISO_8601
+public interface TimeSeriesRecurrence<I extends TimeSeriesInterval<?>> extends TimeSeriesDomain<I>, TimeRecurrence<I> {
 
 }
