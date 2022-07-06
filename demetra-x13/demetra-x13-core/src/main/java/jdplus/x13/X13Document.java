@@ -48,6 +48,10 @@ public class X13Document extends AbstractTsDocument<X13Spec, X13Results> impleme
         this.context = context;
     }
 
+    public ModellingContext getContext(){
+        return context;
+    }
+
     @Override
     protected X13Results internalProcess(X13Spec spec, TsData data) {
         return X13Kernel.of(spec, context).process(data, ProcessingLog.dummy());

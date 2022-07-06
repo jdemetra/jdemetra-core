@@ -95,7 +95,7 @@ public class HtmlRevisionsDocument extends AbstractHtmlElement implements HtmlEl
                     if (Math.abs(d) > threshold_ * rmse) {
                         danger = true;
                     }
-                    txt = format.format(revisions_.get(k));
+                    txt = format.format(revisions_.getValue(k));
                 }
                 if (danger) {
                     stream.write(new HtmlTableCell(txt).withClass(Bootstrap4.TEXT_DANGER));
