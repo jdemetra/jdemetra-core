@@ -47,8 +47,7 @@ public class RevisionHistory<T> {
      * @param processing
      * @param domain
      */
-    public RevisionHistory(Function<TsDomain, T> processing,
-            TsDomain domain) {
+    public RevisionHistory(TsDomain domain, Function<TsDomain, T> processing) {
         m_processing = processing;
         m_domainT = domain;
         m_cache.put(m_domainT, processing.apply(m_domainT));
@@ -302,6 +301,14 @@ public class RevisionHistory<T> {
         return TsData.ofInternal(start, x);
     }
 
+    /**
+     * 
+     * @param period
+     * @param start
+     * @param fn
+     * @param extractor
+     * @return 
+     */
     public TsData tsRevision(TsPeriod period, TsPeriod start, TsDataFunction fn, Function<T, TsData> extractor) {
         TsPeriod p0 = m_domainT.getStartPeriod();
         int pos = p0.until(period);

@@ -42,8 +42,7 @@ public class MovingProcessing<T> {
      * @param processing
      * @param domain
      */
-    public MovingProcessing(
-            TsDomain domain, Function<TsDomain, T> processing) {
+    public MovingProcessing(TsDomain domain, Function<TsDomain, T> processing) {
         m_processing = new MovingProcessingFacade(domain, processing);
 
     }
@@ -117,24 +116,6 @@ public class MovingProcessing<T> {
      * @param increment
      * @return
      */
-    /*public double[] movingInfo(String key, TsPeriod start, int length,
-            int increment) {
-        DoubleList rslt = new DoubleList();
-        TsDomain domain = new TsDomain(start, length);
-
-        while (domain.getEnd().isNotAfter(m_processing.getDomain().getEnd())) {
-            Double data = m_processing.getData(key, domain);
-
-            if (data != null) {
-                rslt.add(data);
-            } else {
-                rslt.add(Double.NaN);
-            }
-            domain = domain.move(increment);
-        }
-
-        return rslt.toArray();
-    }*/
     public Map<TsDomain, Double> movingInfo(TsPeriod start, int length,
             int increment, ToDoubleFunction<T> extractor) {
         Map<TsDomain, Double> map = new LinkedHashMap<>();
@@ -143,7 +124,9 @@ public class MovingProcessing<T> {
 
         while (!domain.end().isAfter(m_processing.getDomain().end())) {
             double data = m_processing.getData(domain, extractor);
-            map.put(domain, data);
+            if (Double.isFinite(data)) {
+                map.put(domain, data);
+            }
             domain = domain.move(increment);
         }
         return map;

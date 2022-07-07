@@ -23,6 +23,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate
  */
 public interface Id extends Comparable<Id> {
+    
+    static Id empty(){
+        return LinearId.EMPTY;
+    }
 
     String get(int index);
 

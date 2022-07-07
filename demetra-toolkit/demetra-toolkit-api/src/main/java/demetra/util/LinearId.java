@@ -25,6 +25,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 //@Immutable
 public class LinearId implements Id {
+    
+    static final LinearId EMPTY=new LinearId();
 
     @NonNull
     public static LinearId of(@NonNull Id id) {

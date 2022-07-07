@@ -8,7 +8,7 @@ package jdplus.timeseries.simplets.analysis;
 import demetra.timeseries.TsData;
 
 /**
- *
+ * Returns a value, for a given time series and a given position in that time series
  * @author Jean Palate <jean.palate@nbb.be>
  */
 @FunctionalInterface

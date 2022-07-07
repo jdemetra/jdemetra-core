@@ -58,42 +58,43 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
     public RegArimaSpec refreshSpec(RegArimaSpec currentSpec, RegArimaSpec domainSpec, EstimationPolicyType policy, TsDomain frozenDomain) {
         RegArimaSpec.Builder builder = currentSpec.toBuilder();
         switch (policy) {
-            case Complete:
+            case Complete -> {
                 return domainSpec;
-            case Outliers_StochasticComponent:
+            }
+            case Outliers_StochasticComponent -> {
                 resetArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
-                break;
-            case Outliers:
+            }
+            case Outliers -> {
                 clearArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
-                break;
-            case LastOutliers:
+            }
+            case LastOutliers -> {
                 clearArima(currentSpec, domainSpec, builder);
                 removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
                 freeVariables(currentSpec, domainSpec, builder);
-                break;
-            case FreeParameters:
+            }
+            case FreeParameters -> {
                 freeArima(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
-                break;
-            case FixedAutoRegressiveParameters:
+            }
+            case FixedAutoRegressiveParameters -> {
                 fixAR(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
-                break;
-            case FixedParameters:
+            }
+            case FixedParameters -> {
                 fixArima(currentSpec, domainSpec, builder);
                 freeVariables(currentSpec, domainSpec, builder);
-                break;
-            case Fixed:
-            case Current:
+            }
+            case Fixed, Current -> {
                 fixArima(currentSpec, domainSpec, builder);
                 fixVariables(currentSpec, domainSpec, builder);
-                break;
-            default:
-                return currentSpec;
+            }
+            default -> {
+                    return currentSpec;
+            }
         }
         return builder.build();
     }

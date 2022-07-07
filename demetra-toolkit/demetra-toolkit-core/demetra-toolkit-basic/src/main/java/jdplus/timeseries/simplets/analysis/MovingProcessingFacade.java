@@ -92,8 +92,13 @@ public class MovingProcessingFacade<T> {
         synchronized (m_cache) {
             T it = m_cache.get(domain);
             if (it == null) {
-                it = processing.apply(domain);
-                m_cache.put(domain, it);
+                if (!m_cache.containsKey(domain)) {
+                    try {
+                        it = processing.apply(domain);
+                    } catch (Exception ex) {
+                    }
+                    m_cache.put(domain, it);
+                }
             }
             return it;
         }
