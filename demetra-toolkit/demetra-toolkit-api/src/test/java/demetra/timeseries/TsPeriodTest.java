@@ -189,40 +189,40 @@ public class TsPeriodTest {
 
     @Test
     public void testToISOString() {
-        assertThat(monthly(2011, 2).toISO8601())
-                .isEqualTo("2011-02-01T00:00/P1M");
+        assertThat(monthly(2011, 2).toString())
+                .isEqualTo("2011-02-01T00:00:00/P1M");
 
-        assertThat(weekly(2020, 4, 30).toISO8601())
-                .isEqualTo("2020-04-30T00:00/P7D");
+        assertThat(weekly(2020, 4, 30).toString())
+                .isEqualTo("2020-04-30T00:00:00/P7D");
 
-        assertThat(quarterly(2011, 2).toISO8601())
-                .isEqualTo("2011-04-01T00:00/P3M");
+        assertThat(quarterly(2011, 2).toString())
+                .isEqualTo("2011-04-01T00:00:00/P3M");
 
-        assertThat(minutely(2011, 2, 15, 10, 7).toISO8601())
-                .isEqualTo("2011-02-15T10:07/PT1M");
+        assertThat(minutely(2011, 2, 15, 10, 7).toString())
+                .isEqualTo("2011-02-15T10:07:00/PT1M");
 
-        assertThat(of(YEAR, d2011_02_01).toISO8601())
-                .isEqualTo("2011-01-01T00:00/P1Y");
+        assertThat(of(YEAR, d2011_02_01).toString())
+                .isEqualTo("2011-01-01T00:00:00/P1Y");
 
-        assertThat(of(YEAR, d2011_02_01).withEpoch(someReference).next().toISO8601())
-                .isEqualTo("2011-04-01T00:00/P1Y");
+        assertThat(of(YEAR, d2011_02_01).withEpoch(someReference).next().toString())
+                .isEqualTo("2011-04-01T00:00:00/P1Y");
 
-        assertThat(of(DAY, d2011_02_01).toISO8601())
-                .isEqualTo("2011-02-01T00:00/P1D");
+        assertThat(of(DAY, d2011_02_01).toString())
+                .isEqualTo("2011-02-01T00:00:00/P1D");
     }
 
     @Test
     public void testString() {
-        assertThat(monthly(2011, 2).toISO8601())
+        assertThat(monthly(2011, 2).toString())
                 .isEqualTo(monthly(2011, 2).toString());
 
-        assertThat(weekly(2020, 4, 30).toISO8601())
+        assertThat(weekly(2020, 4, 30).toString())
                 .isEqualTo(weekly(2020, 4, 30).toString());
 
-        assertThat(quarterly(2011, 2).toISO8601())
+        assertThat(quarterly(2011, 2).toString())
                 .isEqualTo(quarterly(2011, 2).toString());
 
-        assertThat(minutely(2011, 2, 15, 10, 7).toISO8601())
+        assertThat(minutely(2011, 2, 15, 10, 7).toString())
                 .isEqualTo(minutely(2011, 2, 15, 10, 7).toString());
     }
 

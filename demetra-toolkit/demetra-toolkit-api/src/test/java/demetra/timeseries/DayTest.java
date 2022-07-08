@@ -31,10 +31,10 @@ public class DayTest {
     public void testISO() {
         Day x = Day.of(LocalDate.of(2010, 2, 17));
 
-        assertThat(x.toISO8601())
-                .isEqualTo("2010-02-17T00:00/P1D");
+        assertThat(x.toString())
+                .isEqualTo("2010-02-17/P1D");
         
-        assertThat(Day.parse(x.toISO8601()))
+        assertThat(Day.parse(x.toString()))
                 .isEqualTo(x);
     }
 }

@@ -31,10 +31,10 @@ public class TimePointTest {
     public void testISO() {
         TimePoint x = TimePoint.of(LocalDateTime.of(2010, 2, 17, 11, 3));
 
-        assertThat(x.toISO8601())
-                .isEqualTo("2010-02-17T11:03/2010-02-17T11:03");
+        assertThat(x.toString())
+                .isEqualTo("2010-02-17T11:03:00/2010-02-17T11:03:00");
 
-        assertThat(TimePoint.parse(x.toISO8601()))
+        assertThat(TimePoint.parse(x.toString()))
                 .isEqualTo(x);
     }
 }

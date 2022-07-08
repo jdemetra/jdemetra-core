@@ -261,11 +261,11 @@ public class TsDomainTest {
 
     @Test
     public void testToISOString() {
-        assertThat(of(TsPeriod.monthly(2011, 2), 30).toISO8601())
-                .isEqualTo("R30/2011-02-01T00:00/P1M");
+        assertThat(of(TsPeriod.monthly(2011, 2), 30).toString())
+                .isEqualTo("R30/2011-02-01T00:00:00/P1M");
 
-        assertThat(of(TsPeriod.quarterly(2011, 2), 10).toISO8601())
-                .isEqualTo("R10/2011-04-01T00:00/P3M");
+        assertThat(of(TsPeriod.quarterly(2011, 2), 10).toString())
+                .isEqualTo("R10/2011-04-01T00:00:00/P3M");
     }
 
     @Test

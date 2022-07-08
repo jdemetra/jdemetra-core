@@ -1,33 +1,39 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import demetra.time.IsoIntervalConverter;
+import demetra.time.ISO_8601;
+import demetra.time.TimeIntervalAccessor;
+import demetra.time.TimeIntervalFormatter;
+import nbbrd.design.RepresentableAsString;
+import nbbrd.design.StaticFactoryMethod;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.time.IsoConverter;
 
 /**
- *
  * @author Philippe Charles
  */
+@ISO_8601
+@RepresentableAsString
 @lombok.Value
 @lombok.Builder(toBuilder = true)
 public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod> {
@@ -151,7 +157,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         return (int) (getRebasedId(endExclusive) - id);
     }
 
-//    /**
+    //    /**
 //     * 
 //     * @param low
 //     * @return 
@@ -162,12 +168,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
 //
     @Override
     public String toString() {
-        return toISO8601();
-    }
-
-    @Override
-    public String toISO8601() {
-        return CONVERTER.format(this).toString();
+        return ISO_8601.format(this);
     }
 
     public long idAt(LocalDateTime date) {
@@ -219,7 +220,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
     /**
      * Creates a quarterly period
      *
-     * @param year Year of the period
+     * @param year    Year of the period
      * @param quarter Quarter of the period (in 1-4)
      * @return
      */
@@ -230,7 +231,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
     /**
      * Creates a monthly period
      *
-     * @param year Year of the period
+     * @param year  Year of the period
      * @param month Month of the period (in 1-12)
      * @return
      */
@@ -241,8 +242,8 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
     /**
      * Creates a period of one day
      *
-     * @param year Year of the day
-     * @param month Month of the day (in 1-12)
+     * @param year       Year of the day
+     * @param month      Month of the day (in 1-12)
      * @param dayOfMonth Day of month of the day (1-31)
      * @return
      */
@@ -253,8 +254,8 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
     /**
      * Creates a period of seven days
      *
-     * @param year Year of the first day
-     * @param month Month of the first day (in 1-12)
+     * @param year       Year of the first day
+     * @param month      Month of the first day (in 1-12)
      * @param dayOfMonth Day of month of the first day (1-31)
      * @return
      */
@@ -273,17 +274,20 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         return make(DEFAULT_EPOCH, TsUnit.MINUTE, LocalDateTime.of(year, month, dayOfMonth, hour, minute));
     }
 
+    @StaticFactoryMethod
     @NonNull
     public static TsPeriod parse(@NonNull CharSequence text) throws DateTimeParseException {
-        return CONVERTER.parse(text);
+        return ISO_8601.parse(text, TsPeriod::from);
     }
 
-    private static TsPeriod make(LocalDateTime start, TsUnit duration) {
-        return TsPeriod.of(duration, start);
+    @StaticFactoryMethod
+    @NonNull
+    public static TsPeriod from(@NonNull TimeIntervalAccessor timeInterval) {
+        return TsPeriod.of((TsUnit) timeInterval.getDuration(), LocalDateTime.from(timeInterval.start()));
     }
 
-    static final IsoIntervalConverter<TsPeriod> CONVERTER
-            = new IsoIntervalConverter.StartDuration<>(IsoConverter.LOCAL_DATE_TIME, TsUnit.CONVERTER, TsPeriod::make);
+    static final TimeIntervalFormatter ISO_8601
+            = TimeIntervalFormatter.StartDuration.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME, LocalDateTime::from, TsUnit::parse);
 
     private static TsPeriod make(LocalDateTime epoch, TsUnit unit, LocalDate date) {
         return new TsPeriod(epoch, unit, idAt(epoch, unit, date.atStartOfDay()));
@@ -310,7 +314,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         return epoch.plus(unit.getAmount() * id, unit.getChronoUnit());
     }
 
-//    private static int getPosition(LocalDateTime epoch, TsUnit high, long id, TsUnit low) {
+    //    private static int getPosition(LocalDateTime epoch, TsUnit high, long id, TsUnit low) {
 //        long id0 = id;
 //        long id1 = idAt(epoch, low, dateAt(epoch, high, id0));
 //        long id2 = idAt(epoch, high, dateAt(epoch, low, id1));
@@ -324,13 +328,13 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
             int freq = annualFrequency();
             if (freq < 1) {
                 return start().toLocalDate().toString();
-            } else if (freq == 1){
+            } else if (freq == 1) {
                 return Integer.toString(year());
             } else {
-                int pos=this.annualPosition()+1;
-                if (freq<12)
-                    pos*=12/freq;
-                int year=this.year();
+                int pos = this.annualPosition() + 1;
+                if (freq < 12)
+                    pos *= 12 / freq;
+                int year = this.year();
                 StringBuilder buffer = new StringBuilder(32);
                 buffer.append(pos).append('-').append(year);
                 return buffer.toString();
@@ -338,6 +342,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
         }
     }
 
+    @demetra.time.ISO_8601
     public static final class Builder implements TimeSeriesInterval<TsUnit> {
 
         private LocalDateTime epoch = DEFAULT_EPOCH;
@@ -372,7 +377,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
             return this;
         }
 
-//        public int getPosition(TsUnit low) {
+        //        public int getPosition(TsUnit low) {
 //            return TsPeriod.getPosition(epoch, this.unit, id, low);
 //        }
 //
@@ -398,19 +403,7 @@ public class TsPeriod implements TimeSeriesInterval<TsUnit>, Comparable<TsPeriod
 
         @Override
         public String toString() {
-            return toISO8601();
+            return ISO_8601.format(this);
         }
-
-        @Override
-        public String toISO8601() {
-            return converter.format(this).toString();
-        }
-
-        private Builder apply(LocalDateTime start, TsUnit duration) {
-            return this;
-        }
-
-        private final IsoIntervalConverter<Builder> converter
-                = new IsoIntervalConverter.StartDuration<>(IsoConverter.LOCAL_DATE_TIME, TsUnit.CONVERTER, this::apply);
     }
 }

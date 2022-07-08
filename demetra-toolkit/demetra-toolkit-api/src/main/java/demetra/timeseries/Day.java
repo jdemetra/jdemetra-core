@@ -16,18 +16,23 @@
  */
 package demetra.timeseries;
 
-import demetra.time.IsoConverter;
-import demetra.time.IsoIntervalConverter;
+import demetra.time.ISO_8601;
+import demetra.time.TimeIntervalAccessor;
+import demetra.time.TimeIntervalFormatter;
+import nbbrd.design.RepresentableAsString;
+import nbbrd.design.StaticFactoryMethod;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- *
  * @author Jean Palate
  */
+@ISO_8601
+@RepresentableAsString
 @lombok.Value(staticConstructor = "of")
 public class Day implements TimeSeriesInterval<Period> {
 
@@ -56,23 +61,18 @@ public class Day implements TimeSeriesInterval<Period> {
 
     @Override
     public String toString() {
-        return toISO8601();
+        return TimeIntervalFormatter.StartDuration.ISO_LOCAL_DATE.format(this);
     }
 
-    @Override
-    public String toISO8601() {
-        return CONVERTER.format(this).toString();
-    }
-
+    @StaticFactoryMethod
     @NonNull
     public static Day parse(@NonNull CharSequence text) throws DateTimeParseException {
-        return CONVERTER.parse(text);
+        return TimeIntervalFormatter.StartDuration.ISO_LOCAL_DATE.parse(text, Day::from);
     }
 
-    private static Day make(LocalDateTime start, Period duration) {
-        return Day.of(start.toLocalDate());
+    @StaticFactoryMethod
+    @NonNull
+    public static Day from(@NonNull TimeIntervalAccessor timeInterval) {
+        return Day.of(LocalDate.from(timeInterval.start()));
     }
-
-    private static final IsoIntervalConverter<Day> CONVERTER
-            = new IsoIntervalConverter.StartDuration<>(IsoConverter.LOCAL_DATE_TIME, IsoConverter.PERIOD, Day::make);
 }

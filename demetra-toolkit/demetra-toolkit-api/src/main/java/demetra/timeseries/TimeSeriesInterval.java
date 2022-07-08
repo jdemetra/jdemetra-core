@@ -18,7 +18,9 @@ package demetra.timeseries;
 
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
-import demetra.time.IsoInterval;
+
+import demetra.time.ISO_8601;
+import demetra.time.TimeInterval;
 
 /**
  *
@@ -26,6 +28,7 @@ import demetra.time.IsoInterval;
  *
  * @author Philippe Charles
  */
-public interface TimeSeriesInterval<D extends TemporalAmount> extends IsoInterval<LocalDateTime, D> {
+@ISO_8601
+public interface TimeSeriesInterval<D extends TemporalAmount> extends TimeInterval<LocalDateTime, D> {
 
 }

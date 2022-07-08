@@ -1,31 +1,37 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.timeseries;
 
-import demetra.time.IsoRecurrenceConverter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
+import demetra.time.ISO_8601;
+import demetra.time.TimeRecurrenceAccessor;
+import demetra.time.TimeRecurrenceFormatter;
+import nbbrd.design.RepresentableAsString;
+import nbbrd.design.StaticFactoryMethod;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
 /**
- *
  * @author Philippe Charles
  */
+@ISO_8601
+@RepresentableAsString
 @lombok.Value(staticConstructor = "of")
 public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
 
@@ -33,9 +39,9 @@ public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
      * Generates a domain which is a splitting of a given period in sub-periods
      *
      * @param period The period which corresponds to the domain
-     * @param hUnit The time unit of the sub-periods
-     * @param exact Indicates if that the domain must be exactly decomposed into
-     * its sub-periods
+     * @param hUnit  The time unit of the sub-periods
+     * @param exact  Indicates if that the domain must be exactly decomposed into
+     *               its sub-periods
      * @return The new domain (never null)
      * @throws TsException is thrown when the decomposition is not possible
      */
@@ -135,7 +141,7 @@ public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
      * Returns the position of the given period relative to the starting period
      *
      * @param period A period that should be compatible with the starting period
-     * of the domain.
+     *               of the domain.
      * @return Could be negative or higher then the length of the domain
      */
     public int position(TsPeriod period) {
@@ -351,23 +357,20 @@ public class TsDomain implements TimeSeriesRecurrence<TsPeriod> {
 
     @Override
     public String toString() {
-        return toISO8601();
+        return ISO_8601.format(this);
     }
 
-    @Override
-    public String toISO8601() {
-        return CONVERTER.format(this).toString();
-    }
-
+    @StaticFactoryMethod
     @NonNull
     public static TsDomain parse(@NonNull CharSequence text) throws DateTimeParseException {
-        return CONVERTER.parse(text);
+        return ISO_8601.parse(text, TsDomain::from);
     }
 
-    private static TsDomain make(Integer length, TsPeriod period) {
-        return TsDomain.of(period, length);
+    @StaticFactoryMethod
+    @NonNull
+    public static TsDomain from(@NonNull TimeRecurrenceAccessor timeRecurrence) {
+        return TsDomain.of(TsPeriod.from(timeRecurrence.getInterval()), timeRecurrence.length());
     }
 
-    private static final IsoRecurrenceConverter<TsPeriod, TsDomain> CONVERTER
-            = new IsoRecurrenceConverter<>(TsPeriod.CONVERTER, TsDomain::make);
+    private static final TimeRecurrenceFormatter ISO_8601 = TimeRecurrenceFormatter.of(TsPeriod.ISO_8601, TsPeriod::from);
 }
