@@ -14,7 +14,7 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.sts.LocalLinearTrend;
+import jdplus.ssf.sts.LocalLinearTrend;
 
 /**
  *
@@ -48,7 +48,7 @@ public class LocalLinearTrendItem extends StateItem {
         mapping.add((p, builder) -> {
             double e1 = p.get(0);
             double e2 = p.get(1);
-            StateComponent cmp = jdplus.sts.LocalLinearTrend.of(e1, e2);
+            StateComponent cmp = jdplus.ssf.sts.LocalLinearTrend.stateComponent(e1, e2);
             builder.add(name, cmp, LocalLinearTrend.defaultLoading());
             return 2;
         });
@@ -63,7 +63,7 @@ public class LocalLinearTrendItem extends StateItem {
     public StateComponent build(DoubleSeq p) {
         double e1 = p.get(0);
         double e2 = p.get(1);
-        return LocalLinearTrend.of(e1, e2);
+        return LocalLinearTrend.stateComponent(e1, e2);
     }
 
     @Override

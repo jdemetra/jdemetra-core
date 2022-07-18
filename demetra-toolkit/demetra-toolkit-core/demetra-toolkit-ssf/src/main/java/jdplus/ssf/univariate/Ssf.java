@@ -18,10 +18,10 @@ package jdplus.ssf.univariate;
 
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.implementations.TimeInvariantSsf;
+import jdplus.ssf.basic.TimeInvariantSsf;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.MeasurementError;
+import jdplus.ssf.basic.MeasurementError;
 
 /**
  *

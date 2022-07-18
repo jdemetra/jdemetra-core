@@ -10,7 +10,7 @@ import demetra.data.DoubleSeqCursor;
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.ParamValidation;
 import jdplus.ssf.SsfException;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;

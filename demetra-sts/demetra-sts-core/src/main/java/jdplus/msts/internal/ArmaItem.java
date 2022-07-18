@@ -8,7 +8,7 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.arima.ArimaModel;
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import jdplus.math.linearfilters.BackFilter;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.msts.MstsMapping;
@@ -83,7 +83,7 @@ public class ArmaItem extends StateItem {
             }
             double n = p.get(pos++);
             ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
-            StateComponent cmp = SsfArima.of(arima);
+            StateComponent cmp = SsfArima.stateComponent(arima);
             builder.add(name, cmp, SsfArima.defaultLoading());
             return pos;
         });
@@ -112,7 +112,7 @@ public class ArmaItem extends StateItem {
         }
         double n = p.get(pos++);
         ArimaModel arima = new ArimaModel(bar, BackFilter.ONE, bma, n);
-        return SsfArima.of(arima);
+        return SsfArima.stateComponent(arima);
     }
 
     @Override

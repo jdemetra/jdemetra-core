@@ -13,12 +13,12 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
-import jdplus.arima.ssf.SsfAr;
-import jdplus.sts.LocalLevel;
-import jdplus.sts.LocalLinearTrend;
-import jdplus.arima.ssf.SsfAr2;
+import jdplus.ssf.basic.Loading;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
+import jdplus.ssf.arima.SsfAr;
+import jdplus.ssf.sts.LocalLevel;
+import jdplus.ssf.sts.LocalLinearTrend;
+import jdplus.ssf.arima.SsfAr2;
 import jdplus.ssf.multivariate.SsfMatrix;
 import java.io.File;
 import java.io.IOException;
@@ -197,7 +197,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tu", 1, LocalLinearTrend.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), SsfAr.defaultLoading()));
-            builder.add("tu", LocalLinearTrend.of(0, p.get(2)), null)
+            builder.add("tu", LocalLinearTrend.stateComponent(0, p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -212,7 +212,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("ty", 1, LocalLinearTrend.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1),SsfAr.defaultLoading()));
-            builder.add("ty", LocalLinearTrend.of(0, p.get(2)), null)
+            builder.add("ty", LocalLinearTrend.stateComponent(0, p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -227,7 +227,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpicore", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
-            builder.add("tpicore", LocalLevel.of(p.get(2)), null)
+            builder.add("tpicore", LocalLevel.stateComponent(p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -241,7 +241,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpi", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), SsfAr.defaultLoading()));
-            builder.add("tpi", LocalLevel.of(p.get(2)), null)
+            builder.add("tpi", LocalLevel.stateComponent(p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -282,8 +282,8 @@ public class MstsMonitorTest {
             eq2.add(new MultivariateCompositeSsf.Item("tc", 1, LocalLevel.defaultLoading()));
             eq2.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
             builder.add("cycle", SsfAr.of(new double[]{c1, c2}, v, 5), null)
-                    .add("tb", LocalLevel.of(0), null)
-                    .add("tc", LocalLevel.of(0), null)
+                    .add("tb", LocalLevel.stateComponent(0), null)
+                    .add("tc", LocalLevel.stateComponent(0), null)
                     .add(eq1)
                     .add(eq2);
 
@@ -305,7 +305,7 @@ public class MstsMonitorTest {
             eq.add(new MultivariateCompositeSsf.Item("tb", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", a1, Loading.fromPosition(0)));
             eq.add(new MultivariateCompositeSsf.Item("cycle", a2, Loading.fromPosition(1)));
-            builder.add("tb", LocalLevel.of(0), null)
+            builder.add("tb", LocalLevel.stateComponent(0), null)
                     .add(eq);
             return 3;
         });
@@ -321,7 +321,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
             eq.add(new MultivariateCompositeSsf.Item("tc", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", 1, pl));
-            builder.add("tc", LocalLevel.of(0), null)
+            builder.add("tc", LocalLevel.stateComponent(0), null)
                     .add(eq);
             return 4;
         });
@@ -335,7 +335,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tu", 1, LocalLinearTrend.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
-            builder.add("tu", LocalLinearTrend.of(0, p.get(2)), null)
+            builder.add("tu", LocalLinearTrend.stateComponent(0, p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -350,7 +350,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("ty", 1, LocalLinearTrend.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
-            builder.add("ty", LocalLinearTrend.of(0, p.get(2)), null)
+            builder.add("ty", LocalLinearTrend.stateComponent(0, p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -365,7 +365,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpicore", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(0)));
-            builder.add("tpicore", LocalLevel.of(p.get(2)), null)
+            builder.add("tpicore", LocalLevel.stateComponent(p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -379,7 +379,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(p.get(0));
             eq.add(new MultivariateCompositeSsf.Item("tpi", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", p.get(1), Loading.fromPosition(4)));
-            builder.add("tpi", LocalLevel.of(p.get(2)), null)
+            builder.add("tpi", LocalLevel.stateComponent(p.get(2)), null)
                     .add(eq);
             return 3;
         });
@@ -405,7 +405,7 @@ public class MstsMonitorTest {
             MultivariateCompositeSsf.Equation eq = new MultivariateCompositeSsf.Equation(v);
             eq.add(new MultivariateCompositeSsf.Item("tb", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", a1, Loading.fromPosition(5)));
-            builder.add("tb", LocalLevel.of(0), null)
+            builder.add("tb", LocalLevel.stateComponent(0), null)
                     .add(eq);
             return 2;
         });
@@ -420,7 +420,7 @@ public class MstsMonitorTest {
             eq.add(new MultivariateCompositeSsf.Item("tc", 1, LocalLevel.defaultLoading()));
             eq.add(new MultivariateCompositeSsf.Item("cycle", 1, Loading.from(new int[]{5,6,7,8},
                     new double[]{a1,a1,a1,a1})));
-            builder.add("tc", LocalLevel.of(0), null)
+            builder.add("tc", LocalLevel.stateComponent(0), null)
                     .add(eq);
             return 2;
         });

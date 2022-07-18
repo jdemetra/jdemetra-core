@@ -49,14 +49,14 @@ import jdplus.msts.CompositeModelEstimation;
 import jdplus.msts.ModelEquation;
 import jdplus.msts.StateItem;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.CompositeSsf;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.composite.CompositeSsf;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.WienerKolmogorovEstimators;
-import jdplus.ucarima.ssf.SsfUcarima;
+import jdplus.ssf.arima.SsfUcarima;
 import demetra.math.matrices.Matrix;
 import org.junit.jupiter.api.Test;
 

@@ -45,9 +45,7 @@ public class LState {
 
 
     /**
-     *
-     *
-     * @param dim
+     * @param L Initial Cholesky factor
      */
     public LState(final FastMatrix L) {
         a = DataBlock.make(L.getRowsCount());

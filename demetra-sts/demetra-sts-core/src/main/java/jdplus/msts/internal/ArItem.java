@@ -9,7 +9,7 @@ import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.arima.ssf.SsfAr;
+import jdplus.ssf.arima.SsfAr;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;

@@ -6,7 +6,7 @@
 package demetra.r;
 
 import jdplus.regarima.RegArimaModel;
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.math.linearfilters.BackFilter;
@@ -15,13 +15,13 @@ import jdplus.math.polynomials.Polynomial;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import jdplus.arima.ssf.ExactArimaForecasts;
+import jdplus.ssf.arima.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
 import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.ssf.StateComponent;
@@ -106,7 +106,7 @@ public class ArimaForecasts {
     }
 
     private Results ssfcompute(RegArimaModel regarima, int nf, int nb) {
-        StateComponent arima = SsfArima.of(regarima.arima());
+        StateComponent arima = SsfArima.stateComponent(regarima.arima());
         DoubleSeq y = regarima.getY();
         double[] yc = new double[y.length() + nf + nb];
         for (int i = 0; i < nb; ++i) {

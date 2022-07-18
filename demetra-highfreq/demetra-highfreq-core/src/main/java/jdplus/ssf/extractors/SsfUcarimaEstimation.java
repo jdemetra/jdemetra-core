@@ -29,10 +29,10 @@ import jdplus.ssf.StateInfo;
 import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
-import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.composite.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ssf.univariate.StateFilteringResults;
-import jdplus.ucarima.ssf.SsfUcarima;
+import jdplus.ssf.arima.SsfUcarima;
 import demetra.math.matrices.Matrix;
 import jdplus.ucarima.UcarimaModel;
 

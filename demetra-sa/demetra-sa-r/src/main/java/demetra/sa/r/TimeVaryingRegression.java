@@ -5,7 +5,7 @@
  */
 package demetra.sa.r;
 
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import jdplus.data.DataBlock;
 import demetra.information.InformationMapping;
 import jdplus.math.functions.IParametricMapping;
@@ -18,7 +18,7 @@ import demetra.arima.SarimaOrders;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.SsfData;
@@ -211,7 +211,7 @@ public class TimeVaryingRegression {
                     .theta(params.getTheta())
                     .btheta(params.getBtheta())
                     .build();
-            ISsf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
+            ISsf ssf = Ssf.of(SsfArima.stateComponent(arima), SsfArima.defaultLoading());
             double nv = params.getRegVariance();
             FastMatrix v = nvar.deepClone();
             v.mul(nv);

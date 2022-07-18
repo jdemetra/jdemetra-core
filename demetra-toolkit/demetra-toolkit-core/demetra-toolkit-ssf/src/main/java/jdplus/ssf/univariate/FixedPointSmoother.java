@@ -28,7 +28,7 @@ import jdplus.ssf.State;
 import jdplus.ssf.StateInfo;
 import jdplus.ssf.StateStorage;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
-import jdplus.ssf.implementations.DummyInitialization;
+import jdplus.ssf.basic.DummyInitialization;
 import jdplus.math.matrices.FastMatrix;
 
 /**

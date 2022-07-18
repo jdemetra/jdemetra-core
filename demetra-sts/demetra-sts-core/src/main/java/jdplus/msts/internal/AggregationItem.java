@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.msts.StateItem;
-import jdplus.ssf.CompositeLoading;
-import jdplus.ssf.CompositeState;
+import jdplus.ssf.composite.CompositeLoading;
+import jdplus.ssf.composite.CompositeState;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
@@ -28,6 +28,7 @@ public class AggregationItem extends StateItem {
         this.cmps = cmps;
     }
     
+    @Override
     public AggregationItem duplicate(){
         StateItem[] citems=new StateItem[cmps.length];
         for (int i=0; i<citems.length; ++i)

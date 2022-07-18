@@ -16,7 +16,7 @@
  */
 package jdplus.benchmarking.univariate;
 
-import jdplus.benchmarking.ssf.SsfCholette;
+import jdplus.ssf.benchmarking.SsfCholette;
 import demetra.benchmarking.univariate.Cholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
@@ -33,11 +33,11 @@ import demetra.timeseries.TsUnit;
 import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import jdplus.arima.ssf.AR1;
-import jdplus.arima.ssf.Rw;
+import jdplus.ssf.arima.AR1;
+import jdplus.ssf.arima.Rw;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.WeightedLoading;
+import jdplus.ssf.basic.WeightedLoading;
 import jdplus.ssf.univariate.Ssf;
 import static jdplus.timeseries.simplets.TsDataToolkit.multiply;
 

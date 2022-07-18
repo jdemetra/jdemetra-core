@@ -5,10 +5,10 @@
  */
 package jdplus.tempdisagg.univariate;
 
-import jdplus.arima.ssf.AR1;
-import jdplus.arima.ssf.Arima_1_1_0;
-import jdplus.arima.ssf.Rw;
-import jdplus.benchmarking.ssf.SsfCumulator;
+import jdplus.ssf.arima.AR1;
+import jdplus.ssf.arima.Arima_1_1_0;
+import jdplus.ssf.arima.Rw;
+import jdplus.ssf.benchmarking.SsfCumulator;
 import demetra.data.AggregationType;
 import jdplus.data.DataBlock;
 import demetra.data.ParameterType;
@@ -27,7 +27,7 @@ import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.Ssf;
@@ -49,7 +49,7 @@ import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
-import jdplus.ssf.implementations.Noise;
+import jdplus.ssf.sts.Noise;
 
 /**
  *

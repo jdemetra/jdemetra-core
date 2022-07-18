@@ -21,14 +21,13 @@ import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import jdplus.math.linearfilters.BackFilter;
-import jdplus.math.matrices.FastMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.composite.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.ucarima.UcarimaModel;
-import jdplus.ucarima.ssf.SsfUcarima;
+import jdplus.ssf.arima.SsfUcarima;
 
 /**
  *

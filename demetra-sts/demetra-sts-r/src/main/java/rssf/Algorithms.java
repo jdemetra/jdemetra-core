@@ -13,7 +13,7 @@ import jdplus.ssf.dk.DefaultDiffuseFilteringResults;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import jdplus.ssf.multivariate.IMultivariateSsf;
 import jdplus.ssf.multivariate.SsfMatrix;
 import jdplus.ssf.univariate.ISsf;

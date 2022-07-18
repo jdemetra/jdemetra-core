@@ -14,7 +14,7 @@ import jdplus.msts.ParameterInterpreter;
 import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.sts.VarLocalLinearTrend;
+import jdplus.ssf.sts.VarLocalLinearTrend;
 
 /**
  *
@@ -53,7 +53,7 @@ public class VarLocalLinearTrendItem extends StateItem {
         mapping.add((p, builder) -> {
             double e1 = p.get(0);
             double e2 = p.get(1);
-            StateComponent cmp = jdplus.sts.VarLocalLinearTrend.of(lstd, sstd, e1, e2);
+            StateComponent cmp = jdplus.ssf.sts.VarLocalLinearTrend.of(lstd, sstd, e1, e2);
             builder.add(name, cmp, VarLocalLinearTrend.defaultLoading());
             return 2;
         });
@@ -68,7 +68,7 @@ public class VarLocalLinearTrendItem extends StateItem {
     public StateComponent build(DoubleSeq p) {
         double e1 = p.get(0);
         double e2 = p.get(1);
-        return jdplus.sts.VarLocalLinearTrend.of(lstd, sstd, e1, e2);
+        return jdplus.ssf.sts.VarLocalLinearTrend.of(lstd, sstd, e1, e2);
      }
 
     @Override

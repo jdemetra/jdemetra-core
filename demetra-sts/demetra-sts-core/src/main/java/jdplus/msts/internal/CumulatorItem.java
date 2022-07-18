@@ -8,7 +8,7 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import java.util.List;
-import jdplus.benchmarking.ssf.SsfCumulator;
+import jdplus.ssf.benchmarking.SsfCumulator;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;

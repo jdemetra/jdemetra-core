@@ -5,7 +5,11 @@
  */
 package jdplus.ssf.implementations;
 
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.basic.Coefficients;
+import jdplus.ssf.basic.Loading;
+import jdplus.ssf.composite.CompositeSsf;
+import jdplus.ssf.basic.RegSsf;
+import jdplus.ssf.arima.SsfArima;
 import demetra.data.Data;
 import jdplus.modelling.regression.Regression;
 import jdplus.sarima.SarimaModel;
@@ -41,7 +45,7 @@ public class RegSsfTest {
                 .theta(1, -.6)
                 .btheta(1, -.8)
                 .build();
-        StateComponent cmp1 = SsfArima.of(airline);
+        StateComponent cmp1 = SsfArima.stateComponent(airline);
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);
@@ -62,7 +66,7 @@ public class RegSsfTest {
                 .theta(1, -.6)
                 .btheta(1, -.8)
                 .build();
-        StateComponent cmp1 = SsfArima.of(airline);
+        StateComponent cmp1 = SsfArima.stateComponent(airline);
         TsData s = Data.TS_PROD;
         SsfData y = new SsfData(s.getValues());
         GenericTradingDays td = GenericTradingDays.contrasts(DayClustering.TD7);

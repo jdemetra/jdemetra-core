@@ -14,7 +14,7 @@ import jdplus.msts.ParameterInterpreter;
 import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.VarNoise;
+import jdplus.ssf.basic.VarNoise;
 
 /**
  *

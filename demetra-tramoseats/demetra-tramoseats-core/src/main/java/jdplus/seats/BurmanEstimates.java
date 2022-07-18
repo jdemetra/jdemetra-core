@@ -30,7 +30,7 @@ import jdplus.ucarima.WienerKolmogorovEstimators;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
-import jdplus.arima.ssf.ExactArimaForecasts;
+import jdplus.ssf.arima.ExactArimaForecasts;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 import jdplus.math.matrices.decomposition.Gauss;

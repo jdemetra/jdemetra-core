@@ -1,12 +1,12 @@
 /*
- * Copyright 2016 National Bank copyOf Belgium
+ * Copyright 2022 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they will be approved 
- * by the European Commission - subsequent versions copyOf the EUPL (the "Licence");
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
- * You may obtain a copy copyOf the Licence at:
+ * You may obtain a copy of the Licence at:
  *
- * http://ec.europa.eu/idabc/eupl
+ * https://joinup.ec.europa.eu/software/page/eupl
  *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
@@ -23,7 +23,7 @@ import jdplus.math.matrices.FastMatrix;
 /**
  * Represents a gaussian vector, with its mean and covariance matrix. The way
  * information must be interpreted is given by the state info. This is similar
- * to the NRV (normal random vector) copyOf Snyder/Forbes (apart from the
+ * to the NRV (normal random vector) of Snyder/Forbes (apart from the
  * additional info)
  *
  * @author Jean Palate

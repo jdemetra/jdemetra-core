@@ -21,7 +21,7 @@ import jdplus.data.DataBlockStorage;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.composite.CompositeSsf;
 import jdplus.ssf.univariate.SsfData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;
@@ -31,7 +31,7 @@ import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.SeasonalSelector;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
-import jdplus.ucarima.ssf.SsfUcarima;
+import jdplus.ssf.arima.SsfUcarima;
 import org.junit.jupiter.api.Test;
 
 /**
