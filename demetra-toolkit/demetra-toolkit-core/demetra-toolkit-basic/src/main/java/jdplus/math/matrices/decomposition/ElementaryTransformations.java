@@ -317,7 +317,7 @@ public class ElementaryTransformations {
     }
 
     private void householder(DataBlockIterator vectors) {
-        HouseholderReflection reflection = HouseholderReflection.of(vectors.next());
+        HouseholderReflection reflection = HouseholderReflection.of(vectors.next(), true);
         while (vectors.hasNext()) {
             reflection.transform(vectors.next());
         }

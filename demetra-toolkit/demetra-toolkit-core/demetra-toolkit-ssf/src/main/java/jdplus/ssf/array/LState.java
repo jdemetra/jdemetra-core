@@ -19,6 +19,10 @@ package jdplus.ssf.array;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.math.matrices.LowerTriangularMatrix;
+import jdplus.math.matrices.SymmetricMatrix;
+import jdplus.ssf.ISsfState;
+import jdplus.ssf.State;
 
 
 /**
@@ -31,8 +35,6 @@ import jdplus.math.matrices.FastMatrix;
 @Development(status = Development.Status.Alpha)
 public class LState {
     
-    public static final double ZERO= 1e-9;
-
     /**
      * a is the state vector. a(t|t-1)
      */
@@ -52,6 +54,15 @@ public class LState {
         this.L = L;
     }
 
+    public static LState of(ISsfState ssf) {
+        FastMatrix L=FastMatrix.square(ssf.getStateDim());
+        ssf.initialization().Pf0(L);
+        SymmetricMatrix.lcholesky(L, State.ZERO);
+        LowerTriangularMatrix.toLower(L);
+        LState state = new LState(L);
+        ssf.initialization().a0(state.a);
+        return state;
+    }
     
     @Override
     public String toString(){

@@ -57,6 +57,13 @@ public class OrdinaryFilter {
         this.initializer = null;
     }
 
+    /**
+     * Computes the update information:
+     *
+     * @param t
+     * @param data
+     * @return
+     */
     protected boolean error(int t, ISsfData data) {
         missing = data.isMissing(t);
         if (missing) {
@@ -64,32 +71,31 @@ public class OrdinaryFilter {
             updinfo.setMissing();
             return false;
         } else {
-            // pe_ = new UpdateInformation(ssf_.getStateDim(), 1);
             // K = PZ'/f
-            // computes (ZP)' in K'. Missing values are set to 0 
-            // Z~v x r, P~r x r, K~r x v
-            DataBlock C = updinfo.M();
-            // computes ZPZ'; results in pe_.L
-            //measurement.ZVZ(pos_, state_.P.subMatrix(), F);
-            loading.ZM(t, state.P(), C);
-            double v = loading.ZX(t, C);
+            // computes PZ' (=ZP)'  in M.  
+            DataBlock M = updinfo.M();
+            loading.ZM(t, state.P(), M);
+            // compute ZPZ'
+            double v = loading.ZX(t, M);
+            // check that ZPZ' is non negative (P semi-definite positive)
+            if (v < -Constants.getEpsilon()) {
+                throw new SsfException();
+            }
+            if (v < Constants.getEpsilon()) {
+                v = 0;
+            }
             if (error != null) {
                 v += error.at(t);
             }
-            if (v < Constants.getEpsilon()){
-                v=0;
-            }
             updinfo.setVariance(v);
-            // We put in K  PZ'*(ZPZ'+H)^-1 = PZ'* F^-1 = PZ'*(LL')^-1/2 = PZ'(L')^-1
-            // K L' = PZ' or L K' = ZP
-
             double y = data.get(t);
-            double e=y - loading.ZX(t, state.a());
-            if (v == 0){
-                if (Math.abs(e)< State.ZERO)
-                    e=0;
-                else
+            double e = y - loading.ZX(t, state.a());
+            if (v == 0) {
+                if (Math.abs(e) < State.ZERO) {
+                    e = 0;
+                } else {
                     throw new SsfException(SsfException.INCONSISTENT);
+                }
             }
             updinfo.set(e);
             return true;

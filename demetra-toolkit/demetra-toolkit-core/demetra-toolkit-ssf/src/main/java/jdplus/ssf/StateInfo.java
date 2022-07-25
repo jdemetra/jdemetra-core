@@ -33,5 +33,5 @@ public enum StateInfo {
     /**
      * a(t|N)
      */
-    Smoothed,
+    Smoothed
 }

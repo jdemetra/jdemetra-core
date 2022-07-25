@@ -19,14 +19,11 @@ package jdplus.ssf.array;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.decomposition.ElementaryTransformations;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.State;
 import jdplus.ssf.univariate.IFilteringResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.UpdateInformation;
-import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.univariate.ISsfError;
 import jdplus.ssf.ISsfLoading;
 
@@ -37,14 +34,13 @@ import jdplus.ssf.ISsfLoading;
  */
 public class ArrayFilter {
 
-    private LState state_;
-    private UpdateInformation predictionError;
-    private ISsf ssf;
+    private LState state;
+    private UpdateInformation updinfo;
     private ISsfLoading loading;
     private ISsfError error;
     private ISsfDynamics dynamics;
-    private ISsfData data_;
-    private int curPos, end, dim_, nres_;
+    private boolean missing;
+    private int dim;
     private FastMatrix A;
 
     /**
@@ -54,31 +50,33 @@ public class ArrayFilter {
     }
 
     /**
+     * Just
+     *
+     * @param t
+     * @param data
+     * @return
      */
-    protected void error() {
-
-        double y = data_.get(curPos);
-        predictionError.set(y - loading.ZX(curPos, state_.a));
+    protected void error(int t, ISsfData data) {
+        missing = data.isMissing(t);
+        if (missing) {
+            // pe_ = null;
+            updinfo.setMissing();
+        } else {
+            double y = data.get(t);
+            updinfo.set(y - loading.ZX(t, state.a));
+        }
     }
 
-    private boolean initFilter() {
-        curPos = 0;
-        end = data_.length();
-        nres_ = dynamics.getInnovationsDim();
-        dim_ = ssf.getStateDim();
-        A = FastMatrix.make(dim_ + 1, dim_ + 1 + nres_);
-        return true;
-    }
-
-    private void initState() {
-        state_ = new LState(L());
-        predictionError = new UpdateInformation(dim_);
-        ISsfInitialization initialization = ssf.initialization();
-        initialization.a0(state_.a);
-        FastMatrix P0 = FastMatrix.make(dim_, dim_);
-        initialization.Pf0(P0);
-        SymmetricMatrix.lcholesky(P0, State.ZERO);
-        state_.L.copy(P0);
+    private void initialize(ISsf ssf) {
+        loading = ssf.loading();
+        error = ssf.measurementError();
+        dynamics = ssf.dynamics();
+        dim = ssf.getStateDim();
+        updinfo = new UpdateInformation(dim);
+        state = LState.of(ssf);
+        int nres = dynamics.getInnovationsDim();
+        A = FastMatrix.make(dim + 1, dim + 1 + nres);
+        L().copy(state.L);
     }
 
     /**
@@ -89,64 +87,65 @@ public class ArrayFilter {
      * @return
      */
     public boolean process(final ISsf ssf, final ISsfData data, final IFilteringResults rslts) {
-        this.ssf=ssf;
         loading = ssf.loading();
-        error=ssf.measurementError();
+        error = ssf.measurementError();
         dynamics = ssf.dynamics();
-        data_ = data;
-        if (!initFilter()) {
-            return false;
-        }
-        initState();
-        curPos = 0;
-        do {
-            preArray();
-            ElementaryTransformations.fastGivensTriangularize(A);
+        initialize(ssf);
+        int t = 0;
+        int end = data.length();
+        while (t < end) {
+            // missing or e(t)
+            error(t, data);
+            preArray(t);
+            ElementaryTransformations.givensTriangularize(A);
             postArray();
-            error();
-            rslts.save(curPos, predictionError);
-            nextState();
-        } while (++curPos < end);
+            if (rslts != null) {
+                rslts.save(t, updinfo);
+            }
+            nextState(t++);
+        }
         return true;
     }
 
-    private void preArray() {
-        loading.ZM(curPos, L(), ZL());
-        dynamics.TM(curPos, L());
+    private void preArray(int t) {
+        loading.ZM(t, L(), ZL());
+        dynamics.TM(t, L());
         U().set(0);
-        dynamics.S(curPos, U());
+        dynamics.S(t, U());
         K().set(0);
-        if (error != null)
-            A.set(0,0, Math.sqrt(error.at(curPos)));
-        else
-            A.set(0,0,0);
+        if (error != null) {
+            A.set(0, 0, Math.sqrt(error.at(t)));
+        } else {
+            A.set(0, 0, 0);
+        }
     }
 
     private void postArray() {
-        double e=A.get(0,0);
-        predictionError.setStandardDeviation(e);
-        predictionError.M().copy(K());
-        predictionError.M().mul(e);
+        double e = A.get(0, 0);
+        updinfo.setStandardDeviation(e);
+        updinfo.M().setAY(e, K());
     }
 
-    private void nextState() {
-        dynamics.TX(curPos, state_.a);
-        state_.a.addAY(predictionError.get() / predictionError.getVariance(), predictionError.M());
-     }
+    private void nextState(int t) {
+        dynamics.TX(t, state.a);
+        if (!missing) {
+            state.a.addAY(updinfo.get() / updinfo.getVariance(), updinfo.M());
+        }
+    }
 
     private DataBlock K() {
         return A.column(0).drop(1, 0);
     }
 
     private DataBlock ZL() {
-        return A.row(0).range(1, 1 + dim_);
+        return A.row(0).range(1, 1 + dim);
     }
 
     private FastMatrix L() {
-        return A.extract(1, dim_, 1, dim_);
+        return A.extract(1, dim, 1, dim);
     }
 
     private FastMatrix U() {
-        return A.extract(1, dim_, 1 + dim_, A.getColumnsCount()-dim_-1);
+        return A.extract(1, dim, 1 + dim, A.getColumnsCount() - dim - 1);
     }
 }

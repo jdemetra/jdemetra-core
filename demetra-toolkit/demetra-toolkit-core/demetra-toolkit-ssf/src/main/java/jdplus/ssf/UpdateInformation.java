@@ -30,7 +30,7 @@ public class UpdateInformation {
     private double e, f,stde;
 
     /**
-     * C = P Z'
+     * M = P Z'
      */
     private final DataBlock M;
     
