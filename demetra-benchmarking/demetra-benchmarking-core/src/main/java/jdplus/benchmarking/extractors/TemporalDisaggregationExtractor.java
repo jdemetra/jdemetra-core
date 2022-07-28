@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2022 National Bank of Belgium
+ * 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ * 
+ * https://joinup.ec.europa.eu/software/page/eupl
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package jdplus.benchmarking.extractors;
 
@@ -9,13 +20,13 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.Variable;
 import nbbrd.service.ServiceProvider;
 import demetra.math.matrices.Matrix;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 
 /**
  *
@@ -71,7 +82,7 @@ public class TemporalDisaggregationExtractor extends InformationMapping<Temporal
             double vars = S.ssq();
             return Math.sqrt(vars / vart);
         });
-        delegate(LIKELIHOOD, LikelihoodStatistics.class, source -> source.getLikelihood());
+        delegate(LIKELIHOOD, DiffuseLikelihoodStatistics.class, source -> source.getStats());
         delegate(RES, ResidualsDiagnostics.class, source -> source.getResidualsDiagnostics());
     }
 

@@ -20,18 +20,7 @@ import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
 import java.util.function.Function;
 import jdplus.arima.estimation.IArimaMapping;
-import jdplus.sarima.estimation.SarimaMapping;
-import jdplus.regsarima.internal.HannanRissanenInitializer;
-import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.RegArimaModel;
-import jdplus.regarima.estimation.RegArmaEstimation;
-import jdplus.regarima.RegArmaModel;
-import jdplus.regarima.estimation.RegArmaProcessor;
 import jdplus.data.DataBlock;
-
-import nbbrd.design.BuilderPattern;
-import nbbrd.design.Development;
-
 import jdplus.math.functions.IParametricMapping;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
@@ -171,8 +160,7 @@ public class RegSarimaComputer implements IRegArimaComputer<SarimaModel> {
         }
         SarimaModel mstart;
         switch (start) {
-            case HannanRissanen:
-            case Multiple:
+            case HannanRissanen, Multiple -> {
                 HannanRissanenInitializer initializer = HannanRissanenInitializer.builder()
                         .stabilize(true)
                         .useDefaultIfFailed(true).build();
@@ -205,15 +193,11 @@ public class RegSarimaComputer implements IRegArimaComputer<SarimaModel> {
                         }
                     }
                 }
-                break;
-            case Default:
-                mstart = SarimaModel.builder(regs.arima().orders().doStationary())
-                        .setDefault().build();
-                break;
-            default:
-                mstart = SarimaModel.builder(regs.arima().orders().doStationary())
-                        .setDefault(0, 0).build();
-                break;
+            }
+            case Default -> mstart = SarimaModel.builder(regs.arima().orders().doStationary())
+                    .setDefault().build();
+            default -> mstart = SarimaModel.builder(regs.arima().orders().doStationary())
+                    .setDefault(0, 0).build();
         }
         return estimate(regs, mapping, mstart, eps);
     }

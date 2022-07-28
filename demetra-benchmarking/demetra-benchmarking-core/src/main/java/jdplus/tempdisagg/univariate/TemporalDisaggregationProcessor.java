@@ -201,14 +201,14 @@ public class TemporalDisaggregationProcessor {
                 .disaggregationDomain(model.getHDom())
                 .indicators(model.getIndicators())
                 .maximum(ml)
-                .likelihood(lstats(dll, model.getLEDom().length(), spec))
+                .likelihood(dll)
+                .hyperParametersCount(nparams)
+                .stats(dll.stats(0, nparams))
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
                 .regressionEffects(regeffect)
                 .residuals(res)
                 .residualsDiagnostics(diagnostic(res, nmodel, model.getOriginalSeries().getTsUnit()))
-                .coefficientsCovariance(dll.covariance(nparams, true))
-                .coefficients(dll.coefficients())
                 .build();
     }
 
@@ -300,13 +300,13 @@ public class TemporalDisaggregationProcessor {
                 .disaggregationDomain(model.getHDom())
                 .indicators(model.getIndicators())
                 .maximum(ml)
-                .likelihood(lstats(dll, model.getLEDom().length(), spec))
+                .likelihood(dll)
+                .hyperParametersCount(nparams)
+                .stats(dll.stats(0, nparams))
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
                 .regressionEffects(regeffect)
                 .residuals(res)
-                .coefficientsCovariance(dll.covariance(nparams, true))
-                .coefficients(dll.coefficients())
                 .residualsDiagnostics(diagnostic(res, Ssf.of(SsfCumulator.of(ncmp, nloading, model.getFrequencyRatio(), 0),
                         SsfCumulator.defaultLoading(nloading, model.getFrequencyRatio(), 0)), model.getOriginalSeries().getTsUnit()))
                 .build();

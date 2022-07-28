@@ -31,13 +31,15 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder=true, buildMethodName="buildWithoutValidation")
 public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
 
-    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "denton", null);
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor("benchmarking", "denton", null);
 
     private boolean multiplicative, modified;
     private int differencing;
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
+    
+    private int defaultPeriod;
 
     public static Builder builder() {
         return new Builder()
@@ -45,12 +47,13 @@ public class DentonSpec implements ProcSpecification, Validatable<DentonSpec> {
                 .modified(true)
                 .differencing(1)
                 .aggregationType(AggregationType.Sum)
-                .observationPosition(0);
+                .observationPosition(0)
+                .defaultPeriod(12);
     }
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return ALGORITHM;
+        return DESCRIPTOR;
     }
 
     @Override

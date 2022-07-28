@@ -27,6 +27,8 @@ import demetra.timeseries.regression.Variable;
 import java.util.Map;
 import demetra.math.matrices.Matrix;
 import demetra.tempdisagg.univariate.ResidualsDiagnostics;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 
 /**
  *
@@ -53,12 +55,21 @@ public class TemporalDisaggregationResults implements GenericExplorable{
      * Regression estimation. The order correspond to the order of the variables
      * 
      */
-    private DoubleSeq coefficients;
-    private Matrix coefficientsCovariance;
+    int hyperParametersCount;
+    
+    DiffuseConcentratedLikelihood likelihood;
+    DiffuseLikelihoodStatistics stats;
+    
+    public DoubleSeq getCoefficients(){
+        return likelihood.coefficients();
+    }
+    
+    public Matrix getCoefficientsCovariance(){
+        return likelihood.covariance(hyperParametersCount, true);
+    }
     
     ObjectiveFunctionPoint maximum;
     
-    LikelihoodStatistics likelihood;
     ResidualsDiagnostics residualsDiagnostics;
 
     @lombok.NonNull

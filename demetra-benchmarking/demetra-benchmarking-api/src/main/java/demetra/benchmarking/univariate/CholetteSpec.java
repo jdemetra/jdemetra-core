@@ -31,7 +31,7 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public class CholetteSpec implements ProcSpecification, Validatable<CholetteSpec> {
 
-    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("benchmarking", "cholette", null);
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor("benchmarking", "cholette", null);
 
     public static enum BiasCorrection {
 
@@ -58,7 +58,7 @@ public class CholetteSpec implements ProcSpecification, Validatable<CholetteSpec
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return ALGORITHM;
+        return DESCRIPTOR;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium.
+ * Copyright 2022 National Bank of Belgium.
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -44,6 +44,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
             .estimationPrecision(1e-9)
             .rescale(true)
             .algorithm(SsfInitialization.SqrtDiffuse)
+            .defaultPeriod(4)
             .build();
 
     public static final TemporalDisaggregationSpec FERNANDEZ = builder()
@@ -104,6 +105,8 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
+    private int defaultPeriod;
+
     @lombok.NonNull
     private Model residualsModel;
     private boolean constant, trend;
@@ -136,6 +139,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
                 .parameter(Parameter.undefined())
                 .estimationPrecision(DEF_EPS)
                 .algorithm(SsfInitialization.SqrtDiffuse)
+                .defaultPeriod(4)
                 .rescale(true);
     }
 

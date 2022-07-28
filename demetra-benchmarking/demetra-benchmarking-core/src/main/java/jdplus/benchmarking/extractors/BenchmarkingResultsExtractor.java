@@ -16,11 +16,11 @@
  */
 package jdplus.benchmarking.extractors;
 
-import demetra.calendarization.CalendarizationResults;
+import demetra.benchmarking.BenchmarkingDictionaries;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.timeseries.TsData;
-import java.time.format.DateTimeFormatter;
+import jdplus.benchmarking.univariate.BenchmarkingResults;
 import nbbrd.service.ServiceProvider;
 
 /**
@@ -28,21 +28,17 @@ import nbbrd.service.ServiceProvider;
  * @author palatej
  */
 @ServiceProvider(InformationExtractor.class)
-public class CalendarizationExtractor extends InformationMapping<CalendarizationResults> {
+public class BenchmarkingResultsExtractor extends InformationMapping<BenchmarkingResults> {
 
-    public final String AGG = "agg", EAGG = "eagg", DAYS="days", EDAYS="edays", START="start";
-
-    public CalendarizationExtractor() {
-        set(AGG, TsData.class, source -> source.getAggregatedSeries());
-        set(EAGG, TsData.class, source -> source.getStdevAggregatedSeries());
-        set(DAYS, double[].class, source -> source.getDailyData());
-        set(EDAYS, double[].class, source -> source.getDailyStdev());
-        set(START, String.class, source -> source.getStart().format(DateTimeFormatter.ISO_DATE));
- }
+    public BenchmarkingResultsExtractor() {
+        set(BenchmarkingDictionaries.ORIGINAL, TsData.class, source -> source.getOriginal());
+        set(BenchmarkingDictionaries.TARGET, TsData.class, source -> source.getTarget());
+        set(BenchmarkingDictionaries.BENCHMARKED, TsData.class, source -> source.getBenchmarked());
+    }
 
     @Override
-    public Class getSourceClass() {
-        return CalendarizationResults.class;
+    public Class<BenchmarkingResults> getSourceClass() {
+        return BenchmarkingResults.class;
     }
 
 }

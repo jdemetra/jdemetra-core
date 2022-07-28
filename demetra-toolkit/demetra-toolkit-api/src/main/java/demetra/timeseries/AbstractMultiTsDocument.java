@@ -50,6 +50,7 @@ public abstract class AbstractMultiTsDocument<S extends ProcSpecification, R ext
     protected AbstractMultiTsDocument(S spec) {
         this.specification = spec;
         uuid = UUID.randomUUID();
+        input=Collections.emptyList();
     }
 
     private void clear() {

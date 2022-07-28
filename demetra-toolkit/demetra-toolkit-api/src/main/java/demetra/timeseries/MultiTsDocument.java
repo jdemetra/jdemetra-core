@@ -10,6 +10,10 @@ import demetra.processing.ProcDocument;
 import demetra.processing.ProcSpecification;
 import demetra.processing.ProcessingLog;
 import demetra.processing.ProcessingStatus;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,4 +45,59 @@ public interface MultiTsDocument<S extends ProcSpecification, R extends Explorab
             return ((HasLog) getResult()).getLog();
         }
     }
+
+    default boolean isTsFrozen() {
+        List<Ts> ts = getInput();
+        if (ts.isEmpty()) {
+            return false;
+        }
+        for (Ts s : ts) {
+            if (s.isFrozen()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    default void freezeTs() {
+        List<Ts> ts = getInput();
+        if (ts.isEmpty()) {
+            return;
+        }
+        boolean changed = false;
+        List<Ts> nts=new ArrayList<>();
+        for (Ts s:ts) {
+            if (!s.isFrozen()) {
+                nts.add(s.freeze());
+                changed=true;
+            }else{
+                nts.add(s);
+            }
+        }
+        if (changed) {
+            set(nts);
+        }
+    }
+
+    default void unfreezeTs() {
+        List<Ts> ts = getInput();
+        if (ts.isEmpty()) {
+            return;
+        }
+        boolean changed = false;
+        List<Ts> nts=new ArrayList<>();
+        for (Ts s : ts){
+            if (s.isFrozen()) {
+                nts.add(s.unfreeze(TsFactory.getDefault(), TsInformationType.Data));
+                changed = true;
+            }else{
+                nts.add(s);
+            }
+        }
+        if (changed) {
+            set(nts);
+            getMetadata().put(TsFactory.DATE, LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+        }
+    }
+
 }
