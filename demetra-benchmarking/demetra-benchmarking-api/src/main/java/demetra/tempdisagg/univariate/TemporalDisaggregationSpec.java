@@ -31,7 +31,7 @@ import demetra.util.Validatable;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Value
+@lombok.Getter
 @lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class TemporalDisaggregationSpec implements ProcSpecification, Validatable<TemporalDisaggregationSpec> {
 
@@ -87,17 +87,12 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
         }
 
         public int getDifferencingOrder() {
-            switch (this) {
-                case Rw:
-                case RwAr1:
-                    return 1;
-                case I2:
-                    return 2;
-                case I3:
-                    return 3;
-                default:
-                    return 0;
-            }
+            return switch (this) {
+                case Rw, RwAr1 -> 1;
+                case I2 -> 2;
+                case I3 -> 3;
+                default -> 0;
+            };
         }
     }
 
@@ -146,23 +141,32 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     @Override
     public TemporalDisaggregationSpec validate() throws IllegalArgumentException {
         switch (residualsModel) {
-            case Rw:
-            case RwAr1:
+            case Rw, RwAr1 -> {
                 if (constant && !zeroInitialization) {
                     throw new IllegalArgumentException("constant not allowed");
                 }
-                break;
-            case I2:
-            case I3:
+            }
+            case I2, I3 -> {
                 if (constant && !zeroInitialization) {
                     throw new IllegalArgumentException("constant not allowed");
                 }
                 if (trend && !zeroInitialization) {
                     throw new IllegalArgumentException("trend not allowed");
                 }
-                break;
+            }
         }
         return this;
+    }
+    
+    @Override
+    public String toString(){
+        return switch (residualsModel) {
+            case Ar1 -> "Chow-Lin";
+            case Rw -> "Fernandez";
+            case RwAr1 -> "Litterman";
+            case Wn -> "Ols";
+            default -> "regression";
+        };
     }
 
 }

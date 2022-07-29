@@ -16,14 +16,18 @@ import nbbrd.design.Development;
 @lombok.experimental.UtilityClass
 @Development(status = Development.Status.Beta)
 public class BenchmarkingDictionaries {
-    
+
     public static final String ORIGINAL = "original", TARGET = "target", BENCHMARKED = "benchmarked";
-    
+
     public final Dictionary BENCHMARKING = AtomicDictionary.builder()
             .name("benchmarking")
             .item(AtomicDictionary.Item.builder().name(ORIGINAL).description("Original series").outputClass(TsData.class).build())
             .item(AtomicDictionary.Item.builder().name(TARGET).description("Aggregation constraint").outputClass(TsData.class).build())
             .item(AtomicDictionary.Item.builder().name(BENCHMARKED).description("Benchmarked series").outputClass(TsData.class).build())
             .build();
+
+    public final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg", LDISAGG = "ldisagg", UDISAGG = "udisagg",
+            RES = "residuals", ML = "ml", COEFF = "coeff", COVAR = "covar", REGEFFECT = "regeffect", SMOOTHINGEFFECT = "smoothingeffect", SPART = "smoothingpart",
+            REGNAMES = "regnames", PARAMETER = "parameter", EPARAMETER = "eparameter";
 
 }

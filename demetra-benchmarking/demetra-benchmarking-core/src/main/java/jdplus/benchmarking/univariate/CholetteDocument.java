@@ -34,14 +34,19 @@ public class CholetteDocument extends AbstractMultiTsDocument<CholetteSpec, Benc
 
     @Override
     protected BenchmarkingResults internalProcess(CholetteSpec spec, List<TsData> data) {
-        if (data.size() != 2)
+        if (data.isEmpty())
             return null;
-        TsData benchmark = CholetteProcessor.PROCESSOR.benchmark(data.get(0), data.get(1), spec);
+        TsData low=data.get(0);
+        TsData high= data.size() == 1 ? null : data.get(1);
+        // TODO
+        if (high == null)
+            return null;
+        TsData benchmark = CholetteProcessor.PROCESSOR.benchmark(high, low, spec);
         if (benchmark == null)
             return null;
         return BenchmarkingResults.builder()
-                .original(data.get(0))
-                .target(data.get(1))
+                .original(high)
+                .target(low)
                 .benchmarked(benchmark)
                 .build();
     }

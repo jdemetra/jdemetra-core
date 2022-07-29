@@ -34,26 +34,23 @@ public class DentonDocument extends AbstractMultiTsDocument<DentonSpec, Benchmar
 
     @Override
     protected BenchmarkingResults internalProcess(DentonSpec spec, List<TsData> data) {
-        if (data.size() > 2 || data.isEmpty()) {
+         if (data.isEmpty())
             return null;
-        }
-        TsData l, h, b;
-        if (data.size() == 1) {
-            l = data.get(0);
-            h = null;
-            b = DentonProcessor.PROCESSOR.benchmark(TsUnit.ofAnnualFrequency(spec.getDefaultPeriod()), l, spec);
+        TsData low=data.get(0);
+        TsData high= data.size() == 1 ? null : data.get(1);
+        TsData b;
+        if (high == null) {
+            b = DentonProcessor.PROCESSOR.benchmark(TsUnit.ofAnnualFrequency(spec.getDefaultPeriod()), low, spec);
         } else {
-            h = data.get(0);
-            l = data.get(1);
-            b = DentonProcessor.PROCESSOR.benchmark(h, l, spec);
+            b = DentonProcessor.PROCESSOR.benchmark(high, low, spec);
         }
 
         if (b == null) {
             return null;
         }
         return BenchmarkingResults.builder()
-                .original(h)
-                .target(l)
+                .original(high)
+                .target(low)
                 .benchmarked(b)
                 .build();
     }

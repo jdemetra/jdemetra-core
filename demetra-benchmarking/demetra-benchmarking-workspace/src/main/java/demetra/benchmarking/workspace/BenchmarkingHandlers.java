@@ -17,6 +17,8 @@
 package demetra.benchmarking.workspace;
 
 import demetra.DemetraVersion;
+import demetra.benchmarking.io.information.CholetteSpecMapping;
+import demetra.benchmarking.io.information.DentonSpecMapping;
 import demetra.benchmarking.io.information.TemporalDisaggregationSpecMapping;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
@@ -26,6 +28,8 @@ import demetra.workspace.WorkspaceFamily;
 import static demetra.workspace.WorkspaceFamily.informationSet;
 import static demetra.workspace.WorkspaceFamily.parse;
 import demetra.workspace.file.spi.FamilyHandler;
+import jdplus.benchmarking.univariate.CholetteDocument;
+import jdplus.benchmarking.univariate.DentonDocument;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationDocument;
 import nbbrd.service.ServiceProvider;
 
@@ -36,7 +40,7 @@ import nbbrd.service.ServiceProvider;
 @lombok.experimental.UtilityClass
 public class BenchmarkingHandlers {
 
-    public static final LinearId TEMPDISAGG_FAMILY = new LinearId("Temporal disaggregation", "Regression model");
+    public static final LinearId TEMPDISAGG_FAMILY = new LinearId("temporal disaggregation", "regression model");
     public static final String TEMPDISAGG_REPOSITORY = "TsDisaggregationDoc";
 
     public final WorkspaceFamily MOD_DOC_TEMPDISAGG = parse("temporal disaggregation@documents@regression model");
@@ -66,6 +70,72 @@ public class BenchmarkingHandlers {
             }
 
         }, TEMPDISAGG_REPOSITORY);
+
+    }
+
+    public static final LinearId CHOLETTE_FAMILY = new LinearId("benchmarking", "cholette");
+    public static final String CHOLETTE_REPOSITORY = "CholetteDoc";
+
+    public final WorkspaceFamily MOD_DOC_CHOLETTE = parse("benchmarking@documents@cholette");
+
+    @ServiceProvider(FamilyHandler.class)
+    public static final class DocCholette implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(MOD_DOC_CHOLETTE,
+                new InformationSetSerializer<CholetteDocument>() {
+            @Override
+            public InformationSet write(CholetteDocument object, boolean verbose) {
+                return MultiTsDocumentMapping.write(object, CholetteSpecMapping.SERIALIZER, verbose);
+            }
+
+            @Override
+            public CholetteDocument read(InformationSet info) {
+
+                CholetteDocument doc = new CholetteDocument();
+                MultiTsDocumentMapping.read(info, CholetteSpecMapping.SERIALIZER, doc);
+                return doc;
+            }
+
+            @Override
+            public boolean match(DemetraVersion version) {
+                return version == DemetraVersion.JD3;
+            }
+
+        }, CHOLETTE_REPOSITORY);
+
+    }
+
+    public static final LinearId DENTON_FAMILY = new LinearId("benchmarking", "denton");
+    public static final String DENTON_REPOSITORY = "DentonDoc";
+
+    public final WorkspaceFamily MOD_DOC_DENTON = parse("benchmarking@documents@denton");
+
+    @ServiceProvider(FamilyHandler.class)
+    public static final class DocDenton implements FamilyHandler {
+
+        @lombok.experimental.Delegate
+        private final FamilyHandler delegate = informationSet(MOD_DOC_CHOLETTE,
+                new InformationSetSerializer<DentonDocument>() {
+            @Override
+            public InformationSet write(DentonDocument object, boolean verbose) {
+                return MultiTsDocumentMapping.write(object, DentonSpecMapping.SERIALIZER, verbose);
+            }
+
+            @Override
+            public DentonDocument read(InformationSet info) {
+
+                DentonDocument doc = new DentonDocument();
+                MultiTsDocumentMapping.read(info, DentonSpecMapping.SERIALIZER, doc);
+                return doc;
+            }
+
+            @Override
+            public boolean match(DemetraVersion version) {
+                return version == DemetraVersion.JD3;
+            }
+
+        }, DENTON_REPOSITORY);
 
     }
 
