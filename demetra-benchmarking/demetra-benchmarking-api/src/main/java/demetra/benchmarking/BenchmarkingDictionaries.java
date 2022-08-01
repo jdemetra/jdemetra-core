@@ -26,8 +26,5 @@ public class BenchmarkingDictionaries {
             .item(AtomicDictionary.Item.builder().name(BENCHMARKED).description("Benchmarked series").outputClass(TsData.class).build())
             .build();
 
-    public final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg", LDISAGG = "ldisagg", UDISAGG = "udisagg",
-            RES = "residuals", ML = "ml", COEFF = "coeff", COVAR = "covar", REGEFFECT = "regeffect", SMOOTHINGEFFECT = "smoothingeffect", SPART = "smoothingpart",
-            REGNAMES = "regnames", PARAMETER = "parameter", EPARAMETER = "eparameter";
 
 }

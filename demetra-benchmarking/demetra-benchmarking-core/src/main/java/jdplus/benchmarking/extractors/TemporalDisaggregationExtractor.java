@@ -16,7 +16,6 @@
  */
 package jdplus.benchmarking.extractors;
 
-import demetra.benchmarking.BenchmarkingDictionaries;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.information.InformationExtractor;
@@ -27,6 +26,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.regression.Variable;
 import nbbrd.service.ServiceProvider;
 import demetra.math.matrices.Matrix;
+import demetra.tempdisagg.univariate.TemporalDisaggregationDictionaries;
 import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 
 /**
@@ -37,24 +37,24 @@ import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 public class TemporalDisaggregationExtractor extends InformationMapping<TemporalDisaggregationResults> {
 
     public TemporalDisaggregationExtractor() {
-        set(BenchmarkingDictionaries.DISAGG, TsData.class, 
+        set(TemporalDisaggregationDictionaries.DISAGG, TsData.class, 
                 source -> source.getDisaggregatedSeries());
-        set(BenchmarkingDictionaries.EDISAGG, TsData.class, 
+        set(TemporalDisaggregationDictionaries.EDISAGG, TsData.class, 
                 source -> source.getStdevDisaggregatedSeries());
-        set(BenchmarkingDictionaries.LDISAGG, TsData.class, 
+        set(TemporalDisaggregationDictionaries.LDISAGG, TsData.class, 
                 source -> source.getDisaggregatedSeries()
                         .fn(source.getStdevDisaggregatedSeries(), (a, b) -> a - 2 * b));
-        set(BenchmarkingDictionaries.UDISAGG, TsData.class, 
+        set(TemporalDisaggregationDictionaries.UDISAGG, TsData.class, 
                 source -> source.getDisaggregatedSeries().fn(source.getStdevDisaggregatedSeries(), (a, b) -> a + 2 * b));
-        set(BenchmarkingDictionaries.REGEFFECT, TsData.class, 
+        set(TemporalDisaggregationDictionaries.REGEFFECT, TsData.class, 
                 source -> source.getRegressionEffects());
-        set(BenchmarkingDictionaries.SMOOTHINGEFFECT, TsData.class, 
+        set(TemporalDisaggregationDictionaries.SMOOTHINGEFFECT, TsData.class, 
                 source -> TsData.subtract(source.getDisaggregatedSeries(), source.getRegressionEffects()));
-        set(BenchmarkingDictionaries.COEFF, double[].class, 
+        set(TemporalDisaggregationDictionaries.COEFF, double[].class, 
                 source -> source.getCoefficients().toArray());
-        set(BenchmarkingDictionaries.COVAR, Matrix.class, 
+        set(TemporalDisaggregationDictionaries.COVAR, Matrix.class, 
                 source -> source.getCoefficientsCovariance());
-        set(BenchmarkingDictionaries.REGNAMES, String[].class, source -> {
+        set(TemporalDisaggregationDictionaries.REGNAMES, String[].class, source -> {
             Variable[] vars = source.getIndicators();
             int n = vars == null ? 0 : vars.length;
             if (n == 0) {
@@ -66,21 +66,21 @@ public class TemporalDisaggregationExtractor extends InformationMapping<Temporal
             }
             return names;
         });
-        set(BenchmarkingDictionaries.PARAMETER, Double.class, source -> {
+        set(TemporalDisaggregationDictionaries.PARAMETER, Double.class, source -> {
             if (source.getMaximum() == null) {
                 return Double.NaN;
             }
             double[] p = source.getMaximum().getParameters();
             return p.length == 0 ? Double.NaN : p[0];
         });
-        set(BenchmarkingDictionaries.EPARAMETER, Double.class, source -> {
+        set(TemporalDisaggregationDictionaries.EPARAMETER, Double.class, source -> {
             if (source.getMaximum() == null) {
                 return Double.NaN;
             }
             Matrix H = source.getMaximum().getHessian();
             return (H == null || H.isEmpty()) ? Double.NaN : Math.sqrt(1 / source.getMaximum().getHessian().get(0, 0));
         });
-        set(BenchmarkingDictionaries.SPART, Double.class, source -> {
+        set(TemporalDisaggregationDictionaries.SPART, Double.class, source -> {
             TsData re = source.getRegressionEffects();
             if (re == null) {
                 return null;
@@ -92,8 +92,8 @@ public class TemporalDisaggregationExtractor extends InformationMapping<Temporal
             double vars = S.ssq();
             return Math.sqrt(vars / vart);
         });
-        delegate(BenchmarkingDictionaries.LIKELIHOOD, DiffuseLikelihoodStatistics.class, source -> source.getStats());
-        delegate(BenchmarkingDictionaries.RES, ResidualsDiagnostics.class, source -> source.getResidualsDiagnostics());
+        delegate(TemporalDisaggregationDictionaries.LIKELIHOOD, DiffuseLikelihoodStatistics.class, source -> source.getStats());
+        delegate(TemporalDisaggregationDictionaries.RES, ResidualsDiagnostics.class, source -> source.getResidualsDiagnostics());
     }
 
     @Override
