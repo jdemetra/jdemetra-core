@@ -44,9 +44,9 @@ import java.util.List;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
-import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
+import java.time.LocalDate;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.ssf.sts.Noise;
@@ -59,6 +59,14 @@ import jdplus.ssf.sts.Noise;
 public class TemporalDisaggregationProcessor {
 
     public TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec) {
+        if (indicators == null || indicators.length == 0) {
+            int hfreq = spec.getDefaultPeriod(), lfreq = aggregatedSeries.getAnnualFrequency();
+            if (lfreq >= hfreq) {
+                return null;
+            }
+            TsDomain domain = TsDomain.of(TsPeriod.of(TsUnit.ofAnnualFrequency(hfreq), aggregatedSeries.getDomain().getStartPeriod().start()), aggregatedSeries.length() * hfreq / lfreq);
+            return process(aggregatedSeries, domain, spec);
+        }
         DisaggregationModel model = createModel(aggregatedSeries, indicators, spec);
         return compute(model, spec);
     }
@@ -194,6 +202,7 @@ public class TemporalDisaggregationProcessor {
         }
         TsData res = hresiduals(model, dll.coefficients());
         res = res.multiply(f);
+        res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
         dll = dll.rescale(model.getYfactor(), model.getXfactor());
         int nparams = spec.isParameterEstimation() ? 1 : 0;
         return TemporalDisaggregationResults.builder()
@@ -207,8 +216,7 @@ public class TemporalDisaggregationProcessor {
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
                 .regressionEffects(regeffect)
-                .residuals(res)
-                .residualsDiagnostics(diagnostic(res, nmodel, model.getOriginalSeries().getTsUnit()))
+                .residualsDiagnostics(diagnostic(res))
                 .build();
     }
 
@@ -293,6 +301,7 @@ public class TemporalDisaggregationProcessor {
         // regression effects
         TsData res = hresiduals(model, dll.coefficients());
         res = res.divide(yfac);
+        res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
         dll = dll.rescale(yfac, xfac);
         int nparams = spec.isParameterEstimation() ? 1 : 0;
         return TemporalDisaggregationResults.builder()
@@ -306,9 +315,7 @@ public class TemporalDisaggregationProcessor {
                 .disaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), yh))
                 .stdevDisaggregatedSeries(TsData.ofInternal(model.getHDom().getStartPeriod(), vyh))
                 .regressionEffects(regeffect)
-                .residuals(res)
-                .residualsDiagnostics(diagnostic(res, Ssf.of(SsfCumulator.of(ncmp, nloading, model.getFrequencyRatio(), 0),
-                        SsfCumulator.defaultLoading(nloading, model.getFrequencyRatio(), 0)), model.getOriginalSeries().getTsUnit()))
+                .residualsDiagnostics(diagnostic(res))
                 .build();
     }
 
@@ -430,31 +437,18 @@ public class TemporalDisaggregationProcessor {
                 }
             }
         }
-        return TsData.ofInternal(model.getLEDom().getStartPeriod(), y);
+        return TsData.ofInternal(model.getHEDom().getStartPeriod(), y);
     }
 
-    private ResidualsDiagnostics diagnostic(TsData res, ISsf ssf, TsUnit unit) {
-        DiffuseConcentratedLikelihood ll = DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssf, new SsfData(res.getValues()));
-        DoubleSeq e = ll.e();
-        TsPeriod pstart = TsPeriod.of(unit, res.getStart().start());
-        pstart = pstart.plus(ll.ndiffuse());
-        TsData fres = TsData.of(pstart, e);
+    private ResidualsDiagnostics diagnostic(TsData res) {
         NiidTests tests = NiidTests.builder()
-                .data(e)
-                .period(unit.getAnnualFrequency())
+                .data(res.getValues())
+                .period(res.getAnnualFrequency())
                 .seasonal(false)
                 .build();
         return ResidualsDiagnostics.builder()
-                .mean(tests.meanTest() == null ? null : tests.meanTest())
-                .skewness(tests.skewness() == null ? null : tests.skewness())
-                .kurtosis(tests.kurtosis() == null ? null : tests.kurtosis())
-                .doornikHansen(tests.normalityTest() == null ? null : tests.normalityTest())
-                .ljungBox(tests.ljungBox() == null ? null : tests.ljungBox())
-                .fullResiduals(fres)
-                .runsNumber(tests.runsNumber() == null ? null : tests.runsNumber())
-                .udRunsNumber(tests.upAndDownRunsNumbber() == null ? null : tests.upAndDownRunsNumbber())
-                .runsLength(tests.runsLength() == null ? null : tests.runsLength())
-                .udRunsLength(tests.upAndDownRunsLength() == null ? null : tests.upAndDownRunsLength())
+                .fullResiduals(res)
+                .niid(tests)
                 .build();
     }
 

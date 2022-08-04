@@ -20,7 +20,7 @@ import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.tempdisagg.univariate.ResidualsDiagnostics;
+import jdplus.tempdisagg.univariate.ResidualsDiagnostics;
 import jdplus.tempdisagg.univariate.TemporalDisaggregationResults;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.Variable;

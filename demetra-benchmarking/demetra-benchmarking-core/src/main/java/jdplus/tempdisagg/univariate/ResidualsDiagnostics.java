@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package demetra.tempdisagg.univariate;
+package jdplus.tempdisagg.univariate;
 
-import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsData;
+import jdplus.stats.tests.NiidTests;
 
 /**
  *
@@ -28,9 +28,5 @@ import demetra.timeseries.TsData;
 public class ResidualsDiagnostics {
     
     TsData fullResiduals;
-    StatisticalTest ljungBox; 
-    StatisticalTest mean, 
-            doornikHansen, skewness, kurtosis, runsNumber, runsLength,
-            udRunsNumber, udRunsLength;
-    double durbinWatson;
+    NiidTests niid;
 }
