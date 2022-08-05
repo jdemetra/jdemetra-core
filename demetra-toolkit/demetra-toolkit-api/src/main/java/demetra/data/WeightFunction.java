@@ -20,7 +20,8 @@ import java.util.function.DoubleUnaryOperator;
 import nbbrd.design.Development;
 
 /**
- *
+ * Weight function, defined in [-1,1].
+ * The function is positive, even and equals 1 (=max) at zero
  * @author PALATEJ
  */
 @Development(status = Development.Status.Release)

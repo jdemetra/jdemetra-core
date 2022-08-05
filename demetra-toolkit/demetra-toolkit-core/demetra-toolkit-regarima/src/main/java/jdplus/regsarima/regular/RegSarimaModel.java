@@ -353,7 +353,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         RegArimaForecasts.Result fcasts;
         DoubleSeq b = getEstimation().getCoefficients();
         LikelihoodStatistics ll = getEstimation().getStatistics();
-        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount());
         TsDomain edom = estimation.getDomain();
         TsDomain xdom = edom.extend(0, nf);
         if (b.isEmpty()) {
@@ -390,7 +390,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         RegArimaForecasts.Result bcasts;
         DoubleSeq b = getEstimation().getCoefficients();
         LikelihoodStatistics ll = getEstimation().getStatistics();
-        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount());
         TsDomain edom = estimation.getDomain();
         TsDomain xdom = edom.extend(nb, 0);
         if (b.isEmpty()) {

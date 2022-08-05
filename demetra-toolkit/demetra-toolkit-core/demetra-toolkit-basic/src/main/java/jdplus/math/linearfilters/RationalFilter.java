@@ -219,11 +219,8 @@ public final class RationalFilter implements IRationalFilter {
 
         Arrays2.reverse(cnb);
 
-        // TODO: compute the correct shifts
-        // nnb0 = bshift + k
-        // nnf0 = fshift + h
-        m_rb = new RationalBackFilter(BackFilter.ofInternal(cnb), bd, nnb0-k);
-        m_rf = new RationalForeFilter(ForeFilter.ofInternal(cnf), fd, nnf0+h);
+        m_rb = new RationalBackFilter(BackFilter.ofInternal(cnb), bd, 0);
+        m_rf = new RationalForeFilter(ForeFilter.ofInternal(cnf), fd, 0);
     }
 
     /**
@@ -312,14 +309,15 @@ public final class RationalFilter implements IRationalFilter {
 
     /**
      *
+     * @param pos
      * @return
      */
     public double weight(int pos) {
         double d = 0;
-        if (pos <= 0) {
+        if (pos <= m_rb.getUBound()) {
             d = m_rb.weight(pos);
         }
-        if (pos >= 0) {
+        if (pos >= m_rf.getLBound()) {
             d += m_rf.weight(pos);
         }
         return d;
