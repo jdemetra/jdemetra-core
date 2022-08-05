@@ -43,14 +43,13 @@ import jdplus.ssf.arima.SsfUcarima;
  */
 public class StationaryVarianceComputer {
 
-
     public static interface ILongTermTrendComputer {
 
         TsData calcLongTermTrend(TsData s);
     }
-    
-    public static final ILongTermTrendComputer LINEARTREND=new LinearTrendComputer(), HP=new HPTrendComputer();
-    
+
+    public static final ILongTermTrendComputer LINEARTREND = new LinearTrendComputer(), HP = new HPTrendComputer();
+
     private static class LinearTrendComputer implements ILongTermTrendComputer {
 
         @Override
@@ -120,16 +119,17 @@ public class StationaryVarianceComputer {
             return builder.toString();
         }
     }
-    
+
     public final ILongTermTrendComputer trendComputer;
 
-    public StationaryVarianceComputer(){
-        trendComputer=LINEARTREND;
+    public StationaryVarianceComputer() {
+        trendComputer = LINEARTREND;
     }
-            
-    public StationaryVarianceComputer(ILongTermTrendComputer trendComputer){
-        this.trendComputer=trendComputer;
+
+    public StationaryVarianceComputer(ILongTermTrendComputer trendComputer) {
+        this.trendComputer = trendComputer;
     }
+
     /**
      * Computes the stationary variance decomposition
      *
@@ -167,16 +167,17 @@ public class StationaryVarianceComputer {
         Calc = cleanup(Calc);
         Pc = cleanup(Pc);
 
-        TsData lt = trendComputer.calcLongTermTrend(stCc);
-        stCc = TsData.subtract(stCc, lt);
-        stOc = TsData.subtract(stOc, lt);
-
+        if (stCc != null) {
+            TsData lt = trendComputer.calcLongTermTrend(stCc);
+            stCc = TsData.subtract(stCc, lt);
+            stOc = TsData.subtract(stOc, lt);
+        }
         //
         DescriptiveStatistics stats = DescriptiveStatistics.of(stOc.getValues());
         double varO = stats.getVar();
 
-        double varC, varS, varI, varP, varCal; 
-        
+        double varC, varS, varI, varP, varCal;
+
         if (stCc != null) {
             stats = DescriptiveStatistics.of(stCc.getValues());
             varC = stats.getVar();
@@ -226,13 +227,14 @@ public class StationaryVarianceComputer {
     }
 
     private StationaryVarianceDecomposition.TrendType type() {
-        if (trendComputer instanceof LinearTrendComputer)
+        if (trendComputer instanceof LinearTrendComputer) {
             return StationaryVarianceDecomposition.TrendType.Linear;
-        else if (trendComputer instanceof HPTrendComputer)
+        } else if (trendComputer instanceof HPTrendComputer) {
             return StationaryVarianceDecomposition.TrendType.HodrickPrescott;
-        else
+        } else {
             return StationaryVarianceDecomposition.TrendType.Other;
-     }
+        }
+    }
 
     private TsData cleanup(TsData s) {
         if (s.getValues().allMatch(x -> Math.abs(x) < 1e-12)) {

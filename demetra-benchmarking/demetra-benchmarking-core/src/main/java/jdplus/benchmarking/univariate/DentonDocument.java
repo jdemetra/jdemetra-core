@@ -17,6 +17,7 @@
 package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.DentonSpec;
+import demetra.data.AggregationType;
 import demetra.timeseries.AbstractMultiTsDocument;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsUnit;
@@ -34,15 +35,21 @@ public class DentonDocument extends AbstractMultiTsDocument<DentonSpec, Benchmar
 
     @Override
     protected BenchmarkingResults internalProcess(DentonSpec spec, List<TsData> data) {
-         if (data.isEmpty())
+        if (data.isEmpty()) {
             return null;
-        TsData low=data.get(0);
-        TsData high= data.size() == 1 ? null : data.get(1);
+        }
+        TsData low = data.get(0);
+        TsData high = data.size() == 1 ? null : data.get(1);
         TsData b;
+        TsData bi;
         if (high == null) {
             b = DentonProcessor.PROCESSOR.benchmark(TsUnit.ofAnnualFrequency(spec.getDefaultPeriod()), low, spec);
+            bi=null;
         } else {
             b = DentonProcessor.PROCESSOR.benchmark(high, low, spec);
+            bi=spec.getAggregationType() == AggregationType.UserDefined
+                        ? BenchmarkingUtility.biRatio(high, low, spec.getObservationPosition())
+                        : BenchmarkingUtility.biRatio(high, low, spec.getAggregationType());
         }
 
         if (b == null) {
@@ -52,6 +59,7 @@ public class DentonDocument extends AbstractMultiTsDocument<DentonSpec, Benchmar
                 .original(high)
                 .target(low)
                 .benchmarked(b)
+                .biRatio(bi)
                 .build();
     }
 

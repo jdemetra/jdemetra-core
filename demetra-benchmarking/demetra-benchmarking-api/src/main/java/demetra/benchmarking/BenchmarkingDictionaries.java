@@ -17,13 +17,14 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Beta)
 public class BenchmarkingDictionaries {
 
-    public static final String ORIGINAL = "original", TARGET = "target", BENCHMARKED = "benchmarked";
+    public static final String ORIGINAL = "original", TARGET = "target", BENCHMARKED = "benchmarked", BIRATIO="bi-ratio";
 
     public final Dictionary BENCHMARKING = AtomicDictionary.builder()
             .name("benchmarking")
             .item(AtomicDictionary.Item.builder().name(ORIGINAL).description("Original series").outputClass(TsData.class).build())
             .item(AtomicDictionary.Item.builder().name(TARGET).description("Aggregation constraint").outputClass(TsData.class).build())
             .item(AtomicDictionary.Item.builder().name(BENCHMARKED).description("Benchmarked series").outputClass(TsData.class).build())
+            .item(AtomicDictionary.Item.builder().name(BIRATIO).description("BI ratio").outputClass(TsData.class).build())
             .build();
 
 

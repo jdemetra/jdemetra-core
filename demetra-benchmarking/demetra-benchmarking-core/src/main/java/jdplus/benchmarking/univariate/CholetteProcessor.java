@@ -114,25 +114,23 @@ public class CholetteProcessor implements Cholette.Processor {
 
         TsData naggregationConstraint, agg;
         switch (spec.getAggregationType()) {
-            case Sum:
-            case Average:
+            case Sum, Average -> {
                 naggregationConstraint = BenchmarkingUtility.constraints(highFreqSeries, aggregationConstraint);
                 agg = highFreqSeries.aggregate(aggregationConstraint.getTsUnit(), spec.getAggregationType(), true);
-                break;
-            case Last:
+            }
+            case Last -> {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio - 1);
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), ratio - 1);
-                break;
-            case First:
+            }
+            case First -> {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, 0);
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), 0);
-                break;
-            case UserDefined:
+            }
+            case UserDefined -> {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), spec.getObservationPosition());
-                break;
-            default:
-                throw new TsException(TsException.INVALID_OPERATION);
+            }
+            default -> throw new TsException(TsException.INVALID_OPERATION);
         }
 
         TsPeriod sh = highFreqSeries.getStart();
@@ -143,13 +141,10 @@ public class CholetteProcessor implements Cholette.Processor {
             agg = multiply(agg, ratio);
         }
         switch (spec.getAggregationType()) {
-            case First:
-                break;
-            case UserDefined:
-                offset += spec.getObservationPosition();
-                break;
-            default:
-                offset += ratio - 1;
+            case First -> {
+            }
+            case UserDefined -> offset += spec.getObservationPosition();
+            default -> offset += ratio - 1;
 
         }
 

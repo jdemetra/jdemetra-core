@@ -17,6 +17,7 @@
 package jdplus.benchmarking.univariate;
 
 import demetra.benchmarking.univariate.CholetteSpec;
+import demetra.data.AggregationType;
 import demetra.timeseries.AbstractMultiTsDocument;
 import demetra.timeseries.TsData;
 import java.util.List;
@@ -48,6 +49,9 @@ public class CholetteDocument extends AbstractMultiTsDocument<CholetteSpec, Benc
                 .original(high)
                 .target(low)
                 .benchmarked(benchmark)
+                .biRatio(spec.getAggregationType() == AggregationType.UserDefined ?
+                        BenchmarkingUtility.biRatio(high, low, spec.getObservationPosition()):
+                        BenchmarkingUtility.biRatio(high, low, spec.getAggregationType()))
                 .build();
     }
 

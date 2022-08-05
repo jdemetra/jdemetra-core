@@ -34,6 +34,7 @@ public class BenchmarkingResultsExtractor extends InformationMapping<Benchmarkin
         set(BenchmarkingDictionaries.ORIGINAL, TsData.class, source -> source.getOriginal());
         set(BenchmarkingDictionaries.TARGET, TsData.class, source -> source.getTarget());
         set(BenchmarkingDictionaries.BENCHMARKED, TsData.class, source -> source.getBenchmarked());
+        set(BenchmarkingDictionaries.BIRATIO, TsData.class, source -> source.getBiRatio());
     }
 
     @Override

@@ -28,5 +28,5 @@ import java.util.Map;
 @lombok.Builder(builderClassName="Builder")
 public class BenchmarkingResults implements GenericExplorable {
 
-    private TsData original, target, benchmarked;
+    private TsData original, target, benchmarked, biRatio;
 }
