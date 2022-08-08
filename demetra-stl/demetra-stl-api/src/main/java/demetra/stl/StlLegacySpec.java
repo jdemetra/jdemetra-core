@@ -23,10 +23,10 @@ import java.util.function.DoubleUnaryOperator;
  *
  * @author Jean Palate
  */
-public class StlLegacySpecification {
+public class StlLegacySpec {
 
-    public static StlLegacySpecification defaultSpec(int np, int swindow, boolean robust) {
-        StlLegacySpecification spec = new StlLegacySpecification(np);
+    public static StlLegacySpec defaultSpec(int np, int swindow, boolean robust) {
+        StlLegacySpec spec = new StlLegacySpec(np);
         if (robust) {
             spec.no = 15;
             spec.ni = 1;
@@ -38,7 +38,7 @@ public class StlLegacySpecification {
         return spec;
     }
 
-    public StlLegacySpecification(int np) {
+    public StlLegacySpec(int np) {
         if (np == 1) {
             throw new IllegalArgumentException("np should be greater than 1");
         }

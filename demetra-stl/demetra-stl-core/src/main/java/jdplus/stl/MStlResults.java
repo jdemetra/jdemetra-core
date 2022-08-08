@@ -16,34 +16,25 @@
  */
 package jdplus.stl;
 
+import demetra.data.DoubleSeq;
 import demetra.information.GenericExplorable;
-import demetra.timeseries.TsData;
-import java.util.Map;
+import java.util.List;
 
 /**
  *
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder(builderClassName="Builder")
-public class StlPlusResults implements GenericExplorable{
-    boolean multiplicative;
-    TsData series;
-    TsData sa;
-    TsData trend;
+@lombok.Builder(builderClassName = "Builder")
+public class MStlResults implements GenericExplorable {
+
+    DoubleSeq series;
+    DoubleSeq sa;
+    DoubleSeq trend;
+    DoubleSeq seasonal;
     @lombok.Singular
-    Map<Integer, TsData> seasonals;
-    TsData irregular;
-    TsData fit;
-    TsData weights;
-    
-    public TsData seasonal(){
-        if (seasonals.isEmpty())
-            return null;
-        TsData all=null;
-        for (TsData s :seasonals.values()){
-            all=multiplicative ? TsData.multiply(all, s) : TsData.add(all, s);
-        }
-        return all;            
-    }
+    List<DoubleSeq> seasons;
+    DoubleSeq irregular;
+    DoubleSeq fit;
+    DoubleSeq weights;
 }

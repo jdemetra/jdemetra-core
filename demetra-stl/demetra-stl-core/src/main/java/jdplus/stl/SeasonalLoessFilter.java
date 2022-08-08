@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 import java.util.function.IntToDoubleFunction;
 
 /**
@@ -28,7 +28,7 @@ public class SeasonalLoessFilter {
     private final LoessFilter filter;
     private final IPeriodicDataOrganizer organizer;
 
-    public SeasonalLoessFilter(LoessSpecification spec, IPeriodicDataOrganizer organizer) {
+    public SeasonalLoessFilter(LoessSpec spec, IPeriodicDataOrganizer organizer) {
         this.filter = new LoessFilter(spec);
         this.organizer = organizer;
     }
@@ -38,7 +38,7 @@ public class SeasonalLoessFilter {
      * @param spec The specification of the filter
      * @param period The period used by the filter
      */
-    public SeasonalLoessFilter(LoessSpecification spec, int period) {
+    public SeasonalLoessFilter(LoessSpec spec, int period) {
         this.filter = new LoessFilter(spec);
         this.organizer = IPeriodicDataOrganizer.of(period);
     }
@@ -50,7 +50,7 @@ public class SeasonalLoessFilter {
     /**
      * @return the spec
      */
-    public LoessSpecification getSpec() {
+    public LoessSpec getSpec() {
         return filter.getSpec();
     }
 

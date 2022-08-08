@@ -8,13 +8,13 @@ package demetra.stl.r;
 import jdplus.stl.IDataGetter;
 import jdplus.stl.IDataSelector;
 import jdplus.stl.LoessFilter;
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 import jdplus.stl.StlKernel;
-import demetra.stl.StlSpecification;
+import demetra.stl.StlSpec;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.math.matrices.Matrix;
-import demetra.stl.SeasonalSpecification;
+import demetra.stl.SeasonalSpec;
 
 /**
  *
@@ -24,10 +24,10 @@ import demetra.stl.SeasonalSpecification;
 public class StlDecomposition {
 
     public Matrix process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
-        StlSpecification spec = (robust ? StlSpecification.robustBuilder() : StlSpecification.builder())
+        StlSpec spec = (robust ? StlSpec.robustBuilder() : StlSpec.builder())
                 .multiplicative(mul)
-                .trendSpec(LoessSpecification.defaultTrend(period, swindow))
-                .seasonalSpec(new SeasonalSpecification(period, swindow))
+                .trendSpec(LoessSpec.defaultTrend(period, swindow))
+                .seasonalSpec(new SeasonalSpec(period, swindow))
                 .build();
         StlKernel stl = new StlKernel(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
@@ -38,7 +38,7 @@ public class StlDecomposition {
         double[] all = new double[n * 5];
 
         DoubleSeq t = DoubleSeq.of(stl.getTrend());
-        DoubleSeq s = DoubleSeq.of(stl.getSeason(0));
+        DoubleSeq s = DoubleSeq.of(stl.getSeas());
         DoubleSeq i = DoubleSeq.of(stl.getIrr());
         DoubleSeq sa = mul ? DoublesMath.divide(y, s) : DoublesMath.subtract(y, s);
 
@@ -52,7 +52,7 @@ public class StlDecomposition {
     }
 
     public double[] loess(double[] y, int window, int degree, int jump) {
-        LoessSpecification spec = LoessSpecification.of(window, degree, jump, null);
+        LoessSpec spec = LoessSpec.of(window, degree, jump, null);
         LoessFilter filter = new LoessFilter(spec);
         double[] z = new double[y.length];
         filter.filter(IDataGetter.of(y), null, IDataSelector.of(z));

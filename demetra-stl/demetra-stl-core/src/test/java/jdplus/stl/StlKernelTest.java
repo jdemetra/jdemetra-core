@@ -16,11 +16,11 @@
  */
 package jdplus.stl;
 
-import demetra.stl.StlSpecification;
+import demetra.stl.StlSpec;
 import demetra.data.Data;
 import demetra.data.Doubles;
-import demetra.stl.LoessSpecification;
-import demetra.stl.SeasonalSpecification;
+import demetra.stl.LoessSpec;
+import demetra.stl.SeasonalSpec;
 import jdplus.data.DataBlock;
 import java.util.Random;
 
@@ -39,49 +39,56 @@ public class StlKernelTest {
     @Test
 //    @Ignore
     public void testDefault() {
-        StlSpecification spec = StlSpecification.builder()
-                .seasonalSpec(new SeasonalSpecification(12, 7))
-                .trendSpec(LoessSpecification.of(7, 1))
+        StlSpec spec = StlSpec.builder()
+                .multiplicative(true)
+                .seasonalSpec(new SeasonalSpec(12, 7))
+                .trendSpec(LoessSpec.defaultTrend(12, 7))
+                .innerLoopsCount(2)
+                .outerLoopsCount(5)
                 .build();
         StlKernel stl = new StlKernel(spec);
-        stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(DoubleSeq.of(stl.trend));
-//        System.out.println(DoubleSeq.of(stl.season[0]));
-//        System.out.println(DoubleSeq.of(stl.irr));
+        double[] data=Data.EXPORTS.clone();
+        data[13]=Double.NaN;
+        data[14]=Double.NaN;
+        stl.process(Doubles.of(data));
+//        System.out.println(DoubleSeq.of(stl.getTrend()));
+//        System.out.println(DoubleSeq.of(stl.getSeas()));
+//        System.out.println(DoubleSeq.of(stl.getIrr()));
     }
 
     @Test
 //    @Ignore
     public void testLargeFilter() {
-        StlSpecification spec = StlSpecification.builder()
-                .seasonalSpec(new SeasonalSpecification(12, 7))
-                .trendSpec(LoessSpecification.of(21, 1))
+        StlSpec spec = StlSpec.builder()
+                .seasonalSpec(new SeasonalSpec(12, 7))
+                .trendSpec(LoessSpec.of(21, 1))
                 .build();
         StlKernel stl = new StlKernel(spec);
-        stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(DoubleSeq.of(stl.trend));
-//        System.out.println(DoubleSeq.of(stl.season[0]));
-//        System.out.println(DoubleSeq.of(stl.irr));
+        StlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
+//        System.out.println(rslt.getTrend());
+//        System.out.println(rslt.getSeasonal());
+//        System.out.println(rslt.getIrregular());
     }
 
     @Test
     //@Ignore
     public void testSpec() {
 
-        StlSpecification spec = StlSpecification
+        StlSpec spec = StlSpec
                 .createDefault(12, false);
         StlKernel stl = new StlKernel(spec);
-        stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(DataBlock.of(stl.trend));
-//        System.out.println(DataBlock.of(stl.season[0]));
-//        System.out.println(DataBlock.of(stl.irr));
+        StlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
+//        System.out.println(rslt.getSeries());
+//        System.out.println(rslt.getTrend());
+//        System.out.println(rslt.getSeasonal());
+//        System.out.println(rslt.getIrregular());
     }
 
     @Test
 //    @Ignore
     public void testMul() {
 
-        StlSpecification spec = StlSpecification .createDefault(12, false);
+        StlSpec spec = StlSpec .createDefault(12, false);
 //        spec.setMultiplicative(true);
 //        spec.setNumberOfOuterIterations(5);
         StlKernel stl = new StlKernel(spec);
@@ -95,7 +102,7 @@ public class StlKernelTest {
 //    @Ignore
     public void testMissing() {
 
-        StlSpecification spec = StlSpecification.createDefault(12, false);
+        StlSpec spec = StlSpec.createDefault(12, false);
 //        spec.setMultiplicative(true);
 //        spec.setNumberOfOuterIterations(5);
         StlKernel stl = new StlKernel(spec);
@@ -116,7 +123,7 @@ public class StlKernelTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
 //            StlPlusKernel stl = new StlPlusKernel(12, 7);
-            StlSpecification spec = StlSpecification.createDefault(12, 7, false);
+            StlSpec spec = StlSpec.createDefault(12, 7, false);
 //            spec.setNumberOfOuterIterations(5);
         StlKernel stl = new StlKernel(spec);
             stl.process(Doubles.of(Data.EXPORTS));

@@ -19,7 +19,8 @@ package jdplus.stl;
 import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
 import demetra.data.DoubleSeq;
-import demetra.stl.StlSpec;
+import demetra.stl.MStlSpec;
+import demetra.stl.SeasonalSpec;
 
 /**
  * Java implementation of the original FORTRAN routine
@@ -30,17 +31,22 @@ import demetra.stl.StlSpec;
  *
  * @author Jean Palate
  */
-public class StlKernel {
+public class MStlKernel {
 
-    public StlKernel(StlSpec spec) {
+    public MStlKernel(MStlSpec spec) {
         this.spec = spec;
     }
 
-    private final StlSpec spec;
+    private final MStlSpec spec;
 
-    private double[] y, season, trend, irr, weights, fit, si, sa;
+    protected double[] y;
+    protected double[][] season;
+    protected double[] trend;
+    protected double[] irr;
+    protected double[] weights;
+    protected double[] fit, sa, seasonal, si;
 
-    public StlResults process(DoubleSeq data) {
+    public MStlResults process(DoubleSeq data) {
 
         if (!initializeProcessing(data)) {
             return null;
@@ -51,14 +57,11 @@ public class StlKernel {
             if (++istep > spec.getOuterLoopsCount()) {
                 return finishProcessing();
             }
-            if (weights == null) {
-                weights = new double[y.length];
-            }
             computeRobustWeights(fit, weights);
         } while (true);
     }
 
-    private StlResults finishProcessing() {
+    private MStlResults finishProcessing() {
         int n = y.length;
         for (int i = 0; i < n; ++i) {
             if (Double.isFinite(y[i])) {
@@ -67,30 +70,41 @@ public class StlKernel {
                 irr[i] = mean();
             }
         }
-        return StlResults.builder()
+        MStlResults.Builder builder = MStlResults.builder()
                 .series(DoubleSeq.of(y))
                 .trend(DoubleSeq.of(trend))
                 .irregular(DoubleSeq.of(irr))
-                .fit(DoubleSeq.of(fit))
-                .seasonal(DoubleSeq.of(season))
-                .weights(weights == null ? DoubleSeq.empty() : DoubleSeq.of(weights))
-                .sa(DoubleSeq.of(sa))
-                .build();
+                .fit(DoubleSeq.of(fit));
+        for (int i = 0; i < season.length; ++i) {
+            builder.season(DoubleSeq.of(season[i]));
+        }
+        if (weights != null) {
+            builder.weights(DoubleSeq.of(weights));
+        }
+        return builder.build();
     }
 
     private boolean initializeProcessing(DoubleSeq data) {
+        int nseas = spec.getSeasonalSpecs().size();
         int n = data.length();
         y = new double[n];
         data.copyTo(y, 0);
         fit = new double[n];
-        season = new double[n];
+        season = new double[nseas][];
+        for (int i = 0; i < nseas; ++i) {
+            season[i] = new double[n];
+        }
         trend = new double[n];
         if (spec.isMultiplicative()) {
             Arrays.setAll(trend, i -> 1);
         }
         irr = new double[n];
-        si = new double[n];
+        if (weights == null) {
+            weights = new double[n];
+        }
+        fit = new double[n];
         sa = new double[n];
+        si = new double[n];
         return true;
     }
 
@@ -139,18 +153,30 @@ public class StlKernel {
      */
     protected void innerLoop() {
         // Step 1: SI=Y-T
+
         for (int j = 0; j < spec.getInnerLoopsCount(); ++j) {
-            // Step 1: SI=Y-T
             invop(y, trend, si);
-            // Step 2: compute S
-            SeasonalFilter sfilter = SeasonalFilter.of(spec.getSeasonalSpec());
-            sfilter.filter(IDataGetter.of(si), weights == null ? null : k -> weights[k], spec.isMultiplicative(), IDataSelector.of(season));
-            // Step 3: compute SA
-            invop(y, season, sa);
-            // Step 4: T=smooth(sa)
+            // compute S
+            int s = 0;
+            for (SeasonalSpec sspec : spec.getSeasonalSpecs()) {
+                SeasonalFilter sfilter = SeasonalFilter.of(sspec);
+                sfilter.filter(IDataGetter.of(si), weights == null ? null : k -> weights[k], spec.isMultiplicative(), IDataSelector.of(season[s]));
+                if (s == 0) {
+                    seasonal = season[0].clone();
+                } else {
+                    op(seasonal, season[s], seasonal);
+                }
+                if (s != season.length - 1) {
+                    invop(si, season[s], si);
+                }
+                ++s;
+            }
+            // seasonal adjustment
+            invop(y, seasonal, sa);
+            // Step 6: T=smooth(sa)
             LoessFilter tfilter = new LoessFilter(spec.getTrendSpec());
             tfilter.filter(IDataSelector.of(sa), weights == null ? null : k -> weights[k], IDataSelector.of(trend));
-            op(trend, season, fit);
+            op(trend, seasonal, fit);
         }
     }
 
@@ -162,10 +188,11 @@ public class StlKernel {
     }
 
     /**
+     * @param i
      * @return the season
      */
-    public double[] getSeas() {
-        return season;
+    public double[] getSeason(int i) {
+        return season[i];
     }
 
     /**

@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 
 /**
  *
@@ -27,7 +27,7 @@ public class LowPassLoessFilter {
     private final LoessFilter filter;
     private final int np;
 
-    public LowPassLoessFilter(LoessSpecification spec, int np) {
+    public LowPassLoessFilter(LoessSpec spec, int np) {
         this.filter = new LoessFilter(spec);
         this.np = np;
     }
@@ -38,8 +38,11 @@ public class LowPassLoessFilter {
         double[] w1 = new double[n - np + 1];
         double[] w2 = new double[n - 2 * np + 2];
         double[] w3 = new double[n - 2 * np];
+        // moving average on np
         ma(np, x, IDataSelector.of(w1));
+        // moving average on np
         ma(np, IDataGetter.of(w1), IDataSelector.of(w2));
+        // moving average on 3
         ma(3, IDataGetter.of(w2), IDataSelector.of(w3));
         filter.filter(IDataGetter.of(w3), null, t);
         return true;

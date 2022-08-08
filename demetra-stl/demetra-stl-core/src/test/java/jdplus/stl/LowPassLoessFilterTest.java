@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import org.junit.jupiter.api.Test;
@@ -35,12 +35,12 @@ public class LowPassLoessFilterTest {
     public void testSomeMethod() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpecification spec = LoessSpecification.of(7, 0);
+        LoessSpec spec = LoessSpec.of(7, 0);
         SeasonalLoessFilter filter = new SeasonalLoessFilter(spec, 12);
         double[] sd = new double[d.length + 24];
         double[] l = new double[d.length];
         filter.filter(IDataGetter.of(d), null, IDataSelector.of(sd, -12));
-        LoessSpecification lspec = LoessSpecification.of(13, 1);
+        LoessSpec lspec = LoessSpec.of(13, 1);
         LowPassLoessFilter lfilter = new LowPassLoessFilter(lspec, 12);
         lfilter.filter(IDataGetter.of(sd), IDataSelector.of(l));
 //        System.out.println(s);

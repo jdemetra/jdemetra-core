@@ -16,25 +16,24 @@
  */
 package jdplus.stl;
 
-import demetra.stl.SeasonalSpecification;
-import demetra.stl.StlSpecification;
+import demetra.data.DoubleSeq;
+import demetra.stl.IStlSpec;
+import demetra.stl.MStlSpec;
+import demetra.stl.SeasonalSpec;
+import demetra.stl.StlSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
  * @author PALATEJ
  */
+@lombok.experimental.UtilityClass
 public class StlPlusKernel {
 
-    public StlPlusKernel(StlSpecification spec) {
-        this.spec = spec;
-    }
-
-    private final StlSpecification spec;
-
-    public StlPlusResults process(TsData data) {
-        // We should add pre-processing
+    public StlPlusResults process(TsData data, StlSpec spec) {
         StlKernel stl = new StlKernel(spec);
         StlResults decomp = stl.process(data.getValues());
 
@@ -43,7 +42,31 @@ public class StlPlusKernel {
                 irr = TsData.of(start, decomp.getIrregular()),
                 fit = TsData.of(start, decomp.getFit()),
                 weights = TsData.of(start, decomp.getWeights()),
-                sa = spec.isMultiplicative() ? TsData.multiply(trend, irr) : TsData.add(trend, irr);
+                sa = TsData.of(start, decomp.getSa()),
+                seasonal = TsData.of(start, decomp.getSeasonal());
+
+        return StlPlusResults.builder()
+                .multiplicative(spec.isMultiplicative())
+                .series(data)
+                .trend(trend)
+                .irregular(irr)
+                .sa(sa)
+                .fit(fit)
+                .weights(weights)
+                .seasonal(spec.getSeasonalSpec().getPeriod(), seasonal)
+                .build();
+    }
+
+    public StlPlusResults process(TsData data, MStlSpec spec) {
+        // We should add pre-processing
+        MStlKernel stl = new MStlKernel(spec);
+        MStlResults decomp = stl.process(data.getValues());
+        TsPeriod start = data.getStart();
+        TsData trend = TsData.of(start, decomp.getTrend()),
+                irr = TsData.of(start, decomp.getIrregular()),
+                fit = TsData.of(start, decomp.getFit()),
+                weights = TsData.of(start, decomp.getWeights()),
+                sa = TsData.of(start, decomp.getSa());
 
         StlPlusResults.Builder builder = StlPlusResults.builder()
                 .series(data)
@@ -53,16 +76,39 @@ public class StlPlusKernel {
                 .fit(fit)
                 .weights(weights);
         
-        int i=0;
-        TsData seas=null;
-        for (SeasonalSpecification sspec : spec.getSeasonalSpecs()){
-            TsData cur= TsData.of(start, decomp.getSeasons().get(i++));
-            seas=spec.isMultiplicative() ? TsData.multiply(seas, cur) : TsData.add(seas, cur);
-            builder.season(sspec.getPeriod(), cur);
+        Iterator<DoubleSeq> seasons = decomp.getSeasons().iterator();
+        List<SeasonalSpec> seasonalSpecs = spec.getSeasonalSpecs();
+        for (SeasonalSpec sspec : seasonalSpecs){
+            builder.seasonal(sspec.getPeriod(), TsData.of(start, seasons.next()));
         }
-        builder.seasonal(seas);
-
-        return builder.build();
+         return builder.build();
     }
+    
+    public StlPlusResults process(TsData data, IStlSpec spec) {
+        // We should add pre-processing
+        
+        MStlResults decomp = IStlKernel.process(data.getValues(), spec);
+        TsPeriod start = data.getStart();
+        TsData trend = TsData.of(start, decomp.getTrend()),
+                irr = TsData.of(start, decomp.getIrregular()),
+                fit = TsData.of(start, decomp.getFit()),
+                weights = TsData.of(start, decomp.getWeights()),
+                sa = TsData.of(start, decomp.getSa());
 
+        StlPlusResults.Builder builder = StlPlusResults.builder()
+                .series(data)
+                .trend(trend)
+                .irregular(irr)
+                .sa(sa)
+                .fit(fit)
+                .weights(weights);
+        
+        Iterator<DoubleSeq> seasons = decomp.getSeasons().iterator();
+        List<IStlSpec.PeriodSpec> perodSpec = spec.getPeriodSpecs();
+        for (IStlSpec.PeriodSpec sspec : perodSpec){
+            builder.seasonal(sspec.getSeasonalSpec().getPeriod(), TsData.of(start, seasons.next()));
+        }
+         return builder.build();
+    }
+    
 }

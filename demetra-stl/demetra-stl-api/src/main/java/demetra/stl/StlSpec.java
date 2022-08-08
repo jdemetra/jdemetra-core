@@ -19,7 +19,6 @@ package demetra.stl;
 import demetra.data.WeightFunction;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
-import java.util.List;
 
 /**
  *
@@ -27,12 +26,11 @@ import java.util.List;
  */
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
-public class StlSpecification implements ProcSpecification {
+public class StlSpec implements ProcSpecification {
 
     private boolean multiplicative;
-    private LoessSpecification trendSpec;
-    @lombok.Singular
-    private List<SeasonalSpecification> seasonalSpecs;
+    private LoessSpec trendSpec;
+    private SeasonalSpec seasonalSpec;
     private int innerLoopsCount, outerLoopsCount;
     private double robustWeightThreshold;
 
@@ -57,7 +55,7 @@ public class StlSpecification implements ProcSpecification {
                 .robustWeightThreshold(RWTHRESHOLD);
     }
 
-    public static final StlSpecification DEFAULT = createDefault(7, true);
+    public static final StlSpec DEFAULT = createDefault(7, true);
 
     /**
      * Creates a default specification for a series that has a given periodicity
@@ -66,7 +64,7 @@ public class StlSpecification implements ProcSpecification {
      * @param robust True for robust filtering, false otherwise.
      * @return
      */
-    public static StlSpecification createDefault(int period, boolean robust) {
+    public static StlSpec createDefault(int period, boolean robust) {
         return createDefault(period, 7, robust);
     }
 
@@ -79,17 +77,17 @@ public class StlSpecification implements ProcSpecification {
      * @param robust
      * @return
      */
-    public static StlSpecification createDefault(int period, int swindow, boolean robust) {
+    public static StlSpec createDefault(int period, int swindow, boolean robust) {
 
         if (robust) {
             return robustBuilder()
-                    .trendSpec(LoessSpecification.defaultTrend(period, swindow))
-                    .seasonalSpec(new SeasonalSpecification(period, swindow))
+                    .trendSpec(LoessSpec.defaultTrend(period, swindow))
+                    .seasonalSpec(new SeasonalSpec(period, swindow))
                     .build();
         } else {
             return builder()
-                    .trendSpec(LoessSpecification.defaultTrend(period, swindow))
-                    .seasonalSpec(new SeasonalSpecification(period, swindow))
+                    .trendSpec(LoessSpec.defaultTrend(period, swindow))
+                    .seasonalSpec(new SeasonalSpec(period, swindow))
                     .build();
         }
     }

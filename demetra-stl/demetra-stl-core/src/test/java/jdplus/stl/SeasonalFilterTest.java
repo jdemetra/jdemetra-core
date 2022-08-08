@@ -16,11 +16,12 @@
  */
 package jdplus.stl;
 
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 import demetra.data.Doubles;
 import org.junit.jupiter.api.Test;
 import demetra.data.Data;
 import demetra.data.DoubleSeq;
+import demetra.stl.SeasonalSpec;
 
 /**
  *
@@ -32,15 +33,28 @@ public class SeasonalFilterTest {
     }
 
     @Test
-    public void testSomeMethod() {
+    public void testCustom() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpecification spec = LoessSpecification.of(7, 0);
-        LoessSpecification lspec = LoessSpecification.of(13, 1);
+        LoessSpec spec = LoessSpec.of(3, 0);
+        LoessSpec lspec = LoessSpec.of(5, 1);
         SeasonalFilter filter=new SeasonalFilter(spec, lspec, 12);
         double[] sd=new double[d.length];
         filter.filter(IDataGetter.of(d), null, false, IDataSelector.of(sd));
-//        System.out.println(DataBlock.of(d));
-//        System.out.println(DataBlock.of(sd));
+//        System.out.println(DoubleSeq.of(d));
+//        System.out.println(DoubleSeq.of(sd));
     }
+    
+    @Test
+    public void testDefault() {
+        DoubleSeq s = Doubles.of(Data.EXPORTS);
+        double[] d = s.toArray();
+        SeasonalSpec spec=new SeasonalSpec(12, 7);
+        SeasonalFilter filter=SeasonalFilter.of(spec);
+        double[] sd=new double[d.length];
+        filter.filter(IDataGetter.of(d), null, false, IDataSelector.of(sd));
+//        System.out.println(DoubleSeq.of(d));
+//        System.out.println(DoubleSeq.of(sd));
+    }
+    
 }
