@@ -73,6 +73,7 @@ public class MStlKernel {
         MStlResults.Builder builder = MStlResults.builder()
                 .series(DoubleSeq.of(y))
                 .trend(DoubleSeq.of(trend))
+                .sa(DoubleSeq.of(sa))
                 .irregular(DoubleSeq.of(irr))
                 .fit(DoubleSeq.of(fit));
         for (int i = 0; i < season.length; ++i) {

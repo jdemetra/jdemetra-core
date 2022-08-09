@@ -46,8 +46,8 @@ public class UserVariable extends TsVariable implements IUserVariable {
     
     @Override
     public boolean equals(Object obj){
-        if (obj instanceof UserVariable){
-            return equals((TsVariable)obj);
+        if (obj instanceof UserVariable userVariable){
+            return equals(userVariable);
         }else
             return false;
     }

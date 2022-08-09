@@ -20,7 +20,6 @@ import demetra.information.InformationSet;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  *

@@ -17,6 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
+import java.util.List;
 import nbbrd.design.Development;
 
 /**
@@ -65,8 +66,7 @@ public class TsContextVariable implements ITsVariable {
     /**
      * first &le last !!
      *
-     * For instance, if first = -1 and last = 2
-     * we have the following variables:
+     * For instance, if first = -1 and last = 2 we have the following variables:
      * v(t+1), v(t), v(t-1), v(t-2)
      *
      * @param id
@@ -120,5 +120,19 @@ public class TsContextVariable implements ITsVariable {
         } else {
             return var;
         }
+    }
+
+    public static TsContextVariable of(ITsVariable var) {
+        if (var instanceof TsContextVariable tvar) {
+            return tvar;
+        } else if (var instanceof UserVariable user) {
+            return new TsContextVariable(user.getId(), 0, 0);
+        } else if (var instanceof ModifiedTsVariable mvar) {
+            List<ModifiedTsVariable.Modifier> modifiers = mvar.getModifiers();
+            if (modifiers.size() == 1 && modifiers.get(0) instanceof TsLags lags && mvar.getVariable() instanceof UserVariable user) {
+                return new TsContextVariable(user.getId(), lags.getFirstLag(), lags.getLastLag());
+            }
+        }
+        throw new IllegalArgumentException();
     }
 }

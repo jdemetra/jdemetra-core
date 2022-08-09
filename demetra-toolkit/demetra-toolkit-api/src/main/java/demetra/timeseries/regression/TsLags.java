@@ -20,7 +20,6 @@ public class TsLags implements ModifiedTsVariable.Modifier{
         this.firstLag=firstlag;
         this.lastLag=lastlag;
     }
-
  
     @Override
     public int redim(int d) {
