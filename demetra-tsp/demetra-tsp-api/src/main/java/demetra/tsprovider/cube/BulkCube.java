@@ -16,10 +16,10 @@
  */
 package demetra.tsprovider.cube;
 
-import java.time.Duration;
-
-import lombok.Builder;
+import nbbrd.design.LombokWorkaround;
 import org.checkerframework.checker.index.qual.NonNegative;
+
+import java.time.Duration;
 
 
 /**
@@ -33,12 +33,15 @@ public class BulkCube {
     public static final BulkCube NONE = BulkCube.builder().build();
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    private Duration ttl = Duration.ZERO;
+    private Duration ttl;
 
     @NonNegative
-    @lombok.Builder.Default
-    private int depth = 0;
+    private int depth;
+
+    @LombokWorkaround
+    public static BulkCube.Builder builder() {
+        return new Builder().ttl(Duration.ZERO).depth(0);
+    }
 
     public boolean isCacheEnabled() {
         return getDepth() > 0 && !getTtl().isZero();
