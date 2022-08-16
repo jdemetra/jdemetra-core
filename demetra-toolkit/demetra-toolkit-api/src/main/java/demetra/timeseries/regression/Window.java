@@ -35,4 +35,20 @@ public class Window implements ModifiedTsVariable.Modifier {
         return dim;
     }
 
+    @Override
+    public int dim() {
+        return 1;
+    }
+
+    @Override
+    public String description() {
+        StringBuilder builder=new StringBuilder();
+        return builder.append('[').append(start).append(';').append(end).append(']').toString();
+     }
+
+    @Override
+    public String description(int idx) {
+        return description();
+    }
+
 }

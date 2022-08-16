@@ -47,7 +47,7 @@ class ModifiedTsVariableFactory implements RegressionVariableFactory<ModifiedTsV
         List<ModifiedTsVariable.Modifier> modifiers = var.getModifiers();
         // Computes first the necessary domains
         List<TsDomain> doms = new ArrayList<>();
-        TsDomain cur = TsDomain.of(start, buffer.getColumnsCount());
+        TsDomain cur = TsDomain.of(start, buffer.getRowsCount());
         for (ModifiedTsVariable.Modifier modifier : modifiers) {
             doms.add(cur);
             ModifierFactory factory = Modifiers.factoryFor(modifier);

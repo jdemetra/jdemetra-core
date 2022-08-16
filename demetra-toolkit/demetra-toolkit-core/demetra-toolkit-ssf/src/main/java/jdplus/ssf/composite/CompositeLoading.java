@@ -104,7 +104,7 @@ public class CompositeLoading implements ISsfLoading {
         DataBlockIterator cols = V.columnsIterator();
         DoubleSeqCursor.OnMutable cell = tmp.cursor();
         while (cols.hasNext()) {
-            cols.next().addAY(cell.getAndNext(), tmp);
+            cols.next().addAY(cell.getAndNext()*d, tmp);
         }
     }
 

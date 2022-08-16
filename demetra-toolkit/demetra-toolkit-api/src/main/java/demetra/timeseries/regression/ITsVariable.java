@@ -39,7 +39,7 @@ public interface ITsVariable {
             return description(context);
         else{
             StringBuilder builder=new StringBuilder();
-            return builder.append(description(context)).append('-').append(idx+1).toString();
+            return builder.append(description(context)).append(" - ").append(idx+1).toString();
         }
     }
 

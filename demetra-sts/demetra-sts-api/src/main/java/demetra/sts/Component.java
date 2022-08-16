@@ -18,9 +18,8 @@ package demetra.sts;
 
 import nbbrd.design.Development;
 
-
 /**
- * 
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Alpha)
@@ -31,7 +30,7 @@ public enum Component {
      */
     Level,
     /**
-     * 
+     *
      */
     Slope,
     /**
@@ -39,7 +38,7 @@ public enum Component {
      */
     Seasonal,
     /**
-     * 
+     *
      */
     Cycle,
     /**
