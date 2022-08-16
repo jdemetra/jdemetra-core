@@ -4,6 +4,8 @@
  */
 package demetra.toolkit.dictionaries;
 
+import nbbrd.design.LombokWorkaround;
+
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -23,9 +25,12 @@ public class AtomicDictionary implements Dictionary {
         String description;
         Class outputClass;
         
-        @lombok.Builder.Default
-        EntryType type=EntryType.Normal;
-        
+        EntryType type;
+
+        @LombokWorkaround
+        public static Item.Builder builder() {
+            return new Builder().type(EntryType.Normal);
+        }
     }
 
     public String name;

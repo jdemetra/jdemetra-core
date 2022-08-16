@@ -2,6 +2,7 @@ package demetra.tsprovider.cube;
 
 import demetra.timeseries.util.ObsGathering;
 import demetra.tsprovider.util.ObsFormat;
+import nbbrd.design.LombokWorkaround;
 
 import java.util.List;
 
@@ -14,26 +15,31 @@ public class TableAsCube {
     List<String> dimensions;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    String timeDimension = "";
+    String timeDimension;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    String measure = "";
+    String measure;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    String version = "";
+    String version;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    String label = "";
+    String label;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    ObsFormat format = ObsFormat.DEFAULT;
+    ObsFormat format;
 
     @lombok.NonNull
-    @lombok.Builder.Default
-    ObsGathering gathering = ObsGathering.DEFAULT;
+    ObsGathering gathering;
+
+    @LombokWorkaround
+    public static TableAsCube.Builder builder() {
+        return new Builder()
+                .timeDimension("")
+                .measure("")
+                .version("")
+                .label("")
+                .format(ObsFormat.DEFAULT)
+                .gathering(ObsGathering.DEFAULT);
+    }
 }
