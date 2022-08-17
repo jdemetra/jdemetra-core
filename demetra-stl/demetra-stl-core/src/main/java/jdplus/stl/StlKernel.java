@@ -19,8 +19,7 @@ package jdplus.stl;
 import java.util.Arrays;
 import java.util.function.DoubleUnaryOperator;
 import demetra.data.DoubleSeq;
-import demetra.stl.SeasonalSpecification;
-import demetra.stl.StlSpecification;
+import demetra.stl.StlSpec;
 
 /**
  * Java implementation of the original FORTRAN routine
@@ -33,22 +32,13 @@ import demetra.stl.StlSpecification;
  */
 public class StlKernel {
 
-    public StlKernel(StlSpecification spec) {
+    public StlKernel(StlSpec spec) {
         this.spec = spec;
     }
 
-    private final StlSpecification spec;
+    private final StlSpec spec;
 
-    protected double[] y;
-    protected double[][] season;
-    protected double[] trend;
-    protected double[] irr;
-    protected double[] weights;
-    protected double[] fit;
-
-    private int n() {
-        return y.length;
-    }
+    private double[] y, season, trend, irr, weights, fit, si, sa;
 
     public StlResults process(DoubleSeq data) {
 
@@ -62,59 +52,45 @@ public class StlKernel {
                 return finishProcessing();
             }
             if (weights == null) {
-                weights = new double[n()];
-                fit = new double[n()];
-            }
-            for (int i = 0; i < n(); ++i) {
-                fit[i] = trend[i];
-                for (int j = 0; j < season.length; ++j) {
-                    fit[i] = op(fit[i], season[j][i]);
-                }
+                weights = new double[y.length];
             }
             computeRobustWeights(fit, weights);
         } while (true);
     }
 
     private StlResults finishProcessing() {
-        for (int i = 0; i < n(); ++i) {
-            fit[i] = trend[i];
-            for (int j = 0; j < season.length; ++j) {
-                fit[i] = op(fit[i], season[j][i]);
-            }
+        int n = y.length;
+        for (int i = 0; i < n; ++i) {
             if (Double.isFinite(y[i])) {
                 irr[i] = invop(y[i], fit[i]);
             } else {
                 irr[i] = mean();
             }
         }
-        StlResults.Builder builder = StlResults.builder()
+        return StlResults.builder()
                 .series(DoubleSeq.of(y))
                 .trend(DoubleSeq.of(trend))
                 .irregular(DoubleSeq.of(irr))
-                .fit(DoubleSeq.of(fit));
-        for (int i = 0; i < season.length; ++i) {
-            builder.season(DoubleSeq.of(season[i]));
-        }
-        if (weights != null)
-            builder.weights(DoubleSeq.of(weights));
-        return builder.build();
+                .fit(DoubleSeq.of(fit))
+                .seasonal(DoubleSeq.of(season))
+                .weights(weights == null ? DoubleSeq.empty() : DoubleSeq.of(weights))
+                .sa(DoubleSeq.of(sa))
+                .build();
     }
 
     private boolean initializeProcessing(DoubleSeq data) {
-        int nseas = spec.getSeasonalSpecs().size();
         int n = data.length();
         y = new double[n];
         data.copyTo(y, 0);
         fit = new double[n];
-        season = new double[nseas][];
-        for (int i = 0; i < nseas; ++i) {
-            season[i] = new double[n];
-        }
+        season = new double[n];
         trend = new double[n];
         if (spec.isMultiplicative()) {
             Arrays.setAll(trend, i -> 1);
         }
         irr = new double[n];
+        si = new double[n];
+        sa = new double[n];
         return true;
     }
 
@@ -132,7 +108,7 @@ public class StlKernel {
 
     private void computeRobustWeights(double[] fit, double[] w) {
 
-        int n = n();
+        int n = y.length;
         for (int i = 0; i < n; ++i) {
             if (Double.isFinite(y[i])) {
                 w[i] = Math.abs(invop(y[i], fit[i]) - mean());
@@ -162,38 +138,19 @@ public class StlKernel {
      *
      */
     protected void innerLoop() {
-        int n = n();
-        double[] si = new double[n];
-        double[] w = new double[n];
         // Step 1: SI=Y-T
-
         for (int j = 0; j < spec.getInnerLoopsCount(); ++j) {
-
-            for (int i = 0; i < n; ++i) {
-                si[i] = invop(y[i], trend[i]);
-            }
-            // compute S
-            int s = 0;
-            for (SeasonalSpecification sspec : spec.getSeasonalSpecs()) {
-                SeasonalFilter sfilter = SeasonalFilter.of(sspec);
-                sfilter.filter(IDataGetter.of(si), weights == null ? null : k -> weights[k], spec.isMultiplicative(), IDataSelector.of(season[s]));
-                if (s != season.length - 1) {
-                    for (int i = 0; i < n; ++i) {
-                        si[i] = invop(si[i], season[s][i]);
-                    }
-                }
-                ++s;
-            }
-            // seasonal adjustment
-            for (int i = 0; i < n; ++i) {
-                w[i] = y[i];
-                for (s = 0; s < season.length; ++s) {
-                    w[i] = invop(w[i], season[s][i]);
-                }
-            }
-            // Step 6: T=smooth(sa)
+            // Step 1: SI=Y-T
+            invop(y, trend, si);
+            // Step 2: compute S
+            SeasonalFilter sfilter = SeasonalFilter.of(spec.getSeasonalSpec());
+            sfilter.filter(IDataGetter.of(si), weights == null ? null : k -> weights[k], spec.isMultiplicative(), IDataSelector.of(season));
+            // Step 3: compute SA
+            invop(y, season, sa);
+            // Step 4: T=smooth(sa)
             LoessFilter tfilter = new LoessFilter(spec.getTrendSpec());
-            tfilter.filter(IDataSelector.of(w), weights == null ? null : k -> weights[k], IDataSelector.of(trend));
+            tfilter.filter(IDataSelector.of(sa), weights == null ? null : k -> weights[k], IDataSelector.of(trend));
+            op(trend, season, fit);
         }
     }
 
@@ -205,11 +162,10 @@ public class StlKernel {
     }
 
     /**
-     * @param i
      * @return the season
      */
-    public double[] getSeason(int i) {
-        return season[i];
+    public double[] getSeas() {
+        return season;
     }
 
     /**
@@ -246,6 +202,32 @@ public class StlKernel {
 
     private double invop(double l, double r) {
         return spec.isMultiplicative() ? l / r : l - r;
+    }
+
+    private void op(double[] l, double[] r, double[] lr) {
+        if (spec.isMultiplicative()) {
+            for (int i = 0; i < l.length; ++i) {
+                lr[i] = l[i] * r[i];
+            }
+        } else {
+            for (int i = 0; i < l.length; ++i) {
+                lr[i] = l[i] + r[i];
+            }
+
+        }
+    }
+
+    private void invop(double[] l, double[] r, double[] lr) {
+        if (spec.isMultiplicative()) {
+            for (int i = 0; i < l.length; ++i) {
+                lr[i] = l[i] / r[i];
+            }
+        } else {
+            for (int i = 0; i < l.length; ++i) {
+                lr[i] = l[i] - r[i];
+            }
+
+        }
     }
 
     private double mean() {

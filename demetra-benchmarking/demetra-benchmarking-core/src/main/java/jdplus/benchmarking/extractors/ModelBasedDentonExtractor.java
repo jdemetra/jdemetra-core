@@ -18,7 +18,7 @@ package jdplus.benchmarking.extractors;
 
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
-import demetra.tempdisagg.univariate.ResidualsDiagnostics;
+import jdplus.tempdisagg.univariate.ResidualsDiagnostics;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsData;
 import jdplus.tempdisagg.univariate.ModelBasedDentonResults;

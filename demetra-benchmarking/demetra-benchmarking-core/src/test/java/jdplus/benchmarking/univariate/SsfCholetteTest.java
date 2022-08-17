@@ -16,7 +16,7 @@
  */
 package jdplus.benchmarking.univariate;
 
-import jdplus.benchmarking.ssf.SsfCholette;
+import jdplus.ssf.benchmarking.SsfCholette;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;

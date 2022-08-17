@@ -6,7 +6,7 @@
 package jdplus.ssf.univariate;
 
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.implementations.MeasurementError;
+import jdplus.ssf.basic.MeasurementError;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

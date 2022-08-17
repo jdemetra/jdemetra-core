@@ -27,13 +27,23 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
 public class StlPlusResults implements GenericExplorable{
+    boolean multiplicative;
     TsData series;
     TsData sa;
     TsData trend;
-    TsData seasonal;
     @lombok.Singular
-    Map<Integer, TsData> seasons;
+    Map<Integer, TsData> seasonals;
     TsData irregular;
     TsData fit;
     TsData weights;
+    
+    public TsData seasonal(){
+        if (seasonals.isEmpty())
+            return null;
+        TsData all=null;
+        for (TsData s :seasonals.values()){
+            all=multiplicative ? TsData.multiply(all, s) : TsData.add(all, s);
+        }
+        return all;            
+    }
 }

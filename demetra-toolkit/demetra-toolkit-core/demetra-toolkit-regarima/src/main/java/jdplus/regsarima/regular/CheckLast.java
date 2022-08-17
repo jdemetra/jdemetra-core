@@ -64,7 +64,7 @@ public class CheckLast {
             RegArimaForecasts.Result fcasts;
             DoubleSeq b = model.getEstimation().getCoefficients();
             LikelihoodStatistics ll = model.getEstimation().getStatistics();
-            double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+            double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount());
             TsDomain edom = model.getEstimation().getDomain();
             if (b.isEmpty()) {
                 fcasts = RegArimaForecasts.calcForecast(model.arima(),

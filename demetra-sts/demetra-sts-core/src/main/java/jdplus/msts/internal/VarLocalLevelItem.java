@@ -8,14 +8,14 @@ package jdplus.msts.internal;
 import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
-import jdplus.sts.LocalLevel;
+import jdplus.ssf.sts.LocalLevel;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.msts.ScaleInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.sts.VarLocalLevel;
+import jdplus.ssf.sts.VarLocalLevel;
 
 /**
  *

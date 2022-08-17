@@ -39,35 +39,4 @@ public interface IFilteringResults extends IStateResults {
      */
     void clear();
 
-//    default double error(int pos) {
-//        return Double.NaN;
-//    }
-//
-//    default double errorVariance(int pos) {
-//        return Double.NaN;
-//    }
-//
-//    /**
-//     *
-//     * @param normalized
-//     * @param clean
-//     * @return
-//     */
-//    default DoubleSequence errors(boolean normalized, boolean clean) {
-//        return null;
-//    }
-//
-//    default DataBlock a(int pos) {
-//        return null;
-//    }
-//
-//    default DataBlock M(int pos) {
-//        return null;
-//    }
-//
-//    default Matrix P(int pos) {
-//        return null;
-//    }
-//
-
 }

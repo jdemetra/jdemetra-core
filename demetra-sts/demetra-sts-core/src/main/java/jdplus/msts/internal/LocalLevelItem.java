@@ -9,7 +9,7 @@ import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.sts.LocalLevel;
+import jdplus.ssf.sts.LocalLevel;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
@@ -47,7 +47,7 @@ public class LocalLevelItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double e = p.get(0);
-            StateComponent cmp = LocalLevel.of(e, initial);
+            StateComponent cmp = LocalLevel.stateComponent(e, initial);
             builder.add(name, cmp, LocalLevel.defaultLoading());
             return 1;
         });
@@ -61,7 +61,7 @@ public class LocalLevelItem extends StateItem {
     @Override
     public StateComponent build(DoubleSeq p) {
         double e = p.get(0);
-        return LocalLevel.of(e, initial);
+        return LocalLevel.stateComponent(e, initial);
     }
 
     @Override

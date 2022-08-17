@@ -16,7 +16,7 @@
  */
 package jdplus.benchmarking.univariate;
 
-import jdplus.benchmarking.ssf.SsfCholette;
+import jdplus.ssf.benchmarking.SsfCholette;
 import demetra.benchmarking.univariate.Cholette;
 import demetra.benchmarking.univariate.CholetteSpec;
 import demetra.benchmarking.univariate.CholetteSpec.BiasCorrection;
@@ -33,11 +33,11 @@ import demetra.timeseries.TsUnit;
 import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import jdplus.arima.ssf.AR1;
-import jdplus.arima.ssf.Rw;
+import jdplus.ssf.arima.AR1;
+import jdplus.ssf.arima.Rw;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.WeightedLoading;
+import jdplus.ssf.basic.WeightedLoading;
 import jdplus.ssf.univariate.Ssf;
 import static jdplus.timeseries.simplets.TsDataToolkit.multiply;
 
@@ -114,25 +114,23 @@ public class CholetteProcessor implements Cholette.Processor {
 
         TsData naggregationConstraint, agg;
         switch (spec.getAggregationType()) {
-            case Sum:
-            case Average:
+            case Sum, Average -> {
                 naggregationConstraint = BenchmarkingUtility.constraints(highFreqSeries, aggregationConstraint);
                 agg = highFreqSeries.aggregate(aggregationConstraint.getTsUnit(), spec.getAggregationType(), true);
-                break;
-            case Last:
+            }
+            case Last -> {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, ratio - 1);
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), ratio - 1);
-                break;
-            case First:
+            }
+            case First -> {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, 0);
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), 0);
-                break;
-            case UserDefined:
+            }
+            case UserDefined -> {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), spec.getObservationPosition());
-                break;
-            default:
-                throw new TsException(TsException.INVALID_OPERATION);
+            }
+            default -> throw new TsException(TsException.INVALID_OPERATION);
         }
 
         TsPeriod sh = highFreqSeries.getStart();
@@ -143,13 +141,10 @@ public class CholetteProcessor implements Cholette.Processor {
             agg = multiply(agg, ratio);
         }
         switch (spec.getAggregationType()) {
-            case First:
-                break;
-            case UserDefined:
-                offset += spec.getObservationPosition();
-                break;
-            default:
-                offset += ratio - 1;
+            case First -> {
+            }
+            case UserDefined -> offset += spec.getObservationPosition();
+            default -> offset += ratio - 1;
 
         }
 

@@ -16,8 +16,9 @@
     <modules>
         <module>demetra-benchmarking-api</module>
         <module>demetra-benchmarking-core</module>
-        <module>demetra-benchmarking-io</module>
         <module>demetra-benchmarking-r</module>
+        <module>demetra-benchmarking-io</module>
+        <module>demetra-benchmarking-workspace</module>
     </modules>
   
     <properties>

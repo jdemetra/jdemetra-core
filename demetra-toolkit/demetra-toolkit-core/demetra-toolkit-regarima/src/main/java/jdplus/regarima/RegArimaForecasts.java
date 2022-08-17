@@ -18,7 +18,7 @@ package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
 import jdplus.arima.IArimaModel;
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.FastMatrix;

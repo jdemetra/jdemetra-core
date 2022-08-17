@@ -6,7 +6,7 @@
 package jdplus.msts;
 
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import java.util.ArrayList;
 import java.util.List;
 

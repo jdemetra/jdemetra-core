@@ -17,7 +17,6 @@
 package jdplus.tempdisagg.univariate;
 
 import demetra.information.GenericExplorable;
-import demetra.tempdisagg.univariate.ResidualsDiagnostics;
 import demetra.timeseries.TsData;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import nbbrd.design.Development;

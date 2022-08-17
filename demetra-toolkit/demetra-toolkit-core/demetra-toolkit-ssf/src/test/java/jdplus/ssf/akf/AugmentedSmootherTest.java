@@ -7,14 +7,14 @@ package jdplus.ssf.akf;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.Data;
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.sarima.SarimaModel;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
@@ -38,7 +38,7 @@ public class AugmentedSmootherTest {
         SarimaModel arima = SarimaModel.builder(spec)
                 .theta(1, -.9)
                 .build();
-        Ssf ssf = Ssf.of(SsfArima.of(arima), SsfArima.defaultLoading());
+        Ssf ssf = Ssf.of(SsfArima.stateComponent(arima), SsfArima.defaultLoading());
         SsfData data = new SsfData(Data.NILE);
         int n = data.length();
         FastMatrix X = FastMatrix.make(n, 2);

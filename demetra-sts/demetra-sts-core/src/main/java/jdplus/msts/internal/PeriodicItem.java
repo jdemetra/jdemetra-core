@@ -14,7 +14,7 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.sts.PeriodicComponent;
+import jdplus.ssf.sts.PeriodicComponent;
 
 /**
  *

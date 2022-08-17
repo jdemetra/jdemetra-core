@@ -20,7 +20,7 @@ package jdplus.ssf;
  *
  * @author Jean Palate
  */
-public class ResultsRange implements Cloneable{
+public final class ResultsRange implements Cloneable{
     
     private int start, end;
     

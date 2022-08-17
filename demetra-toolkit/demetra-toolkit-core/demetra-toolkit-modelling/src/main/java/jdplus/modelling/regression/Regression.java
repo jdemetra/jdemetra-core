@@ -21,6 +21,7 @@ import demetra.timeseries.regression.JulianEasterVariable;
 import demetra.timeseries.regression.LengthOfPeriod;
 import demetra.timeseries.regression.LevelShift;
 import demetra.timeseries.regression.LinearTrend;
+import demetra.timeseries.regression.ModifiedTsVariable;
 import demetra.timeseries.regression.MovingHolidayVariable;
 import demetra.timeseries.regression.PeriodicContrasts;
 import demetra.timeseries.regression.PeriodicDummies;
@@ -110,8 +111,18 @@ public class Regression {
             FACTORIES.put(TsVariables.class, TsVariablesFactory.FACTORY);
             FACTORIES.put(UserVariables.class, TsVariablesFactory.FACTORY);
             FACTORIES.put(UserTradingDays.class, TsVariablesFactory.FACTORY);
+            
+            FACTORIES.put(ModifiedTsVariable.class, ModifiedTsVariableFactory.FACTORY);
         }
     }
+    
+    static RegressionVariableFactory factoryFor(ITsVariable var){
+       synchronized (FACTORIES) {
+             return FACTORIES.get(var.getClass());
+        }
+        
+    }
+   
 
     public <D extends TimeSeriesDomain> FastMatrix matrix(@NonNull D domain, @NonNull ITsVariable... vars) {
         if (domain.isEmpty() || vars.length == 0) {

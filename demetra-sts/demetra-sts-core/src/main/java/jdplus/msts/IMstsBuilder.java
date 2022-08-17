@@ -5,7 +5,7 @@
  */
 package jdplus.msts;
 
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import demetra.data.DoubleSeq;
 
 /**

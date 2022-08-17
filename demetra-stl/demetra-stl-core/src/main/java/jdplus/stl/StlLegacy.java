@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.StlLegacySpecification;
+import demetra.stl.StlLegacySpec;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.DoubleUnaryOperator;
@@ -38,7 +38,7 @@ public class StlLegacy {
         return t * t * t;
     };
 
-    protected final StlLegacySpecification spec;
+    protected final StlLegacySpec spec;
     protected double[] y;
     protected boolean[] missing;
     protected double[] season;
@@ -53,7 +53,7 @@ public class StlLegacy {
         return y.length;
     }
 
-    public StlLegacy(StlLegacySpecification spec) {
+    public StlLegacy(StlLegacySpec spec) {
         this.spec = spec;
     }
 
@@ -143,7 +143,7 @@ public class StlLegacy {
 
         double mad = mad(w);
 
-        double c1 = spec.getWthreshold()* mad;
+        double c1 = spec.getWthreshold() * mad;
         double c9 = (1 - spec.getWthreshold()) * mad;
 
         for (int i = 0; i < n; ++i) {
@@ -271,7 +271,7 @@ public class StlLegacy {
             ys[0] = y.applyAsDouble(0);
             return;
         }
-        int newnj = Math.min(njump, n - 1);
+        int newnj = Math.min(1 + njump, n - 1);
         int nleft = 0, nright = 0;
         if (len >= n) {
             nleft = 0;
@@ -435,7 +435,7 @@ public class StlLegacy {
     /**
      * @return the spec
      */
-    public StlLegacySpecification getSpec() {
+    public StlLegacySpec getSpec() {
         return spec;
     }
 

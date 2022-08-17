@@ -16,6 +16,7 @@
  */
 package demetra.processing;
 
+import demetra.information.Explorable;
 import demetra.util.Documented;
 import java.util.Map;
 import java.util.UUID;
@@ -28,7 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @param <I>
  * @param <R>
  */
-public interface ProcDocument<S extends ProcSpecification, I, R> extends Documented {
+public interface ProcDocument<S extends ProcSpecification, I, R extends Explorable> extends Documented {
 
     public static final String INPUT = "input", SPEC = "specification", ALGORITHM = "algorithm", RESULTS = "results", METADATA = "metadata";
     public static final String ERROR = "@error";

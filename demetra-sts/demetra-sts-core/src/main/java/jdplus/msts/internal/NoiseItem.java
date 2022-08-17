@@ -9,7 +9,7 @@ import jdplus.msts.StateItem;
 import demetra.data.DoubleSeq;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.implementations.Noise;
+import jdplus.ssf.sts.Noise;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;

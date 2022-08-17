@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>eu.europa.ec.joinup.sat</groupId>
+        <artifactId>demetra-benchmarking-io</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>demetra-benchmarking-information</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>JD3 - Benchmarking - Information</name>
+
+    <properties>
+        <jd3-information.version>1.0.0-SNAPSHOT</jd3-information.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-benchmarking-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-toolkit-information</artifactId>
+            <version>${jd3-information.version}</version>
+        </dependency>
+     </dependencies>
+</project>

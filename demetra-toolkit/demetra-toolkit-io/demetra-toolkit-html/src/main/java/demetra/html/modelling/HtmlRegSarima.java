@@ -349,7 +349,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         }
         writeRegressionItems(stream, "Ramps", edom, var -> var.isFree() && var.getCore() instanceof Ramp);
         writeRegressionItems(stream, "Intervention variables", edom, var -> var.isFree() && var.getCore() instanceof InterventionVariable);
-        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.getCore() instanceof IUserVariable);
+        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.test(v->v instanceof IUserVariable));
         writeFixedRegressionItems(stream, "Other fixed regression effects", edom, var -> !var.isFree() && var.getCore() instanceof IUserVariable);
         writeMissing(stream);
     }

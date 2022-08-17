@@ -10,7 +10,7 @@ import demetra.data.DoubleSeq;
 import jdplus.msts.BoundedParameterInterpreter;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.sts.CyclicalComponent;
+import jdplus.ssf.sts.CyclicalComponent;
 import java.util.Arrays;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;

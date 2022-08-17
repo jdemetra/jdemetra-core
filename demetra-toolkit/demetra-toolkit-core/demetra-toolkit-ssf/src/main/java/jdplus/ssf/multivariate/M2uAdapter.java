@@ -21,7 +21,7 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.implementations.MeasurementError;
+import jdplus.ssf.basic.MeasurementError;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.univariate.ISsfError;

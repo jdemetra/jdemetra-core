@@ -7,9 +7,9 @@ package rssf;
 
 import jdplus.data.DataBlock;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.implementations.TimeInvariantLoading;
-import jdplus.ssf.implementations.TimeInvariantMeasurements;
+import jdplus.ssf.basic.Loading;
+import jdplus.ssf.basic.TimeInvariantLoading;
+import jdplus.ssf.basic.TimeInvariantMeasurements;
 import jdplus.ssf.multivariate.ISsfMeasurements;
 import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.ssf.univariate.Measurement;

@@ -48,6 +48,7 @@ public final class RationalForeFilter implements IRationalFilter {
      *
      * @param num
      * @param denom
+     * @param fshift
      */
     public RationalForeFilter(final ForeFilter num, final ForeFilter denom, final int fshift) {
         rationalFunction = RationalFunction.of(num.getPolynomial(), denom.getPolynomial());

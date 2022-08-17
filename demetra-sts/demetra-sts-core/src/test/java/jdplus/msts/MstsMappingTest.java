@@ -12,7 +12,7 @@ import demetra.math.matrices.Matrix;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import jdplus.arima.ssf.SsfAr;
+import jdplus.ssf.arima.SsfAr;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.functions.IParametersDomain;
@@ -24,15 +24,15 @@ import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
-import jdplus.ssf.implementations.Loading;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.basic.Loading;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.multivariate.SsfMatrix;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
-import jdplus.sts.LocalLevel;
-import jdplus.sts.LocalLinearTrend;
+import jdplus.ssf.sts.LocalLevel;
+import jdplus.ssf.sts.LocalLinearTrend;
 
 /**
  *
@@ -88,10 +88,10 @@ public class MstsMappingTest {
 
         // Builder
         mapping.add((p, builder) -> {
-            builder.add("tu", LocalLinearTrend.of(0, p.get(0)), null);
-            builder.add("ty", LocalLinearTrend.of(0, p.get(1)), null);
-            builder.add("tpi", LocalLevel.of(p.get(2)), null);
-            builder.add("tpicore", LocalLevel.of(p.get(3)), null);
+            builder.add("tu", LocalLinearTrend.stateComponent(0, p.get(0)), null);
+            builder.add("ty", LocalLinearTrend.stateComponent(0, p.get(1)), null);
+            builder.add("tpi", LocalLevel.stateComponent(p.get(2)), null);
+            builder.add("tpicore", LocalLevel.stateComponent(p.get(3)), null);
             builder.add("cycle", SsfAr.of(p.extract(11, 2).toArray(), p.get(13), 5), null);
             double v = p.get(14);
             double l = p.get(7);

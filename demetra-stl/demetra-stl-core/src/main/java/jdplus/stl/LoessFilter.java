@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
 
@@ -26,9 +26,9 @@ import java.util.function.IntToDoubleFunction;
  */
 public class LoessFilter {
 
-    private final LoessSpecification spec;
+    private final LoessSpec spec;
 
-    public LoessFilter(LoessSpecification spec) {
+    public LoessFilter(LoessSpec spec) {
         this.spec = spec;
     }
 
@@ -48,12 +48,12 @@ public class LoessFilter {
             return true;
         }
 
-        int newnj = Math.min(spec.getJump(), n - 1);
+        final int step = Math.min(1 + spec.getJump(), n - 1);
         int nleft = 0, nright = 0;
         if (win >= n) {
             nleft = 0;
             nright = n - 1;
-            for (int i = i0; i < i1; i += newnj) {
+            for (int i = i0; i < i1; i += step) {
                 double yscur = loess(y, i, nleft, nright, userWeights);
                 if (Double.isFinite(yscur)) {
                     ys.set(i, yscur);
@@ -78,7 +78,7 @@ public class LoessFilter {
                     ys.set(i, ys.get(i - 1));
                 }
             }
-        } else if (newnj == 0) {
+        } else if (step == 1) {
             int nsh = (win - 1) >> 1;
             nleft = i0;
             nright = i0 + win - 1;
@@ -96,7 +96,7 @@ public class LoessFilter {
             }
         } else {
             int nsh = (win - 1) >> 1;
-            for (int i = i0; i < i1; i += newnj) {
+            for (int i = i0; i < i1; i += step) {
                 if (i < nsh) {
                     nleft = i0;
                     nright = i0 + win - 1;
@@ -116,11 +116,10 @@ public class LoessFilter {
                 }
             }
         }
-        if (newnj != 0) {
-            int step=newnj+1;
+        if (step != 1) {
             int i = i0;
             for (; i < i1 - step; i += step) {
-                double delta = (ys.get(i + step) - ys.get(i)) / newnj;
+                double delta = (ys.get(i + step) - ys.get(i)) / step;
                 for (int j = i + 1; j < i + step; ++j) {
                     ys.set(j, ys.get(i) + delta * (j - i));
                 }
@@ -172,26 +171,26 @@ public class LoessFilter {
         if (spec.getWindow() > n) {
             h += (spec.getWindow() - n) * .5;
         }
-//        double h9 = 0.999 * h;
-//        double h1 = 0.001 * h;
+        double h9 = 0.999 * h;
+        double h1 = 0.001 * h;
         double a = 0;
         DoubleUnaryOperator weights = spec.weights();
         for (int j = nleft, jw = 0; j <= nright; ++j, ++jw) {
             boolean ok = Double.isFinite(y.get(j));
             if (ok) {
                 double r = Math.abs(j - ix);
-//                if (r < h9) {
-//                    if (r < h1) {
-//                        w[jw] = 1;
-//                    } else {
-                w[jw] = weights.applyAsDouble(r / h);
-//                    }
+                if (r < h9) {
+                    if (r < h1) {
+                        w[jw] = 1;
+                    } else {
+                        w[jw] = weights.applyAsDouble(r / h);
+                    }
 
-                if (userWeights != null) {
-                    w[jw] *= userWeights.applyAsDouble(j);
+                    if (userWeights != null) {
+                        w[jw] *= userWeights.applyAsDouble(j);
+                    }
+                    a += w[jw];
                 }
-                a += w[jw];
-//                }
             }
         }
 
@@ -239,7 +238,7 @@ public class LoessFilter {
     /**
      * @return the spec
      */
-    public LoessSpecification getSpec() {
+    public LoessSpec getSpec() {
         return spec;
     }
 

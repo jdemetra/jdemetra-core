@@ -23,7 +23,6 @@ import demetra.information.InformationSetSerializer;
 import demetra.processing.ProcSpecification;
 import demetra.timeseries.Ts;
 import demetra.timeseries.TsDocument;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

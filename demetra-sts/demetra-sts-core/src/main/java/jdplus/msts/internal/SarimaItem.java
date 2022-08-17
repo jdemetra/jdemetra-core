@@ -7,7 +7,7 @@ package jdplus.msts.internal;
 
 import jdplus.msts.StateItem;
 import jdplus.arima.ArimaModel;
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.SarimaInterpreter;
 import jdplus.msts.VarianceInterpreter;
@@ -68,10 +68,10 @@ public class SarimaItem extends StateItem {
                     .parameters(p.extract(1, np))
                     .build();
             if (var == 1) {
-                cmp = SsfArima.of(sarima);
+                cmp = SsfArima.stateComponent(sarima);
             } else {
                 ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
-                cmp = SsfArima.of(arima);
+                cmp = SsfArima.stateComponent(arima);
             }
             builder.add(name, cmp, SsfArima.defaultLoading());
             return np + 1;
@@ -93,10 +93,10 @@ public class SarimaItem extends StateItem {
                 .build();
         StateComponent cmp;
         if (var == 1) {
-            cmp = SsfArima.of(sarima);
+            cmp = SsfArima.stateComponent(sarima);
         } else {
             ArimaModel arima = new ArimaModel(sarima.getStationaryAr(), sarima.getNonStationaryAr(), sarima.getMa(), var);
-            cmp = SsfArima.of(arima);
+            cmp = SsfArima.stateComponent(arima);
         }
         return cmp;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 National Bank of Belgium.
+ * Copyright 2022 National Bank of Belgium.
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -31,15 +31,39 @@ import demetra.util.Validatable;
  * @author Jean Palate
  */
 @Development(status = Development.Status.Beta)
-@lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Getter
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class TemporalDisaggregationSpec implements ProcSpecification, Validatable<TemporalDisaggregationSpec> {
 
-    public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("temporaldisaggregation", "generic", null);
+    public static final TemporalDisaggregationSpec CHOWLIN = builder()
+            .aggregationType(AggregationType.Sum)
+            .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
+            .constant(true)
+            .truncatedParameter(0.0)
+            .maximumLikelihood(true)
+            .estimationPrecision(1e-9)
+            .rescale(true)
+            .algorithm(SsfInitialization.SqrtDiffuse)
+            .defaultPeriod(4)
+            .build();
+
+    public static final TemporalDisaggregationSpec FERNANDEZ = builder()
+            .aggregationType(AggregationType.Sum)
+            .residualsModel(TemporalDisaggregationSpec.Model.Rw)
+            .constant(false)
+            .rescale(true)
+            .algorithm(SsfInitialization.SqrtDiffuse)
+            .build();
+
+    public static final String VERSION = "3.0.0";
+
+    public static final String FAMILY = "temporaldisaggregation";
+    public static final String METHOD = "generic";
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return ALGORITHM;
+        return DESCRIPTOR;
     }
 
     public static enum Model {
@@ -63,17 +87,12 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
         }
 
         public int getDifferencingOrder() {
-            switch (this) {
-                case Rw:
-                case RwAr1:
-                    return 1;
-                case I2:
-                    return 2;
-                case I3:
-                    return 3;
-                default:
-                    return 0;
-            }
+            return switch (this) {
+                case Rw, RwAr1 -> 1;
+                case I2 -> 2;
+                case I3 -> 3;
+                default -> 0;
+            };
         }
     }
 
@@ -81,6 +100,8 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
+    private int defaultPeriod;
+
     @lombok.NonNull
     private Model residualsModel;
     private boolean constant, trend;
@@ -90,19 +111,19 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     private boolean log, diffuseRegressors;
     private Double truncatedParameter;
     private boolean zeroInitialization, maximumLikelihood;
-    
+
     private double estimationPrecision;
     private SsfInitialization algorithm;
     private boolean rescale;
-    
-    public boolean isParameterEstimation(){
+
+    public boolean isParameterEstimation() {
         return (residualsModel == Model.Ar1 || residualsModel == Model.RwAr1)
                 && parameter.getType() != ParameterType.Fixed;
     }
 
-    public static class Builder implements Validatable.Builder<TemporalDisaggregationSpec>{
+    public static class Builder implements Validatable.Builder<TemporalDisaggregationSpec> {
     }
-    
+
     public static Builder builder() {
         return new Builder()
                 .aggregationType(AggregationType.Sum)
@@ -113,26 +134,39 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
                 .parameter(Parameter.undefined())
                 .estimationPrecision(DEF_EPS)
                 .algorithm(SsfInitialization.SqrtDiffuse)
+                .defaultPeriod(4)
                 .rescale(true);
     }
 
     @Override
     public TemporalDisaggregationSpec validate() throws IllegalArgumentException {
-        switch (residualsModel){
-            case Rw:
-            case RwAr1:
-                if (constant && !zeroInitialization)
+        switch (residualsModel) {
+            case Rw, RwAr1 -> {
+                if (constant && !zeroInitialization) {
                     throw new IllegalArgumentException("constant not allowed");
-                break;
-            case I2:
-            case I3:
-                if (constant && !zeroInitialization)
+                }
+            }
+            case I2, I3 -> {
+                if (constant && !zeroInitialization) {
                     throw new IllegalArgumentException("constant not allowed");
-                if (trend && !zeroInitialization)
+                }
+                if (trend && !zeroInitialization) {
                     throw new IllegalArgumentException("trend not allowed");
-                break;
+                }
+            }
         }
         return this;
+    }
+    
+    @Override
+    public String toString(){
+        return switch (residualsModel) {
+            case Ar1 -> "Chow-Lin";
+            case Rw -> "Fernandez";
+            case RwAr1 -> "Litterman";
+            case Wn -> "Ols";
+            default -> "regression";
+        };
     }
 
 }

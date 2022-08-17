@@ -93,7 +93,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 fixVariables(currentSpec, domainSpec, builder);
             }
             default -> {
-                    return currentSpec;
+                return currentSpec;
             }
         }
         return builder.build();
@@ -163,21 +163,22 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     }
 
     private void updateUserVariables(Variable[] vars, RegressionSpec.Builder builder) {
-        
+
         builder.clearInterventionVariables();
         Arrays.stream(vars)
-                .filter(v -> v.getCore() instanceof InterventionVariable )
+                .filter(v -> v.getCore() instanceof InterventionVariable)
                 .forEach(v -> builder.interventionVariable(v));
         builder.clearRamps();
         Arrays.stream(vars)
-                .filter(v -> v.getCore() instanceof Ramp )
+                .filter(v -> v.getCore() instanceof Ramp)
                 .forEach(v -> builder.ramp(v));
         builder.clearUserDefinedVariables();
         Arrays.stream(vars)
-                .filter(v->ModellingUtility.isUser(v))
-                .filter(v -> !( v.getCore() instanceof InterventionVariable))
+                .filter(v -> ModellingUtility.isUser(v))
+                .filter(v -> !(v.getCore() instanceof InterventionVariable))
                 .filter(v -> !(v.getCore() instanceof Ramp))
-                .forEach(v -> builder.interventionVariable(v));
+                .map(v-> v.withCore(TsContextVariable.of(v.getCore())))
+                .forEach(v -> builder.userDefinedVariable(v));
     }
 
     private void update(CalendarSpec cspec, Variable[] variables, RegressionSpec.Builder builder) {
@@ -296,7 +297,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     private void clearArima(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
         builder.arima(currentSpec.getArima().resetParameters(domainSpec.isUsingAutoModel() ? null : domainSpec.getArima()));
     }
-    
+
     private void fixAR(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
         SarimaSpec arima = currentSpec.getArima();
         Parameter[] phi = Parameter.fixParameters(arima.getPhi());
@@ -376,7 +377,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                     c = Parameter.initial(c.getValue());
                 }
             }
-            tdc=Parameter.freeParameters(tdc, dreg.getCalendar().getTradingDays().getTdCoefficients());
+            tdc = Parameter.freeParameters(tdc, dreg.getCalendar().getTradingDays().getTdCoefficients());
             td = td.withCoefficients(tdc, c);
         }
 
@@ -450,7 +451,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         Parameter[] tdc = td.getTdCoefficients();
         if (c != null || tdc != null) {
             td = td.withCoefficients(Parameter.fixParameters(tdc), c == null ? null : Parameter.fixed(c.getValue()));
-         }
+        }
 
         builder.regression(rbuilder
                 .mean(mean)

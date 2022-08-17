@@ -61,7 +61,7 @@ public class DefaultModelEstimator implements IModelEstimator {
             arima=validator.getNewModel();
 	model.setCurrentModel(arima);
         LikelihoodStatistics stat = estimation.statistics();
-        model.setInnovationVariance(stat.getSsqErr()/(stat.getEffectiveObservationsCount()-stat.getEstimatedParametersCount()+1));
+        model.setInnovationVariance(stat.getSsqErr()/(stat.getEffectiveObservationsCount()-stat.getEstimatedParametersCount()));
 	return true;
     }
 

@@ -26,7 +26,7 @@ import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.akf.SmoothingOutput;
 import jdplus.ssf.dk.RandomSsfGenerator;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;

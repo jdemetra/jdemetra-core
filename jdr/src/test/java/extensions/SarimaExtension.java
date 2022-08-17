@@ -9,7 +9,6 @@ import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.arima.AutoCovarianceFunction;
-import jdplus.arima.Spectrum;
 import jdplus.sarima.SarimaModel;
 import nbbrd.service.ServiceProvider;
 

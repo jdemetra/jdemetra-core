@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.LoessSpecification;
+import demetra.stl.LoessSpec;
 import demetra.data.Data;
 import demetra.data.Doubles;
 import org.junit.jupiter.api.Disabled;
@@ -37,7 +37,7 @@ public class LoessFilterTest {
     public void testNormal() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpecification spec = LoessSpecification.of(25, 0,1, null);
+        LoessSpec spec = LoessSpec.of(25, 0,1, null);
         LoessFilter filter=new LoessFilter(spec);
         double[] sd=new double[d.length];
         filter.filter(IDataGetter.of(d), null, IDataSelector.of(sd));
@@ -49,7 +49,7 @@ public class LoessFilterTest {
     public void testBF() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpecification spec = LoessSpecification.of(25, 1, 5, null);
+        LoessSpec spec = LoessSpec.of(25, 1, 5, null);
         LoessFilter filter=new LoessFilter(spec);
         int nf=5;
         double[] sd=new double[d.length+2*nf];

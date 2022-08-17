@@ -23,7 +23,7 @@ import jdplus.data.DataBlock;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.basic.Loading;
 import jdplus.ssf.univariate.Measurement;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.ISsfMeasurement;

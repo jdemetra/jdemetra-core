@@ -18,7 +18,6 @@ package demetra.benchmarking.r;
 
 import demetra.calendarization.CalendarizationResults;
 import demetra.calendarization.CalendarizationSpec;
-import demetra.data.AggregationType;
 import demetra.timeseries.CalendarTimeSeries;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;

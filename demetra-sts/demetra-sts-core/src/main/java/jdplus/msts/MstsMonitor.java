@@ -11,7 +11,7 @@ import jdplus.math.functions.minpack.MinPackMinimizer;
 import internal.jdplus.math.functions.riso.LbfgsMinimizer;
 import jdplus.ssf.likelihood.MarginalLikelihoodFunction;
 import jdplus.ssf.dk.SsfFunction;
-import jdplus.ssf.implementations.MultivariateCompositeSsf;
+import jdplus.ssf.composite.MultivariateCompositeSsf;
 import jdplus.ssf.multivariate.M2uAdapter;
 import jdplus.ssf.multivariate.SsfMatrix;
 import java.util.ArrayList;

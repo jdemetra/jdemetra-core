@@ -16,7 +16,7 @@
  */
 package jdplus.stl;
 
-import demetra.stl.StlLegacySpecification;
+import demetra.stl.StlLegacySpec;
 import demetra.data.Doubles;
 import demetra.data.Data;
 import jdplus.data.DataBlock;
@@ -36,19 +36,19 @@ public class StlLegacyTest {
 
     @Test
     public void testDefault() {
-        StlLegacySpecification spec = StlLegacySpecification.defaultSpec(12, 7, false);
+        StlLegacySpec spec = StlLegacySpec.defaultSpec(12, 7, false);
         StlLegacy stl = new StlLegacy(spec);
         spec.setNo(5);
-        spec.setMultiplicative(true);
+        spec.setMultiplicative(false);
         stl.process(Doubles.of(Data.EXPORTS));
-//        System.out.println(new DataBlock(stl.trend));
-//        System.out.println(new DataBlock(stl.season));
-//        System.out.println(new DataBlock(stl.irr));
+//        System.out.println(DataBlock.of(stl.trend));
+//        System.out.println(DataBlock.of(stl.season));
+//        System.out.println(DataBlock.of(stl.irr));
     }
 
     @Test
     public void testMissing() {
-        StlLegacySpecification spec = StlLegacySpecification.defaultSpec(12, 7, false);
+        StlLegacySpec spec = StlLegacySpec.defaultSpec(12, 7, false);
         StlLegacy stl = new StlLegacy(spec);
         spec.setNo(5);
         spec.setMultiplicative(true);
@@ -67,7 +67,7 @@ public class StlLegacyTest {
 //    @Ignore
     public void testLargeFilter() {
 
-        StlLegacySpecification spec = StlLegacySpecification.defaultSpec(12, 21, false);
+        StlLegacySpec spec = StlLegacySpec.defaultSpec(12, 21, false);
         StlLegacy stl = new StlLegacy(spec);
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));
@@ -77,7 +77,7 @@ public class StlLegacyTest {
 
     @Test
     public void testMul() {
-        StlLegacySpecification spec = StlLegacySpecification.defaultSpec(12, 7, false);
+        StlLegacySpec spec = StlLegacySpec.defaultSpec(12, 7, false);
         spec.setMultiplicative(true);
         StlLegacy stl = new StlLegacy(spec);
         spec.setNo(5);
@@ -92,7 +92,7 @@ public class StlLegacyTest {
     public void stressTest() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            StlLegacySpecification spec = StlLegacySpecification.defaultSpec(12, 7, false);
+            StlLegacySpec spec = StlLegacySpec.defaultSpec(12, 7, false);
             spec.setNo(5);
             StlLegacy stl = new StlLegacy(spec);
             stl.process(Doubles.of(Data.EXPORTS));
@@ -104,7 +104,7 @@ public class StlLegacyTest {
     @Test
 //    @Ignore
     public void testInner() {
-        StlLegacySpecification spec = StlLegacySpecification.defaultSpec(12, 9, true);
+        StlLegacySpec spec = StlLegacySpec.defaultSpec(12, 9, true);
         StlLegacy stl = new StlLegacy(spec);
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(new DataBlock(stl.trend));

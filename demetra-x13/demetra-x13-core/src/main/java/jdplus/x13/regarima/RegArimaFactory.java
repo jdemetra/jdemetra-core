@@ -235,7 +235,8 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                 .filter(v->ModellingUtility.isUser(v))
                 .filter(v -> !( v.getCore() instanceof InterventionVariable))
                 .filter(v -> !(v.getCore() instanceof Ramp))
-                .forEach(v -> builder.interventionVariable(v));
+                .map(v-> v.withCore(TsContextVariable.of(v.getCore())))
+                .forEach(v -> builder.userDefinedVariable(v));
     }
 
     private void resetArima(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {

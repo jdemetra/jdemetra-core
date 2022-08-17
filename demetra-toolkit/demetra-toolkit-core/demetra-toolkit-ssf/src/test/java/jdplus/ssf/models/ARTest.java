@@ -5,7 +5,7 @@
  */
 package jdplus.ssf.models;
 
-import jdplus.arima.ssf.SsfAr;
+import jdplus.ssf.arima.SsfAr;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import java.util.Random;

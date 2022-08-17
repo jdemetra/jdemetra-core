@@ -20,6 +20,7 @@ import demetra.data.Parameter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -61,6 +62,13 @@ public class Variable<V extends ITsVariable> {
     public boolean isAttribute(String key, String value) {
         String val = attributes.get(key);
         return val != null && val.equals(value);
+    }
+    
+    public boolean test(Predicate<ITsVariable> pred){
+        if (core instanceof ModifiedTsVariable mcore)
+            return pred.test(mcore.getVariable());
+        else 
+            return pred.test(core);
     }
     
     @NonNull

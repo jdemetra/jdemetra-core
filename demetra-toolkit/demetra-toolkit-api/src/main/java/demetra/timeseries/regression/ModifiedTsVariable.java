@@ -26,38 +26,88 @@ import java.util.List;
  */
 @Development(status = Development.Status.Alpha)
 @lombok.Value
-@lombok.Builder( toBuilder = true)
+@lombok.Builder(toBuilder = true)
 public class ModifiedTsVariable implements ITsVariable {
-    
+
     public static interface Modifier {
+
+        /**
+         * Gets the number of output for one input
+         *
+         * @return
+         */
+        int dim();
 
         /**
          * Changes the dimension of a given variable
          *
-         * @param dim Dimension of the original variable
+         * @param n Dimension of the original or modified variable
          * @return
          */
-        int redim(int dim);
+        default int redim(int n) {
+            return n * dim();
+        }
+
+        /**
+         * Gets additional description for the block of modifications
+         *
+         * @return
+         */
+        String description();
+
+        /**
+         * Get additional description
+         *
+         * @param idx Index of the output of the modifier
+         * @return
+         */
+        String description(int idx);
     }
-    
+
     @lombok.NonNull
     ITsVariable variable;
     @lombok.Singular
     @lombok.NonNull
     List<Modifier> modifiers;
-    
+
     @Override
     public int dim() {
-        int d = variable.dim();
+        return mdim() * variable.dim();
+    }
+
+    private int mdim() {
+        int d = 1;
         for (Modifier m : modifiers) {
-            d = m.redim(d);
+            d *= m.dim();
         }
         return d;
+
     }
-    
+
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {
-        return variable.description(context);
+        StringBuilder builder = new StringBuilder();
+        builder.append(variable.description(context));
+        for (Modifier m : modifiers) {
+            builder.append(m.description());
+        }
+        return builder.toString();
     }
-    
+
+    @Override
+    public <D extends TimeSeriesDomain<?>> String description(int idx, D context) {
+        int dim = mdim();
+        String desc = variable.description(idx / dim, context);
+        idx /= variable.dim();
+        StringBuilder builder = new StringBuilder();
+        builder.append(desc);
+        for (Modifier m : modifiers) {
+            int cdim = m.dim();
+            dim /= cdim;
+            builder.append(m.description(idx / dim));
+            idx /= cdim;
+        }
+        return builder.toString();
+    }
+
 }

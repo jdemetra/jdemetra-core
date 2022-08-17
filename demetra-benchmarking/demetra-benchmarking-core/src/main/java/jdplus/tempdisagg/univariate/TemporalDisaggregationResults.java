@@ -19,14 +19,14 @@ package jdplus.tempdisagg.univariate;
 import demetra.data.DoubleSeq;
 import demetra.information.GenericExplorable;
 import nbbrd.design.Development;
-import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.Variable;
 import java.util.Map;
 import demetra.math.matrices.Matrix;
-import demetra.tempdisagg.univariate.ResidualsDiagnostics;
+import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
+import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;
 
 /**
  *
@@ -53,12 +53,21 @@ public class TemporalDisaggregationResults implements GenericExplorable{
      * Regression estimation. The order correspond to the order of the variables
      * 
      */
-    private DoubleSeq coefficients;
-    private Matrix coefficientsCovariance;
+    int hyperParametersCount;
+    
+    DiffuseConcentratedLikelihood likelihood;
+    DiffuseLikelihoodStatistics stats;
+    
+    public DoubleSeq getCoefficients(){
+        return likelihood.coefficients();
+    }
+    
+    public Matrix getCoefficientsCovariance(){
+        return likelihood.covariance(hyperParametersCount, true);
+    }
     
     ObjectiveFunctionPoint maximum;
     
-    LikelihoodStatistics likelihood;
     ResidualsDiagnostics residualsDiagnostics;
 
     @lombok.NonNull
@@ -67,8 +76,6 @@ public class TemporalDisaggregationResults implements GenericExplorable{
     @lombok.NonNull
     TsData stdevDisaggregatedSeries;
     
-    TsData regressionEffects, residuals;
+    TsData regressionEffects;
     
-    @lombok.Singular
-    private Map<String, Object> addtionalResults;
 }

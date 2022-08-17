@@ -52,7 +52,7 @@ public class SsfException extends DemetraException  {
     public static final String STATUS = "Invalid status for the state vector";
     public static final String INITIALIZATION = "Invalid initialization";
     public static final String ERRORS="Errors in measurement are not supported yet for this algorithm";
-    public static final String MODEL="Invalid model";
+    public static final String MODEL="Invalid model definition";
 
     /**
      *

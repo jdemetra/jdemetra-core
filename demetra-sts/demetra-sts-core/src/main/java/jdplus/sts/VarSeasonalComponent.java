@@ -18,9 +18,8 @@ package jdplus.sts;
 
 import demetra.sts.SeasonalModel;
 import jdplus.data.DataBlock;
-import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.basic.Loading;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;

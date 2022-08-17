@@ -5,7 +5,7 @@
  */
 package jdplus.ssf.akf;
 
-import jdplus.arima.ssf.SsfArima;
+import jdplus.ssf.arima.SsfArima;
 import demetra.data.Data;
 import jdplus.sarima.SarimaModel;
 import demetra.arima.SarimaOrders;
@@ -41,7 +41,7 @@ public class QRFilterTest {
 
     @Test
     public void testDiffuse() {
-        Ssf ssf = Ssf.of(SsfArima.of(arima1), SsfArima.defaultLoading());
+        Ssf ssf = Ssf.of(SsfArima.stateComponent(arima1), SsfArima.defaultLoading());
         SsfData ssfData = new SsfData(data);
 
         QRFilter filter = new QRFilter();

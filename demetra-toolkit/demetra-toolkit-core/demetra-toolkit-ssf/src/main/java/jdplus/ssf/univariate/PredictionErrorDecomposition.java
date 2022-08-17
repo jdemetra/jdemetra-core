@@ -19,7 +19,6 @@ package jdplus.ssf.univariate;
 import jdplus.ssf.UpdateInformation;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
-import jdplus.stats.likelihood.Likelihood;
 import jdplus.ssf.IPredictionErrorDecomposition;
 import jdplus.stats.likelihood.ResidualsCumulator;
 import jdplus.ssf.State;
@@ -87,14 +86,6 @@ public class PredictionErrorDecomposition implements
     public void save(final int t, final State state, final StateInfo info) {
     }
 
-//    @Override
-//    public void save(final int t, final IPredictionErrors pe) {
-//        if (pe == null)
-//            return;
-//        Matrix cov = pe.getPredictionErrorCovariance();
-//        DataBlock err = pe.getPredictionError();
-//        add(err, cov);
-//    }
     @Override
     public void save(final int t, final UpdateInformation pe) {
         if (pe == null || pe.isMissing()) {

@@ -17,6 +17,7 @@
 package demetra.timeseries.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
+import java.util.List;
 import nbbrd.design.Development;
 
 /**
@@ -28,24 +29,24 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 @lombok.Value
 public class TsContextVariable implements ITsVariable {
-
+    
     @lombok.NonNull
     String id;
-
+    
     int firstLag, lastLag;
-
+    
     public TsContextVariable(String id) {
         this.id = id;
         firstLag = 0;
         lastLag = 0;
     }
-
+    
     public TsContextVariable(String id, int lag) {
         this.id = id;
         firstLag = lag;
         lastLag = lag;
     }
-
+    
     public TsContextVariable withId(String nid) {
         if (id.equals(nid)) {
             return this;
@@ -53,7 +54,7 @@ public class TsContextVariable implements ITsVariable {
             return new TsContextVariable(nid, firstLag, lastLag);
         }
     }
-
+    
     public TsContextVariable withLags(int firstlag, int lastlag) {
         if (firstlag == firstLag && lastlag == lastLag) {
             return this;
@@ -65,8 +66,7 @@ public class TsContextVariable implements ITsVariable {
     /**
      * first &le last !!
      *
-     * For instance, if first = -1 and last = 2
-     * we have the following variables:
+     * For instance, if first = -1 and last = 2 we have the following variables:
      * v(t+1), v(t), v(t-1), v(t-2)
      *
      * @param id
@@ -78,21 +78,21 @@ public class TsContextVariable implements ITsVariable {
         firstLag = first;
         lastLag = last;
     }
-
+    
     public boolean isLag() {
         return firstLag != 0 || lastLag != 0;
     }
-
+    
     @Override
     public int dim() {
         return lastLag - firstLag + 1;
     }
-
+    
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {
         return id;
     }
-
+    
     @Override
     public <D extends TimeSeriesDomain<?>> String description(int idx, D context) {
         if (isLag()) {
@@ -100,16 +100,16 @@ public class TsContextVariable implements ITsVariable {
             int lag = firstLag + idx;
             builder.append(id);
             if (lag < 0) {
-                builder.append("+").append(-lag).append(')');
+                builder.append('+').append(-lag).append(')');
             } else {
-                builder.append("-").append(lag).append(')');
+                builder.append('-').append(lag).append(')');
             }
             return builder.toString();
         } else {
             return id;
         }
     }
-
+    
     public ITsVariable instantiateFrom(ModellingContext context, String desc) {
         UserVariable var = UserVariable.of(id, desc, context);
         if (isLag()) {
@@ -120,5 +120,41 @@ public class TsContextVariable implements ITsVariable {
         } else {
             return var;
         }
+    }
+    
+    public static TsContextVariable of(ITsVariable var) {
+        if (var instanceof TsContextVariable tvar) {
+            return tvar;
+        } else if (var instanceof UserVariable user) {
+            return new TsContextVariable(user.getId(), 0, 0);
+        } else if (var instanceof ModifiedTsVariable mvar) {
+            List<ModifiedTsVariable.Modifier> modifiers = mvar.getModifiers();
+            if (modifiers.size() == 1 && modifiers.get(0) instanceof TsLags lags && mvar.getVariable() instanceof UserVariable user) {
+                return new TsContextVariable(user.getId(), lags.getFirstLag(), lags.getLastLag());
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+    
+    @Override
+    public String toString() {
+        if (firstLag == 0 && lastLag == 0) {
+            return id;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(id).append('[');
+        if (firstLag < 0) {
+            builder.append('+');
+        }
+        builder.append(-firstLag);
+        if (lastLag != firstLag) {
+            builder.append(':');
+            if (lastLag < 0) {
+                builder.append('+');
+            }
+            builder.append(-lastLag);
+        }
+        return builder.append(']').toString();
+        
     }
 }

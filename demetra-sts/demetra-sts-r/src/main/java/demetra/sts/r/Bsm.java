@@ -32,7 +32,7 @@ import jdplus.modelling.regression.Regression;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;

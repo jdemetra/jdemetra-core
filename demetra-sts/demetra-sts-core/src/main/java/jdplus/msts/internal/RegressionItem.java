@@ -16,8 +16,8 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.Coefficients;
-import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.basic.Coefficients;
+import jdplus.ssf.basic.Loading;
 import demetra.math.matrices.Matrix;
 
 /**

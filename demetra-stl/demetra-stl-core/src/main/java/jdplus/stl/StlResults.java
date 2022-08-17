@@ -18,7 +18,6 @@ package jdplus.stl;
 
 import demetra.data.DoubleSeq;
 import demetra.information.GenericExplorable;
-import java.util.List;
 
 /**
  *
@@ -30,9 +29,9 @@ public class StlResults implements GenericExplorable{
 
     DoubleSeq series;
     DoubleSeq trend;
-    @lombok.Singular
-    List<DoubleSeq> seasons;
+    DoubleSeq seasonal;
     DoubleSeq irregular;
+    DoubleSeq sa;
     DoubleSeq fit;
     DoubleSeq weights;
 }

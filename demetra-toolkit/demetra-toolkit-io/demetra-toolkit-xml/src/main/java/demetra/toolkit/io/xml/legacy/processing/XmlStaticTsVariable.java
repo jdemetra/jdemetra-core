@@ -17,7 +17,6 @@
 package demetra.toolkit.io.xml.legacy.processing;
 
 import demetra.timeseries.StaticTsDataSupplier;
-import demetra.timeseries.regression.UserVariable;
 import demetra.toolkit.io.xml.legacy.core.XmlTsData;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

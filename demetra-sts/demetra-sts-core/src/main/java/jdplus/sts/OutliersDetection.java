@@ -23,7 +23,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.akf.SmoothationsComputer;
 import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.stats.RobustStandardDeviationComputer;

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
-import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.basic.Loading;
 import demetra.math.matrices.Matrix;
 
 /**

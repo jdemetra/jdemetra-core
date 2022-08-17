@@ -5,6 +5,7 @@
  */
 package jdplus.benchmarking.univariate;
 
+import demetra.data.AggregationType;
 import demetra.data.DoubleSeqCursor;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
@@ -62,4 +63,13 @@ public class BenchmarkingUtility {
         return TsData.ofInternal(highFreqSeries.getStart(), x);
     }
     
+    public TsData biRatio(TsData highFreqSeries, TsData aggregationConstraint, AggregationType agg){
+        TsData H=highFreqSeries.aggregate(aggregationConstraint.getTsUnit(), agg, true);
+        return TsData.divide(aggregationConstraint, H);
+    }
+    
+    public TsData biRatio(TsData highFreqSeries, TsData aggregationConstraint, int pos){
+        TsData H=highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), pos);
+        return TsData.divide(aggregationConstraint, H);
+    }
 }

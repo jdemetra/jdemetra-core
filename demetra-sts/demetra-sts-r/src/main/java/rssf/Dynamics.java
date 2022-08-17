@@ -7,8 +7,8 @@ package rssf;
 
 import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.implementations.TimeInvariantDynamics;
-import jdplus.ssf.implementations.TimeInvariantDynamics.Innovations;
+import jdplus.ssf.basic.TimeInvariantDynamics;
+import jdplus.ssf.basic.TimeInvariantDynamics.Innovations;
 import demetra.math.matrices.Matrix;
 
 /**

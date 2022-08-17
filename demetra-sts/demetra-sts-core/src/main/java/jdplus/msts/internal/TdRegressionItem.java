@@ -12,7 +12,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.modelling.regression.Regression;
 import jdplus.msts.MstsMapping;
 import jdplus.msts.VarianceInterpreter;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
@@ -22,8 +22,8 @@ import jdplus.msts.ParameterInterpreter;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.implementations.Coefficients;
-import jdplus.ssf.implementations.Loading;
+import jdplus.ssf.basic.Coefficients;
+import jdplus.ssf.basic.Loading;
 import demetra.math.matrices.Matrix;
 
 /**

@@ -28,7 +28,7 @@ import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlockStorage;
 import jdplus.ssf.dk.DkToolkit;
-import jdplus.ssf.implementations.CompositeSsf;
+import jdplus.ssf.composite.CompositeSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.ExtendedSsfData;
 import jdplus.ssf.univariate.ISsfData;
@@ -37,7 +37,7 @@ import jdplus.ucarima.AllSelector;
 import jdplus.ucarima.ModelDecomposer;
 import jdplus.ucarima.TrendCycleSelector;
 import jdplus.ucarima.UcarimaModel;
-import jdplus.ucarima.ssf.SsfUcarima;
+import jdplus.ssf.arima.SsfUcarima;
 
 /**
  *

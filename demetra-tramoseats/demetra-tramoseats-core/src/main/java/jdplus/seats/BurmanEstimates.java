@@ -30,7 +30,7 @@ import jdplus.ucarima.WienerKolmogorovEstimators;
 import demetra.data.DoubleSeq;
 import demetra.data.Doubles;
 import demetra.data.DoublesMath;
-import jdplus.arima.ssf.ExactArimaForecasts;
+import jdplus.ssf.arima.ExactArimaForecasts;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.MatrixWindow;
 import jdplus.math.matrices.decomposition.Gauss;
@@ -155,9 +155,16 @@ public class BurmanEstimates {
         double mc = 0;
         if (mcmp == cmp) {
             // special cases: 
-            // 1. trend constant
+            // 1. trend constant (no model)
             // 2. no unit root in the AR polynomial of the trend. 
             // correction when the meancorrectedcmp doesn't contain unit
+            if (isTrendConstant()) {
+                double c = mean;
+                estimates[cmp] = DoubleSeq.onMapping(n, i -> c);
+                forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> c);
+                backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> c);
+                return;
+            }
             BackFilter sur = ucm.getComponent(cmp).getNonStationaryAr();
             // no unit root
             if (sur.isIdentity()) {
@@ -168,7 +175,7 @@ public class BurmanEstimates {
                 }
             } else if (mean != 0) {
                 bmu = mean;
-                fmu =  sur.get(0)*sur.get(sur.getDegree())< 0 ? -mean : mean;
+                fmu = sur.get(0) * sur.get(sur.getDegree()) < 0 ? -mean : mean;
 //                BackFilter sar = ucm.getComponent(cmp).getStationaryAr();
 //                BackFilter mar = ucm.getModel().getStationaryAr();
 //                BackFilter mur = ucm.getModel().getNonStationaryAr();
@@ -176,13 +183,6 @@ public class BurmanEstimates {
 //                mu /= nur.evaluateAt(1);
 //                Polynomial nar = mar.asPolynomial().divide(sar.asPolynomial());
 //                mu /= mur.asPolynomial().evaluateAt(1);
-                if (isTrendConstant()) {
-                    double c = mean;
-                    estimates[cmp] = DoubleSeq.onMapping(n, i -> c);
-                    forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> c);
-                    backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> c);
-                    return;
-                }
             }
         }
         if (g[cmp] == null) {

@@ -11,7 +11,7 @@ import jdplus.arima.AutoCovarianceFunction;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.msts.ArInterpreter;
 import jdplus.msts.MstsMapping;
-import jdplus.arima.ssf.SsfAr;
+import jdplus.ssf.arima.SsfAr;
 import java.util.Collections;
 import java.util.List;
 import jdplus.msts.ParameterInterpreter;

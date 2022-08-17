@@ -69,7 +69,7 @@ public class RegArimaForecastsTest {
         FastMatrix matrix = Regression.matrix(xdom, Arrays.stream(variables).map(v -> v.getCore()).toArray(n -> new ITsVariable[n]));
 
         LikelihoodStatistics ll = rslt.getEstimation().getStatistics();
-        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount() + 1);
+        double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount());
         RegArimaForecasts.Result f = RegArimaForecasts.calcForecast(
                 rslt.arima(), rslt.getEstimation().originalY(), matrix, 
                 rslt.getEstimation().getCoefficients(),

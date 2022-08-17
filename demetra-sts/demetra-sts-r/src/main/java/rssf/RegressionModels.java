@@ -6,7 +6,7 @@
 package rssf;
 
 import jdplus.math.matrices.FastMatrix;
-import jdplus.ssf.implementations.RegSsf;
+import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.ISsf;
 import demetra.math.matrices.Matrix;
 

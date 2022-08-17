@@ -159,7 +159,7 @@ public class SeatsModel {
                 .build();
         RegArimaEstimation<SarimaModel> estimation = RegArimaToolkit.concentratedLikelihood(regarima);
         LikelihoodStatistics stat = estimation.statistics();
-        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount() + 1);
+        double var = stat.getSsqErr() / (stat.getEffectiveObservationsCount() - stat.getEstimatedParametersCount());
         if (set) {
             this.innovationVariance = var;
         }
