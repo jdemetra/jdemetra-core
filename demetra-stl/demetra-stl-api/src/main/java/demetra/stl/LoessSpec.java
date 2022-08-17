@@ -65,11 +65,20 @@ public class LoessSpec {
      * @return
      */
     public static LoessSpec defaultTrend(int period, int swindow) {
+        int win = defaultTrendWindow(period, swindow);
+        return of(win, 1, (int) Math.ceil(0.1 * win), null);
+    }
+
+    public static int defaultTrendWindow(int period) {
+        return defaultTrendWindow(period, 7);
+    }
+
+    public static int defaultTrendWindow(int period, int swindow) {
         int win = (int) Math.ceil((1.5 * period) / (1 - 1.5 / swindow));
         if (win % 2 == 0) {
             ++win;
         }
-        return of(win, 1, (int) Math.ceil(0.1 * win), null);
+        return win;
     }
 
     public static LoessSpec defaultTrend(int period) {
@@ -79,6 +88,7 @@ public class LoessSpec {
         }
         return of(win, 1, (int) Math.ceil(0.1 * win), null);
     }
+
     /**
      * The window is the smallest odd integer greater than or equal to period
      *
@@ -93,7 +103,7 @@ public class LoessSpec {
         return of(win, 1, (int) Math.ceil(0.1 * win), null);
     }
 
-   /**
+    /**
      * By default, win is the smaller odd number greater or equal to swin, and
      * degree = 0
      *

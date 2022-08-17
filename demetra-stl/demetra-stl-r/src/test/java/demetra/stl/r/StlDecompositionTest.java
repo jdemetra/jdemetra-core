@@ -27,7 +27,7 @@ public class StlDecompositionTest {
     
     @Test
     public void testStl() {
-        Matrix decomp = StlDecomposition.process(Data.ABS_RETAIL, 12, true, 7, 23, true);
+        Matrix decomp = StlDecomposition.stl(Data.ABS_RETAIL, 12, true, 7, 23, 1, 15);
 //        System.out.println(decomp);
         assertTrue(null != decomp);
     }
