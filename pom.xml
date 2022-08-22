@@ -191,7 +191,7 @@
             <properties>
                 <lombok.version>1.18.22</lombok.version>
                 <java-service.version>1.5.1</java-service.version>
-                <java-design.version>1.3.0</java-design.version>
+                <java-design.version>1.3.1</java-design.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
