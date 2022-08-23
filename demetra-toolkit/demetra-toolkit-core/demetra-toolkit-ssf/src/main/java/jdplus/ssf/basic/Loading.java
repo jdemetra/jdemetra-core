@@ -18,7 +18,6 @@ package jdplus.ssf.basic;
 
 import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
-import jdplus.data.DataBlockIterator;
 import demetra.data.DoubleSeqCursor;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ISsfLoading;

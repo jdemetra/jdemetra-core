@@ -12,6 +12,7 @@ import demetra.stl.LoessSpec;
 import jdplus.stl.StlKernel;
 import demetra.stl.StlSpec;
 import demetra.data.DoubleSeq;
+import demetra.data.WeightFunction;
 import demetra.math.matrices.Matrix;
 import demetra.stl.IStlSpec;
 import demetra.stl.MStlSpec;
@@ -28,11 +29,13 @@ import jdplus.stl.MStlResults;
 @lombok.experimental.UtilityClass
 public class StlDecomposition {
 
-    public Matrix stl(double[] data, int period, boolean mul, int swindow, int twindow, int nin, int nout) {
-        if (nin <1)
-            nin=1;
-        if (nout<0)
-            nout=0;
+    public Matrix stl(double[] data, int period, boolean mul, int swindow, int twindow, int nin, int nout, boolean nojump, double weightThreshold, String weightsFunction) {
+        if (nin < 1) {
+            nin = 1;
+        }
+        if (nout < 0) {
+            nout = 0;
+        }
         if (swindow == 0) {
             swindow = 7;
         }
@@ -43,8 +46,10 @@ public class StlDecomposition {
                 .innerLoopsCount(nin)
                 .outerLoopsCount(nout)
                 .multiplicative(mul)
-                .trendSpec(LoessSpec.of(twindow, 1))
-                .seasonalSpec(new SeasonalSpec(period, swindow))
+                .trendSpec(LoessSpec.of(twindow, 1, nojump))
+                .seasonalSpec(new SeasonalSpec(period, swindow, nojump))
+                .robustWeightThreshold(weightThreshold)
+                .robustWeightFunction(WeightFunction.valueOf(weightsFunction))
                 .build();
         StlKernel stl = new StlKernel(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
@@ -59,7 +64,9 @@ public class StlDecomposition {
         M.column(3).copyFrom(stl.getSeas(), 0);
         M.column(4).copyFrom(stl.getIrr(), 0);
         M.column(5).copyFrom(stl.getFit(), 0);
-        M.column(6).copyFrom(stl.getWeights(), 0);
+        if (stl.getWeights() != null) {
+            M.column(6).copyFrom(stl.getWeights(), 0);
+        }
         M.column(1).copy(M.column(0));
         if (mul) {
             M.column(1).div(M.column(3));
@@ -79,7 +86,7 @@ public class StlDecomposition {
         return m;
     }
 
-    public Matrix mstl(double[] data, int[] periods, boolean mul, int[] swindow, int twindow, int nin, int nout) {
+    public Matrix mstl(double[] data, int[] periods, boolean mul, int[] swindow, int twindow, int nin, int nout, boolean nojump, double weightThreshold, String weightsFunction) {
         if (periods == null || (swindow != null && periods.length != swindow.length)) {
             return null;
         }
@@ -91,19 +98,21 @@ public class StlDecomposition {
                 .innerLoopsCount(nin)
                 .outerLoopsCount(nout)
                 .multiplicative(mul)
-                .trendSpec(LoessSpec.of(twindow, 1));
+                .trendSpec(LoessSpec.of(twindow, 1, nojump))
+                .robustWeightThreshold(weightThreshold)
+                .robustWeightFunction(WeightFunction.valueOf(weightsFunction));
 
         if (swindow == null) {
             for (int i = 0; i < periods.length; ++i) {
-                builder.seasonalSpec(SeasonalSpec.createDefault(periods[i]));
+                builder.seasonalSpec(SeasonalSpec.createDefault(periods[i], nojump));
             }
         } else if (swindow.length == 1) {
             for (int i = 0; i < periods.length; ++i) {
-                builder.seasonalSpec(new SeasonalSpec(periods[i], swindow[0]));
+                builder.seasonalSpec(new SeasonalSpec(periods[i], swindow[0], nojump));
             }
         } else {
             for (int i = 0; i < periods.length; ++i) {
-                builder.seasonalSpec(new SeasonalSpec(periods[i], swindow[i]));
+                builder.seasonalSpec(new SeasonalSpec(periods[i], swindow[i], nojump));
             }
 
         }
@@ -134,34 +143,37 @@ public class StlDecomposition {
         return M;
     }
 
-    public Matrix istl(double[] data, int[] periods, boolean mul, int[] swindow, int[] twindow, int nin, int nout) {
+    public Matrix istl(double[] data, int[] periods, boolean mul, int[] swindow, int[] twindow, int nin, int nout, boolean nojump, double weightThreshold, String weightsFunction) {
         if (periods == null || (swindow != null && periods.length != swindow.length)) {
             return null;
         }
-        if (twindow != null && twindow.length!= periods.length) {
+        if (twindow != null && twindow.length != periods.length) {
             return null;
         }
 
         IStlSpec.Builder builder = IStlSpec.builder()
                 .innerLoopsCount(nin)
                 .outerLoopsCount(nout)
-                .multiplicative(mul);
+                .multiplicative(mul)
+                .robustWeightThreshold(weightThreshold)
+                .robustWeightFunction(WeightFunction.valueOf(weightsFunction));
 
-            for (int i = 0; i < periods.length; ++i) {
-                SeasonalSpec sspec;
-                if (swindow == null)
-                    sspec=SeasonalSpec.createDefault(periods[i]);
-                else if (swindow.length == 1)
-                    sspec=new SeasonalSpec(periods[i], swindow[0]);
-                else
-                    sspec=new SeasonalSpec(periods[i], swindow[i]);
-               LoessSpec tspec;
-                if (twindow == null)
-                    tspec=LoessSpec.defaultTrend(periods[i]);
-                else 
-                    tspec=LoessSpec.of(twindow[i], 1);
-                builder.periodSpec(new IStlSpec.PeriodSpec(tspec, sspec));
-           
+        for (int i = 0; i < periods.length; ++i) {
+            SeasonalSpec sspec;
+            if (swindow == null) {
+                sspec = SeasonalSpec.createDefault(periods[i], nojump);
+            } else if (swindow.length == 1) {
+                sspec = new SeasonalSpec(periods[i], swindow[0], nojump);
+            } else {
+                sspec = new SeasonalSpec(periods[i], swindow[i], nojump);
+            }
+            LoessSpec tspec;
+            if (twindow == null) {
+                tspec = LoessSpec.defaultTrend(periods[i], nojump);
+            } else {
+                tspec = LoessSpec.of(twindow[i], 1, nojump);
+            }
+            builder.periodSpec(new IStlSpec.PeriodSpec(tspec, sspec));
 
         }
         IStlSpec spec = builder.build();
@@ -184,9 +196,9 @@ public class StlDecomposition {
                 M.column(1).sub(M.column(j));
             }
         }
-        M.column(j++).copy(rslt.getIrregular());
-        M.column(j++).copy(rslt.getFit());
-        M.column(j).copy(rslt.getWeights());
+        M.column(++j).copy(rslt.getIrregular());
+        M.column(++j).copy(rslt.getFit());
+        M.column(++j).copy(rslt.getWeights());
         return M;
     }
 

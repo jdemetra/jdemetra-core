@@ -27,26 +27,26 @@ package demetra.stl;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class SeasonalSpec {
 
-    public static SeasonalSpec createDefault(int period) {
-        LoessSpec s = LoessSpec.defaultSeasonal();
-        LoessSpec t = LoessSpec.defaultLowPass(period);
+    public static SeasonalSpec createDefault(int period, boolean nojump) {
+        LoessSpec s = LoessSpec.defaultSeasonal(nojump);
+        LoessSpec t = LoessSpec.defaultLowPass(period, nojump);
         return new SeasonalSpec(period, s, t);
     }
 
     public SeasonalSpec() {
         this.period = 12;
-        this.seasonalSpec = LoessSpec.defaultSeasonal();
-        this.lowPassSpec = LoessSpec.defaultLowPass(period);
+        this.seasonalSpec = LoessSpec.defaultSeasonal(true);
+        this.lowPassSpec = LoessSpec.defaultLowPass(period, true);
     }
 
     private final int period;
     private final LoessSpec seasonalSpec;
     private final LoessSpec lowPassSpec;
 
-    public SeasonalSpec(int period, int swindow) {
+    public SeasonalSpec(int period, int swindow, boolean nojump) {
         this.period = period;
-        this.seasonalSpec = LoessSpec.defaultSeasonal(swindow);
-        this.lowPassSpec = LoessSpec.defaultLowPass(period);
+        this.seasonalSpec = LoessSpec.defaultSeasonal(swindow, nojump);
+        this.lowPassSpec = LoessSpec.defaultLowPass(period, nojump);
     }
 
     public SeasonalSpec(int period, LoessSpec sspec, LoessSpec lspec) {

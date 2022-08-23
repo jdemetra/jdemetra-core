@@ -36,8 +36,8 @@ public class SeasonalFilterTest {
     public void testCustom() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpec spec = LoessSpec.of(3, 0);
-        LoessSpec lspec = LoessSpec.of(5, 1);
+        LoessSpec spec = LoessSpec.of(3, 0, false);
+        LoessSpec lspec = LoessSpec.of(5, 1, false);
         SeasonalFilter filter=new SeasonalFilter(spec, lspec, 12);
         double[] sd=new double[d.length];
         filter.filter(IDataGetter.of(d), null, false, IDataSelector.of(sd));
@@ -49,7 +49,7 @@ public class SeasonalFilterTest {
     public void testDefault() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        SeasonalSpec spec=new SeasonalSpec(12, 7);
+        SeasonalSpec spec=new SeasonalSpec(12, 7, false);
         SeasonalFilter filter=SeasonalFilter.of(spec);
         double[] sd=new double[d.length];
         filter.filter(IDataGetter.of(d), null, false, IDataSelector.of(sd));

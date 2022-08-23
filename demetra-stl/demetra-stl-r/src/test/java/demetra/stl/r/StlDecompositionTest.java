@@ -6,6 +6,7 @@
 package demetra.stl.r;
 
 import demetra.data.Data;
+import demetra.data.WeightFunction;
 
 import static org.junit.jupiter.api.Assertions.*;
 import demetra.math.matrices.Matrix;
@@ -27,8 +28,22 @@ public class StlDecompositionTest {
     
     @Test
     public void testStl() {
-        Matrix decomp = StlDecomposition.stl(Data.ABS_RETAIL, 12, true, 7, 23, 1, 15);
-//        System.out.println(decomp);
+        Matrix decomp = StlDecomposition.stl(Data.ABS_RETAIL, 12, false, 0, 0, 2, 5, true, 0.1, WeightFunction.TRIANGULAR.name());
+ //       System.out.println(decomp);
+        assertTrue(null != decomp);
+    }
+    
+    @Test
+    public void testMStl() {
+        Matrix decomp = StlDecomposition.mstl(Data.ABS_RETAIL, new int[]{12}, false, null, 0, 2, 5, true, 0.1, WeightFunction.TRIANGULAR.name());
+ //       System.out.println(decomp);
+        assertTrue(null != decomp);
+    }
+    
+    @Test
+    public void testIStl() {
+        Matrix decomp = StlDecomposition.istl(Data.ABS_RETAIL, new int[]{12}, false, null, null, 2, 5, true, 0.1, WeightFunction.TRIANGULAR.name());
+ //       System.out.println(decomp);
         assertTrue(null != decomp);
     }
 }

@@ -51,13 +51,10 @@ public class InformationExtractors {
         Set<Class> keys = x.keySet();
         for (Class cl : keys) {
             List<InformationExtractor> cur = x.get(cl);
-            cur.sort(new Comparator() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    int p1 = ((InformationExtractor) o1).getPriority();
-                    int p2 = ((InformationExtractor) o2).getPriority();
-                    return Integer.compare(p2, p1);
-                }
+            cur.sort((Object o1, Object o2) -> {
+                int p1 = ((InformationExtractor) o1).getPriority();
+                int p2 = ((InformationExtractor) o2).getPriority();
+                return Integer.compare(p2, p1);
             });
             // last one
             InformationExtractor last = cur.get(cur.size() - 1);

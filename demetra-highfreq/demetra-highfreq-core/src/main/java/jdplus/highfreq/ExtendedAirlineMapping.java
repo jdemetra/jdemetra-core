@@ -152,9 +152,9 @@ public class ExtendedAirlineMapping implements IArimaMapping<ArimaModel> {
             p[0] = ph;
             for (int i = 0; i < p0.length; ++i) {
                 if (!round) {
-                    p[i + 1] = -theta.get(p0[i]-1) / f0[i];
+                    p[i + 1] = -theta.get(p0[i]) / f0[i];
                 } else {
-                    p[i + 1] = -theta.get(p0[i]-1);
+                    p[i + 1] = -theta.get(p0[i]);
                 }
 
             }
@@ -224,8 +224,11 @@ public class ExtendedAirlineMapping implements IArimaMapping<ArimaModel> {
     @Override
     public DoubleSeq getDefaultParameters() {
         double[] p = new double[getDim()];
-        for (int i = 0; i < p.length; ++i) {
-            p[i] = .2;
+        int i=0;
+        if (ar)
+            p[i++]=.2;
+        for (; i < p.length; ++i) {
+            p[i] = .8;
         }
         return DoubleSeq.of(p);
     }

@@ -35,12 +35,12 @@ public class LowPassLoessFilterTest {
     public void testSomeMethod() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpec spec = LoessSpec.of(7, 0);
+        LoessSpec spec = LoessSpec.of(7, 0, false);
         SeasonalLoessFilter filter = new SeasonalLoessFilter(spec, 12);
         double[] sd = new double[d.length + 24];
         double[] l = new double[d.length];
         filter.filter(IDataGetter.of(d), null, IDataSelector.of(sd, -12));
-        LoessSpec lspec = LoessSpec.of(13, 1);
+        LoessSpec lspec = LoessSpec.of(13, 1, false);
         LowPassLoessFilter lfilter = new LowPassLoessFilter(lspec, 12);
         lfilter.filter(IDataGetter.of(sd), IDataSelector.of(l));
 //        System.out.println(s);

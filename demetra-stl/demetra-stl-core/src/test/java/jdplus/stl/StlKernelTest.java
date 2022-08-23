@@ -41,8 +41,8 @@ public class StlKernelTest {
     public void testDefault() {
         StlSpec spec = StlSpec.builder()
                 .multiplicative(true)
-                .seasonalSpec(new SeasonalSpec(12, 7))
-                .trendSpec(LoessSpec.defaultTrend(12, 7))
+                .seasonalSpec(new SeasonalSpec(12, 7, false))
+                .trendSpec(LoessSpec.defaultTrend(12, 7, false))
                 .innerLoopsCount(2)
                 .outerLoopsCount(5)
                 .build();
@@ -60,8 +60,8 @@ public class StlKernelTest {
 //    @Ignore
     public void testLargeFilter() {
         StlSpec spec = StlSpec.builder()
-                .seasonalSpec(new SeasonalSpec(12, 7))
-                .trendSpec(LoessSpec.of(21, 1))
+                .seasonalSpec(new SeasonalSpec(12, 7, false))
+                .trendSpec(LoessSpec.of(21, 1, false))
                 .build();
         StlKernel stl = new StlKernel(spec);
         StlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
