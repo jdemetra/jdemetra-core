@@ -49,7 +49,7 @@ public abstract class ActiveDocument<S extends IProcSpecification, I, R extends 
      */
     public ActiveDocument(String desc) {
         desc_ = desc;
-        context_ = null;
+        context_ = ProcessingContext.getActiveContext();
     }
 
     public ActiveDocument(String desc, ProcessingContext context) {
