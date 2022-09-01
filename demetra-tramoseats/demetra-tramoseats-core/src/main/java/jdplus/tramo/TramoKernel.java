@@ -43,6 +43,7 @@ import jdplus.tramo.internal.OutliersDetectionModule;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.timeseries.regression.ModellingUtility;
+import demetra.tramo.RegressionTestType;
 import jdplus.regsarima.regular.RegSarimaModel;
 
 /**
@@ -67,7 +68,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
         public static Builder builder() {
             return new Builder()
-                    .intermediatePrecision(1e-5)
+                    .intermediatePrecision(1e-7)
                     .precision(1e-7)
                     .ur(.96)
                     .reduceVa(.12)
@@ -168,6 +169,7 @@ public class TramoKernel implements RegSarimaProcessor {
                     .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                     .leapYear(tdspec.isTest() ? TramoModelBuilder.leapYear(tdspec) : null)
                     .tradingDays(tdspec.isTest() ? TramoModelBuilder.tradingDays(spec, modellingContext) : null)
+                    .useJoinTest(tdspec.getRegressionTestType() == RegressionTestType.Joint_F)
                     .testMean(spec.isUsingAutoModel())
                     .estimationPrecision(options.intermediatePrecision)
                     .build();

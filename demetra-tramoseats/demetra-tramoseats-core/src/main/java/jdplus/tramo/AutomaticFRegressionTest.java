@@ -30,8 +30,6 @@ import jdplus.regarima.RegArimaUtility;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
-import jdplus.arima.estimation.IArimaMapping;
-import jdplus.sarima.SarimaModel;
 import jdplus.regarima.IRegArimaComputer;
 
 /**
@@ -137,11 +135,10 @@ public class AutomaticFRegressionTest implements IRegressionModule {
     public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription current = context.getDescription();
-        IArimaMapping<SarimaModel> mapping = current.mapping();
 //      First case TD=0 or Just test EE
         ModelDescription test0 = createTestModel(context, null, null);
         IRegArimaComputer processor = RegArimaUtility.processor(true, precision);
-        RegArimaEstimation regarima0 = processor.process(test0.regarima(), mapping);
+        RegArimaEstimation regarima0 = processor.process(test0.regarima(), test0.mapping());
         ConcentratedLikelihoodWithMissing ll0 = regarima0.getConcentratedLikelihood();
         int nhp = test0.getArimaSpec().freeParametersCount();
         double SS0 = ll0.ssq();
@@ -152,7 +149,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
         //      Second case TD=TradindDay only
         ModelDescription test6 = createTestModel(context, td, null);
-        RegArimaEstimation regarima6 = processor.process(test6.regarima(), mapping);
+        RegArimaEstimation regarima6 = processor.process(test6.regarima(), test6.mapping());
         ConcentratedLikelihoodWithMissing ll6 = regarima6.getConcentratedLikelihood();
         double SS6 = ll6.ssq(), SSmc6 = SS6 / (ll6.degreesOfFreedom() - nhp);
         double Ftd = (SS0 - SS6) / (SSmc6 * 6);
@@ -178,14 +175,14 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         if ((pFtd6 > pFtd1) && (pFtd6 > 1 - fpvalue)) {
             // add leap year
             ModelDescription all = createTestModel(context, td, lp);
-            RegArimaEstimation regarima = processor.process(all.regarima(), mapping);
+            RegArimaEstimation regarima = processor.process(all.regarima(), all.mapping());
             return update(current, all, td, regarima.getConcentratedLikelihood(), nhp);
         } else if (pFtd1 < 1 - fpvalue) {
             return update(current, test0, null, ll0, nhp);
         } else {
             // add leap year
             ModelDescription all = createTestModel(context, wd, lp);
-            RegArimaEstimation regarima = processor.process(all.regarima(), mapping);
+            RegArimaEstimation regarima = processor.process(all.regarima(), all.mapping());
             return update(current, all, wd, regarima.getConcentratedLikelihood(), nhp);
         }
     }

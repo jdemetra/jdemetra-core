@@ -49,12 +49,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class RegArimaKernel implements RegSarimaProcessor {
 
     @lombok.Value
-    @lombok.Builder(builderClassName="AmiBuilder")
+    @lombok.Builder(builderClassName = "AmiBuilder")
     public static class AmiOptions {
+        
+        public static final double DEF_EPS=1e-7, DEF_IEPS=1e-7;
+
         public static AmiBuilder builder() {
             AmiBuilder builder = new AmiBuilder();
             builder.checkMu = true;
-            builder.precision = 1e-7;
+            builder.precision = DEF_EPS;
+            builder.intermediatePrecision = DEF_IEPS;
             builder.va=0;
             builder.reduceVa = .14286;
             builder.ljungBoxLimit = .95;
@@ -76,7 +80,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
 //            boolean mixedModel = true;
 //        }
         boolean checkMu;
-        double precision;
+        double precision, intermediatePrecision;
         double va;
         double reduceVa;
         double ljungBoxLimit;
@@ -98,7 +102,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         private IAutoModellingModule autoModel;
         private IOutliersDetectionModule outliers;
         private RegressionVariablesTest regressionTest0, regressionTest1;
-        private AmiOptions options = new AmiOptions(true, 1e-7, 0, .14286, .95, .95, false, true);
+        private AmiOptions options = AmiOptions.builder().build();
 
         public Builder modelBuilder(@NonNull IModelBuilder builder) {
             this.modelBuilder = builder;
@@ -116,7 +120,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         }
 
         public Builder autoModelling(IAutoModellingModule ami) {
-            this.autoModel=ami;
+            this.autoModel = ami;
             return this;
         }
 
@@ -168,7 +172,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
     private final AmiOptions options;
     private final IAutoModellingModule autoModel;
     private final RegressionVariablesTest regressionTest0, regressionTest1;
-    private FinalEstimator finalEstimator;
+    private final FinalEstimator finalEstimator;
 
     private double va0 = 0, curva = 0;
     private double pcr;
@@ -185,7 +189,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         this.easterTest = builder.easterTest;
         this.outliers = builder.outliers;
         this.options = builder.options;
-        this.autoModel=builder.autoModel;
+        this.autoModel = builder.autoModel;
         this.regressionTest0 = builder.regressionTest0;
         this.regressionTest1 = builder.regressionTest1;
         if (autoModel != null) {
@@ -209,8 +213,9 @@ public class RegArimaKernel implements RegSarimaProcessor {
 
     @Override
     public RegSarimaModel process(TsData originalTs, ProcessingLog log) {
-        if (log == null)
-            log=ProcessingLog.dummy();
+        if (log == null) {
+            log = ProcessingLog.dummy();
+        }
         clear();
         ModelDescription desc = modelBuilder.build(originalTs, null);
         if (desc == null) {
@@ -436,10 +441,10 @@ public class RegArimaKernel implements RegSarimaProcessor {
     private void lastSolution(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
         SarimaOrders nspec = description.specification();
-        switch (nspec.getPeriod()){
-            case 2: nspec.setP(1);break;
-            case 3: nspec.setP(2);break;
-            default:nspec.setP(3);
+        switch (nspec.getPeriod()) {
+            case 2 -> nspec.setP(1);
+            case 3 -> nspec.setP(2);
+            default -> nspec.setP(3);
         }
         if (nspec.getBd() > 0 || nspec.getPeriod() == 1) {
             nspec.setBp(0);
