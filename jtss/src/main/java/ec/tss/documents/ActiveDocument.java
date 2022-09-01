@@ -23,6 +23,7 @@ import ec.tstoolkit.algorithm.IProcSpecification;
 import ec.tstoolkit.algorithm.IProcessing;
 import ec.tstoolkit.algorithm.ProcessingContext;
 import ec.tstoolkit.design.Development;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An active document is a document that generates new results when its
@@ -52,7 +53,7 @@ public abstract class ActiveDocument<S extends IProcSpecification, I, R extends 
         context_ = ProcessingContext.getActiveContext();
     }
 
-    public ActiveDocument(String desc, ProcessingContext context) {
+    public ActiveDocument(String desc, @NonNull ProcessingContext context) {
         desc_ = desc;
         context_ = context;
     }
