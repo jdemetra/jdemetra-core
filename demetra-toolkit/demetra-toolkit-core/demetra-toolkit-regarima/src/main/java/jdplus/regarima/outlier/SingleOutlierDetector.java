@@ -18,12 +18,10 @@ package jdplus.regarima.outlier;
 
 import jdplus.stats.RobustStandardDeviationComputer;
 import jdplus.arima.IArimaModel;
-import demetra.data.DoubleList;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.regarima.RegArimaModel;
 import jdplus.modelling.regression.IOutlierFactory;
 import demetra.util.TableOfBoolean;
-import java.util.ArrayList;
 
 /**
  *

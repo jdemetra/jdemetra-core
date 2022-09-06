@@ -85,15 +85,18 @@ public class ModelController implements IAmiController {
     private static int calcLbLength(int sp, int nobs) {
         int lbdf;
 
-        if (sp == 12) {
-            lbdf = 24;
-        } else if (sp == 1) {
-            lbdf = 8;
-        } else {
-            lbdf = 4 * sp;
-            if (nobs <= 22 && sp == 4) {
-                lbdf = 6;
-            }
+        switch (sp) {
+            case 12:
+                lbdf = 24;
+                break;
+            case 1:
+                lbdf = 8;
+                break;
+            default:
+                lbdf = 4 * sp;
+                if (nobs <= 22 && sp == 4) {
+                    lbdf = 6;
+                }   break;
         }
         if (lbdf >= nobs) {
             lbdf = nobs / 2;

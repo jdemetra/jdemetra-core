@@ -30,7 +30,7 @@ import jdplus.sarima.SarimaModel;
  */
 public class MeanController implements IRegressionModule {
 
-    static final double CVAL0 = 1.96, CVAL1 = 1.6;
+    static final double CVAL0 = 1.96, CVAL1 = 1.6, CVALFINAL = 2.5;
 
     private final double cval;
     private final double eps = 1e-5;
@@ -39,6 +39,7 @@ public class MeanController implements IRegressionModule {
         this.cval = cval;
     }
 
+    @Override
     public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription desc = context.getDescription();

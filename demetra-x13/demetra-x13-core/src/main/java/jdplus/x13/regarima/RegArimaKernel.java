@@ -51,8 +51,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
     @lombok.Value
     @lombok.Builder(builderClassName = "AmiBuilder")
     public static class AmiOptions {
-        
-        public static final double DEF_EPS=1e-7, DEF_IEPS=1e-7;
+
+        public static final double DEF_EPS = 1e-7, DEF_IEPS = 1e-5;
 
         public static AmiBuilder builder() {
             AmiBuilder builder = new AmiBuilder();
@@ -249,7 +249,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
 
             regAIC(context);
 
-            checkMu(context, true);
+            checkMu(context, MeanController.CVAL0);
 
             if (needOutliers && ProcessingResult.Changed == outliers.process(context, curva)) {
                 if (context.needEstimation()) {
@@ -299,6 +299,11 @@ public class RegArimaKernel implements RegSarimaProcessor {
                             if (!pass2(defModel, context)) {
                                 continue;
                             }
+                        } else {
+                            controller.accept(context);
+                            rtval0 = controller.getRTval();
+                            rvr0 = controller.getRvr();
+                            plbox0 = 1 - controller.getLjungBoxTest().getPvalue();
                         }
                         if (regressionTest1 != null) {
                             ProcessingResult changed = regressionTest1.process(context);
@@ -309,13 +314,26 @@ public class RegArimaKernel implements RegSarimaProcessor {
                                 if (context.needEstimation()) {
                                     context.estimate(options.precision);
                                 }
+                                controller.accept(context);
+                                rtval0 = controller.getRTval();
+                                rvr0 = controller.getRvr();
+                                plbox0 = 1 - controller.getLjungBoxTest().getPvalue();
                             }
                         }
                         // final tests
-                        checkUnitRoots(context);
-                        checkMA(context);
-                        if (isAutoModelling() && !context.getDescription().isMean() && Math.abs(rtval0) > 2.5) {
-                            if (options.checkMu) {
+                        boolean checked;
+                        do {
+                            checked = true;
+                            if (!checkUnitRoots(context)) {
+                                checked = false;
+                            }
+                            if (!checkMA(context)) {
+                                checked = false;
+                            }
+                        } while (!checked);
+
+                        if (isAutoModelling() && !context.getDescription().isMean()) {
+                            if (options.checkMu && rtval0 > MeanController.CVALFINAL) {
                                 context.getDescription().setMean(true);
                                 context.clearEstimation();
                             }
@@ -348,12 +366,11 @@ public class RegArimaKernel implements RegSarimaProcessor {
         return autoModel != null;
     }
 
-    private ProcessingResult checkMu(RegSarimaModelling context, boolean initial) {
+    private ProcessingResult checkMu(RegSarimaModelling context, double cv) {
         if (!options.checkMu) {
             return ProcessingResult.Unchanged;
         }
-        MeanController meanTest = new MeanController(initial
-                ? MeanController.CVAL0 : MeanController.CVAL1);
+        MeanController meanTest = new MeanController(cv);
         return meanTest.test(context);
     }
 
@@ -400,7 +417,6 @@ public class RegArimaKernel implements RegSarimaProcessor {
         if (ichk > 0) {
             context.set(desc0, estimation0);
             plbox = plbox0;
-            rvr = rvr0;
             defModel = true;
         } else {
             rtval0 = rtval;
@@ -442,9 +458,12 @@ public class RegArimaKernel implements RegSarimaProcessor {
         ModelDescription description = context.getDescription();
         SarimaOrders nspec = description.specification();
         switch (nspec.getPeriod()) {
-            case 2 -> nspec.setP(1);
-            case 3 -> nspec.setP(2);
-            default -> nspec.setP(3);
+            case 2 ->
+                nspec.setP(1);
+            case 3 ->
+                nspec.setP(2);
+            default ->
+                nspec.setP(3);
         }
         if (nspec.getBd() > 0 || nspec.getPeriod() == 1) {
             nspec.setBp(0);
@@ -483,7 +502,13 @@ public class RegArimaKernel implements RegSarimaProcessor {
         return rslt;
     }
 
-    private void checkUnitRoots(RegSarimaModelling context) {
+    /**
+     * Return true if the model is NOT modified
+     *
+     * @param context
+     * @return
+     */
+    private boolean checkUnitRoots(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         //quasi-unit roots of ar are changed in true unit roots
         SarimaModel m = desc.arima();
@@ -508,6 +533,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
             desc.setSpecification(nspec);
             redoEstimation(context);
         }
+        return ok;
     }
 
     private void redoEstimation(RegSarimaModelling context) {
@@ -515,7 +541,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
         // check mean
         ModelDescription desc = context.getDescription();
         if (desc.isMean()) {
-            checkMu(context, false);
+            checkMu(context, MeanController.CVAL1);
         }
         if (desc.variables().filter(v -> ModellingUtility.isOutlier(v, true)).findAny().isPresent()) {
             desc.removeVariable(v -> ModellingUtility.isOutlier(v, true));
@@ -554,12 +580,18 @@ public class RegArimaKernel implements RegSarimaProcessor {
         return n;
     }
 
-    private void checkMA(RegSarimaModelling context) {
+    /**
+     * Return true if the model is NOT modified
+     *
+     * @param context
+     * @return
+     */
+    private boolean checkMA(RegSarimaModelling context) {
         ModelDescription description = context.getDescription();
         SarimaModel m = description.arima();
         SarimaOrders nspec = m.orders();
         if (nspec.getQ() == 0 || nspec.getD() == 0) {
-            return;
+            return true;
         }
         double ma = m.getRegularMA().evaluateAt(1);
         if (Math.abs(ma) < MALIM) {
@@ -568,6 +600,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
             description.setSpecification(nspec);
             description.setMean(true);
             redoEstimation(context);
+            return false;
         }
+        return true;
     }
 }

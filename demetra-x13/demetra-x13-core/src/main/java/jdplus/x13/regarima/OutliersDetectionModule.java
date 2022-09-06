@@ -170,7 +170,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
                 .criticalValue(cv)
                 .maxOutliers(maxOutliers)
                 .maxRound(maxRound)
-                .processor(RegArimaUtility.processor(true, EPS))
+                .processor(RegArimaUtility.processor(true, eps))
                 .build();
         TsDomain odom = domain.select(span);
         int start = domain.indexOf(odom.getStartPeriod()), end = start + odom.getLength();

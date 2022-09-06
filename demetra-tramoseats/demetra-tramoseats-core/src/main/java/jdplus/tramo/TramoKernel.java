@@ -68,7 +68,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
         public static Builder builder() {
             return new Builder()
-                    .intermediatePrecision(1e-7)
+                    .intermediatePrecision(1e-5)
                     .precision(1e-7)
                     .ur(.96)
                     .reduceVa(.12)
