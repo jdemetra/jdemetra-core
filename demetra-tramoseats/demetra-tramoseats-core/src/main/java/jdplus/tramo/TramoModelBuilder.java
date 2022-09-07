@@ -157,6 +157,7 @@ class TramoModelBuilder implements IModelBuilder {
         else if (mu.isFixed()){
             int d = spec.getArima().getD(), bd=spec.getArima().getBd();
             add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu});   
+            model.setMean(false);
         }else{
             model.setMean(true);
         }
@@ -192,7 +193,7 @@ class TramoModelBuilder implements IModelBuilder {
     private void initializeOutliers(ModelDescription model, List<Variable<IOutlier>> outliers) {
         int freq = model.getAnnualFrequency();
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getDeltaTC());
-        PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
+        PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, true);
         for (Variable<IOutlier> outlier : outliers) {
             IOutlier cur=outlier.getCore();
             String code = cur.getCode();
@@ -205,7 +206,7 @@ class TramoModelBuilder implements IModelBuilder {
                     cmp = ComponentType.Irregular;
                     break;
                 case LevelShift.CODE:
-                    v = LevelShiftFactory.FACTORY_ZEROSTARTED.make(pos);
+                    v = LevelShiftFactory.FACTORY_ZEROENDED.make(pos);
                     cmp = ComponentType.Trend;
                     break;
                 case PeriodicOutlier.CODE:

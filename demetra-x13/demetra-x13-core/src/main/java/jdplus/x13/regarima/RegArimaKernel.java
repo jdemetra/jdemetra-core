@@ -52,7 +52,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
     @lombok.Builder(builderClassName = "AmiBuilder")
     public static class AmiOptions {
 
-        public static final double DEF_EPS = 1e-7, DEF_IEPS = 1e-5;
+        public static final double DEF_EPS = 1e-7, DEF_IEPS = 1e-7;
 
         public static AmiBuilder builder() {
             AmiBuilder builder = new AmiBuilder();

@@ -258,6 +258,8 @@ public final class ModelDescription {
      * @return
      */
     public RegArimaModel<SarimaModel> regarima() {
+        // Consider that all variables can be used (exluded=false). They will be excluded later
+        // Explanation: excluding some variable might depend on the differencing orders/presence of other variables
         variables.replaceAll(v -> v.exclude(false));
         buildTransformation();
         sortVariables();
@@ -722,7 +724,6 @@ public final class ModelDescription {
             rslt = processor.optimize(model, mapping());
         }
         // update current description
-        int p = this.getAnnualFrequency();
         LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         if (max != null) {
             setFreeParameters(max.getParameters());
