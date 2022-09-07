@@ -112,7 +112,7 @@ public abstract class AlgorithmManager<S extends IProcSpecification, I, R extend
     }
 
     public <T extends S> R process(T spec, I input) {
-        return process(spec, input, null);
+        return process(spec, input, ProcessingContext.getActiveContext());
     }
 
     public <T extends S> R process(T spec, I input, ProcessingContext context) {

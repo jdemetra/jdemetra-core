@@ -175,7 +175,7 @@ public class HannanRissanen {
 	nspec.setP(0);
 	nspec.setBP(0);
 	if (!hr.process(ndata, nspec))
-	    m_ok = false;
+	    return;
 	for (int i = hr.m_pi.length - 1, j = m_pi.length - 1; i >= 0; --i, --j)
 	    m_pi[j] = hr.m_pi[i];
 	updatemodel();
