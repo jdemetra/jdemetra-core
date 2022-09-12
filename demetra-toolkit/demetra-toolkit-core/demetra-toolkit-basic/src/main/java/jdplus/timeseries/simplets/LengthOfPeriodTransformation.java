@@ -190,18 +190,12 @@ class LengthOfPeriodTransformation implements TsDataTransformation {
             ++year;
         }
 
-        int ndays = 0;
-        switch (freq) {
-            case 12:
-                ndays = 28;
-                break;
-            case 1:
-                ndays=365;
-                break;
-            default:
-                ndays = CalendarUtility.getCumulatedMonthDays(1 + 12 / freq);
-                break;
-        }
+        int ndays;
+        ndays = switch (freq) {
+            case 12 -> 28;
+            case 1 -> 365;
+            default -> CalendarUtility.getCumulatedMonthDays(12 / freq);
+        };
         double[] data = tsdata.getValues().toArray();
         if (back) {
             double leap = (ndays + 1) / (ndays + .25);

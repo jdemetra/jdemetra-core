@@ -40,8 +40,8 @@ public class StlPlusSpecificationTest {
         // Creates a default stl specification
         StlSpec spec = StlSpec.robustBuilder()
                 .multiplicative(false)
-                .trendSpec(LoessSpec.defaultTrend(52, 7))
-                .seasonalSpec(new SeasonalSpec(52, 7))
+                .trendSpec(LoessSpec.defaultTrend(52, 7, false))
+                .seasonalSpec(new SeasonalSpec(52, 7, false))
                 .build();
 
         StlKernel stl = new StlKernel(spec);
@@ -60,8 +60,8 @@ public class StlPlusSpecificationTest {
         // Creates a default stl specification
         StlSpec spec = StlSpec.robustBuilder()
                 .multiplicative(true)
-                .trendSpec(LoessSpec.defaultTrend(52, 7))
-                .seasonalSpec(new SeasonalSpec(52, 7))
+                .trendSpec(LoessSpec.defaultTrend(52, 7, false))
+                .seasonalSpec(new SeasonalSpec(52, 7, false))
                 .build();
 
         StlKernel stl = new StlKernel(spec);
@@ -79,7 +79,7 @@ public class StlPlusSpecificationTest {
     public void testCustom() {
         DoubleSeq data = Doubles.of(WeeklyData.US_CLAIMS);
         // Creates an empty robust stl specification (robust means 15 outer loops, 1 inner loop).
-        SeasonalSpec sspec = new SeasonalSpec(52, LoessSpec.defaultSeasonal(9), LoessSpec.defaultLowPass(52));
+        SeasonalSpec sspec = new SeasonalSpec(52, LoessSpec.defaultSeasonal(9, false), LoessSpec.defaultLowPass(52, false));
         StlSpec spec = StlSpec.robustBuilder()
                 .multiplicative(true)
                 .trendSpec(LoessSpec.of(105, 1, 1, null))

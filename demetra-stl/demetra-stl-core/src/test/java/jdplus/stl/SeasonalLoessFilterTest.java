@@ -35,7 +35,7 @@ public class SeasonalLoessFilterTest {
     public void testSomeMethod() {
         DoubleSeq s = Doubles.of(Data.EXPORTS);
         double[] d = s.toArray();
-        LoessSpec spec = LoessSpec.of(7, 0);
+        LoessSpec spec = LoessSpec.of(7, 0, false);
         SeasonalLoessFilter filter=new SeasonalLoessFilter(spec, 12);
         double[] sd=new double[d.length+24];
         filter.filter(IDataGetter.of(d), null, IDataSelector.of(sd, -12));

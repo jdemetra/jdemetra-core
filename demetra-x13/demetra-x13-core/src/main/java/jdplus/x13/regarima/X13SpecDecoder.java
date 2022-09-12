@@ -72,12 +72,11 @@ final class X13SpecDecoder {
 
     private void readTransformation(final RegArimaSpec spec) {
         TransformSpec tspec = spec.getTransform();
-        EstimateSpec espec = spec.getEstimate();
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         if (tspec.getFunction() == TransformationType.Auto) {
             builder.logLevel(LogLevelModule.builder()
                     .aiccLogCorrection(tspec.getAicDiff())
-                    .estimationPrecision(espec.getTol())
+                    .estimationPrecision(RegArimaKernel.AmiOptions.DEF_IEPS)
                     .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodType() : LengthOfPeriodType.None)
                     .build());
         }
@@ -89,10 +88,12 @@ final class X13SpecDecoder {
                 .cancel(amiSpec.getCancel())
                 .ub1(1 / amiSpec.getUb1())
                 .ub2(1 / amiSpec.getUb2())
+                .precision(RegArimaKernel.AmiOptions.DEF_IEPS)
                 .build();
         ArmaModule arma = ArmaModule.builder()
                 .balanced(amiSpec.isBalanced())
                 .mixed(amiSpec.isMixed())
+                .estimationPrecision(RegArimaKernel.AmiOptions.DEF_IEPS)
                 .build();
 
         builder.autoModelling(new AutoModellingModule(diff, arma));
@@ -107,24 +108,21 @@ final class X13SpecDecoder {
         List<SingleOutlierSpec> types = outliers.getTypes();
         for (int i = 0; i < types.size(); ++i) {
             switch (types.get(i).getType()) {
-                case AdditiveOutlier.CODE:
+                case AdditiveOutlier.CODE ->
                     obuilder.ao(true);
-                    break;
-                case LevelShift.CODE:
+                case LevelShift.CODE ->
                     obuilder.ls(true);
-                    break;
-                case TransitoryChange.CODE:
+                case TransitoryChange.CODE ->
                     obuilder.tc(true);
-                    break;
-                case PeriodicOutlier.CODE:
+                case PeriodicOutlier.CODE ->
                     obuilder.so(true);
-                    break;
             }
         }
         builder.outliers(
                 obuilder.span(outliers.getSpan())
                         .maxRound(outliers.getMaxIter())
                         .tcrate(outliers.getMonthlyTCRate())
+                        .precision(RegArimaKernel.AmiOptions.DEF_IEPS)
                         .build());
     }
 
@@ -141,7 +139,7 @@ final class X13SpecDecoder {
             builder.calendarTest(cal);
         }
         EasterSpec espec = spec.getRegression().getEaster();
-        if (espec != null && espec.getTest() != RegressionTestSpec.None) {
+        if (espec.getType() != EasterSpec.Type.Unused && espec.getTest() != RegressionTestSpec.None) {
             int[] w;
             if (espec.getTest() == RegressionTestSpec.Remove) {
                 w = new int[]{espec.getDuration()};
@@ -163,7 +161,7 @@ final class X13SpecDecoder {
         if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
             rbuilder.tdTest(RegressionVariablesTest.CVAL, true);
         }
-        if (espec != null && espec.getTest() != RegressionTestSpec.None) {
+        if (espec.getType() != EasterSpec.Type.Unused && espec.getTest() != RegressionTestSpec.None) {
             rbuilder.movingHolidaysTest(RegressionVariablesTest.CVAL);
         }
         if (spec.isUsingAutoModel()) {

@@ -72,7 +72,7 @@ class OutlierSpecMapping {
             if (spec.isSo()) {
                 types.add(PeriodicOutlier.CODE);
             }
-            info.add(TYPES, types.toArray(new String[types.size()]));
+            info.add(TYPES, types.toArray(String[]::new));
         }
         double cv = spec.getCriticalValue();
         if (verbose || cv != 0) {

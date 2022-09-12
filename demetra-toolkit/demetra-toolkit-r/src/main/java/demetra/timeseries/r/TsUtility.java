@@ -37,14 +37,17 @@ public class TsUtility {
 
     public TsData of(int freq, int year, int start, double[] data) {
         switch (freq) {
-            case 1:
+            case 1 -> {
                 return TsData.ofInternal(TsPeriod.yearly(year), data);
-            case 12:
+            }
+            case 12 -> {
                 return TsData.ofInternal(TsPeriod.monthly(year, start), data);
-            default:
+            }
+            default -> {
                 int c = 12 / freq;
                 TsPeriod pstart = TsPeriod.of(TsUnit.ofAnnualFrequency(freq), LocalDate.of(year, (start - 1) * c + 1, 1));
                 return TsData.ofInternal(pstart, data);
+            }
         }
     }
 

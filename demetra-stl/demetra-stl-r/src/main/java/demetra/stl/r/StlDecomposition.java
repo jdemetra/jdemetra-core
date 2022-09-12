@@ -12,9 +12,15 @@ import demetra.stl.LoessSpec;
 import jdplus.stl.StlKernel;
 import demetra.stl.StlSpec;
 import demetra.data.DoubleSeq;
-import demetra.data.DoublesMath;
+import demetra.data.WeightFunction;
 import demetra.math.matrices.Matrix;
+import demetra.stl.IStlSpec;
+import demetra.stl.MStlSpec;
 import demetra.stl.SeasonalSpec;
+import jdplus.math.matrices.FastMatrix;
+import jdplus.stl.IStlKernel;
+import jdplus.stl.MStlKernel;
+import jdplus.stl.MStlResults;
 
 /**
  *
@@ -23,11 +29,27 @@ import demetra.stl.SeasonalSpec;
 @lombok.experimental.UtilityClass
 public class StlDecomposition {
 
-    public Matrix process(double[] data, int period, boolean mul, int swindow, int twindow, boolean robust) {
-        StlSpec spec = (robust ? StlSpec.robustBuilder() : StlSpec.builder())
+    public Matrix stl(double[] data, int period, boolean mul, int swindow, int twindow, int nin, int nout, boolean nojump, double weightThreshold, String weightsFunction) {
+        if (nin < 1) {
+            nin = 1;
+        }
+        if (nout < 0) {
+            nout = 0;
+        }
+        if (swindow == 0) {
+            swindow = 7;
+        }
+        if (twindow == 0) {
+            twindow = LoessSpec.defaultTrendWindow(period, swindow);
+        }
+        StlSpec spec = StlSpec.builder()
+                .innerLoopsCount(nin)
+                .outerLoopsCount(nout)
                 .multiplicative(mul)
-                .trendSpec(LoessSpec.defaultTrend(period, swindow))
-                .seasonalSpec(new SeasonalSpec(period, swindow))
+                .trendSpec(LoessSpec.of(twindow, 1, nojump))
+                .seasonalSpec(new SeasonalSpec(period, swindow, nojump))
+                .robustWeightThreshold(weightThreshold)
+                .robustWeightFunction(WeightFunction.valueOf(weightsFunction))
                 .build();
         StlKernel stl = new StlKernel(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
@@ -35,20 +57,149 @@ public class StlDecomposition {
         int n = y.length();
         stl.process(y);
 
-        double[] all = new double[n * 5];
+        FastMatrix M = FastMatrix.make(n, 7);
 
-        DoubleSeq t = DoubleSeq.of(stl.getTrend());
-        DoubleSeq s = DoubleSeq.of(stl.getSeas());
-        DoubleSeq i = DoubleSeq.of(stl.getIrr());
-        DoubleSeq sa = mul ? DoublesMath.divide(y, s) : DoublesMath.subtract(y, s);
+        M.column(0).copyFrom(stl.getY(), 0);
+        M.column(2).copyFrom(stl.getTrend(), 0);
+        M.column(3).copyFrom(stl.getSeas(), 0);
+        M.column(4).copyFrom(stl.getIrr(), 0);
+        M.column(5).copyFrom(stl.getFit(), 0);
+        if (stl.getWeights() != null) {
+            M.column(6).copyFrom(stl.getWeights(), 0);
+        }
+        M.column(1).copy(M.column(0));
+        if (mul) {
+            M.column(1).div(M.column(3));
+        } else {
+            M.column(1).sub(M.column(3));
+        }
+        return M;
+    }
 
-        y.copyTo(all, 0);
-        sa.copyTo(all, n);
-        t.copyTo(all, 2 * n);
-        s.copyTo(all, 3 * n);
-        i.copyTo(all, 4 * n);
+    private int max(int[] v) {
+        int m = v[0];
+        for (int i = 1; i < v.length; ++i) {
+            if (v[i] > m) {
+                m = v[i];
+            }
+        }
+        return m;
+    }
 
-        return Matrix.of(all, n, 5);
+    public Matrix mstl(double[] data, int[] periods, boolean mul, int[] swindow, int twindow, int nin, int nout, boolean nojump, double weightThreshold, String weightsFunction) {
+        if (periods == null || (swindow != null && periods.length != swindow.length)) {
+            return null;
+        }
+        if (twindow == 0) {
+            twindow = LoessSpec.defaultTrendWindow(max(periods));
+        }
+
+        MStlSpec.Builder builder = MStlSpec.builder()
+                .innerLoopsCount(nin)
+                .outerLoopsCount(nout)
+                .multiplicative(mul)
+                .trendSpec(LoessSpec.of(twindow, 1, nojump))
+                .robustWeightThreshold(weightThreshold)
+                .robustWeightFunction(WeightFunction.valueOf(weightsFunction));
+
+        if (swindow == null) {
+            for (int i = 0; i < periods.length; ++i) {
+                builder.seasonalSpec(SeasonalSpec.createDefault(periods[i], nojump));
+            }
+        } else if (swindow.length == 1) {
+            for (int i = 0; i < periods.length; ++i) {
+                builder.seasonalSpec(new SeasonalSpec(periods[i], swindow[0], nojump));
+            }
+        } else {
+            for (int i = 0; i < periods.length; ++i) {
+                builder.seasonalSpec(new SeasonalSpec(periods[i], swindow[i], nojump));
+            }
+
+        }
+        MStlSpec spec = builder.build();
+
+        MStlKernel stl = new MStlKernel(spec);
+        DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
+        stl.process(y);
+
+        int n = y.length();
+        FastMatrix M = FastMatrix.make(n, 6 + periods.length);
+
+        M.column(0).copyFrom(stl.getY(), 0);
+        M.column(1).copy(M.column(0));
+        M.column(2).copyFrom(stl.getTrend(), 0);
+        int j = 3;
+        for (int i = 0; i < periods.length; ++i, ++j) {
+            M.column(j).copyFrom(stl.getSeason(i), 0);
+            if (mul) {
+                M.column(1).div(M.column(j));
+            } else {
+                M.column(1).sub(M.column(j));
+            }
+        }
+        M.column(j++).copyFrom(stl.getIrr(), 0);
+        M.column(j++).copyFrom(stl.getFit(), 0);
+        M.column(j).copyFrom(stl.getWeights(), 0);
+        return M;
+    }
+
+    public Matrix istl(double[] data, int[] periods, boolean mul, int[] swindow, int[] twindow, int nin, int nout, boolean nojump, double weightThreshold, String weightsFunction) {
+        if (periods == null || (swindow != null && periods.length != swindow.length)) {
+            return null;
+        }
+        if (twindow != null && twindow.length != periods.length) {
+            return null;
+        }
+
+        IStlSpec.Builder builder = IStlSpec.builder()
+                .innerLoopsCount(nin)
+                .outerLoopsCount(nout)
+                .multiplicative(mul)
+                .robustWeightThreshold(weightThreshold)
+                .robustWeightFunction(WeightFunction.valueOf(weightsFunction));
+
+        for (int i = 0; i < periods.length; ++i) {
+            SeasonalSpec sspec;
+            if (swindow == null) {
+                sspec = SeasonalSpec.createDefault(periods[i], nojump);
+            } else if (swindow.length == 1) {
+                sspec = new SeasonalSpec(periods[i], swindow[0], nojump);
+            } else {
+                sspec = new SeasonalSpec(periods[i], swindow[i], nojump);
+            }
+            LoessSpec tspec;
+            if (twindow == null) {
+                tspec = LoessSpec.defaultTrend(periods[i], nojump);
+            } else {
+                tspec = LoessSpec.of(twindow[i], 1, nojump);
+            }
+            builder.periodSpec(new IStlSpec.PeriodSpec(tspec, sspec));
+
+        }
+        IStlSpec spec = builder.build();
+
+        DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
+        MStlResults rslt = IStlKernel.process(y, spec);
+
+        int n = y.length();
+        FastMatrix M = FastMatrix.make(n, 6 + periods.length);
+
+        M.column(0).copy(y);
+        M.column(1).copy(M.column(0));
+        M.column(2).copy(rslt.getTrend());
+        int j = 2;
+        for (DoubleSeq seas : rslt.getSeasons()) {
+            M.column(++j).copy(seas);
+            if (mul) {
+                M.column(1).div(M.column(j));
+            } else {
+                M.column(1).sub(M.column(j));
+            }
+        }
+        M.column(++j).copy(rslt.getIrregular());
+        M.column(++j).copy(rslt.getFit());
+        M.column(++j).copy(rslt.getWeights());
+        return M;
     }
 
     public double[] loess(double[] y, int window, int degree, int jump) {

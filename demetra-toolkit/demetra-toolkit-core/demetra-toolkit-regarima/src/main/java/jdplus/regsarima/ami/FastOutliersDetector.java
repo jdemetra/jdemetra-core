@@ -162,7 +162,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
      */
     @Override
     public int[][] getOutliers() {
-        return outliers.toArray(new int[outliers.size()][]);
+        return outliers.toArray(int[][]::new);
     }
 
     public IOutlierFactory getFactory(int i) {
@@ -258,7 +258,6 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
         }
         boolean stable = true;
         rflag = false;
-
         if (estimationStep) {
             SarmaOrders dspec = spec.doStationary();
             if (spec.getParametersCount() != 0) {
@@ -278,7 +277,7 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
                     }
                 }
             }
-            if ((mvx || !stable) && estimationStep) {
+            if (mvx || !stable) {
                 return optimizeModel(mapping);
             }
         }

@@ -30,8 +30,6 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.LowerTriangularMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.akf.AkfToolkit;
-import jdplus.ssf.akf.AugmentedSmoother;
-import jdplus.ssf.akf.DefaultQFilteringResults;
 import jdplus.ssf.akf.SmoothingOutput;
 import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;

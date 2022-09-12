@@ -16,12 +16,9 @@
  */
 package jdplus.stl;
 
-import java.util.Arrays;
-import java.util.function.DoubleUnaryOperator;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.stl.IStlSpec;
-import demetra.stl.SeasonalSpec;
 import demetra.stl.StlSpec;
 
 /**
@@ -32,13 +29,12 @@ import demetra.stl.StlSpec;
 @lombok.experimental.UtilityClass
 public class IStlKernel {
 
-
     public MStlResults process(DoubleSeq data, IStlSpec spec) {
         MStlResults.Builder builder = MStlResults.builder().series(data);
-        StlResults curRslt=null;
-        DoubleSeq seasonal=null;
-        for (IStlSpec.PeriodSpec pspec : spec.getPeriodSpecs()){
-            boolean mul=spec.isMultiplicative();
+        StlResults curRslt = null;
+        DoubleSeq seasonal = null;
+        boolean mul = spec.isMultiplicative();
+        for (IStlSpec.PeriodSpec pspec : spec.getPeriodSpecs()) {
             StlSpec curSpec = StlSpec.builder()
                     .multiplicative(mul)
                     .seasonalSpec(pspec.getSeasonalSpec())
@@ -48,19 +44,26 @@ public class IStlKernel {
                     .robustWeightFunction(spec.getRobustWeightFunction())
                     .robustWeightThreshold(spec.getRobustWeightThreshold())
                     .build();
-            StlKernel kernel=new StlKernel(curSpec);
+            StlKernel kernel = new StlKernel(curSpec);
             curRslt = kernel.process(data);
             DoubleSeq seas = curRslt.getSeasonal();
             builder.season(seas);
-            DoublesMath.add(seasonal, seas);
-            data=curRslt.getSa();
+            if (mul) {
+                seasonal = DoublesMath.multiply(seasonal, seas);
+            } else {
+                seasonal = DoublesMath.add(seasonal, seas);
+            }
+            data = curRslt.getSa();
         }
-        if (curRslt == null)
+        if (curRslt == null) {
             return null;
+        }
+        DoubleSeq fit = mul ? DoublesMath.multiply(curRslt.getTrend(), seasonal) 
+                : DoublesMath.add(curRslt.getTrend(), seasonal);
         return builder
                 .trend(curRslt.getTrend())
                 .sa(data)
-                .fit(DoublesMath.add(curRslt.getTrend(), seasonal))
+                .fit(fit)
                 .irregular(curRslt.getIrregular())
                 .seasonal(seasonal)
                 .weights(curRslt.getWeights())

@@ -64,62 +64,74 @@ public class LoessSpec {
      * odd)
      * @return
      */
-    public static LoessSpec defaultTrend(int period, int swindow) {
+    public static LoessSpec defaultTrend(int period, int swindow, boolean nojump) {
+        int win = defaultTrendWindow(period, swindow);
+        return of(win, 1, nojump ? 0 : (int) Math.ceil(0.1 * win), null);
+    }
+
+    public static int defaultTrendWindow(int period) {
+        return defaultTrendWindow(period, 7);
+    }
+
+    public static int defaultTrendWindow(int period, int swindow) {
         int win = (int) Math.ceil((1.5 * period) / (1 - 1.5 / swindow));
         if (win % 2 == 0) {
             ++win;
         }
-        return of(win, 1, (int) Math.ceil(0.1 * win), null);
+        return win;
     }
 
-    public static LoessSpec defaultTrend(int period) {
+    public static LoessSpec defaultTrend(int period, boolean nojump) {
         int win = (int) Math.ceil((1.5 * period) / (1 - 1.5 / 7));
         if (win % 2 == 0) {
             ++win;
         }
-        return of(win, 1, (int) Math.ceil(0.1 * win), null);
+        return of(win, 1, nojump ? 0 : (int) Math.ceil(0.1 * win), null);
     }
+
     /**
      * The window is the smallest odd integer greater than or equal to period
      *
      * @param period periodicity of the series
+     * @param nojump
      * @return
      */
-    public static LoessSpec defaultLowPass(int period) {
+    public static LoessSpec defaultLowPass(int period, boolean nojump) {
         int win = period;
         if (win % 2 == 0) {
             ++win;
         }
-        return of(win, 1, (int) Math.ceil(0.1 * win), null);
+        return of(win, 1, nojump ? 0 : (int) Math.ceil(0.1 * win), null);
     }
 
-   /**
+    /**
      * By default, win is the smaller odd number greater or equal to swin, and
      * degree = 0
      *
      * @param swin The seasonal window. In normal use, should be odd and at
      * least 7.
+     * @param nojump
      * @return
      */
-    public static LoessSpec defaultSeasonal(int swin) {
+    public static LoessSpec defaultSeasonal(int swin, boolean nojump) {
         if (swin % 2 == 0) {
             ++swin;
         }
-        return of(swin, 0, (int) Math.ceil(0.1 * swin), null);
+        return of(swin, 0, nojump ? 0 : (int) Math.ceil(0.1 * swin), null);
     }
 
-    public static LoessSpec defaultSeasonal() {
-        return of(7, 0, 0, null);
+    public static LoessSpec defaultSeasonal(boolean nojump) {
+        return of(7, 0, nojump ? 0 : 1, null);
     }
 
-    public static LoessSpec of(int window, int degree) {
+    public static LoessSpec of(int window, int degree, boolean nojump) {
         if (window < 2 || window % 2 != 1) {
             throw new IllegalArgumentException("STL");
         }
         if (degree < 0 || degree > 1) {
             throw new IllegalArgumentException("STL");
         }
-        return new LoessSpec(window, degree, (int) Math.ceil(0.1 * window), null);
+        return new LoessSpec(window, degree, nojump ? 0 : (int) Math.ceil(0.1 * window), null);
     }
 
     /**

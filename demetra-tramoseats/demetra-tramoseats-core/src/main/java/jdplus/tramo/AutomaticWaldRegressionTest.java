@@ -145,11 +145,10 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     public ProcessingResult test(RegSarimaModelling context) {
 
         ModelDescription current = context.getDescription();
-        IArimaMapping<SarimaModel> mapping = current.mapping();
         IRegArimaComputer processor = RegArimaUtility.processor(true, precision);
         // We compute the full model
         ModelDescription test6 = createTestModel(context, td, null);
-        RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima(), mapping);
+        RegArimaEstimation<SarimaModel> regarima6 = processor.process(test6.regarima(), test6.mapping());
         ConcentratedLikelihoodWithMissing ll = regarima6.getConcentratedLikelihood();
         int nhp = test6.getArimaSpec().freeParametersCount();
         int df = ll.degreesOfFreedom() - nhp;
@@ -201,7 +200,7 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
             lpsel=null;
                
         ModelDescription model = createTestModel(context, tdsel, lpsel);
-        RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima(), mapping);
+        RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima(), model.mapping());
         return update(current, model, tdsel, regarima.getConcentratedLikelihood(), nhp);
     }
 

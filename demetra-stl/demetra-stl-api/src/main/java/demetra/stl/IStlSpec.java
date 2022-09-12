@@ -32,8 +32,8 @@ public class IStlSpec implements ProcSpecification {
     @lombok.Value
     public static class PeriodSpec {
         
-        public static PeriodSpec createDefault(int period){
-            return new PeriodSpec(LoessSpec.defaultTrend(period), SeasonalSpec.createDefault(period));
+        public static PeriodSpec createDefault(int period, boolean nojump){
+            return new PeriodSpec(LoessSpec.defaultTrend(period, nojump), SeasonalSpec.createDefault(period, nojump));
         }
 
         private LoessSpec trendSpec;
@@ -85,7 +85,7 @@ public class IStlSpec implements ProcSpecification {
             builder = builder();
         }
         for (int i=0; i<periods.length; ++i)
-            builder.periodSpec(PeriodSpec.createDefault(periods[i]));
+            builder.periodSpec(PeriodSpec.createDefault(periods[i], true));
         return builder.build();
     }
 

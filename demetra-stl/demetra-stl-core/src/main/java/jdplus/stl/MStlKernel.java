@@ -57,6 +57,9 @@ public class MStlKernel {
             if (++istep > spec.getOuterLoopsCount()) {
                 return finishProcessing();
             }
+        if (weights == null) {
+            weights = new double[data.length()];
+        }
             computeRobustWeights(fit, weights);
         } while (true);
     }
@@ -100,9 +103,6 @@ public class MStlKernel {
             Arrays.setAll(trend, i -> 1);
         }
         irr = new double[n];
-        if (weights == null) {
-            weights = new double[n];
-        }
         fit = new double[n];
         sa = new double[n];
         si = new double[n];
