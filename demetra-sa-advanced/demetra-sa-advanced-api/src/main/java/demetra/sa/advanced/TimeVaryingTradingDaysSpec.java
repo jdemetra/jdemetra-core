@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,19 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.regsarima.regular;
-
-import demetra.processing.ProcessingLog;
-import demetra.timeseries.TsData;
-import nbbrd.design.Development;
+package demetra.sa.advanced;
 
 /**
- * TODO
  *
  * @author palatej
  */
-@Development(status = Development.Status.Alpha)
-public interface RegSarimaProcessor {
-
-    RegSarimaModel process(TsData originalTs, ProcessingLog log);
+@lombok.Value
+@lombok.AllArgsConstructor
+public class TimeVaryingTradingDaysSpec {
+    
+    public TimeVaryingTradingDaysSpec(){
+        this(true, false);
+    }
+    private boolean airline;
+    private boolean onContrast;
 }

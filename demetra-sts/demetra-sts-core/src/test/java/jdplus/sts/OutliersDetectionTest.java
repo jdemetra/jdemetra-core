@@ -30,7 +30,6 @@ import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.sts.internal.BsmMapping;
 import org.junit.jupiter.api.Test;
 
 /**

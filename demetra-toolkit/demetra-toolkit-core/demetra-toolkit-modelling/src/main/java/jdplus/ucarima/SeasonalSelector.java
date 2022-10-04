@@ -28,7 +28,7 @@ public class SeasonalSelector extends AbstractRootSelector {
 
     private double m_k = 0.5;
 
-    private double m_epsphi = Math.PI / 90; // (== 2 degrees)
+    private double m_epsphi = 2; // degree
 
     private int frequency;
 
@@ -49,8 +49,8 @@ public class SeasonalSelector extends AbstractRootSelector {
 
     /**
      * 
-     * @param freq
-     * @param epsphi
+     * @param freq Periodicity
+     * @param epsphi Tolerance in degrees
      */
     public SeasonalSelector(final int freq, final double epsphi) {
 	frequency = freq;
@@ -60,15 +60,12 @@ public class SeasonalSelector extends AbstractRootSelector {
     @Override
     public boolean accept(final Complex root) {
 	if (Math.abs(root.getIm()) < 1e-6) {
-	    if (1/root.getRe() < -m_k)
-		return true;
-	    else
-		return false;
+            return 1/root.getRe() < -m_k;
 	}
 
-	double pi = 2 * Math.PI / frequency;
+	double pi = 2 * Math.PI / frequency; // radians
 	double arg = Math.abs(root.arg());
-        double eps=m_epsphi/180*Math.PI;
+        double eps=m_epsphi/180*Math.PI; // radians
 	for (int i = 1; i <= frequency / 2; ++i) {
 	    if (Math.abs(pi * i - arg) <= eps)
 		return true;
@@ -94,7 +91,7 @@ public class SeasonalSelector extends AbstractRootSelector {
     }
 
     /**
-     * @return Tolerance in radian
+     * @return Tolerance in degree
      */
     public double getTolerance() {
 	return m_epsphi;
@@ -118,7 +115,7 @@ public class SeasonalSelector extends AbstractRootSelector {
 
     /**
      * 
-     * @param value
+     * @param value Tolerance in degree
      */
     public void setTolerance(final double value) {
 	m_epsphi = value;

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sts.internal;
+package jdplus.sts;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
@@ -41,9 +41,6 @@ import jdplus.ssf.dk.SsfFunction;
 import jdplus.ssf.dk.SsfFunctionPoint;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
 import jdplus.ssf.univariate.SsfData;
-import jdplus.sts.BsmData;
-import jdplus.sts.SsfBsm;
-import jdplus.sts.SsfBsm2;
 import nbbrd.design.Development;
 import demetra.math.matrices.Matrix;
 
@@ -71,7 +68,6 @@ public class BsmKernel {
     private DiffuseConcentratedLikelihood likelihood;
     private SsfFunction<BsmData, SsfBsm2> fn_;
     private SsfFunctionPoint<BsmData, SsfBsm2> fnmax_;
-    private double m_factor;
 
     private void clear() {
         z = null;

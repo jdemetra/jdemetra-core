@@ -59,6 +59,7 @@
         <module>demetra-workspace</module>
         <module>demetra-examples</module>
         <module>demetra-workspace-r</module>
+        <module>demetra-sa-advanced</module>
     </modules>
 
     <dependencyManagement>

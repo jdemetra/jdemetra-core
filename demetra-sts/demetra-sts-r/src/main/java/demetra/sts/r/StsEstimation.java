@@ -29,7 +29,7 @@ import jdplus.sts.BsmData;
 import demetra.sts.BsmSpec;
 import demetra.sts.Component;
 import jdplus.sts.SsfBsm;
-import jdplus.sts.internal.BsmKernel;
+import jdplus.sts.BsmKernel;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.TsData;

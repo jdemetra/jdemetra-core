@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sts.internal;
+package jdplus.sts;
 
 import demetra.data.Data;
 import demetra.data.DoubleSeq;

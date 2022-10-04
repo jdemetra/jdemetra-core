@@ -5,6 +5,7 @@
  */
 package jdplus.filters;
 
+import demetra.data.DoubleSeq;
 import java.util.Arrays;
 import jdplus.filters.FSTFilter.SmoothnessCriterion;
 import jdplus.math.linearfilters.FiniteFilter;
@@ -32,7 +33,23 @@ public class FSTFilterTest {
                     .nleads(4)
                     .build();
             FSTFilter.Results rslt = ff.make(.1 * i, 0, false);
-//            System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
+            System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
+        }
+    }
+
+    @Test
+    public void testASymmetric() {
+        for (int i = 0; i <= 5; ++i) {
+            FSTFilter ff = FSTFilter.builder()
+                    .nlags(10-i)
+                    .nleads(i)
+                    .build();
+            FSTFilter.Results rslt = ff.make(1, 0, true);
+            System.out.print(rslt.getS());
+            System.out.print('\t');
+            System.out.print(rslt.getF());
+            System.out.print('\t');
+            System.out.println(DoubleSeq.of(rslt.getFilter().weightsToArray()));
         }
     }
 

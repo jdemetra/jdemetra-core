@@ -16,7 +16,6 @@
  */
 package jdplus.math.linearfilters;
 
-import java.util.concurrent.atomic.AtomicReference;
 import jdplus.data.DataBlock;
 import java.util.function.IntToDoubleFunction;
 import jdplus.data.DataBlockIterator;
@@ -46,16 +45,11 @@ public class LocalPolynomialFilters {
      * @return The corresponding filter
      */
     public SymmetricFilter of(final int h, final int d, final IntToDoubleFunction k) {
-        switch (d) {
-            case 0:
-            case 1:
-                return of0_1(h, k);
-            case 2:
-            case 3:
-                return of2_3(h, k);
-            default:
-                return ofDefault(h, d, k);
-        }
+        return switch (d) {
+            case 0, 1 -> of0_1(h, k);
+            case 2, 3 -> of2_3(h, k);
+            default -> ofDefault(h, d, k);
+        };
     }
 
     /**

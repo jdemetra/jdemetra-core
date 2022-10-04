@@ -19,6 +19,8 @@ package demetra.toolkit.io.protobuf;
 import demetra.timeseries.ValidityPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.CalendarDefinition;
+import demetra.timeseries.calendars.ChainedCalendar;
+import demetra.timeseries.calendars.CompositeCalendar;
 import demetra.timeseries.calendars.DayEvent;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
@@ -26,6 +28,7 @@ import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.PrespecifiedHoliday;
 import demetra.timeseries.calendars.SingleDate;
+import demetra.util.WeightedItem;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,53 +111,95 @@ public class CalendarProtosUtility {
 
     public ToolkitProtos.CalendarEvent convert(DayEvent hol) {
         return switch (hol) {
-            case NewYear -> ToolkitProtos.CalendarEvent.HOLIDAY_NEWYEAR;
-            case ShroveMonday -> ToolkitProtos.CalendarEvent.HOLIDAY_SHROVEMONDAY;
-            case ShroveTuesday -> ToolkitProtos.CalendarEvent.HOLIDAY_SHROVETUESDAY;
-            case AshWednesday -> ToolkitProtos.CalendarEvent.HOLIDAY_ASHWEDNESDAY;
-            case Easter -> ToolkitProtos.CalendarEvent.HOLIDAY_EASTER;
-            case MaundyThursday -> ToolkitProtos.CalendarEvent.HOLIDAY_MAUNDYTHURSDAY;
-            case GoodFriday -> ToolkitProtos.CalendarEvent.HOLIDAY_GOODFRIDAY;
-            case EasterMonday -> ToolkitProtos.CalendarEvent.HOLIDAY_EASTERMONDAY;
-            case Ascension -> ToolkitProtos.CalendarEvent.HOLIDAY_ASCENSION;
-            case Pentecost -> ToolkitProtos.CalendarEvent.HOLIDAY_PENTECOST;
-            case CorpusChristi -> ToolkitProtos.CalendarEvent.HOLIDAY_CORPUSCHRISTI;
-            case WhitMonday -> ToolkitProtos.CalendarEvent.HOLIDAY_WHITMONDAY;
-            case MayDay -> ToolkitProtos.CalendarEvent.HOLIDAY_MAYDAY;
-            case Assumption -> ToolkitProtos.CalendarEvent.HOLIDAY_ASSUMPTION;
-            case LaborDay -> ToolkitProtos.CalendarEvent.HOLIDAY_LABORDAY;
-            case Halloween -> ToolkitProtos.CalendarEvent.HOLIDAY_HALLOWEEN;
-            case AllSaintsDay -> ToolkitProtos.CalendarEvent.HOLIDAY_ALLSAINTSDAY;
-            case Armistice -> ToolkitProtos.CalendarEvent.HOLIDAY_ARMISTICE;
-            case ThanksGiving -> ToolkitProtos.CalendarEvent.HOLIDAY_THANKSGIVING;
-            case Christmas -> ToolkitProtos.CalendarEvent.HOLIDAY_CHRISTMAS;
-            default -> null;
+            case NewYear ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_NEWYEAR;
+            case ShroveMonday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_SHROVEMONDAY;
+            case ShroveTuesday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_SHROVETUESDAY;
+            case AshWednesday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_ASHWEDNESDAY;
+            case Easter ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_EASTER;
+            case MaundyThursday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_MAUNDYTHURSDAY;
+            case GoodFriday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_GOODFRIDAY;
+            case EasterMonday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_EASTERMONDAY;
+            case Ascension ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_ASCENSION;
+            case Pentecost ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_PENTECOST;
+            case CorpusChristi ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_CORPUSCHRISTI;
+            case WhitMonday ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_WHITMONDAY;
+            case MayDay ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_MAYDAY;
+            case Assumption ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_ASSUMPTION;
+            case LaborDay ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_LABORDAY;
+            case Halloween ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_HALLOWEEN;
+            case AllSaintsDay ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_ALLSAINTSDAY;
+            case Armistice ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_ARMISTICE;
+            case ThanksGiving ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_THANKSGIVING;
+            case Christmas ->
+                ToolkitProtos.CalendarEvent.HOLIDAY_CHRISTMAS;
+            default ->
+                null;
         };
     }
 
     public DayEvent convert(ToolkitProtos.CalendarEvent hol) {
         return switch (hol) {
-            case HOLIDAY_NEWYEAR -> DayEvent.NewYear;
-            case HOLIDAY_SHROVEMONDAY -> DayEvent.ShroveMonday;
-            case HOLIDAY_SHROVETUESDAY -> DayEvent.ShroveTuesday;
-            case HOLIDAY_ASHWEDNESDAY -> DayEvent.AshWednesday;
-            case HOLIDAY_EASTER -> DayEvent.Easter;
-            case HOLIDAY_MAUNDYTHURSDAY -> DayEvent.MaundyThursday;
-            case HOLIDAY_GOODFRIDAY -> DayEvent.GoodFriday;
-            case HOLIDAY_EASTERMONDAY -> DayEvent.EasterMonday;
-            case HOLIDAY_ASCENSION -> DayEvent.Ascension;
-            case HOLIDAY_PENTECOST -> DayEvent.Pentecost;
-            case HOLIDAY_CORPUSCHRISTI -> DayEvent.CorpusChristi;
-            case HOLIDAY_WHITMONDAY -> DayEvent.WhitMonday;
-            case HOLIDAY_MAYDAY -> DayEvent.MayDay;
-            case HOLIDAY_ASSUMPTION -> DayEvent.Assumption;
-            case HOLIDAY_LABORDAY -> DayEvent.LaborDay;
-            case HOLIDAY_HALLOWEEN -> DayEvent.Halloween;
-            case HOLIDAY_ALLSAINTSDAY -> DayEvent.AllSaintsDay;
-            case HOLIDAY_ARMISTICE -> DayEvent.Armistice;
-            case HOLIDAY_THANKSGIVING -> DayEvent.ThanksGiving;
-            case HOLIDAY_CHRISTMAS -> DayEvent.Christmas;
-            default -> null;
+            case HOLIDAY_NEWYEAR ->
+                DayEvent.NewYear;
+            case HOLIDAY_SHROVEMONDAY ->
+                DayEvent.ShroveMonday;
+            case HOLIDAY_SHROVETUESDAY ->
+                DayEvent.ShroveTuesday;
+            case HOLIDAY_ASHWEDNESDAY ->
+                DayEvent.AshWednesday;
+            case HOLIDAY_EASTER ->
+                DayEvent.Easter;
+            case HOLIDAY_MAUNDYTHURSDAY ->
+                DayEvent.MaundyThursday;
+            case HOLIDAY_GOODFRIDAY ->
+                DayEvent.GoodFriday;
+            case HOLIDAY_EASTERMONDAY ->
+                DayEvent.EasterMonday;
+            case HOLIDAY_ASCENSION ->
+                DayEvent.Ascension;
+            case HOLIDAY_PENTECOST ->
+                DayEvent.Pentecost;
+            case HOLIDAY_CORPUSCHRISTI ->
+                DayEvent.CorpusChristi;
+            case HOLIDAY_WHITMONDAY ->
+                DayEvent.WhitMonday;
+            case HOLIDAY_MAYDAY ->
+                DayEvent.MayDay;
+            case HOLIDAY_ASSUMPTION ->
+                DayEvent.Assumption;
+            case HOLIDAY_LABORDAY ->
+                DayEvent.LaborDay;
+            case HOLIDAY_HALLOWEEN ->
+                DayEvent.Halloween;
+            case HOLIDAY_ALLSAINTSDAY ->
+                DayEvent.AllSaintsDay;
+            case HOLIDAY_ARMISTICE ->
+                DayEvent.Armistice;
+            case HOLIDAY_THANKSGIVING ->
+                DayEvent.ThanksGiving;
+            case HOLIDAY_CHRISTMAS ->
+                DayEvent.Christmas;
+            default ->
+                null;
         };
     }
 
@@ -235,11 +280,48 @@ public class CalendarProtosUtility {
         return new Calendar(hol.toArray(Holiday[]::new));
     }
 
+    public ToolkitProtos.ChainedCalendar convert(ChainedCalendar cc) {
+        ToolkitProtos.ChainedCalendar.Builder builder = ToolkitProtos.ChainedCalendar.newBuilder();
+        return builder.setCalendar1(cc.getFirst())
+                .setCalendar2(cc.getSecond())
+                .setBreakDate(ToolkitProtosUtility.convert(cc.getBreakDate()))
+                .build();
+    }
+
+    public ToolkitProtos.WeightedCalendar convert(CompositeCalendar cc) {
+        ToolkitProtos.WeightedCalendar.Builder builder = ToolkitProtos.WeightedCalendar.newBuilder();
+        for (WeightedItem<String> item : cc.getCalendars()) {
+            builder.addItems(ToolkitProtos.WeightedCalendar.Item.newBuilder()
+                    .setWeight(item.getWeight())
+                    .setCalendar(item.getItem())
+                    .build()
+            );
+        }
+        return builder.build();
+    }
+    
+    public ChainedCalendar convert(ToolkitProtos.ChainedCalendar cc) {
+        return new ChainedCalendar(cc.getCalendar1(), cc.getCalendar2(), ToolkitProtosUtility.convert(cc.getBreakDate()));
+    }
+    
+    public CompositeCalendar convert(ToolkitProtos.WeightedCalendar cc) {
+        WeightedItem[] items = cc.getItemsList().stream()
+                .map(item->new WeightedItem<String>(item.getCalendar(), item.getWeight()))
+                .toArray(WeightedItem[]::new );
+        return new CompositeCalendar(items);
+    }
+    
     public ToolkitProtos.CalendarDefinition convert(CalendarDefinition cd) {
         ToolkitProtos.CalendarDefinition.Builder builder = ToolkitProtos.CalendarDefinition.newBuilder();
-        if (cd instanceof Calendar) {
-            ToolkitProtos.Calendar cal = convert((Calendar) cd);
+        if (cd instanceof Calendar calendar) {
+            ToolkitProtos.Calendar cal = convert(calendar);
             builder.setCalendar(cal);
+        } else if (cd instanceof ChainedCalendar calendar) {
+            ToolkitProtos.ChainedCalendar cal = convert(calendar);
+            builder.setChainedCalendar(cal);
+        } else if (cd instanceof CompositeCalendar calendar) {
+            ToolkitProtos.WeightedCalendar cal = convert(calendar);
+            builder.setWeightedCalendar(cal);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -250,7 +332,11 @@ public class CalendarProtosUtility {
         ToolkitProtos.CalendarDefinition.Builder builder = ToolkitProtos.CalendarDefinition.newBuilder();
         if (builder.hasCalendar()) {
             return convert(builder.getCalendar());
-        } else {
+        } else if (builder.hasChainedCalendar()){
+            return convert(builder.getChainedCalendar());
+        } else if (builder.hasWeightedCalendar()){
+            return convert(builder.getWeightedCalendar());
+        }else{   
             throw new UnsupportedOperationException();
         }
     }

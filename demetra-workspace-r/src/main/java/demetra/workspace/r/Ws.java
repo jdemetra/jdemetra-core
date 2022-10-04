@@ -1,6 +1,18 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Copyright 2022 National Bank of Belgium
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
+ * by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and 
+ * limitations under the Licence.
  */
 package demetra.workspace.r;
 
@@ -21,7 +33,6 @@ import demetra.workspace.file.FileWorkspace;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -49,8 +60,13 @@ public class Ws {
         this.context = context;
     }
     
+    @Deprecated
     public static Ws create(Dictionary dic) {
         return new Ws(null, dic == null ? new ModellingContext() : dic.toContext());
+    }
+    
+    public static Ws create(ModellingContext context) {
+        return new Ws(null, context);
     }
     
     public static Ws open(String fileName) throws IOException {
@@ -66,8 +82,10 @@ public class Ws {
         }
         return ws;
     }
-//
-//
+    
+    public ModellingContext context(){
+        return context;
+    }
 
     public boolean save(String v) {
         if (source == null) {
@@ -124,14 +142,14 @@ public class Ws {
         return true;
     }
     
-    static Path getRootFolder(Path indexFile) throws IOException {
-        Path parent = indexFile.toAbsolutePath().getParent();
-        if (parent == null) {
-            throw new IOException();
-        }
-        return parent.resolve(Paths.changeExtension(indexFile.getFileName().toString(), null));
-    }
-    
+//    public static Path getRootFolder(Path indexFile) throws IOException {
+//        Path parent = indexFile.toAbsolutePath().getParent();
+//        if (parent == null) {
+//            throw new IOException();
+//        }
+//        return parent.resolve(Paths.changeExtension(indexFile.getFileName().toString(), null));
+//    }
+//    
     private static final demetra.workspace.WorkspaceItemDescriptor CAL_ID
             = new demetra.workspace.WorkspaceItemDescriptor(
                     new demetra.workspace.WorkspaceItemDescriptor.Key(demetra.workspace.WorkspaceFamily.UTIL_CAL, "Calendars"),
@@ -159,10 +177,16 @@ public class Ws {
         return (this.context);
     }
     
+    public void setContext(ModellingContext context) {
+        this.context=context;
+    }
+    
+    @Deprecated
     public Dictionary dictionary() {
         return Dictionary.fromContext(context);
     }
     
+    @Deprecated
     public void setDictionary(Dictionary dictionary){
         context= dictionary.toContext();
     }

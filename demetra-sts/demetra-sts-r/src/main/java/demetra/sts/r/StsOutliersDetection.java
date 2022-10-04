@@ -38,8 +38,8 @@ import jdplus.ssf.univariate.SsfData;
 import jdplus.sts.BsmData;
 import jdplus.sts.OutliersDetection;
 import jdplus.sts.SsfBsm;
-import jdplus.sts.internal.BsmKernel;
-import jdplus.sts.internal.BsmMapping;
+import jdplus.sts.BsmKernel;
+import jdplus.sts.BsmMapping;
 
 /**
  *

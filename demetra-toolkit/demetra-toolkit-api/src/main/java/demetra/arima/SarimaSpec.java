@@ -215,7 +215,6 @@ public final class SarimaSpec implements Validatable<SarimaSpec> {
             }
             return this;
         }
-
     }
 
     private static final SarimaSpec AIRLINE = new SarimaSpec(null, 0, 1, 1,
