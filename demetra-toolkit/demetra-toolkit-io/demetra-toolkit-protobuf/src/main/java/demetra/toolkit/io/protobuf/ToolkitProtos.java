@@ -138,10 +138,6 @@ public final class ToolkitProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -289,10 +285,6 @@ public final class ToolkitProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -787,10 +779,6 @@ public final class ToolkitProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -904,10 +892,6 @@ public final class ToolkitProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -983,7 +967,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.Date}
    */
-  public static final class Date extends
+  public  static final class Date extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.Date)
       DateOrBuilder {
@@ -1083,7 +1067,6 @@ public final class ToolkitProtos {
      * <code>int32 year = 1;</code>
      * @return The year.
      */
-    @java.lang.Override
     public int getYear() {
       return year_;
     }
@@ -1099,7 +1082,6 @@ public final class ToolkitProtos {
      * <code>int32 month = 2;</code>
      * @return The month.
      */
-    @java.lang.Override
     public int getMonth() {
       return month_;
     }
@@ -1116,7 +1098,6 @@ public final class ToolkitProtos {
      * <code>int32 day = 3;</code>
      * @return The day.
      */
-    @java.lang.Override
     public int getDay() {
       return day_;
     }
@@ -1467,7 +1448,6 @@ public final class ToolkitProtos {
        * <code>int32 year = 1;</code>
        * @return The year.
        */
-      @java.lang.Override
       public int getYear() {
         return year_;
       }
@@ -1513,7 +1493,6 @@ public final class ToolkitProtos {
        * <code>int32 month = 2;</code>
        * @return The month.
        */
-      @java.lang.Override
       public int getMonth() {
         return month_;
       }
@@ -1560,7 +1539,6 @@ public final class ToolkitProtos {
        * <code>int32 day = 3;</code>
        * @return The day.
        */
-      @java.lang.Override
       public int getDay() {
         return day_;
       }
@@ -1710,7 +1688,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.TimeSelector}
    */
-  public static final class TimeSelector extends
+  public  static final class TimeSelector extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.TimeSelector)
       TimeSelectorOrBuilder {
@@ -1833,14 +1811,14 @@ public final class ToolkitProtos {
      * <code>.jd3.SelectionType type = 1;</code>
      * @return The enum numeric value on the wire for type.
      */
-    @java.lang.Override public int getTypeValue() {
+    public int getTypeValue() {
       return type_;
     }
     /**
      * <code>.jd3.SelectionType type = 1;</code>
      * @return The type.
      */
-    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType() {
+    public demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType() {
       @SuppressWarnings("deprecation")
       demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType result = demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.valueOf(type_);
       return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.UNRECOGNIZED : result;
@@ -1852,7 +1830,6 @@ public final class ToolkitProtos {
      * <code>int32 n0 = 2;</code>
      * @return The n0.
      */
-    @java.lang.Override
     public int getN0() {
       return n0_;
     }
@@ -1863,7 +1840,6 @@ public final class ToolkitProtos {
      * <code>int32 n1 = 3;</code>
      * @return The n1.
      */
-    @java.lang.Override
     public int getN1() {
       return n1_;
     }
@@ -1874,7 +1850,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Date d0 = 4;</code>
      * @return Whether the d0 field is set.
      */
-    @java.lang.Override
     public boolean hasD0() {
       return d0_ != null;
     }
@@ -1882,14 +1857,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Date d0 = 4;</code>
      * @return The d0.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getD0() {
       return d0_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d0_;
     }
     /**
      * <code>.jd3.Date d0 = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD0OrBuilder() {
       return getD0();
     }
@@ -1900,7 +1873,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Date d1 = 5;</code>
      * @return Whether the d1 field is set.
      */
-    @java.lang.Override
     public boolean hasD1() {
       return d1_ != null;
     }
@@ -1908,14 +1880,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Date d1 = 5;</code>
      * @return The d1.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getD1() {
       return d1_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : d1_;
     }
     /**
      * <code>.jd3.Date d1 = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getD1OrBuilder() {
       return getD1();
     }
@@ -2320,7 +2290,7 @@ public final class ToolkitProtos {
        * <code>.jd3.SelectionType type = 1;</code>
        * @return The enum numeric value on the wire for type.
        */
-      @java.lang.Override public int getTypeValue() {
+      public int getTypeValue() {
         return type_;
       }
       /**
@@ -2329,7 +2299,6 @@ public final class ToolkitProtos {
        * @return This builder for chaining.
        */
       public Builder setTypeValue(int value) {
-        
         type_ = value;
         onChanged();
         return this;
@@ -2338,7 +2307,6 @@ public final class ToolkitProtos {
        * <code>.jd3.SelectionType type = 1;</code>
        * @return The type.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType getType() {
         @SuppressWarnings("deprecation")
         demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType result = demetra.toolkit.io.protobuf.ToolkitProtos.SelectionType.valueOf(type_);
@@ -2374,7 +2342,6 @@ public final class ToolkitProtos {
        * <code>int32 n0 = 2;</code>
        * @return The n0.
        */
-      @java.lang.Override
       public int getN0() {
         return n0_;
       }
@@ -2405,7 +2372,6 @@ public final class ToolkitProtos {
        * <code>int32 n1 = 3;</code>
        * @return The n1.
        */
-      @java.lang.Override
       public int getN1() {
         return n1_;
       }
@@ -2757,7 +2723,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.Parameter}
    */
-  public static final class Parameter extends
+  public  static final class Parameter extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.Parameter)
       ParameterOrBuilder {
@@ -2856,7 +2822,6 @@ public final class ToolkitProtos {
      * <code>double value = 1;</code>
      * @return The value.
      */
-    @java.lang.Override
     public double getValue() {
       return value_;
     }
@@ -2867,14 +2832,14 @@ public final class ToolkitProtos {
      * <code>.jd3.ParameterType type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
-    @java.lang.Override public int getTypeValue() {
+    public int getTypeValue() {
       return type_;
     }
     /**
      * <code>.jd3.ParameterType type = 2;</code>
      * @return The type.
      */
-    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType getType() {
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType getType() {
       @SuppressWarnings("deprecation")
       demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType result = demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.valueOf(type_);
       return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.UNRECOGNIZED : result;
@@ -2886,7 +2851,6 @@ public final class ToolkitProtos {
      * <code>string description = 3;</code>
      * @return The description.
      */
-    @java.lang.Override
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
       if (ref instanceof java.lang.String) {
@@ -2903,7 +2867,6 @@ public final class ToolkitProtos {
      * <code>string description = 3;</code>
      * @return The bytes for description.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
       java.lang.Object ref = description_;
@@ -3260,7 +3223,6 @@ public final class ToolkitProtos {
        * <code>double value = 1;</code>
        * @return The value.
        */
-      @java.lang.Override
       public double getValue() {
         return value_;
       }
@@ -3291,7 +3253,7 @@ public final class ToolkitProtos {
        * <code>.jd3.ParameterType type = 2;</code>
        * @return The enum numeric value on the wire for type.
        */
-      @java.lang.Override public int getTypeValue() {
+      public int getTypeValue() {
         return type_;
       }
       /**
@@ -3300,7 +3262,6 @@ public final class ToolkitProtos {
        * @return This builder for chaining.
        */
       public Builder setTypeValue(int value) {
-        
         type_ = value;
         onChanged();
         return this;
@@ -3309,7 +3270,6 @@ public final class ToolkitProtos {
        * <code>.jd3.ParameterType type = 2;</code>
        * @return The type.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType getType() {
         @SuppressWarnings("deprecation")
         demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType result = demetra.toolkit.io.protobuf.ToolkitProtos.ParameterType.valueOf(type_);
@@ -3536,7 +3496,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ParametersEstimation}
    */
-  public static final class ParametersEstimation extends
+  public  static final class ParametersEstimation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ParametersEstimation)
       ParametersEstimationOrBuilder {
@@ -3687,7 +3647,6 @@ public final class ToolkitProtos {
      * <code>repeated double value = 1;</code>
      * @return A list containing the value.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getValueList() {
       return value_;
@@ -3715,7 +3674,6 @@ public final class ToolkitProtos {
      * <code>repeated double score = 2;</code>
      * @return A list containing the score.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getScoreList() {
       return score_;
@@ -3743,7 +3701,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Matrix covariance = 3;</code>
      * @return Whether the covariance field is set.
      */
-    @java.lang.Override
     public boolean hasCovariance() {
       return covariance_ != null;
     }
@@ -3751,14 +3708,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Matrix covariance = 3;</code>
      * @return The covariance.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
       return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
     }
     /**
      * <code>.jd3.Matrix covariance = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
       return getCovariance();
     }
@@ -3769,7 +3724,6 @@ public final class ToolkitProtos {
      * <code>string description = 4;</code>
      * @return The description.
      */
-    @java.lang.Override
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
       if (ref instanceof java.lang.String) {
@@ -3786,7 +3740,6 @@ public final class ToolkitProtos {
      * <code>string description = 4;</code>
      * @return The bytes for description.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
       java.lang.Object ref = description_;
@@ -4648,7 +4601,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.TsPeriod}
    */
-  public static final class TsPeriod extends
+  public  static final class TsPeriod extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.TsPeriod)
       TsPeriodOrBuilder {
@@ -4743,7 +4696,6 @@ public final class ToolkitProtos {
      * <code>int32 annual_frequency = 1;</code>
      * @return The annualFrequency.
      */
-    @java.lang.Override
     public int getAnnualFrequency() {
       return annualFrequency_;
     }
@@ -4754,7 +4706,6 @@ public final class ToolkitProtos {
      * <code>int32 year = 2;</code>
      * @return The year.
      */
-    @java.lang.Override
     public int getYear() {
       return year_;
     }
@@ -4765,7 +4716,6 @@ public final class ToolkitProtos {
      * <code>int32 pos = 3;</code>
      * @return The pos.
      */
-    @java.lang.Override
     public int getPos() {
       return pos_;
     }
@@ -5111,7 +5061,6 @@ public final class ToolkitProtos {
        * <code>int32 annual_frequency = 1;</code>
        * @return The annualFrequency.
        */
-      @java.lang.Override
       public int getAnnualFrequency() {
         return annualFrequency_;
       }
@@ -5142,7 +5091,6 @@ public final class ToolkitProtos {
        * <code>int32 year = 2;</code>
        * @return The year.
        */
-      @java.lang.Override
       public int getYear() {
         return year_;
       }
@@ -5173,7 +5121,6 @@ public final class ToolkitProtos {
        * <code>int32 pos = 3;</code>
        * @return The pos.
        */
-      @java.lang.Override
       public int getPos() {
         return pos_;
       }
@@ -5305,7 +5252,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.TsData}
    */
-  public static final class TsData extends
+  public  static final class TsData extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.TsData)
       TsDataOrBuilder {
@@ -5433,7 +5380,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -5450,7 +5396,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -5471,7 +5416,6 @@ public final class ToolkitProtos {
      * <code>int32 annual_frequency = 2;</code>
      * @return The annualFrequency.
      */
-    @java.lang.Override
     public int getAnnualFrequency() {
       return annualFrequency_;
     }
@@ -5482,7 +5426,6 @@ public final class ToolkitProtos {
      * <code>int32 start_year = 3;</code>
      * @return The startYear.
      */
-    @java.lang.Override
     public int getStartYear() {
       return startYear_;
     }
@@ -5493,7 +5436,6 @@ public final class ToolkitProtos {
      * <code>int32 start_period = 4;</code>
      * @return The startPeriod.
      */
-    @java.lang.Override
     public int getStartPeriod() {
       return startPeriod_;
     }
@@ -5504,7 +5446,6 @@ public final class ToolkitProtos {
      * <code>repeated double values = 5;</code>
      * @return A list containing the values.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getValuesList() {
       return values_;
@@ -6004,7 +5945,6 @@ public final class ToolkitProtos {
        * <code>int32 annual_frequency = 2;</code>
        * @return The annualFrequency.
        */
-      @java.lang.Override
       public int getAnnualFrequency() {
         return annualFrequency_;
       }
@@ -6035,7 +5975,6 @@ public final class ToolkitProtos {
        * <code>int32 start_year = 3;</code>
        * @return The startYear.
        */
-      @java.lang.Override
       public int getStartYear() {
         return startYear_;
       }
@@ -6066,7 +6005,6 @@ public final class ToolkitProtos {
        * <code>int32 start_period = 4;</code>
        * @return The startPeriod.
        */
-      @java.lang.Override
       public int getStartPeriod() {
         return startPeriod_;
       }
@@ -6259,7 +6197,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.Doubles}
    */
-  public static final class Doubles extends
+  public  static final class Doubles extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.Doubles)
       DoublesOrBuilder {
@@ -6372,7 +6310,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -6389,7 +6326,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -6410,7 +6346,6 @@ public final class ToolkitProtos {
      * <code>repeated double values = 2;</code>
      * @return A list containing the values.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getValuesList() {
       return values_;
@@ -7033,7 +6968,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.Matrix}
    */
-  public static final class Matrix extends
+  public  static final class Matrix extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.Matrix)
       MatrixOrBuilder {
@@ -7156,7 +7091,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -7173,7 +7107,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -7194,7 +7127,6 @@ public final class ToolkitProtos {
      * <code>int32 nrows = 2;</code>
      * @return The nrows.
      */
-    @java.lang.Override
     public int getNrows() {
       return nrows_;
     }
@@ -7205,7 +7137,6 @@ public final class ToolkitProtos {
      * <code>int32 ncols = 3;</code>
      * @return The ncols.
      */
-    @java.lang.Override
     public int getNcols() {
       return ncols_;
     }
@@ -7216,7 +7147,6 @@ public final class ToolkitProtos {
      * <code>repeated double values = 4;</code>
      * @return A list containing the values.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getValuesList() {
       return values_;
@@ -7699,7 +7629,6 @@ public final class ToolkitProtos {
        * <code>int32 nrows = 2;</code>
        * @return The nrows.
        */
-      @java.lang.Override
       public int getNrows() {
         return nrows_;
       }
@@ -7730,7 +7659,6 @@ public final class ToolkitProtos {
        * <code>int32 ncols = 3;</code>
        * @return The ncols.
        */
-      @java.lang.Override
       public int getNcols() {
         return ncols_;
       }
@@ -7939,7 +7867,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.TsMatrix}
    */
-  public static final class TsMatrix extends
+  public  static final class TsMatrix extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.TsMatrix)
       TsMatrixOrBuilder {
@@ -8054,7 +7982,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -8071,7 +7998,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -8092,7 +8018,6 @@ public final class ToolkitProtos {
      * <code>int32 annual_frequency = 2;</code>
      * @return The annualFrequency.
      */
-    @java.lang.Override
     public int getAnnualFrequency() {
       return annualFrequency_;
     }
@@ -8103,7 +8028,6 @@ public final class ToolkitProtos {
      * <code>int32 start_year = 3;</code>
      * @return The startYear.
      */
-    @java.lang.Override
     public int getStartYear() {
       return startYear_;
     }
@@ -8114,7 +8038,6 @@ public final class ToolkitProtos {
      * <code>int32 start_period = 4;</code>
      * @return The startPeriod.
      */
-    @java.lang.Override
     public int getStartPeriod() {
       return startPeriod_;
     }
@@ -8125,7 +8048,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Matrix values = 5;</code>
      * @return Whether the values field is set.
      */
-    @java.lang.Override
     public boolean hasValues() {
       return values_ != null;
     }
@@ -8133,14 +8055,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Matrix values = 5;</code>
      * @return The values.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getValues() {
       return values_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : values_;
     }
     /**
      * <code>.jd3.Matrix values = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getValuesOrBuilder() {
       return getValues();
     }
@@ -8609,7 +8529,6 @@ public final class ToolkitProtos {
        * <code>int32 annual_frequency = 2;</code>
        * @return The annualFrequency.
        */
-      @java.lang.Override
       public int getAnnualFrequency() {
         return annualFrequency_;
       }
@@ -8640,7 +8559,6 @@ public final class ToolkitProtos {
        * <code>int32 start_year = 3;</code>
        * @return The startYear.
        */
-      @java.lang.Override
       public int getStartYear() {
         return startYear_;
       }
@@ -8671,7 +8589,6 @@ public final class ToolkitProtos {
        * <code>int32 start_period = 4;</code>
        * @return The startPeriod.
        */
-      @java.lang.Override
       public int getStartPeriod() {
         return startPeriod_;
       }
@@ -8899,7 +8816,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.StatisticalTest}
    */
-  public static final class StatisticalTest extends
+  public  static final class StatisticalTest extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.StatisticalTest)
       StatisticalTestOrBuilder {
@@ -8996,7 +8913,6 @@ public final class ToolkitProtos {
      * <code>double value = 1;</code>
      * @return The value.
      */
-    @java.lang.Override
     public double getValue() {
       return value_;
     }
@@ -9007,7 +8923,6 @@ public final class ToolkitProtos {
      * <code>double pvalue = 2;</code>
      * @return The pvalue.
      */
-    @java.lang.Override
     public double getPvalue() {
       return pvalue_;
     }
@@ -9018,7 +8933,6 @@ public final class ToolkitProtos {
      * <code>string description = 3;</code>
      * @return The description.
      */
-    @java.lang.Override
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
       if (ref instanceof java.lang.String) {
@@ -9035,7 +8949,6 @@ public final class ToolkitProtos {
      * <code>string description = 3;</code>
      * @return The bytes for description.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
       java.lang.Object ref = description_;
@@ -9395,7 +9308,6 @@ public final class ToolkitProtos {
        * <code>double value = 1;</code>
        * @return The value.
        */
-      @java.lang.Override
       public double getValue() {
         return value_;
       }
@@ -9426,7 +9338,6 @@ public final class ToolkitProtos {
        * <code>double pvalue = 2;</code>
        * @return The pvalue.
        */
-      @java.lang.Override
       public double getPvalue() {
         return pvalue_;
       }
@@ -9642,7 +9553,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.OneWayAnova}
    */
-  public static final class OneWayAnova extends
+  public  static final class OneWayAnova extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.OneWayAnova)
       OneWayAnovaOrBuilder {
@@ -9759,7 +9670,6 @@ public final class ToolkitProtos {
      * <code>double SSM = 1;</code>
      * @return The sSM.
      */
-    @java.lang.Override
     public double getSSM() {
       return sSM_;
     }
@@ -9774,7 +9684,6 @@ public final class ToolkitProtos {
      * <code>int32 dfm = 2;</code>
      * @return The dfm.
      */
-    @java.lang.Override
     public int getDfm() {
       return dfm_;
     }
@@ -9789,7 +9698,6 @@ public final class ToolkitProtos {
      * <code>double SSR = 3;</code>
      * @return The sSR.
      */
-    @java.lang.Override
     public double getSSR() {
       return sSR_;
     }
@@ -9804,7 +9712,6 @@ public final class ToolkitProtos {
      * <code>int32 dfr = 4;</code>
      * @return The dfr.
      */
-    @java.lang.Override
     public int getDfr() {
       return dfr_;
     }
@@ -9815,7 +9722,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest test = 5;</code>
      * @return Whether the test field is set.
      */
-    @java.lang.Override
     public boolean hasTest() {
       return test_ != null;
     }
@@ -9823,14 +9729,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest test = 5;</code>
      * @return The test.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getTest() {
       return test_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : test_;
     }
     /**
      * <code>.jd3.StatisticalTest test = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getTestOrBuilder() {
       return getTest();
     }
@@ -10231,7 +10135,6 @@ public final class ToolkitProtos {
        * <code>double SSM = 1;</code>
        * @return The sSM.
        */
-      @java.lang.Override
       public double getSSM() {
         return sSM_;
       }
@@ -10274,7 +10177,6 @@ public final class ToolkitProtos {
        * <code>int32 dfm = 2;</code>
        * @return The dfm.
        */
-      @java.lang.Override
       public int getDfm() {
         return dfm_;
       }
@@ -10317,7 +10219,6 @@ public final class ToolkitProtos {
        * <code>double SSR = 3;</code>
        * @return The sSR.
        */
-      @java.lang.Override
       public double getSSR() {
         return sSR_;
       }
@@ -10360,7 +10261,6 @@ public final class ToolkitProtos {
        * <code>int32 dfr = 4;</code>
        * @return The dfr.
        */
-      @java.lang.Override
       public int getDfr() {
         return dfr_;
       }
@@ -10602,7 +10502,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ParameterEstimation}
    */
-  public static final class ParameterEstimation extends
+  public  static final class ParameterEstimation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ParameterEstimation)
       ParameterEstimationOrBuilder {
@@ -10704,7 +10604,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -10721,7 +10620,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -10742,7 +10640,6 @@ public final class ToolkitProtos {
      * <code>double value = 2;</code>
      * @return The value.
      */
-    @java.lang.Override
     public double getValue() {
       return value_;
     }
@@ -10753,7 +10650,6 @@ public final class ToolkitProtos {
      * <code>double stde = 3;</code>
      * @return The stde.
      */
-    @java.lang.Override
     public double getStde() {
       return stde_;
     }
@@ -10764,7 +10660,6 @@ public final class ToolkitProtos {
      * <code>double pvalue = 4;</code>
      * @return The pvalue.
      */
-    @java.lang.Override
     public double getPvalue() {
       return pvalue_;
     }
@@ -11209,7 +11104,6 @@ public final class ToolkitProtos {
        * <code>double value = 2;</code>
        * @return The value.
        */
-      @java.lang.Override
       public double getValue() {
         return value_;
       }
@@ -11240,7 +11134,6 @@ public final class ToolkitProtos {
        * <code>double stde = 3;</code>
        * @return The stde.
        */
-      @java.lang.Override
       public double getStde() {
         return stde_;
       }
@@ -11271,7 +11164,6 @@ public final class ToolkitProtos {
        * <code>double pvalue = 4;</code>
        * @return The pvalue.
        */
-      @java.lang.Override
       public double getPvalue() {
         return pvalue_;
       }
@@ -11434,7 +11326,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.LikelihoodStatistics}
    */
-  public static final class LikelihoodStatistics extends
+  public  static final class LikelihoodStatistics extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.LikelihoodStatistics)
       LikelihoodStatisticsOrBuilder {
@@ -11579,7 +11471,6 @@ public final class ToolkitProtos {
      * <code>int32 nobs = 1;</code>
      * @return The nobs.
      */
-    @java.lang.Override
     public int getNobs() {
       return nobs_;
     }
@@ -11590,7 +11481,6 @@ public final class ToolkitProtos {
      * <code>int32 neffectiveobs = 2;</code>
      * @return The neffectiveobs.
      */
-    @java.lang.Override
     public int getNeffectiveobs() {
       return neffectiveobs_;
     }
@@ -11601,7 +11491,6 @@ public final class ToolkitProtos {
      * <code>int32 nparams = 3;</code>
      * @return The nparams.
      */
-    @java.lang.Override
     public int getNparams() {
       return nparams_;
     }
@@ -11612,7 +11501,6 @@ public final class ToolkitProtos {
      * <code>int32 degrees_of_freedom = 4;</code>
      * @return The degreesOfFreedom.
      */
-    @java.lang.Override
     public int getDegreesOfFreedom() {
       return degreesOfFreedom_;
     }
@@ -11623,7 +11511,6 @@ public final class ToolkitProtos {
      * <code>double log_likelihood = 5;</code>
      * @return The logLikelihood.
      */
-    @java.lang.Override
     public double getLogLikelihood() {
       return logLikelihood_;
     }
@@ -11634,7 +11521,6 @@ public final class ToolkitProtos {
      * <code>double adjusted_log_likelihood = 6;</code>
      * @return The adjustedLogLikelihood.
      */
-    @java.lang.Override
     public double getAdjustedLogLikelihood() {
       return adjustedLogLikelihood_;
     }
@@ -11645,7 +11531,6 @@ public final class ToolkitProtos {
      * <code>double aic = 7;</code>
      * @return The aic.
      */
-    @java.lang.Override
     public double getAic() {
       return aic_;
     }
@@ -11656,7 +11541,6 @@ public final class ToolkitProtos {
      * <code>double aicc = 8;</code>
      * @return The aicc.
      */
-    @java.lang.Override
     public double getAicc() {
       return aicc_;
     }
@@ -11667,7 +11551,6 @@ public final class ToolkitProtos {
      * <code>double bic = 9;</code>
      * @return The bic.
      */
-    @java.lang.Override
     public double getBic() {
       return bic_;
     }
@@ -11678,7 +11561,6 @@ public final class ToolkitProtos {
      * <code>double bicc = 10;</code>
      * @return The bicc.
      */
-    @java.lang.Override
     public double getBicc() {
       return bicc_;
     }
@@ -11689,7 +11571,6 @@ public final class ToolkitProtos {
      * <code>double bic2 = 11;</code>
      * @return The bic2.
      */
-    @java.lang.Override
     public double getBic2() {
       return bic2_;
     }
@@ -11700,7 +11581,6 @@ public final class ToolkitProtos {
      * <code>double hannan_quinn = 12;</code>
      * @return The hannanQuinn.
      */
-    @java.lang.Override
     public double getHannanQuinn() {
       return hannanQuinn_;
     }
@@ -11711,7 +11591,6 @@ public final class ToolkitProtos {
      * <code>double ssq = 13;</code>
      * @return The ssq.
      */
-    @java.lang.Override
     public double getSsq() {
       return ssq_;
     }
@@ -12245,7 +12124,6 @@ public final class ToolkitProtos {
        * <code>int32 nobs = 1;</code>
        * @return The nobs.
        */
-      @java.lang.Override
       public int getNobs() {
         return nobs_;
       }
@@ -12276,7 +12154,6 @@ public final class ToolkitProtos {
        * <code>int32 neffectiveobs = 2;</code>
        * @return The neffectiveobs.
        */
-      @java.lang.Override
       public int getNeffectiveobs() {
         return neffectiveobs_;
       }
@@ -12307,7 +12184,6 @@ public final class ToolkitProtos {
        * <code>int32 nparams = 3;</code>
        * @return The nparams.
        */
-      @java.lang.Override
       public int getNparams() {
         return nparams_;
       }
@@ -12338,7 +12214,6 @@ public final class ToolkitProtos {
        * <code>int32 degrees_of_freedom = 4;</code>
        * @return The degreesOfFreedom.
        */
-      @java.lang.Override
       public int getDegreesOfFreedom() {
         return degreesOfFreedom_;
       }
@@ -12369,7 +12244,6 @@ public final class ToolkitProtos {
        * <code>double log_likelihood = 5;</code>
        * @return The logLikelihood.
        */
-      @java.lang.Override
       public double getLogLikelihood() {
         return logLikelihood_;
       }
@@ -12400,7 +12274,6 @@ public final class ToolkitProtos {
        * <code>double adjusted_log_likelihood = 6;</code>
        * @return The adjustedLogLikelihood.
        */
-      @java.lang.Override
       public double getAdjustedLogLikelihood() {
         return adjustedLogLikelihood_;
       }
@@ -12431,7 +12304,6 @@ public final class ToolkitProtos {
        * <code>double aic = 7;</code>
        * @return The aic.
        */
-      @java.lang.Override
       public double getAic() {
         return aic_;
       }
@@ -12462,7 +12334,6 @@ public final class ToolkitProtos {
        * <code>double aicc = 8;</code>
        * @return The aicc.
        */
-      @java.lang.Override
       public double getAicc() {
         return aicc_;
       }
@@ -12493,7 +12364,6 @@ public final class ToolkitProtos {
        * <code>double bic = 9;</code>
        * @return The bic.
        */
-      @java.lang.Override
       public double getBic() {
         return bic_;
       }
@@ -12524,7 +12394,6 @@ public final class ToolkitProtos {
        * <code>double bicc = 10;</code>
        * @return The bicc.
        */
-      @java.lang.Override
       public double getBicc() {
         return bicc_;
       }
@@ -12555,7 +12424,6 @@ public final class ToolkitProtos {
        * <code>double bic2 = 11;</code>
        * @return The bic2.
        */
-      @java.lang.Override
       public double getBic2() {
         return bic2_;
       }
@@ -12586,7 +12454,6 @@ public final class ToolkitProtos {
        * <code>double hannan_quinn = 12;</code>
        * @return The hannanQuinn.
        */
-      @java.lang.Override
       public double getHannanQuinn() {
         return hannanQuinn_;
       }
@@ -12617,7 +12484,6 @@ public final class ToolkitProtos {
        * <code>double ssq = 13;</code>
        * @return The ssq.
        */
-      @java.lang.Override
       public double getSsq() {
         return ssq_;
       }
@@ -12780,7 +12646,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.DiffuseLikelihoodStatistics}
    */
-  public static final class DiffuseLikelihoodStatistics extends
+  public  static final class DiffuseLikelihoodStatistics extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.DiffuseLikelihoodStatistics)
       DiffuseLikelihoodStatisticsOrBuilder {
@@ -12925,7 +12791,6 @@ public final class ToolkitProtos {
      * <code>int32 nobs = 1;</code>
      * @return The nobs.
      */
-    @java.lang.Override
     public int getNobs() {
       return nobs_;
     }
@@ -12936,7 +12801,6 @@ public final class ToolkitProtos {
      * <code>int32 ndiffuse = 2;</code>
      * @return The ndiffuse.
      */
-    @java.lang.Override
     public int getNdiffuse() {
       return ndiffuse_;
     }
@@ -12947,7 +12811,6 @@ public final class ToolkitProtos {
      * <code>int32 nparams = 3;</code>
      * @return The nparams.
      */
-    @java.lang.Override
     public int getNparams() {
       return nparams_;
     }
@@ -12958,7 +12821,6 @@ public final class ToolkitProtos {
      * <code>int32 degrees_of_freedom = 4;</code>
      * @return The degreesOfFreedom.
      */
-    @java.lang.Override
     public int getDegreesOfFreedom() {
       return degreesOfFreedom_;
     }
@@ -12969,7 +12831,6 @@ public final class ToolkitProtos {
      * <code>double log_likelihood = 5;</code>
      * @return The logLikelihood.
      */
-    @java.lang.Override
     public double getLogLikelihood() {
       return logLikelihood_;
     }
@@ -12980,7 +12841,6 @@ public final class ToolkitProtos {
      * <code>double adjusted_log_likelihood = 6;</code>
      * @return The adjustedLogLikelihood.
      */
-    @java.lang.Override
     public double getAdjustedLogLikelihood() {
       return adjustedLogLikelihood_;
     }
@@ -12991,7 +12851,6 @@ public final class ToolkitProtos {
      * <code>double aic = 7;</code>
      * @return The aic.
      */
-    @java.lang.Override
     public double getAic() {
       return aic_;
     }
@@ -13002,7 +12861,6 @@ public final class ToolkitProtos {
      * <code>double aicc = 8;</code>
      * @return The aicc.
      */
-    @java.lang.Override
     public double getAicc() {
       return aicc_;
     }
@@ -13013,7 +12871,6 @@ public final class ToolkitProtos {
      * <code>double bic = 9;</code>
      * @return The bic.
      */
-    @java.lang.Override
     public double getBic() {
       return bic_;
     }
@@ -13024,7 +12881,6 @@ public final class ToolkitProtos {
      * <code>double ssq = 13;</code>
      * @return The ssq.
      */
-    @java.lang.Override
     public double getSsq() {
       return ssq_;
     }
@@ -13035,7 +12891,6 @@ public final class ToolkitProtos {
      * <code>double ssqerr = 14;</code>
      * @return The ssqerr.
      */
-    @java.lang.Override
     public double getSsqerr() {
       return ssqerr_;
     }
@@ -13046,7 +12901,6 @@ public final class ToolkitProtos {
      * <code>double ldet = 15;</code>
      * @return The ldet.
      */
-    @java.lang.Override
     public double getLdet() {
       return ldet_;
     }
@@ -13057,7 +12911,6 @@ public final class ToolkitProtos {
      * <code>double dcorrection = 16;</code>
      * @return The dcorrection.
      */
-    @java.lang.Override
     public double getDcorrection() {
       return dcorrection_;
     }
@@ -13591,7 +13444,6 @@ public final class ToolkitProtos {
        * <code>int32 nobs = 1;</code>
        * @return The nobs.
        */
-      @java.lang.Override
       public int getNobs() {
         return nobs_;
       }
@@ -13622,7 +13474,6 @@ public final class ToolkitProtos {
        * <code>int32 ndiffuse = 2;</code>
        * @return The ndiffuse.
        */
-      @java.lang.Override
       public int getNdiffuse() {
         return ndiffuse_;
       }
@@ -13653,7 +13504,6 @@ public final class ToolkitProtos {
        * <code>int32 nparams = 3;</code>
        * @return The nparams.
        */
-      @java.lang.Override
       public int getNparams() {
         return nparams_;
       }
@@ -13684,7 +13534,6 @@ public final class ToolkitProtos {
        * <code>int32 degrees_of_freedom = 4;</code>
        * @return The degreesOfFreedom.
        */
-      @java.lang.Override
       public int getDegreesOfFreedom() {
         return degreesOfFreedom_;
       }
@@ -13715,7 +13564,6 @@ public final class ToolkitProtos {
        * <code>double log_likelihood = 5;</code>
        * @return The logLikelihood.
        */
-      @java.lang.Override
       public double getLogLikelihood() {
         return logLikelihood_;
       }
@@ -13746,7 +13594,6 @@ public final class ToolkitProtos {
        * <code>double adjusted_log_likelihood = 6;</code>
        * @return The adjustedLogLikelihood.
        */
-      @java.lang.Override
       public double getAdjustedLogLikelihood() {
         return adjustedLogLikelihood_;
       }
@@ -13777,7 +13624,6 @@ public final class ToolkitProtos {
        * <code>double aic = 7;</code>
        * @return The aic.
        */
-      @java.lang.Override
       public double getAic() {
         return aic_;
       }
@@ -13808,7 +13654,6 @@ public final class ToolkitProtos {
        * <code>double aicc = 8;</code>
        * @return The aicc.
        */
-      @java.lang.Override
       public double getAicc() {
         return aicc_;
       }
@@ -13839,7 +13684,6 @@ public final class ToolkitProtos {
        * <code>double bic = 9;</code>
        * @return The bic.
        */
-      @java.lang.Override
       public double getBic() {
         return bic_;
       }
@@ -13870,7 +13714,6 @@ public final class ToolkitProtos {
        * <code>double ssq = 13;</code>
        * @return The ssq.
        */
-      @java.lang.Override
       public double getSsq() {
         return ssq_;
       }
@@ -13901,7 +13744,6 @@ public final class ToolkitProtos {
        * <code>double ssqerr = 14;</code>
        * @return The ssqerr.
        */
-      @java.lang.Override
       public double getSsqerr() {
         return ssqerr_;
       }
@@ -13932,7 +13774,6 @@ public final class ToolkitProtos {
        * <code>double ldet = 15;</code>
        * @return The ldet.
        */
-      @java.lang.Override
       public double getLdet() {
         return ldet_;
       }
@@ -13963,7 +13804,6 @@ public final class ToolkitProtos {
        * <code>double dcorrection = 16;</code>
        * @return The dcorrection.
        */
-      @java.lang.Override
       public double getDcorrection() {
         return dcorrection_;
       }
@@ -14306,7 +14146,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.NIIDTests}
    */
-  public static final class NIIDTests extends
+  public  static final class NIIDTests extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.NIIDTests)
       NIIDTestsOrBuilder {
@@ -14572,7 +14412,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest mean = 1;</code>
      * @return Whether the mean field is set.
      */
-    @java.lang.Override
     public boolean hasMean() {
       return mean_ != null;
     }
@@ -14584,7 +14423,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest mean = 1;</code>
      * @return The mean.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getMean() {
       return mean_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : mean_;
     }
@@ -14595,7 +14433,6 @@ public final class ToolkitProtos {
      *
      * <code>.jd3.StatisticalTest mean = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getMeanOrBuilder() {
       return getMean();
     }
@@ -14606,7 +14443,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest skewness = 2;</code>
      * @return Whether the skewness field is set.
      */
-    @java.lang.Override
     public boolean hasSkewness() {
       return skewness_ != null;
     }
@@ -14614,14 +14450,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest skewness = 2;</code>
      * @return The skewness.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSkewness() {
       return skewness_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : skewness_;
     }
     /**
      * <code>.jd3.StatisticalTest skewness = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSkewnessOrBuilder() {
       return getSkewness();
     }
@@ -14632,7 +14466,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest kurtosis = 3;</code>
      * @return Whether the kurtosis field is set.
      */
-    @java.lang.Override
     public boolean hasKurtosis() {
       return kurtosis_ != null;
     }
@@ -14640,14 +14473,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest kurtosis = 3;</code>
      * @return The kurtosis.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getKurtosis() {
       return kurtosis_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : kurtosis_;
     }
     /**
      * <code>.jd3.StatisticalTest kurtosis = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getKurtosisOrBuilder() {
       return getKurtosis();
     }
@@ -14658,7 +14489,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
      * @return Whether the doornikHansen field is set.
      */
-    @java.lang.Override
     public boolean hasDoornikHansen() {
       return doornikHansen_ != null;
     }
@@ -14666,14 +14496,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
      * @return The doornikHansen.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getDoornikHansen() {
       return doornikHansen_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : doornikHansen_;
     }
     /**
      * <code>.jd3.StatisticalTest doornik_hansen = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getDoornikHansenOrBuilder() {
       return getDoornikHansen();
     }
@@ -14688,7 +14516,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest ljung_box = 5;</code>
      * @return Whether the ljungBox field is set.
      */
-    @java.lang.Override
     public boolean hasLjungBox() {
       return ljungBox_ != null;
     }
@@ -14700,7 +14527,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest ljung_box = 5;</code>
      * @return The ljungBox.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBox() {
       return ljungBox_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBox_;
     }
@@ -14711,7 +14537,6 @@ public final class ToolkitProtos {
      *
      * <code>.jd3.StatisticalTest ljung_box = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOrBuilder() {
       return getLjungBox();
     }
@@ -14722,7 +14547,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest box_pierce = 6;</code>
      * @return Whether the boxPierce field is set.
      */
-    @java.lang.Override
     public boolean hasBoxPierce() {
       return boxPierce_ != null;
     }
@@ -14730,14 +14554,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest box_pierce = 6;</code>
      * @return The boxPierce.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierce() {
       return boxPierce_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierce_;
     }
     /**
      * <code>.jd3.StatisticalTest box_pierce = 6;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOrBuilder() {
       return getBoxPierce();
     }
@@ -14748,7 +14570,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
      * @return Whether the seasonalLjungBox field is set.
      */
-    @java.lang.Override
     public boolean hasSeasonalLjungBox() {
       return seasonalLjungBox_ != null;
     }
@@ -14756,14 +14577,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
      * @return The seasonalLjungBox.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalLjungBox() {
       return seasonalLjungBox_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalLjungBox_;
     }
     /**
      * <code>.jd3.StatisticalTest seasonal_ljung_box = 7;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalLjungBoxOrBuilder() {
       return getSeasonalLjungBox();
     }
@@ -14774,7 +14593,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
      * @return Whether the seasonalBoxPierce field is set.
      */
-    @java.lang.Override
     public boolean hasSeasonalBoxPierce() {
       return seasonalBoxPierce_ != null;
     }
@@ -14782,14 +14600,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
      * @return The seasonalBoxPierce.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getSeasonalBoxPierce() {
       return seasonalBoxPierce_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : seasonalBoxPierce_;
     }
     /**
      * <code>.jd3.StatisticalTest seasonal_box_pierce = 8;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getSeasonalBoxPierceOrBuilder() {
       return getSeasonalBoxPierce();
     }
@@ -14804,7 +14620,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest runs_number = 9;</code>
      * @return Whether the runsNumber field is set.
      */
-    @java.lang.Override
     public boolean hasRunsNumber() {
       return runsNumber_ != null;
     }
@@ -14816,7 +14631,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest runs_number = 9;</code>
      * @return The runsNumber.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsNumber() {
       return runsNumber_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsNumber_;
     }
@@ -14827,7 +14641,6 @@ public final class ToolkitProtos {
      *
      * <code>.jd3.StatisticalTest runs_number = 9;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsNumberOrBuilder() {
       return getRunsNumber();
     }
@@ -14838,7 +14651,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest runs_length = 10;</code>
      * @return Whether the runsLength field is set.
      */
-    @java.lang.Override
     public boolean hasRunsLength() {
       return runsLength_ != null;
     }
@@ -14846,14 +14658,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest runs_length = 10;</code>
      * @return The runsLength.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getRunsLength() {
       return runsLength_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : runsLength_;
     }
     /**
      * <code>.jd3.StatisticalTest runs_length = 10;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getRunsLengthOrBuilder() {
       return getRunsLength();
     }
@@ -14864,7 +14674,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
      * @return Whether the upDownRunsNumber field is set.
      */
-    @java.lang.Override
     public boolean hasUpDownRunsNumber() {
       return upDownRunsNumber_ != null;
     }
@@ -14872,14 +14681,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
      * @return The upDownRunsNumber.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsNumber() {
       return upDownRunsNumber_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsNumber_;
     }
     /**
      * <code>.jd3.StatisticalTest up_down_runs_number = 11;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsNumberOrBuilder() {
       return getUpDownRunsNumber();
     }
@@ -14890,7 +14697,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
      * @return Whether the upDownRunsLength field is set.
      */
-    @java.lang.Override
     public boolean hasUpDownRunsLength() {
       return upDownRunsLength_ != null;
     }
@@ -14898,14 +14704,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
      * @return The upDownRunsLength.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getUpDownRunsLength() {
       return upDownRunsLength_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : upDownRunsLength_;
     }
     /**
      * <code>.jd3.StatisticalTest up_down_runs_length = 12;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getUpDownRunsLengthOrBuilder() {
       return getUpDownRunsLength();
     }
@@ -14920,7 +14724,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
      * @return Whether the ljungBoxOnSquares field is set.
      */
-    @java.lang.Override
     public boolean hasLjungBoxOnSquares() {
       return ljungBoxOnSquares_ != null;
     }
@@ -14932,7 +14735,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
      * @return The ljungBoxOnSquares.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getLjungBoxOnSquares() {
       return ljungBoxOnSquares_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : ljungBoxOnSquares_;
     }
@@ -14943,7 +14745,6 @@ public final class ToolkitProtos {
      *
      * <code>.jd3.StatisticalTest ljung_box_on_squares = 13;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getLjungBoxOnSquaresOrBuilder() {
       return getLjungBoxOnSquares();
     }
@@ -14954,7 +14755,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
      * @return Whether the boxPierceOnSquares field is set.
      */
-    @java.lang.Override
     public boolean hasBoxPierceOnSquares() {
       return boxPierceOnSquares_ != null;
     }
@@ -14962,14 +14762,12 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
      * @return The boxPierceOnSquares.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getBoxPierceOnSquares() {
       return boxPierceOnSquares_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest.getDefaultInstance() : boxPierceOnSquares_;
     }
     /**
      * <code>.jd3.StatisticalTest box_pierce_on_squares = 14;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getBoxPierceOnSquaresOrBuilder() {
       return getBoxPierceOnSquares();
     }
@@ -17578,7 +17376,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ValidityPeriod}
    */
-  public static final class ValidityPeriod extends
+  public  static final class ValidityPeriod extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ValidityPeriod)
       ValidityPeriodOrBuilder {
@@ -17684,7 +17482,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Date start = 1;</code>
      * @return Whether the start field is set.
      */
-    @java.lang.Override
     public boolean hasStart() {
       return start_ != null;
     }
@@ -17692,14 +17489,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Date start = 1;</code>
      * @return The start.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
       return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
     }
     /**
      * <code>.jd3.Date start = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
       return getStart();
     }
@@ -17710,7 +17505,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Date end = 2;</code>
      * @return Whether the end field is set.
      */
-    @java.lang.Override
     public boolean hasEnd() {
       return end_ != null;
     }
@@ -17718,14 +17512,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Date end = 2;</code>
      * @return The end.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
       return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
     }
     /**
      * <code>.jd3.Date end = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
       return getEnd();
     }
@@ -18393,7 +18185,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.SingleDate}
    */
-  public static final class SingleDate extends
+  public  static final class SingleDate extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.SingleDate)
       SingleDateOrBuilder {
@@ -18491,7 +18283,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Date date = 1;</code>
      * @return Whether the date field is set.
      */
-    @java.lang.Override
     public boolean hasDate() {
       return date_ != null;
     }
@@ -18499,14 +18290,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Date date = 1;</code>
      * @return The date.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getDate() {
       return date_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : date_;
     }
     /**
      * <code>.jd3.Date date = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getDateOrBuilder() {
       return getDate();
     }
@@ -18517,7 +18306,6 @@ public final class ToolkitProtos {
      * <code>double weight = 2;</code>
      * @return The weight.
      */
-    @java.lang.Override
     public double getWeight() {
       return weight_;
     }
@@ -18980,7 +18768,6 @@ public final class ToolkitProtos {
        * <code>double weight = 2;</code>
        * @return The weight.
        */
-      @java.lang.Override
       public double getWeight() {
         return weight_;
       }
@@ -19098,7 +18885,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.FixedDay}
    */
-  public static final class FixedDay extends
+  public  static final class FixedDay extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.FixedDay)
       FixedDayOrBuilder {
@@ -19206,7 +18993,6 @@ public final class ToolkitProtos {
      * <code>int32 month = 1;</code>
      * @return The month.
      */
-    @java.lang.Override
     public int getMonth() {
       return month_;
     }
@@ -19217,7 +19003,6 @@ public final class ToolkitProtos {
      * <code>int32 day = 2;</code>
      * @return The day.
      */
-    @java.lang.Override
     public int getDay() {
       return day_;
     }
@@ -19228,7 +19013,6 @@ public final class ToolkitProtos {
      * <code>double weight = 3;</code>
      * @return The weight.
      */
-    @java.lang.Override
     public double getWeight() {
       return weight_;
     }
@@ -19239,7 +19023,6 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      * @return Whether the validity field is set.
      */
-    @java.lang.Override
     public boolean hasValidity() {
       return validity_ != null;
     }
@@ -19247,14 +19030,12 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      * @return The validity.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod getValidity() {
       return validity_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod.getDefaultInstance() : validity_;
     }
     /**
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriodOrBuilder getValidityOrBuilder() {
       return getValidity();
     }
@@ -19632,7 +19413,6 @@ public final class ToolkitProtos {
        * <code>int32 month = 1;</code>
        * @return The month.
        */
-      @java.lang.Override
       public int getMonth() {
         return month_;
       }
@@ -19663,7 +19443,6 @@ public final class ToolkitProtos {
        * <code>int32 day = 2;</code>
        * @return The day.
        */
-      @java.lang.Override
       public int getDay() {
         return day_;
       }
@@ -19694,7 +19473,6 @@ public final class ToolkitProtos {
        * <code>double weight = 3;</code>
        * @return The weight.
        */
-      @java.lang.Override
       public double getWeight() {
         return weight_;
       }
@@ -19931,7 +19709,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.EasterRelatedDay}
    */
-  public static final class EasterRelatedDay extends
+  public  static final class EasterRelatedDay extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.EasterRelatedDay)
       EasterRelatedDayOrBuilder {
@@ -20039,7 +19817,6 @@ public final class ToolkitProtos {
      * <code>int32 offset = 1;</code>
      * @return The offset.
      */
-    @java.lang.Override
     public int getOffset() {
       return offset_;
     }
@@ -20050,7 +19827,6 @@ public final class ToolkitProtos {
      * <code>bool julian = 2;</code>
      * @return The julian.
      */
-    @java.lang.Override
     public boolean getJulian() {
       return julian_;
     }
@@ -20061,7 +19837,6 @@ public final class ToolkitProtos {
      * <code>double weight = 3;</code>
      * @return The weight.
      */
-    @java.lang.Override
     public double getWeight() {
       return weight_;
     }
@@ -20072,7 +19847,6 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      * @return Whether the validity field is set.
      */
-    @java.lang.Override
     public boolean hasValidity() {
       return validity_ != null;
     }
@@ -20080,14 +19854,12 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      * @return The validity.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod getValidity() {
       return validity_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod.getDefaultInstance() : validity_;
     }
     /**
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriodOrBuilder getValidityOrBuilder() {
       return getValidity();
     }
@@ -20466,7 +20238,6 @@ public final class ToolkitProtos {
        * <code>int32 offset = 1;</code>
        * @return The offset.
        */
-      @java.lang.Override
       public int getOffset() {
         return offset_;
       }
@@ -20497,7 +20268,6 @@ public final class ToolkitProtos {
        * <code>bool julian = 2;</code>
        * @return The julian.
        */
-      @java.lang.Override
       public boolean getJulian() {
         return julian_;
       }
@@ -20528,7 +20298,6 @@ public final class ToolkitProtos {
        * <code>double weight = 3;</code>
        * @return The weight.
        */
-      @java.lang.Override
       public double getWeight() {
         return weight_;
       }
@@ -20770,7 +20539,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.PrespecifiedHoliday}
    */
-  public static final class PrespecifiedHoliday extends
+  public  static final class PrespecifiedHoliday extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.PrespecifiedHoliday)
       PrespecifiedHolidayOrBuilder {
@@ -20880,14 +20649,14 @@ public final class ToolkitProtos {
      * <code>.jd3.CalendarEvent event = 1;</code>
      * @return The enum numeric value on the wire for event.
      */
-    @java.lang.Override public int getEventValue() {
+    public int getEventValue() {
       return event_;
     }
     /**
      * <code>.jd3.CalendarEvent event = 1;</code>
      * @return The event.
      */
-    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent getEvent() {
+    public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent getEvent() {
       @SuppressWarnings("deprecation")
       demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent result = demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent.valueOf(event_);
       return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent.UNRECOGNIZED : result;
@@ -20899,7 +20668,6 @@ public final class ToolkitProtos {
      * <code>int32 offset = 2;</code>
      * @return The offset.
      */
-    @java.lang.Override
     public int getOffset() {
       return offset_;
     }
@@ -20910,7 +20678,6 @@ public final class ToolkitProtos {
      * <code>double weight = 3;</code>
      * @return The weight.
      */
-    @java.lang.Override
     public double getWeight() {
       return weight_;
     }
@@ -20921,7 +20688,6 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      * @return Whether the validity field is set.
      */
-    @java.lang.Override
     public boolean hasValidity() {
       return validity_ != null;
     }
@@ -20929,14 +20695,12 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      * @return The validity.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod getValidity() {
       return validity_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod.getDefaultInstance() : validity_;
     }
     /**
      * <code>.jd3.ValidityPeriod validity = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriodOrBuilder getValidityOrBuilder() {
       return getValidity();
     }
@@ -21313,7 +21077,7 @@ public final class ToolkitProtos {
        * <code>.jd3.CalendarEvent event = 1;</code>
        * @return The enum numeric value on the wire for event.
        */
-      @java.lang.Override public int getEventValue() {
+      public int getEventValue() {
         return event_;
       }
       /**
@@ -21322,7 +21086,6 @@ public final class ToolkitProtos {
        * @return This builder for chaining.
        */
       public Builder setEventValue(int value) {
-        
         event_ = value;
         onChanged();
         return this;
@@ -21331,7 +21094,6 @@ public final class ToolkitProtos {
        * <code>.jd3.CalendarEvent event = 1;</code>
        * @return The event.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent getEvent() {
         @SuppressWarnings("deprecation")
         demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent result = demetra.toolkit.io.protobuf.ToolkitProtos.CalendarEvent.valueOf(event_);
@@ -21367,7 +21129,6 @@ public final class ToolkitProtos {
        * <code>int32 offset = 2;</code>
        * @return The offset.
        */
-      @java.lang.Override
       public int getOffset() {
         return offset_;
       }
@@ -21398,7 +21159,6 @@ public final class ToolkitProtos {
        * <code>double weight = 3;</code>
        * @return The weight.
        */
-      @java.lang.Override
       public double getWeight() {
         return weight_;
       }
@@ -21649,7 +21409,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.FixedWeekDay}
    */
-  public static final class FixedWeekDay extends
+  public  static final class FixedWeekDay extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.FixedWeekDay)
       FixedWeekDayOrBuilder {
@@ -21762,7 +21522,6 @@ public final class ToolkitProtos {
      * <code>int32 month = 1;</code>
      * @return The month.
      */
-    @java.lang.Override
     public int getMonth() {
       return month_;
     }
@@ -21777,7 +21536,6 @@ public final class ToolkitProtos {
      * <code>int32 position = 2;</code>
      * @return The position.
      */
-    @java.lang.Override
     public int getPosition() {
       return position_;
     }
@@ -21792,7 +21550,6 @@ public final class ToolkitProtos {
      * <code>int32 weekday = 3;</code>
      * @return The weekday.
      */
-    @java.lang.Override
     public int getWeekday() {
       return weekday_;
     }
@@ -21803,7 +21560,6 @@ public final class ToolkitProtos {
      * <code>double weight = 4;</code>
      * @return The weight.
      */
-    @java.lang.Override
     public double getWeight() {
       return weight_;
     }
@@ -21814,7 +21570,6 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 5;</code>
      * @return Whether the validity field is set.
      */
-    @java.lang.Override
     public boolean hasValidity() {
       return validity_ != null;
     }
@@ -21822,14 +21577,12 @@ public final class ToolkitProtos {
      * <code>.jd3.ValidityPeriod validity = 5;</code>
      * @return The validity.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod getValidity() {
       return validity_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriod.getDefaultInstance() : validity_;
     }
     /**
      * <code>.jd3.ValidityPeriod validity = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ValidityPeriodOrBuilder getValidityOrBuilder() {
       return getValidity();
     }
@@ -22224,7 +21977,6 @@ public final class ToolkitProtos {
        * <code>int32 month = 1;</code>
        * @return The month.
        */
-      @java.lang.Override
       public int getMonth() {
         return month_;
       }
@@ -22259,7 +22011,6 @@ public final class ToolkitProtos {
        * <code>int32 position = 2;</code>
        * @return The position.
        */
-      @java.lang.Override
       public int getPosition() {
         return position_;
       }
@@ -22302,7 +22053,6 @@ public final class ToolkitProtos {
        * <code>int32 weekday = 3;</code>
        * @return The weekday.
        */
-      @java.lang.Override
       public int getWeekday() {
         return weekday_;
       }
@@ -22341,7 +22091,6 @@ public final class ToolkitProtos {
        * <code>double weight = 4;</code>
        * @return The weight.
        */
-      @java.lang.Override
       public double getWeight() {
         return weight_;
       }
@@ -22592,7 +22341,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.CalendarDefinition}
    */
-  public static final class CalendarDefinition extends
+  public  static final class CalendarDefinition extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.CalendarDefinition)
       CalendarDefinitionOrBuilder {
@@ -22756,7 +22505,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Calendar calendar = 1;</code>
      * @return Whether the calendar field is set.
      */
-    @java.lang.Override
     public boolean hasCalendar() {
       return definitionCase_ == 1;
     }
@@ -22764,7 +22512,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Calendar calendar = 1;</code>
      * @return The calendar.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Calendar getCalendar() {
       if (definitionCase_ == 1) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.Calendar) definition_;
@@ -22774,7 +22521,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.Calendar calendar = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarOrBuilder getCalendarOrBuilder() {
       if (definitionCase_ == 1) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.Calendar) definition_;
@@ -22787,7 +22533,6 @@ public final class ToolkitProtos {
      * <code>.jd3.WeightedCalendar weighted_calendar = 2;</code>
      * @return Whether the weightedCalendar field is set.
      */
-    @java.lang.Override
     public boolean hasWeightedCalendar() {
       return definitionCase_ == 2;
     }
@@ -22795,7 +22540,6 @@ public final class ToolkitProtos {
      * <code>.jd3.WeightedCalendar weighted_calendar = 2;</code>
      * @return The weightedCalendar.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar getWeightedCalendar() {
       if (definitionCase_ == 2) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar) definition_;
@@ -22805,7 +22549,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.WeightedCalendar weighted_calendar = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendarOrBuilder getWeightedCalendarOrBuilder() {
       if (definitionCase_ == 2) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar) definition_;
@@ -22818,7 +22561,6 @@ public final class ToolkitProtos {
      * <code>.jd3.ChainedCalendar chained_calendar = 3;</code>
      * @return Whether the chainedCalendar field is set.
      */
-    @java.lang.Override
     public boolean hasChainedCalendar() {
       return definitionCase_ == 3;
     }
@@ -22826,7 +22568,6 @@ public final class ToolkitProtos {
      * <code>.jd3.ChainedCalendar chained_calendar = 3;</code>
      * @return The chainedCalendar.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ChainedCalendar getChainedCalendar() {
       if (definitionCase_ == 3) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.ChainedCalendar) definition_;
@@ -22836,7 +22577,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.ChainedCalendar chained_calendar = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ChainedCalendarOrBuilder getChainedCalendarOrBuilder() {
       if (definitionCase_ == 3) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.ChainedCalendar) definition_;
@@ -23245,7 +22985,6 @@ public final class ToolkitProtos {
        * <code>.jd3.Calendar calendar = 1;</code>
        * @return Whether the calendar field is set.
        */
-      @java.lang.Override
       public boolean hasCalendar() {
         return definitionCase_ == 1;
       }
@@ -23253,7 +22992,6 @@ public final class ToolkitProtos {
        * <code>.jd3.Calendar calendar = 1;</code>
        * @return The calendar.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Calendar getCalendar() {
         if (calendarBuilder_ == null) {
           if (definitionCase_ == 1) {
@@ -23347,7 +23085,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.Calendar calendar = 1;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarOrBuilder getCalendarOrBuilder() {
         if ((definitionCase_ == 1) && (calendarBuilder_ != null)) {
           return calendarBuilder_.getMessageOrBuilder();
@@ -23386,7 +23123,6 @@ public final class ToolkitProtos {
        * <code>.jd3.WeightedCalendar weighted_calendar = 2;</code>
        * @return Whether the weightedCalendar field is set.
        */
-      @java.lang.Override
       public boolean hasWeightedCalendar() {
         return definitionCase_ == 2;
       }
@@ -23394,7 +23130,6 @@ public final class ToolkitProtos {
        * <code>.jd3.WeightedCalendar weighted_calendar = 2;</code>
        * @return The weightedCalendar.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar getWeightedCalendar() {
         if (weightedCalendarBuilder_ == null) {
           if (definitionCase_ == 2) {
@@ -23488,7 +23223,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.WeightedCalendar weighted_calendar = 2;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendarOrBuilder getWeightedCalendarOrBuilder() {
         if ((definitionCase_ == 2) && (weightedCalendarBuilder_ != null)) {
           return weightedCalendarBuilder_.getMessageOrBuilder();
@@ -23527,7 +23261,6 @@ public final class ToolkitProtos {
        * <code>.jd3.ChainedCalendar chained_calendar = 3;</code>
        * @return Whether the chainedCalendar field is set.
        */
-      @java.lang.Override
       public boolean hasChainedCalendar() {
         return definitionCase_ == 3;
       }
@@ -23535,7 +23268,6 @@ public final class ToolkitProtos {
        * <code>.jd3.ChainedCalendar chained_calendar = 3;</code>
        * @return The chainedCalendar.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ChainedCalendar getChainedCalendar() {
         if (chainedCalendarBuilder_ == null) {
           if (definitionCase_ == 3) {
@@ -23629,7 +23361,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.ChainedCalendar chained_calendar = 3;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ChainedCalendarOrBuilder getChainedCalendarOrBuilder() {
         if ((definitionCase_ == 3) && (chainedCalendarBuilder_ != null)) {
           return chainedCalendarBuilder_.getMessageOrBuilder();
@@ -23841,7 +23572,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.Calendar}
    */
-  public static final class Calendar extends
+  public  static final class Calendar extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.Calendar)
       CalendarOrBuilder {
@@ -23986,14 +23717,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.FixedDay fixed_days = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.FixedDay> getFixedDaysList() {
       return fixedDays_;
     }
     /**
      * <code>repeated .jd3.FixedDay fixed_days = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.FixedDayOrBuilder> 
         getFixedDaysOrBuilderList() {
       return fixedDays_;
@@ -24001,21 +23730,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.FixedDay fixed_days = 1;</code>
      */
-    @java.lang.Override
     public int getFixedDaysCount() {
       return fixedDays_.size();
     }
     /**
      * <code>repeated .jd3.FixedDay fixed_days = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.FixedDay getFixedDays(int index) {
       return fixedDays_.get(index);
     }
     /**
      * <code>repeated .jd3.FixedDay fixed_days = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.FixedDayOrBuilder getFixedDaysOrBuilder(
         int index) {
       return fixedDays_.get(index);
@@ -24026,14 +23752,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.EasterRelatedDay easter_related_days = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.EasterRelatedDay> getEasterRelatedDaysList() {
       return easterRelatedDays_;
     }
     /**
      * <code>repeated .jd3.EasterRelatedDay easter_related_days = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.EasterRelatedDayOrBuilder> 
         getEasterRelatedDaysOrBuilderList() {
       return easterRelatedDays_;
@@ -24041,21 +23765,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.EasterRelatedDay easter_related_days = 2;</code>
      */
-    @java.lang.Override
     public int getEasterRelatedDaysCount() {
       return easterRelatedDays_.size();
     }
     /**
      * <code>repeated .jd3.EasterRelatedDay easter_related_days = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.EasterRelatedDay getEasterRelatedDays(int index) {
       return easterRelatedDays_.get(index);
     }
     /**
      * <code>repeated .jd3.EasterRelatedDay easter_related_days = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.EasterRelatedDayOrBuilder getEasterRelatedDaysOrBuilder(
         int index) {
       return easterRelatedDays_.get(index);
@@ -24066,14 +23787,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.FixedWeekDay fixed_week_days = 3;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.FixedWeekDay> getFixedWeekDaysList() {
       return fixedWeekDays_;
     }
     /**
      * <code>repeated .jd3.FixedWeekDay fixed_week_days = 3;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.FixedWeekDayOrBuilder> 
         getFixedWeekDaysOrBuilderList() {
       return fixedWeekDays_;
@@ -24081,21 +23800,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.FixedWeekDay fixed_week_days = 3;</code>
      */
-    @java.lang.Override
     public int getFixedWeekDaysCount() {
       return fixedWeekDays_.size();
     }
     /**
      * <code>repeated .jd3.FixedWeekDay fixed_week_days = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.FixedWeekDay getFixedWeekDays(int index) {
       return fixedWeekDays_.get(index);
     }
     /**
      * <code>repeated .jd3.FixedWeekDay fixed_week_days = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.FixedWeekDayOrBuilder getFixedWeekDaysOrBuilder(
         int index) {
       return fixedWeekDays_.get(index);
@@ -24106,14 +23822,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.PrespecifiedHoliday prespecified_holidays = 4;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.PrespecifiedHoliday> getPrespecifiedHolidaysList() {
       return prespecifiedHolidays_;
     }
     /**
      * <code>repeated .jd3.PrespecifiedHoliday prespecified_holidays = 4;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.PrespecifiedHolidayOrBuilder> 
         getPrespecifiedHolidaysOrBuilderList() {
       return prespecifiedHolidays_;
@@ -24121,21 +23835,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.PrespecifiedHoliday prespecified_holidays = 4;</code>
      */
-    @java.lang.Override
     public int getPrespecifiedHolidaysCount() {
       return prespecifiedHolidays_.size();
     }
     /**
      * <code>repeated .jd3.PrespecifiedHoliday prespecified_holidays = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.PrespecifiedHoliday getPrespecifiedHolidays(int index) {
       return prespecifiedHolidays_.get(index);
     }
     /**
      * <code>repeated .jd3.PrespecifiedHoliday prespecified_holidays = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.PrespecifiedHolidayOrBuilder getPrespecifiedHolidaysOrBuilder(
         int index) {
       return prespecifiedHolidays_.get(index);
@@ -24146,14 +23857,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.SingleDate single_dates = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate> getSingleDatesList() {
       return singleDates_;
     }
     /**
      * <code>repeated .jd3.SingleDate single_dates = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder> 
         getSingleDatesOrBuilderList() {
       return singleDates_;
@@ -24161,21 +23870,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.SingleDate single_dates = 5;</code>
      */
-    @java.lang.Override
     public int getSingleDatesCount() {
       return singleDates_.size();
     }
     /**
      * <code>repeated .jd3.SingleDate single_dates = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDate getSingleDates(int index) {
       return singleDates_.get(index);
     }
     /**
      * <code>repeated .jd3.SingleDate single_dates = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.SingleDateOrBuilder getSingleDatesOrBuilder(
         int index) {
       return singleDates_.get(index);
@@ -26026,7 +25732,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.WeightedCalendar}
    */
-  public static final class WeightedCalendar extends
+  public  static final class WeightedCalendar extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.WeightedCalendar)
       WeightedCalendarOrBuilder {
@@ -26143,7 +25849,7 @@ public final class ToolkitProtos {
      *
      * Protobuf type {@code jd3.WeightedCalendar.Item}
      */
-    public static final class Item extends
+    public  static final class Item extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:jd3.WeightedCalendar.Item)
         ItemOrBuilder {
@@ -26235,7 +25941,6 @@ public final class ToolkitProtos {
        * <code>string calendar = 1;</code>
        * @return The calendar.
        */
-      @java.lang.Override
       public java.lang.String getCalendar() {
         java.lang.Object ref = calendar_;
         if (ref instanceof java.lang.String) {
@@ -26252,7 +25957,6 @@ public final class ToolkitProtos {
        * <code>string calendar = 1;</code>
        * @return The bytes for calendar.
        */
-      @java.lang.Override
       public com.google.protobuf.ByteString
           getCalendarBytes() {
         java.lang.Object ref = calendar_;
@@ -26273,7 +25977,6 @@ public final class ToolkitProtos {
        * <code>double weight = 2;</code>
        * @return The weight.
        */
-      @java.lang.Override
       public double getWeight() {
         return weight_;
       }
@@ -26684,7 +26387,6 @@ public final class ToolkitProtos {
          * <code>double weight = 2;</code>
          * @return The weight.
          */
-        @java.lang.Override
         public double getWeight() {
           return weight_;
         }
@@ -26767,14 +26469,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.WeightedCalendar.Item items = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar.Item> getItemsList() {
       return items_;
     }
     /**
      * <code>repeated .jd3.WeightedCalendar.Item items = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar.ItemOrBuilder> 
         getItemsOrBuilderList() {
       return items_;
@@ -26782,21 +26482,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.WeightedCalendar.Item items = 1;</code>
      */
-    @java.lang.Override
     public int getItemsCount() {
       return items_.size();
     }
     /**
      * <code>repeated .jd3.WeightedCalendar.Item items = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar.Item getItems(int index) {
       return items_.get(index);
     }
     /**
      * <code>repeated .jd3.WeightedCalendar.Item items = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.WeightedCalendar.ItemOrBuilder getItemsOrBuilder(
         int index) {
       return items_.get(index);
@@ -27490,7 +27187,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ChainedCalendar}
    */
-  public static final class ChainedCalendar extends
+  public  static final class ChainedCalendar extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ChainedCalendar)
       ChainedCalendarOrBuilder {
@@ -27601,7 +27298,6 @@ public final class ToolkitProtos {
      * <code>string calendar1 = 1;</code>
      * @return The calendar1.
      */
-    @java.lang.Override
     public java.lang.String getCalendar1() {
       java.lang.Object ref = calendar1_;
       if (ref instanceof java.lang.String) {
@@ -27622,7 +27318,6 @@ public final class ToolkitProtos {
      * <code>string calendar1 = 1;</code>
      * @return The bytes for calendar1.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getCalendar1Bytes() {
       java.lang.Object ref = calendar1_;
@@ -27643,7 +27338,6 @@ public final class ToolkitProtos {
      * <code>string calendar2 = 2;</code>
      * @return The calendar2.
      */
-    @java.lang.Override
     public java.lang.String getCalendar2() {
       java.lang.Object ref = calendar2_;
       if (ref instanceof java.lang.String) {
@@ -27660,7 +27354,6 @@ public final class ToolkitProtos {
      * <code>string calendar2 = 2;</code>
      * @return The bytes for calendar2.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getCalendar2Bytes() {
       java.lang.Object ref = calendar2_;
@@ -27681,7 +27374,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Date break_date = 3;</code>
      * @return Whether the breakDate field is set.
      */
-    @java.lang.Override
     public boolean hasBreakDate() {
       return breakDate_ != null;
     }
@@ -27689,14 +27381,12 @@ public final class ToolkitProtos {
      * <code>.jd3.Date break_date = 3;</code>
      * @return The breakDate.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getBreakDate() {
       return breakDate_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : breakDate_;
     }
     /**
      * <code>.jd3.Date break_date = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getBreakDateOrBuilder() {
       return getBreakDate();
     }
@@ -28424,7 +28114,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.TsMoniker}
    */
-  public static final class TsMoniker extends
+  public  static final class TsMoniker extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.TsMoniker)
       TsMonikerOrBuilder {
@@ -28518,7 +28208,6 @@ public final class ToolkitProtos {
      * <code>string source = 1;</code>
      * @return The source.
      */
-    @java.lang.Override
     public java.lang.String getSource() {
       java.lang.Object ref = source_;
       if (ref instanceof java.lang.String) {
@@ -28535,7 +28224,6 @@ public final class ToolkitProtos {
      * <code>string source = 1;</code>
      * @return The bytes for source.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getSourceBytes() {
       java.lang.Object ref = source_;
@@ -28556,7 +28244,6 @@ public final class ToolkitProtos {
      * <code>string id = 2;</code>
      * @return The id.
      */
-    @java.lang.Override
     public java.lang.String getId() {
       java.lang.Object ref = id_;
       if (ref instanceof java.lang.String) {
@@ -28573,7 +28260,6 @@ public final class ToolkitProtos {
      * <code>string id = 2;</code>
      * @return The bytes for id.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getIdBytes() {
       java.lang.Object ref = id_;
@@ -29142,7 +28828,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.TsDataSuppliers}
    */
-  public static final class TsDataSuppliers extends
+  public  static final class TsDataSuppliers extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.TsDataSuppliers)
       TsDataSuppliersOrBuilder {
@@ -29281,7 +28967,7 @@ public final class ToolkitProtos {
     /**
      * Protobuf type {@code jd3.TsDataSuppliers.Item}
      */
-    public static final class Item extends
+    public  static final class Item extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:jd3.TsDataSuppliers.Item)
         ItemOrBuilder {
@@ -29437,7 +29123,6 @@ public final class ToolkitProtos {
        * <code>string name = 1;</code>
        * @return The name.
        */
-      @java.lang.Override
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (ref instanceof java.lang.String) {
@@ -29454,7 +29139,6 @@ public final class ToolkitProtos {
        * <code>string name = 1;</code>
        * @return The bytes for name.
        */
-      @java.lang.Override
       public com.google.protobuf.ByteString
           getNameBytes() {
         java.lang.Object ref = name_;
@@ -29474,7 +29158,6 @@ public final class ToolkitProtos {
        * <code>.jd3.TsData data = 2;</code>
        * @return Whether the data field is set.
        */
-      @java.lang.Override
       public boolean hasData() {
         return supplierCase_ == 2;
       }
@@ -29482,7 +29165,6 @@ public final class ToolkitProtos {
        * <code>.jd3.TsData data = 2;</code>
        * @return The data.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getData() {
         if (supplierCase_ == 2) {
            return (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) supplier_;
@@ -29492,7 +29174,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.TsData data = 2;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder() {
         if (supplierCase_ == 2) {
            return (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) supplier_;
@@ -29505,7 +29186,6 @@ public final class ToolkitProtos {
        * <code>.jd3.TsMoniker moniker = 3;</code>
        * @return Whether the moniker field is set.
        */
-      @java.lang.Override
       public boolean hasMoniker() {
         return supplierCase_ == 3;
       }
@@ -29513,7 +29193,6 @@ public final class ToolkitProtos {
        * <code>.jd3.TsMoniker moniker = 3;</code>
        * @return The moniker.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker() {
         if (supplierCase_ == 3) {
            return (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_;
@@ -29523,7 +29202,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.TsMoniker moniker = 3;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder() {
         if (supplierCase_ == 3) {
            return (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_;
@@ -29999,7 +29677,6 @@ public final class ToolkitProtos {
          * <code>.jd3.TsData data = 2;</code>
          * @return Whether the data field is set.
          */
-        @java.lang.Override
         public boolean hasData() {
           return supplierCase_ == 2;
         }
@@ -30007,7 +29684,6 @@ public final class ToolkitProtos {
          * <code>.jd3.TsData data = 2;</code>
          * @return The data.
          */
-        @java.lang.Override
         public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getData() {
           if (dataBuilder_ == null) {
             if (supplierCase_ == 2) {
@@ -30101,7 +29777,6 @@ public final class ToolkitProtos {
         /**
          * <code>.jd3.TsData data = 2;</code>
          */
-        @java.lang.Override
         public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder() {
           if ((supplierCase_ == 2) && (dataBuilder_ != null)) {
             return dataBuilder_.getMessageOrBuilder();
@@ -30140,7 +29815,6 @@ public final class ToolkitProtos {
          * <code>.jd3.TsMoniker moniker = 3;</code>
          * @return Whether the moniker field is set.
          */
-        @java.lang.Override
         public boolean hasMoniker() {
           return supplierCase_ == 3;
         }
@@ -30148,7 +29822,6 @@ public final class ToolkitProtos {
          * <code>.jd3.TsMoniker moniker = 3;</code>
          * @return The moniker.
          */
-        @java.lang.Override
         public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker() {
           if (monikerBuilder_ == null) {
             if (supplierCase_ == 3) {
@@ -30242,7 +29915,6 @@ public final class ToolkitProtos {
         /**
          * <code>.jd3.TsMoniker moniker = 3;</code>
          */
-        @java.lang.Override
         public demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder() {
           if ((supplierCase_ == 3) && (monikerBuilder_ != null)) {
             return monikerBuilder_.getMessageOrBuilder();
@@ -30332,14 +30004,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.TsDataSuppliers.Item items = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers.Item> getItemsList() {
       return items_;
     }
     /**
      * <code>repeated .jd3.TsDataSuppliers.Item items = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers.ItemOrBuilder> 
         getItemsOrBuilderList() {
       return items_;
@@ -30347,21 +30017,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.TsDataSuppliers.Item items = 1;</code>
      */
-    @java.lang.Override
     public int getItemsCount() {
       return items_.size();
     }
     /**
      * <code>repeated .jd3.TsDataSuppliers.Item items = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers.Item getItems(int index) {
       return items_.get(index);
     }
     /**
      * <code>repeated .jd3.TsDataSuppliers.Item items = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers.ItemOrBuilder getItemsOrBuilder(
         int index) {
       return items_.get(index);
@@ -31076,7 +30743,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ModellingContext}
    */
-  public static final class ModellingContext extends
+  public  static final class ModellingContext extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ModellingContext)
       ModellingContextOrBuilder {
@@ -31221,7 +30888,6 @@ public final class ToolkitProtos {
      * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
      */
 
-    @java.lang.Override
     public boolean containsCalendars(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -31230,7 +30896,6 @@ public final class ToolkitProtos {
     /**
      * Use {@link #getCalendarsMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition> getCalendars() {
       return getCalendarsMap();
@@ -31238,7 +30903,6 @@ public final class ToolkitProtos {
     /**
      * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition> getCalendarsMap() {
       return internalGetCalendars().getMap();
@@ -31246,7 +30910,6 @@ public final class ToolkitProtos {
     /**
      * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
      */
-    @java.lang.Override
 
     public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition getCalendarsOrDefault(
         java.lang.String key,
@@ -31259,7 +30922,6 @@ public final class ToolkitProtos {
     /**
      * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
      */
-    @java.lang.Override
 
     public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition getCalendarsOrThrow(
         java.lang.String key) {
@@ -31302,7 +30964,6 @@ public final class ToolkitProtos {
      * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
      */
 
-    @java.lang.Override
     public boolean containsVariables(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -31311,7 +30972,6 @@ public final class ToolkitProtos {
     /**
      * Use {@link #getVariablesMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers> getVariables() {
       return getVariablesMap();
@@ -31319,7 +30979,6 @@ public final class ToolkitProtos {
     /**
      * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers> getVariablesMap() {
       return internalGetVariables().getMap();
@@ -31327,7 +30986,6 @@ public final class ToolkitProtos {
     /**
      * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
      */
-    @java.lang.Override
 
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers getVariablesOrDefault(
         java.lang.String key,
@@ -31340,7 +30998,6 @@ public final class ToolkitProtos {
     /**
      * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
      */
-    @java.lang.Override
 
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers getVariablesOrThrow(
         java.lang.String key) {
@@ -31750,7 +31407,6 @@ public final class ToolkitProtos {
        * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
        */
 
-      @java.lang.Override
       public boolean containsCalendars(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -31759,7 +31415,6 @@ public final class ToolkitProtos {
       /**
        * Use {@link #getCalendarsMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition> getCalendars() {
         return getCalendarsMap();
@@ -31767,7 +31422,6 @@ public final class ToolkitProtos {
       /**
        * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition> getCalendarsMap() {
         return internalGetCalendars().getMap();
@@ -31775,7 +31429,6 @@ public final class ToolkitProtos {
       /**
        * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
        */
-      @java.lang.Override
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition getCalendarsOrDefault(
           java.lang.String key,
@@ -31788,7 +31441,6 @@ public final class ToolkitProtos {
       /**
        * <code>map&lt;string, .jd3.CalendarDefinition&gt; calendars = 1;</code>
        */
-      @java.lang.Override
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.CalendarDefinition getCalendarsOrThrow(
           java.lang.String key) {
@@ -31878,7 +31530,6 @@ public final class ToolkitProtos {
        * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
        */
 
-      @java.lang.Override
       public boolean containsVariables(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -31887,7 +31538,6 @@ public final class ToolkitProtos {
       /**
        * Use {@link #getVariablesMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers> getVariables() {
         return getVariablesMap();
@@ -31895,7 +31545,6 @@ public final class ToolkitProtos {
       /**
        * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers> getVariablesMap() {
         return internalGetVariables().getMap();
@@ -31903,7 +31552,6 @@ public final class ToolkitProtos {
       /**
        * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
        */
-      @java.lang.Override
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers getVariablesOrDefault(
           java.lang.String key,
@@ -31916,7 +31564,6 @@ public final class ToolkitProtos {
       /**
        * <code>map&lt;string, .jd3.TsDataSuppliers&gt; variables = 2;</code>
        */
-      @java.lang.Override
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers getVariablesOrThrow(
           java.lang.String key) {
@@ -32094,11 +31741,6 @@ public final class ToolkitProtos {
 
     /**
      * <code>string message = 5;</code>
-     * @return Whether the message field is set.
-     */
-    boolean hasMessage();
-    /**
-     * <code>string message = 5;</code>
      * @return The message.
      */
     java.lang.String getMessage();
@@ -32111,20 +31753,10 @@ public final class ToolkitProtos {
 
     /**
      * <code>int32 ivalue = 6;</code>
-     * @return Whether the ivalue field is set.
-     */
-    boolean hasIvalue();
-    /**
-     * <code>int32 ivalue = 6;</code>
      * @return The ivalue.
      */
     int getIvalue();
 
-    /**
-     * <code>double dvalue = 7;</code>
-     * @return Whether the dvalue field is set.
-     */
-    boolean hasDvalue();
     /**
      * <code>double dvalue = 7;</code>
      * @return The dvalue.
@@ -32136,7 +31768,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ProcessingDetail}
    */
-  public static final class ProcessingDetail extends
+  public  static final class ProcessingDetail extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ProcessingDetail)
       ProcessingDetailOrBuilder {
@@ -32338,7 +31970,6 @@ public final class ToolkitProtos {
      * <code>.jd3.TsData ts = 1;</code>
      * @return Whether the ts field is set.
      */
-    @java.lang.Override
     public boolean hasTs() {
       return dataCase_ == 1;
     }
@@ -32346,7 +31977,6 @@ public final class ToolkitProtos {
      * <code>.jd3.TsData ts = 1;</code>
      * @return The ts.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getTs() {
       if (dataCase_ == 1) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) data_;
@@ -32356,7 +31986,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.TsData ts = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getTsOrBuilder() {
       if (dataCase_ == 1) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) data_;
@@ -32369,7 +31998,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Doubles array = 2;</code>
      * @return Whether the array field is set.
      */
-    @java.lang.Override
     public boolean hasArray() {
       return dataCase_ == 2;
     }
@@ -32377,7 +32005,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Doubles array = 2;</code>
      * @return The array.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Doubles getArray() {
       if (dataCase_ == 2) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.Doubles) data_;
@@ -32387,7 +32014,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.Doubles array = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DoublesOrBuilder getArrayOrBuilder() {
       if (dataCase_ == 2) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.Doubles) data_;
@@ -32400,7 +32026,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Matrix matrix = 3;</code>
      * @return Whether the matrix field is set.
      */
-    @java.lang.Override
     public boolean hasMatrix() {
       return dataCase_ == 3;
     }
@@ -32408,7 +32033,6 @@ public final class ToolkitProtos {
      * <code>.jd3.Matrix matrix = 3;</code>
      * @return The matrix.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getMatrix() {
       if (dataCase_ == 3) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.Matrix) data_;
@@ -32418,7 +32042,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.Matrix matrix = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getMatrixOrBuilder() {
       if (dataCase_ == 3) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.Matrix) data_;
@@ -32431,7 +32054,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest test = 4;</code>
      * @return Whether the test field is set.
      */
-    @java.lang.Override
     public boolean hasTest() {
       return dataCase_ == 4;
     }
@@ -32439,7 +32061,6 @@ public final class ToolkitProtos {
      * <code>.jd3.StatisticalTest test = 4;</code>
      * @return The test.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getTest() {
       if (dataCase_ == 4) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest) data_;
@@ -32449,7 +32070,6 @@ public final class ToolkitProtos {
     /**
      * <code>.jd3.StatisticalTest test = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getTestOrBuilder() {
       if (dataCase_ == 4) {
          return (demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest) data_;
@@ -32458,13 +32078,6 @@ public final class ToolkitProtos {
     }
 
     public static final int MESSAGE_FIELD_NUMBER = 5;
-    /**
-     * <code>string message = 5;</code>
-     * @return Whether the message field is set.
-     */
-    public boolean hasMessage() {
-      return dataCase_ == 5;
-    }
     /**
      * <code>string message = 5;</code>
      * @return The message.
@@ -32512,17 +32125,8 @@ public final class ToolkitProtos {
     public static final int IVALUE_FIELD_NUMBER = 6;
     /**
      * <code>int32 ivalue = 6;</code>
-     * @return Whether the ivalue field is set.
-     */
-    @java.lang.Override
-    public boolean hasIvalue() {
-      return dataCase_ == 6;
-    }
-    /**
-     * <code>int32 ivalue = 6;</code>
      * @return The ivalue.
      */
-    @java.lang.Override
     public int getIvalue() {
       if (dataCase_ == 6) {
         return (java.lang.Integer) data_;
@@ -32533,17 +32137,8 @@ public final class ToolkitProtos {
     public static final int DVALUE_FIELD_NUMBER = 7;
     /**
      * <code>double dvalue = 7;</code>
-     * @return Whether the dvalue field is set.
-     */
-    @java.lang.Override
-    public boolean hasDvalue() {
-      return dataCase_ == 7;
-    }
-    /**
-     * <code>double dvalue = 7;</code>
      * @return The dvalue.
      */
-    @java.lang.Override
     public double getDvalue() {
       if (dataCase_ == 7) {
         return (java.lang.Double) data_;
@@ -33051,7 +32646,6 @@ public final class ToolkitProtos {
        * <code>.jd3.TsData ts = 1;</code>
        * @return Whether the ts field is set.
        */
-      @java.lang.Override
       public boolean hasTs() {
         return dataCase_ == 1;
       }
@@ -33059,7 +32653,6 @@ public final class ToolkitProtos {
        * <code>.jd3.TsData ts = 1;</code>
        * @return The ts.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getTs() {
         if (tsBuilder_ == null) {
           if (dataCase_ == 1) {
@@ -33153,7 +32746,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.TsData ts = 1;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getTsOrBuilder() {
         if ((dataCase_ == 1) && (tsBuilder_ != null)) {
           return tsBuilder_.getMessageOrBuilder();
@@ -33192,7 +32784,6 @@ public final class ToolkitProtos {
        * <code>.jd3.Doubles array = 2;</code>
        * @return Whether the array field is set.
        */
-      @java.lang.Override
       public boolean hasArray() {
         return dataCase_ == 2;
       }
@@ -33200,7 +32791,6 @@ public final class ToolkitProtos {
        * <code>.jd3.Doubles array = 2;</code>
        * @return The array.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Doubles getArray() {
         if (arrayBuilder_ == null) {
           if (dataCase_ == 2) {
@@ -33294,7 +32884,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.Doubles array = 2;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.DoublesOrBuilder getArrayOrBuilder() {
         if ((dataCase_ == 2) && (arrayBuilder_ != null)) {
           return arrayBuilder_.getMessageOrBuilder();
@@ -33333,7 +32922,6 @@ public final class ToolkitProtos {
        * <code>.jd3.Matrix matrix = 3;</code>
        * @return Whether the matrix field is set.
        */
-      @java.lang.Override
       public boolean hasMatrix() {
         return dataCase_ == 3;
       }
@@ -33341,7 +32929,6 @@ public final class ToolkitProtos {
        * <code>.jd3.Matrix matrix = 3;</code>
        * @return The matrix.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getMatrix() {
         if (matrixBuilder_ == null) {
           if (dataCase_ == 3) {
@@ -33435,7 +33022,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.Matrix matrix = 3;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getMatrixOrBuilder() {
         if ((dataCase_ == 3) && (matrixBuilder_ != null)) {
           return matrixBuilder_.getMessageOrBuilder();
@@ -33474,7 +33060,6 @@ public final class ToolkitProtos {
        * <code>.jd3.StatisticalTest test = 4;</code>
        * @return Whether the test field is set.
        */
-      @java.lang.Override
       public boolean hasTest() {
         return dataCase_ == 4;
       }
@@ -33482,7 +33067,6 @@ public final class ToolkitProtos {
        * <code>.jd3.StatisticalTest test = 4;</code>
        * @return The test.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getTest() {
         if (testBuilder_ == null) {
           if (dataCase_ == 4) {
@@ -33576,7 +33160,6 @@ public final class ToolkitProtos {
       /**
        * <code>.jd3.StatisticalTest test = 4;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTestOrBuilder getTestOrBuilder() {
         if ((dataCase_ == 4) && (testBuilder_ != null)) {
           return testBuilder_.getMessageOrBuilder();
@@ -33611,17 +33194,8 @@ public final class ToolkitProtos {
 
       /**
        * <code>string message = 5;</code>
-       * @return Whether the message field is set.
-       */
-      @java.lang.Override
-      public boolean hasMessage() {
-        return dataCase_ == 5;
-      }
-      /**
-       * <code>string message = 5;</code>
        * @return The message.
        */
-      @java.lang.Override
       public java.lang.String getMessage() {
         java.lang.Object ref = "";
         if (dataCase_ == 5) {
@@ -33643,7 +33217,6 @@ public final class ToolkitProtos {
        * <code>string message = 5;</code>
        * @return The bytes for message.
        */
-      @java.lang.Override
       public com.google.protobuf.ByteString
           getMessageBytes() {
         java.lang.Object ref = "";
@@ -33708,13 +33281,6 @@ public final class ToolkitProtos {
 
       /**
        * <code>int32 ivalue = 6;</code>
-       * @return Whether the ivalue field is set.
-       */
-      public boolean hasIvalue() {
-        return dataCase_ == 6;
-      }
-      /**
-       * <code>int32 ivalue = 6;</code>
        * @return The ivalue.
        */
       public int getIvalue() {
@@ -33747,13 +33313,6 @@ public final class ToolkitProtos {
         return this;
       }
 
-      /**
-       * <code>double dvalue = 7;</code>
-       * @return Whether the dvalue field is set.
-       */
-      public boolean hasDvalue() {
-        return dataCase_ == 7;
-      }
       /**
        * <code>double dvalue = 7;</code>
        * @return The dvalue.
@@ -33918,7 +33477,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ProcessingInformation}
    */
-  public static final class ProcessingInformation extends
+  public  static final class ProcessingInformation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ProcessingInformation)
       ProcessingInformationOrBuilder {
@@ -34040,7 +33599,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -34057,7 +33615,6 @@ public final class ToolkitProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -34078,7 +33635,6 @@ public final class ToolkitProtos {
      * <code>string origin = 2;</code>
      * @return The origin.
      */
-    @java.lang.Override
     public java.lang.String getOrigin() {
       java.lang.Object ref = origin_;
       if (ref instanceof java.lang.String) {
@@ -34095,7 +33651,6 @@ public final class ToolkitProtos {
      * <code>string origin = 2;</code>
      * @return The bytes for origin.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getOriginBytes() {
       java.lang.Object ref = origin_;
@@ -34116,7 +33671,6 @@ public final class ToolkitProtos {
      * <code>string msg = 3;</code>
      * @return The msg.
      */
-    @java.lang.Override
     public java.lang.String getMsg() {
       java.lang.Object ref = msg_;
       if (ref instanceof java.lang.String) {
@@ -34133,7 +33687,6 @@ public final class ToolkitProtos {
      * <code>string msg = 3;</code>
      * @return The bytes for msg.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getMsgBytes() {
       java.lang.Object ref = msg_;
@@ -34154,14 +33707,14 @@ public final class ToolkitProtos {
      * <code>.jd3.InformationType type = 4;</code>
      * @return The enum numeric value on the wire for type.
      */
-    @java.lang.Override public int getTypeValue() {
+    public int getTypeValue() {
       return type_;
     }
     /**
      * <code>.jd3.InformationType type = 4;</code>
      * @return The type.
      */
-    @java.lang.Override public demetra.toolkit.io.protobuf.ToolkitProtos.InformationType getType() {
+    public demetra.toolkit.io.protobuf.ToolkitProtos.InformationType getType() {
       @SuppressWarnings("deprecation")
       demetra.toolkit.io.protobuf.ToolkitProtos.InformationType result = demetra.toolkit.io.protobuf.ToolkitProtos.InformationType.valueOf(type_);
       return result == null ? demetra.toolkit.io.protobuf.ToolkitProtos.InformationType.UNRECOGNIZED : result;
@@ -34172,14 +33725,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.ProcessingDetail details = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail> getDetailsList() {
       return details_;
     }
     /**
      * <code>repeated .jd3.ProcessingDetail details = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetailOrBuilder> 
         getDetailsOrBuilderList() {
       return details_;
@@ -34187,21 +33738,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.ProcessingDetail details = 5;</code>
      */
-    @java.lang.Override
     public int getDetailsCount() {
       return details_.size();
     }
     /**
      * <code>repeated .jd3.ProcessingDetail details = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetail getDetails(int index) {
       return details_.get(index);
     }
     /**
      * <code>repeated .jd3.ProcessingDetail details = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingDetailOrBuilder getDetailsOrBuilder(
         int index) {
       return details_.get(index);
@@ -34849,7 +34397,7 @@ public final class ToolkitProtos {
        * <code>.jd3.InformationType type = 4;</code>
        * @return The enum numeric value on the wire for type.
        */
-      @java.lang.Override public int getTypeValue() {
+      public int getTypeValue() {
         return type_;
       }
       /**
@@ -34858,7 +34406,6 @@ public final class ToolkitProtos {
        * @return This builder for chaining.
        */
       public Builder setTypeValue(int value) {
-        
         type_ = value;
         onChanged();
         return this;
@@ -34867,7 +34414,6 @@ public final class ToolkitProtos {
        * <code>.jd3.InformationType type = 4;</code>
        * @return The type.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.InformationType getType() {
         @SuppressWarnings("deprecation")
         demetra.toolkit.io.protobuf.ToolkitProtos.InformationType result = demetra.toolkit.io.protobuf.ToolkitProtos.InformationType.valueOf(type_);
@@ -35221,7 +34767,7 @@ public final class ToolkitProtos {
   /**
    * Protobuf type {@code jd3.ProcessingLogs}
    */
-  public static final class ProcessingLogs extends
+  public  static final class ProcessingLogs extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:jd3.ProcessingLogs)
       ProcessingLogsOrBuilder {
@@ -35314,14 +34860,12 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.ProcessingInformation log = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingInformation> getLogList() {
       return log_;
     }
     /**
      * <code>repeated .jd3.ProcessingInformation log = 1;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingInformationOrBuilder> 
         getLogOrBuilderList() {
       return log_;
@@ -35329,21 +34873,18 @@ public final class ToolkitProtos {
     /**
      * <code>repeated .jd3.ProcessingInformation log = 1;</code>
      */
-    @java.lang.Override
     public int getLogCount() {
       return log_.size();
     }
     /**
      * <code>repeated .jd3.ProcessingInformation log = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingInformation getLog(int index) {
       return log_.get(index);
     }
     /**
      * <code>repeated .jd3.ProcessingInformation log = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ProcessingInformationOrBuilder getLogOrBuilder(
         int index) {
       return log_.get(index);
@@ -36296,9 +35837,9 @@ public final class ToolkitProtos {
       "EEN\020\021\022\030\n\024HOLIDAY_ALLSAINTSDAY\020\022\022\025\n\021HOLID" +
       "AY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKSGIVING\020\024" +
       "\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017InformationTy" +
-      "pe\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Error\020\002B,\n\033" +
+      "pe\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Error\020\002B.\n\033" +
       "demetra.toolkit.io.protobufB\rToolkitProt" +
-      "osb\006proto3"
+      "osP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

@@ -1,0 +1,46 @@
+syntax = "proto3";
+import public "toolkit.proto";
+import public "modelling.proto";
+
+package regarima;
+
+option java_package = "demetra.regarima.io.protobuf";
+option java_outer_classname = "RegArimaProtos";
+
+message SarimaSpec{
+	int32 period = 1;
+	repeated jd3.Parameter phi = 2;
+	int32 d = 3;
+	repeated jd3.Parameter theta = 4;
+	repeated jd3.Parameter bphi = 5;
+	int32 bd = 6;
+	repeated jd3.Parameter btheta = 7;
+}
+
+message RegArimaModel{
+
+	message Description{
+		jd3.TsData series = 1;
+		bool log = 2;
+		modelling.LengthOfPeriod preadjustment = 3;
+		repeated modelling.RegressionVariable variables = 4;
+		SarimaSpec arima = 5;
+	}
+	
+	message Estimation{
+		/* Model  y = Xb + u */
+		repeated double y =1;
+		jd3.Matrix x = 2;
+		repeated double b = 3;
+		jd3.Matrix bcovariance = 4;
+		jd3.ParametersEstimation parameters = 5;
+		jd3.LikelihoodStatistics likelihood = 6;
+		repeated double residuals = 7;
+		repeated modelling.MissingEstimation missings = 8;
+	}
+	
+	Description description = 1;
+	Estimation estimation = 2;
+	modelling.Diagnostics diagnostics = 5;	
+}
+

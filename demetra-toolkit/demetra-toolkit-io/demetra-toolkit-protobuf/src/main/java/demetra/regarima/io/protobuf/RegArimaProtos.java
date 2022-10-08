@@ -135,7 +135,7 @@ public final class RegArimaProtos {
   /**
    * Protobuf type {@code regarima.SarimaSpec}
    */
-  public static final class SarimaSpec extends
+  public  static final class SarimaSpec extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:regarima.SarimaSpec)
       SarimaSpecOrBuilder {
@@ -283,7 +283,6 @@ public final class RegArimaProtos {
      * <code>int32 period = 1;</code>
      * @return The period.
      */
-    @java.lang.Override
     public int getPeriod() {
       return period_;
     }
@@ -293,14 +292,12 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter phi = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getPhiList() {
       return phi_;
     }
     /**
      * <code>repeated .jd3.Parameter phi = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getPhiOrBuilderList() {
       return phi_;
@@ -308,21 +305,18 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter phi = 2;</code>
      */
-    @java.lang.Override
     public int getPhiCount() {
       return phi_.size();
     }
     /**
      * <code>repeated .jd3.Parameter phi = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getPhi(int index) {
       return phi_.get(index);
     }
     /**
      * <code>repeated .jd3.Parameter phi = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getPhiOrBuilder(
         int index) {
       return phi_.get(index);
@@ -334,7 +328,6 @@ public final class RegArimaProtos {
      * <code>int32 d = 3;</code>
      * @return The d.
      */
-    @java.lang.Override
     public int getD() {
       return d_;
     }
@@ -344,14 +337,12 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter theta = 4;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getThetaList() {
       return theta_;
     }
     /**
      * <code>repeated .jd3.Parameter theta = 4;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getThetaOrBuilderList() {
       return theta_;
@@ -359,21 +350,18 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter theta = 4;</code>
      */
-    @java.lang.Override
     public int getThetaCount() {
       return theta_.size();
     }
     /**
      * <code>repeated .jd3.Parameter theta = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTheta(int index) {
       return theta_.get(index);
     }
     /**
      * <code>repeated .jd3.Parameter theta = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getThetaOrBuilder(
         int index) {
       return theta_.get(index);
@@ -384,14 +372,12 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getBphiList() {
       return bphi_;
     }
     /**
      * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getBphiOrBuilderList() {
       return bphi_;
@@ -399,21 +385,18 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
-    @java.lang.Override
     public int getBphiCount() {
       return bphi_.size();
     }
     /**
      * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBphi(int index) {
       return bphi_.get(index);
     }
     /**
      * <code>repeated .jd3.Parameter bphi = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBphiOrBuilder(
         int index) {
       return bphi_.get(index);
@@ -425,7 +408,6 @@ public final class RegArimaProtos {
      * <code>int32 bd = 6;</code>
      * @return The bd.
      */
-    @java.lang.Override
     public int getBd() {
       return bd_;
     }
@@ -435,14 +417,12 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getBthetaList() {
       return btheta_;
     }
     /**
      * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getBthetaOrBuilderList() {
       return btheta_;
@@ -450,21 +430,18 @@ public final class RegArimaProtos {
     /**
      * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
-    @java.lang.Override
     public int getBthetaCount() {
       return btheta_.size();
     }
     /**
      * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getBtheta(int index) {
       return btheta_.get(index);
     }
     /**
      * <code>repeated .jd3.Parameter btheta = 7;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getBthetaOrBuilder(
         int index) {
       return btheta_.get(index);
@@ -1033,7 +1010,6 @@ public final class RegArimaProtos {
        * <code>int32 period = 1;</code>
        * @return The period.
        */
-      @java.lang.Override
       public int getPeriod() {
         return period_;
       }
@@ -1304,7 +1280,6 @@ public final class RegArimaProtos {
        * <code>int32 d = 3;</code>
        * @return The d.
        */
-      @java.lang.Override
       public int getD() {
         return d_;
       }
@@ -1815,7 +1790,6 @@ public final class RegArimaProtos {
        * <code>int32 bd = 6;</code>
        * @return The bd.
        */
-      @java.lang.Override
       public int getBd() {
         return bd_;
       }
@@ -2185,7 +2159,7 @@ public final class RegArimaProtos {
   /**
    * Protobuf type {@code regarima.RegArimaModel}
    */
-  public static final class RegArimaModel extends
+  public  static final class RegArimaModel extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:regarima.RegArimaModel)
       RegArimaModelOrBuilder {
@@ -2376,7 +2350,7 @@ public final class RegArimaProtos {
     /**
      * Protobuf type {@code regarima.RegArimaModel.Description}
      */
-    public static final class Description extends
+    public  static final class Description extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:regarima.RegArimaModel.Description)
         DescriptionOrBuilder {
@@ -2508,7 +2482,6 @@ public final class RegArimaProtos {
        * <code>.jd3.TsData series = 1;</code>
        * @return Whether the series field is set.
        */
-      @java.lang.Override
       public boolean hasSeries() {
         return series_ != null;
       }
@@ -2516,14 +2489,12 @@ public final class RegArimaProtos {
        * <code>.jd3.TsData series = 1;</code>
        * @return The series.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getSeries() {
         return series_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : series_;
       }
       /**
        * <code>.jd3.TsData series = 1;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getSeriesOrBuilder() {
         return getSeries();
       }
@@ -2534,7 +2505,6 @@ public final class RegArimaProtos {
        * <code>bool log = 2;</code>
        * @return The log.
        */
-      @java.lang.Override
       public boolean getLog() {
         return log_;
       }
@@ -2545,14 +2515,14 @@ public final class RegArimaProtos {
        * <code>.modelling.LengthOfPeriod preadjustment = 3;</code>
        * @return The enum numeric value on the wire for preadjustment.
        */
-      @java.lang.Override public int getPreadjustmentValue() {
+      public int getPreadjustmentValue() {
         return preadjustment_;
       }
       /**
        * <code>.modelling.LengthOfPeriod preadjustment = 3;</code>
        * @return The preadjustment.
        */
-      @java.lang.Override public demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod getPreadjustment() {
+      public demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod getPreadjustment() {
         @SuppressWarnings("deprecation")
         demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod result = demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod.valueOf(preadjustment_);
         return result == null ? demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod.UNRECOGNIZED : result;
@@ -2563,14 +2533,12 @@ public final class RegArimaProtos {
       /**
        * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
-      @java.lang.Override
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable> getVariablesList() {
         return variables_;
       }
       /**
        * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
-      @java.lang.Override
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder> 
           getVariablesOrBuilderList() {
         return variables_;
@@ -2578,21 +2546,18 @@ public final class RegArimaProtos {
       /**
        * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
-      @java.lang.Override
       public int getVariablesCount() {
         return variables_.size();
       }
       /**
        * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
-      @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariable getVariables(int index) {
         return variables_.get(index);
       }
       /**
        * <code>repeated .modelling.RegressionVariable variables = 4;</code>
        */
-      @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.RegressionVariableOrBuilder getVariablesOrBuilder(
           int index) {
         return variables_.get(index);
@@ -2604,7 +2569,6 @@ public final class RegArimaProtos {
        * <code>.regarima.SarimaSpec arima = 5;</code>
        * @return Whether the arima field is set.
        */
-      @java.lang.Override
       public boolean hasArima() {
         return arima_ != null;
       }
@@ -2612,14 +2576,12 @@ public final class RegArimaProtos {
        * <code>.regarima.SarimaSpec arima = 5;</code>
        * @return The arima.
        */
-      @java.lang.Override
       public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec getArima() {
         return arima_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpec.getDefaultInstance() : arima_;
       }
       /**
        * <code>.regarima.SarimaSpec arima = 5;</code>
        */
-      @java.lang.Override
       public demetra.regarima.io.protobuf.RegArimaProtos.SarimaSpecOrBuilder getArimaOrBuilder() {
         return getArima();
       }
@@ -3184,7 +3146,6 @@ public final class RegArimaProtos {
          * <code>bool log = 2;</code>
          * @return The log.
          */
-        @java.lang.Override
         public boolean getLog() {
           return log_;
         }
@@ -3215,7 +3176,7 @@ public final class RegArimaProtos {
          * <code>.modelling.LengthOfPeriod preadjustment = 3;</code>
          * @return The enum numeric value on the wire for preadjustment.
          */
-        @java.lang.Override public int getPreadjustmentValue() {
+        public int getPreadjustmentValue() {
           return preadjustment_;
         }
         /**
@@ -3224,7 +3185,6 @@ public final class RegArimaProtos {
          * @return This builder for chaining.
          */
         public Builder setPreadjustmentValue(int value) {
-          
           preadjustment_ = value;
           onChanged();
           return this;
@@ -3233,7 +3193,6 @@ public final class RegArimaProtos {
          * <code>.modelling.LengthOfPeriod preadjustment = 3;</code>
          * @return The preadjustment.
          */
-        @java.lang.Override
         public demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod getPreadjustment() {
           @SuppressWarnings("deprecation")
           demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod result = demetra.modelling.io.protobuf.ModellingProtos.LengthOfPeriod.valueOf(preadjustment_);
@@ -3829,7 +3788,7 @@ public final class RegArimaProtos {
     /**
      * Protobuf type {@code regarima.RegArimaModel.Estimation}
      */
-    public static final class Estimation extends
+    public  static final class Estimation extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:regarima.RegArimaModel.Estimation)
         EstimationOrBuilder {
@@ -4054,7 +4013,6 @@ public final class RegArimaProtos {
        * <code>repeated double y = 1;</code>
        * @return A list containing the y.
        */
-      @java.lang.Override
       public java.util.List<java.lang.Double>
           getYList() {
         return y_;
@@ -4090,7 +4048,6 @@ public final class RegArimaProtos {
        * <code>.jd3.Matrix x = 2;</code>
        * @return Whether the x field is set.
        */
-      @java.lang.Override
       public boolean hasX() {
         return x_ != null;
       }
@@ -4098,14 +4055,12 @@ public final class RegArimaProtos {
        * <code>.jd3.Matrix x = 2;</code>
        * @return The x.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getX() {
         return x_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : x_;
       }
       /**
        * <code>.jd3.Matrix x = 2;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getXOrBuilder() {
         return getX();
       }
@@ -4116,7 +4071,6 @@ public final class RegArimaProtos {
        * <code>repeated double b = 3;</code>
        * @return A list containing the b.
        */
-      @java.lang.Override
       public java.util.List<java.lang.Double>
           getBList() {
         return b_;
@@ -4144,7 +4098,6 @@ public final class RegArimaProtos {
        * <code>.jd3.Matrix bcovariance = 4;</code>
        * @return Whether the bcovariance field is set.
        */
-      @java.lang.Override
       public boolean hasBcovariance() {
         return bcovariance_ != null;
       }
@@ -4152,14 +4105,12 @@ public final class RegArimaProtos {
        * <code>.jd3.Matrix bcovariance = 4;</code>
        * @return The bcovariance.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getBcovariance() {
         return bcovariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : bcovariance_;
       }
       /**
        * <code>.jd3.Matrix bcovariance = 4;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getBcovarianceOrBuilder() {
         return getBcovariance();
       }
@@ -4170,7 +4121,6 @@ public final class RegArimaProtos {
        * <code>.jd3.ParametersEstimation parameters = 5;</code>
        * @return Whether the parameters field is set.
        */
-      @java.lang.Override
       public boolean hasParameters() {
         return parameters_ != null;
       }
@@ -4178,14 +4128,12 @@ public final class RegArimaProtos {
        * <code>.jd3.ParametersEstimation parameters = 5;</code>
        * @return The parameters.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParametersEstimation getParameters() {
         return parameters_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.ParametersEstimation.getDefaultInstance() : parameters_;
       }
       /**
        * <code>.jd3.ParametersEstimation parameters = 5;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParametersEstimationOrBuilder getParametersOrBuilder() {
         return getParameters();
       }
@@ -4196,7 +4144,6 @@ public final class RegArimaProtos {
        * <code>.jd3.LikelihoodStatistics likelihood = 6;</code>
        * @return Whether the likelihood field is set.
        */
-      @java.lang.Override
       public boolean hasLikelihood() {
         return likelihood_ != null;
       }
@@ -4204,14 +4151,12 @@ public final class RegArimaProtos {
        * <code>.jd3.LikelihoodStatistics likelihood = 6;</code>
        * @return The likelihood.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihood() {
         return likelihood_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihood_;
       }
       /**
        * <code>.jd3.LikelihoodStatistics likelihood = 6;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodOrBuilder() {
         return getLikelihood();
       }
@@ -4222,7 +4167,6 @@ public final class RegArimaProtos {
        * <code>repeated double residuals = 7;</code>
        * @return A list containing the residuals.
        */
-      @java.lang.Override
       public java.util.List<java.lang.Double>
           getResidualsList() {
         return residuals_;
@@ -4249,14 +4193,12 @@ public final class RegArimaProtos {
       /**
        * <code>repeated .modelling.MissingEstimation missings = 8;</code>
        */
-      @java.lang.Override
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.MissingEstimation> getMissingsList() {
         return missings_;
       }
       /**
        * <code>repeated .modelling.MissingEstimation missings = 8;</code>
        */
-      @java.lang.Override
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.MissingEstimationOrBuilder> 
           getMissingsOrBuilderList() {
         return missings_;
@@ -4264,21 +4206,18 @@ public final class RegArimaProtos {
       /**
        * <code>repeated .modelling.MissingEstimation missings = 8;</code>
        */
-      @java.lang.Override
       public int getMissingsCount() {
         return missings_.size();
       }
       /**
        * <code>repeated .modelling.MissingEstimation missings = 8;</code>
        */
-      @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.MissingEstimation getMissings(int index) {
         return missings_.get(index);
       }
       /**
        * <code>repeated .modelling.MissingEstimation missings = 8;</code>
        */
-      @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.MissingEstimationOrBuilder getMissingsOrBuilder(
           int index) {
         return missings_.get(index);
@@ -5909,7 +5848,6 @@ public final class RegArimaProtos {
      * <code>.regarima.RegArimaModel.Description description = 1;</code>
      * @return Whether the description field is set.
      */
-    @java.lang.Override
     public boolean hasDescription() {
       return description_ != null;
     }
@@ -5917,14 +5855,12 @@ public final class RegArimaProtos {
      * <code>.regarima.RegArimaModel.Description description = 1;</code>
      * @return The description.
      */
-    @java.lang.Override
     public demetra.regarima.io.protobuf.RegArimaProtos.RegArimaModel.Description getDescription() {
       return description_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.RegArimaModel.Description.getDefaultInstance() : description_;
     }
     /**
      * <code>.regarima.RegArimaModel.Description description = 1;</code>
      */
-    @java.lang.Override
     public demetra.regarima.io.protobuf.RegArimaProtos.RegArimaModel.DescriptionOrBuilder getDescriptionOrBuilder() {
       return getDescription();
     }
@@ -5935,7 +5871,6 @@ public final class RegArimaProtos {
      * <code>.regarima.RegArimaModel.Estimation estimation = 2;</code>
      * @return Whether the estimation field is set.
      */
-    @java.lang.Override
     public boolean hasEstimation() {
       return estimation_ != null;
     }
@@ -5943,14 +5878,12 @@ public final class RegArimaProtos {
      * <code>.regarima.RegArimaModel.Estimation estimation = 2;</code>
      * @return The estimation.
      */
-    @java.lang.Override
     public demetra.regarima.io.protobuf.RegArimaProtos.RegArimaModel.Estimation getEstimation() {
       return estimation_ == null ? demetra.regarima.io.protobuf.RegArimaProtos.RegArimaModel.Estimation.getDefaultInstance() : estimation_;
     }
     /**
      * <code>.regarima.RegArimaModel.Estimation estimation = 2;</code>
      */
-    @java.lang.Override
     public demetra.regarima.io.protobuf.RegArimaProtos.RegArimaModel.EstimationOrBuilder getEstimationOrBuilder() {
       return getEstimation();
     }
@@ -5961,7 +5894,6 @@ public final class RegArimaProtos {
      * <code>.modelling.Diagnostics diagnostics = 5;</code>
      * @return Whether the diagnostics field is set.
      */
-    @java.lang.Override
     public boolean hasDiagnostics() {
       return diagnostics_ != null;
     }
@@ -5969,14 +5901,12 @@ public final class RegArimaProtos {
      * <code>.modelling.Diagnostics diagnostics = 5;</code>
      * @return The diagnostics.
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.Diagnostics getDiagnostics() {
       return diagnostics_ == null ? demetra.modelling.io.protobuf.ModellingProtos.Diagnostics.getDefaultInstance() : diagnostics_;
     }
     /**
      * <code>.modelling.Diagnostics diagnostics = 5;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.DiagnosticsOrBuilder getDiagnosticsOrBuilder() {
       return getDiagnostics();
     }

@@ -93,10 +93,6 @@ public final class ModellingProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -210,10 +206,6 @@ public final class ModellingProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -386,10 +378,6 @@ public final class ModellingProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -584,10 +572,6 @@ public final class ModellingProtos {
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
-      if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
-      }
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
@@ -723,7 +707,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.TsVariable}
    */
-  public static final class TsVariable extends
+  public  static final class TsVariable extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.TsVariable)
       TsVariableOrBuilder {
@@ -866,7 +850,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -883,7 +866,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -904,7 +886,6 @@ public final class ModellingProtos {
      * <code>string id = 2;</code>
      * @return The id.
      */
-    @java.lang.Override
     public java.lang.String getId() {
       java.lang.Object ref = id_;
       if (ref instanceof java.lang.String) {
@@ -921,7 +902,6 @@ public final class ModellingProtos {
      * <code>string id = 2;</code>
      * @return The bytes for id.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getIdBytes() {
       java.lang.Object ref = id_;
@@ -942,7 +922,6 @@ public final class ModellingProtos {
      * <code>int32 first_lag = 3;</code>
      * @return The firstLag.
      */
-    @java.lang.Override
     public int getFirstLag() {
       return firstLag_;
     }
@@ -953,7 +932,6 @@ public final class ModellingProtos {
      * <code>int32 last_lag = 4;</code>
      * @return The lastLag.
      */
-    @java.lang.Override
     public int getLastLag() {
       return lastLag_;
     }
@@ -963,14 +941,12 @@ public final class ModellingProtos {
     /**
      * <code>repeated .jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getCoefficientList() {
       return coefficient_;
     }
     /**
      * <code>repeated .jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getCoefficientOrBuilderList() {
       return coefficient_;
@@ -978,21 +954,18 @@ public final class ModellingProtos {
     /**
      * <code>repeated .jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public int getCoefficientCount() {
       return coefficient_.size();
     }
     /**
      * <code>repeated .jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient(int index) {
       return coefficient_.get(index);
     }
     /**
      * <code>repeated .jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder(
         int index) {
       return coefficient_.get(index);
@@ -1028,7 +1001,6 @@ public final class ModellingProtos {
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
 
-    @java.lang.Override
     public boolean containsMetadata(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -1037,7 +1009,6 @@ public final class ModellingProtos {
     /**
      * Use {@link #getMetadataMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
       return getMetadataMap();
@@ -1045,7 +1016,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
       return internalGetMetadata().getMap();
@@ -1053,7 +1023,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrDefault(
         java.lang.String key,
@@ -1066,7 +1035,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrThrow(
         java.lang.String key) {
@@ -1695,7 +1663,6 @@ public final class ModellingProtos {
        * <code>int32 first_lag = 3;</code>
        * @return The firstLag.
        */
-      @java.lang.Override
       public int getFirstLag() {
         return firstLag_;
       }
@@ -1726,7 +1693,6 @@ public final class ModellingProtos {
        * <code>int32 last_lag = 4;</code>
        * @return The lastLag.
        */
-      @java.lang.Override
       public int getLastLag() {
         return lastLag_;
       }
@@ -2022,7 +1988,6 @@ public final class ModellingProtos {
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
 
-      @java.lang.Override
       public boolean containsMetadata(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -2031,7 +1996,6 @@ public final class ModellingProtos {
       /**
        * Use {@link #getMetadataMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
         return getMetadataMap();
@@ -2039,7 +2003,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
         return internalGetMetadata().getMap();
@@ -2047,7 +2010,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrDefault(
           java.lang.String key,
@@ -2060,7 +2022,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrThrow(
           java.lang.String key) {
@@ -2270,7 +2231,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.Ramp}
    */
-  public static final class Ramp extends
+  public  static final class Ramp extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.Ramp)
       RampOrBuilder {
@@ -2422,7 +2383,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -2439,7 +2399,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -2460,7 +2419,6 @@ public final class ModellingProtos {
      * <code>.jd3.Date start = 2;</code>
      * @return Whether the start field is set.
      */
-    @java.lang.Override
     public boolean hasStart() {
       return start_ != null;
     }
@@ -2468,14 +2426,12 @@ public final class ModellingProtos {
      * <code>.jd3.Date start = 2;</code>
      * @return The start.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
       return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
     }
     /**
      * <code>.jd3.Date start = 2;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
       return getStart();
     }
@@ -2486,7 +2442,6 @@ public final class ModellingProtos {
      * <code>.jd3.Date end = 3;</code>
      * @return Whether the end field is set.
      */
-    @java.lang.Override
     public boolean hasEnd() {
       return end_ != null;
     }
@@ -2494,14 +2449,12 @@ public final class ModellingProtos {
      * <code>.jd3.Date end = 3;</code>
      * @return The end.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
       return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
     }
     /**
      * <code>.jd3.Date end = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
       return getEnd();
     }
@@ -2512,7 +2465,6 @@ public final class ModellingProtos {
      * <code>.jd3.Parameter coefficient = 5;</code>
      * @return Whether the coefficient field is set.
      */
-    @java.lang.Override
     public boolean hasCoefficient() {
       return coefficient_ != null;
     }
@@ -2520,14 +2472,12 @@ public final class ModellingProtos {
      * <code>.jd3.Parameter coefficient = 5;</code>
      * @return The coefficient.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
       return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
     }
     /**
      * <code>.jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
       return getCoefficient();
     }
@@ -2562,7 +2512,6 @@ public final class ModellingProtos {
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
 
-    @java.lang.Override
     public boolean containsMetadata(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -2571,7 +2520,6 @@ public final class ModellingProtos {
     /**
      * Use {@link #getMetadataMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
       return getMetadataMap();
@@ -2579,7 +2527,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
       return internalGetMetadata().getMap();
@@ -2587,7 +2534,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrDefault(
         java.lang.String key,
@@ -2600,7 +2546,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrThrow(
         java.lang.String key) {
@@ -3519,7 +3464,6 @@ public final class ModellingProtos {
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
 
-      @java.lang.Override
       public boolean containsMetadata(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -3528,7 +3472,6 @@ public final class ModellingProtos {
       /**
        * Use {@link #getMetadataMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
         return getMetadataMap();
@@ -3536,7 +3479,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
         return internalGetMetadata().getMap();
@@ -3544,7 +3486,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrDefault(
           java.lang.String key,
@@ -3557,7 +3498,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrThrow(
           java.lang.String key) {
@@ -3764,7 +3704,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.Outlier}
    */
-  public static final class Outlier extends
+  public  static final class Outlier extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.Outlier)
       OutlierOrBuilder {
@@ -3910,7 +3850,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -3927,7 +3866,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -3948,7 +3886,6 @@ public final class ModellingProtos {
      * <code>string code = 2;</code>
      * @return The code.
      */
-    @java.lang.Override
     public java.lang.String getCode() {
       java.lang.Object ref = code_;
       if (ref instanceof java.lang.String) {
@@ -3965,7 +3902,6 @@ public final class ModellingProtos {
      * <code>string code = 2;</code>
      * @return The bytes for code.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getCodeBytes() {
       java.lang.Object ref = code_;
@@ -3986,7 +3922,6 @@ public final class ModellingProtos {
      * <code>.jd3.Date position = 3;</code>
      * @return Whether the position field is set.
      */
-    @java.lang.Override
     public boolean hasPosition() {
       return position_ != null;
     }
@@ -3994,14 +3929,12 @@ public final class ModellingProtos {
      * <code>.jd3.Date position = 3;</code>
      * @return The position.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Date getPosition() {
       return position_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : position_;
     }
     /**
      * <code>.jd3.Date position = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getPositionOrBuilder() {
       return getPosition();
     }
@@ -4012,7 +3945,6 @@ public final class ModellingProtos {
      * <code>.jd3.Parameter coefficient = 5;</code>
      * @return Whether the coefficient field is set.
      */
-    @java.lang.Override
     public boolean hasCoefficient() {
       return coefficient_ != null;
     }
@@ -4020,14 +3952,12 @@ public final class ModellingProtos {
      * <code>.jd3.Parameter coefficient = 5;</code>
      * @return The coefficient.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
       return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
     }
     /**
      * <code>.jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
       return getCoefficient();
     }
@@ -4062,7 +3992,6 @@ public final class ModellingProtos {
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
 
-    @java.lang.Override
     public boolean containsMetadata(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -4071,7 +4000,6 @@ public final class ModellingProtos {
     /**
      * Use {@link #getMetadataMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
       return getMetadataMap();
@@ -4079,7 +4007,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
       return internalGetMetadata().getMap();
@@ -4087,7 +4014,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrDefault(
         java.lang.String key,
@@ -4100,7 +4026,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrThrow(
         java.lang.String key) {
@@ -4963,7 +4888,6 @@ public final class ModellingProtos {
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
 
-      @java.lang.Override
       public boolean containsMetadata(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -4972,7 +4896,6 @@ public final class ModellingProtos {
       /**
        * Use {@link #getMetadataMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
         return getMetadataMap();
@@ -4980,7 +4903,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
         return internalGetMetadata().getMap();
@@ -4988,7 +4910,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrDefault(
           java.lang.String key,
@@ -5001,7 +4922,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrThrow(
           java.lang.String key) {
@@ -5217,7 +5137,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.InterventionVariable}
    */
-  public static final class InterventionVariable extends
+  public  static final class InterventionVariable extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.InterventionVariable)
       InterventionVariableOrBuilder {
@@ -5397,7 +5317,7 @@ public final class ModellingProtos {
     /**
      * Protobuf type {@code modelling.InterventionVariable.Sequence}
      */
-    public static final class Sequence extends
+    public  static final class Sequence extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:modelling.InterventionVariable.Sequence)
         SequenceOrBuilder {
@@ -5503,7 +5423,6 @@ public final class ModellingProtos {
        * <code>.jd3.Date start = 1;</code>
        * @return Whether the start field is set.
        */
-      @java.lang.Override
       public boolean hasStart() {
         return start_ != null;
       }
@@ -5511,14 +5430,12 @@ public final class ModellingProtos {
        * <code>.jd3.Date start = 1;</code>
        * @return The start.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Date getStart() {
         return start_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : start_;
       }
       /**
        * <code>.jd3.Date start = 1;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getStartOrBuilder() {
         return getStart();
       }
@@ -5529,7 +5446,6 @@ public final class ModellingProtos {
        * <code>.jd3.Date end = 2;</code>
        * @return Whether the end field is set.
        */
-      @java.lang.Override
       public boolean hasEnd() {
         return end_ != null;
       }
@@ -5537,14 +5453,12 @@ public final class ModellingProtos {
        * <code>.jd3.Date end = 2;</code>
        * @return The end.
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Date getEnd() {
         return end_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Date.getDefaultInstance() : end_;
       }
       /**
        * <code>.jd3.Date end = 2;</code>
        */
-      @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.DateOrBuilder getEndOrBuilder() {
         return getEnd();
       }
@@ -6190,7 +6104,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -6207,7 +6120,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -6227,14 +6139,12 @@ public final class ModellingProtos {
     /**
      * <code>repeated .modelling.InterventionVariable.Sequence sequences = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Sequence> getSequencesList() {
       return sequences_;
     }
     /**
      * <code>repeated .modelling.InterventionVariable.Sequence sequences = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.SequenceOrBuilder> 
         getSequencesOrBuilderList() {
       return sequences_;
@@ -6242,21 +6152,18 @@ public final class ModellingProtos {
     /**
      * <code>repeated .modelling.InterventionVariable.Sequence sequences = 2;</code>
      */
-    @java.lang.Override
     public int getSequencesCount() {
       return sequences_.size();
     }
     /**
      * <code>repeated .modelling.InterventionVariable.Sequence sequences = 2;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Sequence getSequences(int index) {
       return sequences_.get(index);
     }
     /**
      * <code>repeated .modelling.InterventionVariable.Sequence sequences = 2;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.SequenceOrBuilder getSequencesOrBuilder(
         int index) {
       return sequences_.get(index);
@@ -6268,7 +6175,6 @@ public final class ModellingProtos {
      * <code>double delta = 3;</code>
      * @return The delta.
      */
-    @java.lang.Override
     public double getDelta() {
       return delta_;
     }
@@ -6279,7 +6185,6 @@ public final class ModellingProtos {
      * <code>double seasonal_delta = 4;</code>
      * @return The seasonalDelta.
      */
-    @java.lang.Override
     public double getSeasonalDelta() {
       return seasonalDelta_;
     }
@@ -6290,7 +6195,6 @@ public final class ModellingProtos {
      * <code>.jd3.Parameter coefficient = 5;</code>
      * @return Whether the coefficient field is set.
      */
-    @java.lang.Override
     public boolean hasCoefficient() {
       return coefficient_ != null;
     }
@@ -6298,14 +6202,12 @@ public final class ModellingProtos {
      * <code>.jd3.Parameter coefficient = 5;</code>
      * @return The coefficient.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
       return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
     }
     /**
      * <code>.jd3.Parameter coefficient = 5;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
       return getCoefficient();
     }
@@ -6340,7 +6242,6 @@ public final class ModellingProtos {
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
 
-    @java.lang.Override
     public boolean containsMetadata(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -6349,7 +6250,6 @@ public final class ModellingProtos {
     /**
      * Use {@link #getMetadataMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
       return getMetadataMap();
@@ -6357,7 +6257,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
       return internalGetMetadata().getMap();
@@ -6365,7 +6264,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrDefault(
         java.lang.String key,
@@ -6378,7 +6276,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 6;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrThrow(
         java.lang.String key) {
@@ -7188,7 +7085,6 @@ public final class ModellingProtos {
        * <code>double delta = 3;</code>
        * @return The delta.
        */
-      @java.lang.Override
       public double getDelta() {
         return delta_;
       }
@@ -7219,7 +7115,6 @@ public final class ModellingProtos {
        * <code>double seasonal_delta = 4;</code>
        * @return The seasonalDelta.
        */
-      @java.lang.Override
       public double getSeasonalDelta() {
         return seasonalDelta_;
       }
@@ -7394,7 +7289,6 @@ public final class ModellingProtos {
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
 
-      @java.lang.Override
       public boolean containsMetadata(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -7403,7 +7297,6 @@ public final class ModellingProtos {
       /**
        * Use {@link #getMetadataMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
         return getMetadataMap();
@@ -7411,7 +7304,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
         return internalGetMetadata().getMap();
@@ -7419,7 +7311,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrDefault(
           java.lang.String key,
@@ -7432,7 +7323,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 6;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrThrow(
           java.lang.String key) {
@@ -7632,7 +7522,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.RegressionVariable}
    */
-  public static final class RegressionVariable extends
+  public  static final class RegressionVariable extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.RegressionVariable)
       RegressionVariableOrBuilder {
@@ -7765,7 +7655,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -7782,7 +7671,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -7803,14 +7691,14 @@ public final class ModellingProtos {
      * <code>.modelling.VariableType var_type = 2;</code>
      * @return The enum numeric value on the wire for varType.
      */
-    @java.lang.Override public int getVarTypeValue() {
+    public int getVarTypeValue() {
       return varType_;
     }
     /**
      * <code>.modelling.VariableType var_type = 2;</code>
      * @return The varType.
      */
-    @java.lang.Override public demetra.modelling.io.protobuf.ModellingProtos.VariableType getVarType() {
+    public demetra.modelling.io.protobuf.ModellingProtos.VariableType getVarType() {
       @SuppressWarnings("deprecation")
       demetra.modelling.io.protobuf.ModellingProtos.VariableType result = demetra.modelling.io.protobuf.ModellingProtos.VariableType.valueOf(varType_);
       return result == null ? demetra.modelling.io.protobuf.ModellingProtos.VariableType.UNRECOGNIZED : result;
@@ -7846,7 +7734,6 @@ public final class ModellingProtos {
      * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
 
-    @java.lang.Override
     public boolean containsMetadata(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -7855,7 +7742,6 @@ public final class ModellingProtos {
     /**
      * Use {@link #getMetadataMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
       return getMetadataMap();
@@ -7863,7 +7749,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
       return internalGetMetadata().getMap();
@@ -7871,7 +7756,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrDefault(
         java.lang.String key,
@@ -7884,7 +7768,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, string&gt; metadata = 3;</code>
      */
-    @java.lang.Override
 
     public java.lang.String getMetadataOrThrow(
         java.lang.String key) {
@@ -7902,14 +7785,12 @@ public final class ModellingProtos {
     /**
      * <code>repeated .jd3.Parameter coefficients = 4;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getCoefficientsList() {
       return coefficients_;
     }
     /**
      * <code>repeated .jd3.Parameter coefficients = 4;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
         getCoefficientsOrBuilderList() {
       return coefficients_;
@@ -7917,21 +7798,18 @@ public final class ModellingProtos {
     /**
      * <code>repeated .jd3.Parameter coefficients = 4;</code>
      */
-    @java.lang.Override
     public int getCoefficientsCount() {
       return coefficients_.size();
     }
     /**
      * <code>repeated .jd3.Parameter coefficients = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficients(int index) {
       return coefficients_.get(index);
     }
     /**
      * <code>repeated .jd3.Parameter coefficients = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientsOrBuilder(
         int index) {
       return coefficients_.get(index);
@@ -8442,7 +8320,7 @@ public final class ModellingProtos {
        * <code>.modelling.VariableType var_type = 2;</code>
        * @return The enum numeric value on the wire for varType.
        */
-      @java.lang.Override public int getVarTypeValue() {
+      public int getVarTypeValue() {
         return varType_;
       }
       /**
@@ -8451,7 +8329,6 @@ public final class ModellingProtos {
        * @return This builder for chaining.
        */
       public Builder setVarTypeValue(int value) {
-        
         varType_ = value;
         onChanged();
         return this;
@@ -8460,7 +8337,6 @@ public final class ModellingProtos {
        * <code>.modelling.VariableType var_type = 2;</code>
        * @return The varType.
        */
-      @java.lang.Override
       public demetra.modelling.io.protobuf.ModellingProtos.VariableType getVarType() {
         @SuppressWarnings("deprecation")
         demetra.modelling.io.protobuf.ModellingProtos.VariableType result = demetra.modelling.io.protobuf.ModellingProtos.VariableType.valueOf(varType_);
@@ -8521,7 +8397,6 @@ public final class ModellingProtos {
        * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
 
-      @java.lang.Override
       public boolean containsMetadata(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -8530,7 +8405,6 @@ public final class ModellingProtos {
       /**
        * Use {@link #getMetadataMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, java.lang.String> getMetadata() {
         return getMetadataMap();
@@ -8538,7 +8412,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
         return internalGetMetadata().getMap();
@@ -8546,7 +8419,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrDefault(
           java.lang.String key,
@@ -8559,7 +8431,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, string&gt; metadata = 3;</code>
        */
-      @java.lang.Override
 
       public java.lang.String getMetadataOrThrow(
           java.lang.String key) {
@@ -8936,7 +8807,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.MissingEstimation}
    */
-  public static final class MissingEstimation extends
+  public  static final class MissingEstimation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.MissingEstimation)
       MissingEstimationOrBuilder {
@@ -9031,7 +8902,6 @@ public final class ModellingProtos {
      * <code>int32 position = 1;</code>
      * @return The position.
      */
-    @java.lang.Override
     public int getPosition() {
       return position_;
     }
@@ -9042,7 +8912,6 @@ public final class ModellingProtos {
      * <code>double value = 10;</code>
      * @return The value.
      */
-    @java.lang.Override
     public double getValue() {
       return value_;
     }
@@ -9053,7 +8922,6 @@ public final class ModellingProtos {
      * <code>double stde = 11;</code>
      * @return The stde.
      */
-    @java.lang.Override
     public double getStde() {
       return stde_;
     }
@@ -9403,7 +9271,6 @@ public final class ModellingProtos {
        * <code>int32 position = 1;</code>
        * @return The position.
        */
-      @java.lang.Override
       public int getPosition() {
         return position_;
       }
@@ -9434,7 +9301,6 @@ public final class ModellingProtos {
        * <code>double value = 10;</code>
        * @return The value.
        */
-      @java.lang.Override
       public double getValue() {
         return value_;
       }
@@ -9465,7 +9331,6 @@ public final class ModellingProtos {
        * <code>double stde = 11;</code>
        * @return The stde.
        */
-      @java.lang.Override
       public double getStde() {
         return stde_;
       }
@@ -9608,7 +9473,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.Component}
    */
-  public static final class Component extends
+  public  static final class Component extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.Component)
       ComponentOrBuilder {
@@ -9749,7 +9614,6 @@ public final class ModellingProtos {
      * <code>repeated double data = 1;</code>
      * @return A list containing the data.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getDataList() {
       return data_;
@@ -9781,7 +9645,6 @@ public final class ModellingProtos {
      * <code>repeated double stde = 2;</code>
      * @return A list containing the stde.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getStdeList() {
       return stde_;
@@ -9817,7 +9680,6 @@ public final class ModellingProtos {
      * <code>int32 nbcasts = 3;</code>
      * @return The nbcasts.
      */
-    @java.lang.Override
     public int getNbcasts() {
       return nbcasts_;
     }
@@ -9828,7 +9690,6 @@ public final class ModellingProtos {
      * <code>int32 nfcasts = 4;</code>
      * @return The nfcasts.
      */
-    @java.lang.Override
     public int getNfcasts() {
       return nfcasts_;
     }
@@ -10428,7 +10289,6 @@ public final class ModellingProtos {
        * <code>int32 nbcasts = 3;</code>
        * @return The nbcasts.
        */
-      @java.lang.Override
       public int getNbcasts() {
         return nbcasts_;
       }
@@ -10459,7 +10319,6 @@ public final class ModellingProtos {
        * <code>int32 nfcasts = 4;</code>
        * @return The nfcasts.
        */
-      @java.lang.Override
       public int getNfcasts() {
         return nfcasts_;
       }
@@ -10600,7 +10459,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.TsComponent}
    */
-  public static final class TsComponent extends
+  public  static final class TsComponent extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.TsComponent)
       TsComponentOrBuilder {
@@ -10729,7 +10588,6 @@ public final class ModellingProtos {
      * <code>.jd3.TsData data = 1;</code>
      * @return Whether the data field is set.
      */
-    @java.lang.Override
     public boolean hasData() {
       return data_ != null;
     }
@@ -10737,14 +10595,12 @@ public final class ModellingProtos {
      * <code>.jd3.TsData data = 1;</code>
      * @return The data.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getData() {
       return data_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : data_;
     }
     /**
      * <code>.jd3.TsData data = 1;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder() {
       return getData();
     }
@@ -10759,7 +10615,6 @@ public final class ModellingProtos {
      * <code>repeated double stde = 2;</code>
      * @return A list containing the stde.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getStdeList() {
       return stde_;
@@ -10795,7 +10650,6 @@ public final class ModellingProtos {
      * <code>int32 nbcasts = 3;</code>
      * @return The nbcasts.
      */
-    @java.lang.Override
     public int getNbcasts() {
       return nbcasts_;
     }
@@ -10806,7 +10660,6 @@ public final class ModellingProtos {
      * <code>int32 nfcasts = 4;</code>
      * @return The nfcasts.
      */
-    @java.lang.Override
     public int getNfcasts() {
       return nfcasts_;
     }
@@ -11435,7 +11288,6 @@ public final class ModellingProtos {
        * <code>int32 nbcasts = 3;</code>
        * @return The nbcasts.
        */
-      @java.lang.Override
       public int getNbcasts() {
         return nbcasts_;
       }
@@ -11466,7 +11318,6 @@ public final class ModellingProtos {
        * <code>int32 nfcasts = 4;</code>
        * @return The nfcasts.
        */
-      @java.lang.Override
       public int getNfcasts() {
         return nfcasts_;
       }
@@ -11585,7 +11436,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.Diagnostics}
    */
-  public static final class Diagnostics extends
+  public  static final class Diagnostics extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.Diagnostics)
       DiagnosticsOrBuilder {
@@ -11715,7 +11566,6 @@ public final class ModellingProtos {
      * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
 
-    @java.lang.Override
     public boolean containsResidualsTests(
         java.lang.String key) {
       if (key == null) { throw new java.lang.NullPointerException(); }
@@ -11724,7 +11574,6 @@ public final class ModellingProtos {
     /**
      * Use {@link #getResidualsTestsMap()} instead.
      */
-    @java.lang.Override
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTests() {
       return getResidualsTestsMap();
@@ -11732,7 +11581,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
-    @java.lang.Override
 
     public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTestsMap() {
       return internalGetResidualsTests().getMap();
@@ -11740,7 +11588,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
-    @java.lang.Override
 
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrDefault(
         java.lang.String key,
@@ -11753,7 +11600,6 @@ public final class ModellingProtos {
     /**
      * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
      */
-    @java.lang.Override
 
     public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrThrow(
         java.lang.String key) {
@@ -12132,7 +11978,6 @@ public final class ModellingProtos {
        * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
 
-      @java.lang.Override
       public boolean containsResidualsTests(
           java.lang.String key) {
         if (key == null) { throw new java.lang.NullPointerException(); }
@@ -12141,7 +11986,6 @@ public final class ModellingProtos {
       /**
        * Use {@link #getResidualsTestsMap()} instead.
        */
-      @java.lang.Override
       @java.lang.Deprecated
       public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTests() {
         return getResidualsTestsMap();
@@ -12149,7 +11993,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
-      @java.lang.Override
 
       public java.util.Map<java.lang.String, demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest> getResidualsTestsMap() {
         return internalGetResidualsTests().getMap();
@@ -12157,7 +12000,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
-      @java.lang.Override
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrDefault(
           java.lang.String key,
@@ -12170,7 +12012,6 @@ public final class ModellingProtos {
       /**
        * <code>map&lt;string, .jd3.StatisticalTest&gt; residuals_tests = 1;</code>
        */
-      @java.lang.Override
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.StatisticalTest getResidualsTestsOrThrow(
           java.lang.String key) {
@@ -12355,7 +12196,7 @@ public final class ModellingProtos {
    *
    * Protobuf type {@code modelling.StationaryTransformation}
    */
-  public static final class StationaryTransformation extends
+  public  static final class StationaryTransformation extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.StationaryTransformation)
       StationaryTransformationOrBuilder {
@@ -12492,7 +12333,7 @@ public final class ModellingProtos {
     /**
      * Protobuf type {@code modelling.StationaryTransformation.Differencing}
      */
-    public static final class Differencing extends
+    public  static final class Differencing extends
         com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:modelling.StationaryTransformation.Differencing)
         DifferencingOrBuilder {
@@ -12582,7 +12423,6 @@ public final class ModellingProtos {
        * <code>int32 lag = 1;</code>
        * @return The lag.
        */
-      @java.lang.Override
       public int getLag() {
         return lag_;
       }
@@ -12593,7 +12433,6 @@ public final class ModellingProtos {
        * <code>int32 order = 2;</code>
        * @return The order.
        */
-      @java.lang.Override
       public int getOrder() {
         return order_;
       }
@@ -12922,7 +12761,6 @@ public final class ModellingProtos {
          * <code>int32 lag = 1;</code>
          * @return The lag.
          */
-        @java.lang.Override
         public int getLag() {
           return lag_;
         }
@@ -12953,7 +12791,6 @@ public final class ModellingProtos {
          * <code>int32 order = 2;</code>
          * @return The order.
          */
-        @java.lang.Override
         public int getOrder() {
           return order_;
         }
@@ -13037,7 +12874,6 @@ public final class ModellingProtos {
      * <code>bool mean_correction = 1;</code>
      * @return The meanCorrection.
      */
-    @java.lang.Override
     public boolean getMeanCorrection() {
       return meanCorrection_;
     }
@@ -13047,14 +12883,12 @@ public final class ModellingProtos {
     /**
      * <code>repeated .modelling.StationaryTransformation.Differencing differences = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.StationaryTransformation.Differencing> getDifferencesList() {
       return differences_;
     }
     /**
      * <code>repeated .modelling.StationaryTransformation.Differencing differences = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.StationaryTransformation.DifferencingOrBuilder> 
         getDifferencesOrBuilderList() {
       return differences_;
@@ -13062,21 +12896,18 @@ public final class ModellingProtos {
     /**
      * <code>repeated .modelling.StationaryTransformation.Differencing differences = 2;</code>
      */
-    @java.lang.Override
     public int getDifferencesCount() {
       return differences_.size();
     }
     /**
      * <code>repeated .modelling.StationaryTransformation.Differencing differences = 2;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.StationaryTransformation.Differencing getDifferences(int index) {
       return differences_.get(index);
     }
     /**
      * <code>repeated .modelling.StationaryTransformation.Differencing differences = 2;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.StationaryTransformation.DifferencingOrBuilder getDifferencesOrBuilder(
         int index) {
       return differences_.get(index);
@@ -13093,7 +12924,6 @@ public final class ModellingProtos {
      * <code>repeated double stationary_series = 3;</code>
      * @return A list containing the stationarySeries.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getStationarySeriesList() {
       return stationarySeries_;
@@ -13536,7 +13366,6 @@ public final class ModellingProtos {
        * <code>bool mean_correction = 1;</code>
        * @return The meanCorrection.
        */
-      @java.lang.Override
       public boolean getMeanCorrection() {
         return meanCorrection_;
       }
@@ -14044,7 +13873,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.ArimaModel}
    */
-  public static final class ArimaModel extends
+  public  static final class ArimaModel extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.ArimaModel)
       ArimaModelOrBuilder {
@@ -14212,7 +14041,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -14229,7 +14057,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -14250,7 +14077,6 @@ public final class ModellingProtos {
      * <code>double innovation_variance = 2;</code>
      * @return The innovationVariance.
      */
-    @java.lang.Override
     public double getInnovationVariance() {
       return innovationVariance_;
     }
@@ -14261,7 +14087,6 @@ public final class ModellingProtos {
      * <code>repeated double ar = 3;</code>
      * @return A list containing the ar.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getArList() {
       return ar_;
@@ -14289,7 +14114,6 @@ public final class ModellingProtos {
      * <code>repeated double delta = 4;</code>
      * @return A list containing the delta.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getDeltaList() {
       return delta_;
@@ -14317,7 +14141,6 @@ public final class ModellingProtos {
      * <code>repeated double ma = 5;</code>
      * @return A list containing the ma.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getMaList() {
       return ma_;
@@ -14867,7 +14690,6 @@ public final class ModellingProtos {
        * <code>double innovation_variance = 2;</code>
        * @return The innovationVariance.
        */
-      @java.lang.Override
       public double getInnovationVariance() {
         return innovationVariance_;
       }
@@ -15287,7 +15109,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.SarimaModel}
    */
-  public static final class SarimaModel extends
+  public  static final class SarimaModel extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.SarimaModel)
       SarimaModelOrBuilder {
@@ -15490,7 +15312,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The name.
      */
-    @java.lang.Override
     public java.lang.String getName() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
@@ -15507,7 +15328,6 @@ public final class ModellingProtos {
      * <code>string name = 1;</code>
      * @return The bytes for name.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getNameBytes() {
       java.lang.Object ref = name_;
@@ -15528,7 +15348,6 @@ public final class ModellingProtos {
      * <code>int32 period = 2;</code>
      * @return The period.
      */
-    @java.lang.Override
     public int getPeriod() {
       return period_;
     }
@@ -15539,7 +15358,6 @@ public final class ModellingProtos {
      * <code>repeated double phi = 3;</code>
      * @return A list containing the phi.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getPhiList() {
       return phi_;
@@ -15567,7 +15385,6 @@ public final class ModellingProtos {
      * <code>int32 d = 4;</code>
      * @return The d.
      */
-    @java.lang.Override
     public int getD() {
       return d_;
     }
@@ -15578,7 +15395,6 @@ public final class ModellingProtos {
      * <code>repeated double theta = 5;</code>
      * @return A list containing the theta.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getThetaList() {
       return theta_;
@@ -15606,7 +15422,6 @@ public final class ModellingProtos {
      * <code>repeated double bphi = 6;</code>
      * @return A list containing the bphi.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getBphiList() {
       return bphi_;
@@ -15634,7 +15449,6 @@ public final class ModellingProtos {
      * <code>int32 bd = 7;</code>
      * @return The bd.
      */
-    @java.lang.Override
     public int getBd() {
       return bd_;
     }
@@ -15645,7 +15459,6 @@ public final class ModellingProtos {
      * <code>repeated double btheta = 8;</code>
      * @return A list containing the btheta.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getBthetaList() {
       return btheta_;
@@ -16268,7 +16081,6 @@ public final class ModellingProtos {
        * <code>int32 period = 2;</code>
        * @return The period.
        */
-      @java.lang.Override
       public int getPeriod() {
         return period_;
       }
@@ -16378,7 +16190,6 @@ public final class ModellingProtos {
        * <code>int32 d = 4;</code>
        * @return The d.
        */
-      @java.lang.Override
       public int getD() {
         return d_;
       }
@@ -16567,7 +16378,6 @@ public final class ModellingProtos {
        * <code>int32 bd = 7;</code>
        * @return The bd.
        */
-      @java.lang.Override
       public int getBd() {
         return bd_;
       }
@@ -16846,7 +16656,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.UcarimaModel}
    */
-  public static final class UcarimaModel extends
+  public  static final class UcarimaModel extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.UcarimaModel)
       UcarimaModelOrBuilder {
@@ -16970,7 +16780,6 @@ public final class ModellingProtos {
      * <code>.modelling.ArimaModel model = 1;</code>
      * @return Whether the model field is set.
      */
-    @java.lang.Override
     public boolean hasModel() {
       return model_ != null;
     }
@@ -16982,7 +16791,6 @@ public final class ModellingProtos {
      * <code>.modelling.ArimaModel model = 1;</code>
      * @return The model.
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel getModel() {
       return model_ == null ? demetra.modelling.io.protobuf.ModellingProtos.ArimaModel.getDefaultInstance() : model_;
     }
@@ -16993,7 +16801,6 @@ public final class ModellingProtos {
      *
      * <code>.modelling.ArimaModel model = 1;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getModelOrBuilder() {
       return getModel();
     }
@@ -17007,7 +16814,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel components = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> getComponentsList() {
       return components_;
     }
@@ -17018,7 +16824,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel components = 2;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> 
         getComponentsOrBuilderList() {
       return components_;
@@ -17030,7 +16835,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel components = 2;</code>
      */
-    @java.lang.Override
     public int getComponentsCount() {
       return components_.size();
     }
@@ -17041,7 +16845,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel components = 2;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel getComponents(int index) {
       return components_.get(index);
     }
@@ -17052,7 +16855,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel components = 2;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getComponentsOrBuilder(
         int index) {
       return components_.get(index);
@@ -17067,7 +16869,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel complements = 3;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.ArimaModel> getComplementsList() {
       return complements_;
     }
@@ -17078,7 +16879,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel complements = 3;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder> 
         getComplementsOrBuilderList() {
       return complements_;
@@ -17090,7 +16890,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel complements = 3;</code>
      */
-    @java.lang.Override
     public int getComplementsCount() {
       return complements_.size();
     }
@@ -17101,7 +16900,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel complements = 3;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.ArimaModel getComplements(int index) {
       return complements_.get(index);
     }
@@ -17112,7 +16910,6 @@ public final class ModellingProtos {
      *
      * <code>repeated .modelling.ArimaModel complements = 3;</code>
      */
-    @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.ArimaModelOrBuilder getComplementsOrBuilder(
         int index) {
       return complements_.get(index);
@@ -18429,7 +18226,7 @@ public final class ModellingProtos {
   /**
    * Protobuf type {@code modelling.WienerKolmogorovFilter}
    */
-  public static final class WienerKolmogorovFilter extends
+  public  static final class WienerKolmogorovFilter extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:modelling.WienerKolmogorovFilter)
       WienerKolmogorovFilterOrBuilder {
@@ -18564,7 +18361,6 @@ public final class ModellingProtos {
      * <code>repeated double weights = 1;</code>
      * @return A list containing the weights.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getWeightsList() {
       return weights_;
@@ -18600,7 +18396,6 @@ public final class ModellingProtos {
      * <code>repeated double gain = 2;</code>
      * @return A list containing the gain.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getGainList() {
       return gain_;

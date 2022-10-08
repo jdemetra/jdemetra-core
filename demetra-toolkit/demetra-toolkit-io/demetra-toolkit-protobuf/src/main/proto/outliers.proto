@@ -1,0 +1,31 @@
+syntax = "proto3";
+import public "toolkit.proto";
+
+package outliers;
+option java_package = "demetra.outliers.io.protobuf";
+option java_outer_classname = "OutliersProtos";
+
+
+message Outlier{
+	string code = 1;
+	int32 position = 2;
+	double coefficient = 10;
+	double stde = 11;
+}
+
+message RegArimaSolution{
+	repeated double arima_initial = 1;
+	repeated double arima_final = 2;
+	
+	jd3.LikelihoodStatistics likelihood_initial = 3;
+	jd3.LikelihoodStatistics likelihood_final = 4;
+	
+	repeated Outlier outliers = 5;
+	
+	repeated double coefficients = 6;
+	jd3.Matrix covariance = 7;
+	
+	jd3.Matrix regressors = 8;
+	repeated double residuals = 9;
+	
+}
