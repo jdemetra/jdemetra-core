@@ -16,10 +16,8 @@
  */
 package jdplus.regsarima.regular;
 
-import demetra.arima.SarimaSpec;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
-import jdplus.modelling.GeneralLinearModel;
 import nbbrd.design.Development;
 
 /**
@@ -30,5 +28,5 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Alpha)
 public interface RegSarimaProcessor {
 
-    GeneralLinearModel<SarimaSpec> process(TsData originalTs, ProcessingLog log);
+    RegSarimaModel process(TsData originalTs, ProcessingLog log);
 }

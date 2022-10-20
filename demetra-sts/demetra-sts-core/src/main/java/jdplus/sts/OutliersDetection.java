@@ -27,8 +27,6 @@ import jdplus.ssf.basic.RegSsf;
 import jdplus.ssf.univariate.Ssf;
 import jdplus.ssf.univariate.SsfData;
 import jdplus.stats.RobustStandardDeviationComputer;
-import jdplus.sts.internal.BsmMapping;
-import jdplus.sts.internal.BsmKernel;
 
 /**
  *

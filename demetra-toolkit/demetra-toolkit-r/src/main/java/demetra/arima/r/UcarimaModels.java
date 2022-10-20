@@ -6,13 +6,13 @@
 package demetra.arima.r;
 
 import demetra.data.DoubleSeq;
-import demetra.data.Iterables;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.arima.ArimaModel;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.sarima.SarimaModel;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.composite.CompositeSsf;
 import jdplus.ssf.univariate.DefaultSmoothingResults;
@@ -22,6 +22,9 @@ import jdplus.ucarima.WienerKolmogorovEstimator;
 import jdplus.ucarima.WienerKolmogorovEstimators;
 import jdplus.ucarima.WienerKolmogorovPreliminaryEstimatorProperties;
 import jdplus.ssf.arima.SsfUcarima;
+import jdplus.ucarima.ModelDecomposer;
+import jdplus.ucarima.SeasonalSelector;
+import jdplus.ucarima.TrendCycleSelector;
 
 /**
  *
@@ -34,6 +37,31 @@ public class UcarimaModels {
         return UcarimaModel.builder()
                 .model(model)
                 .add(components).build();
+    }
+    
+    /**
+     * 
+     * @param sarima Model to be decomposed
+     * @param rmod Trend tolerance
+     * @param epsphi Seasonal tolerance in degrees
+     * @return 
+     */
+    public UcarimaModel decompose(SarimaModel sarima, double rmod, double epsphi){
+        TrendCycleSelector tsel = new TrendCycleSelector();
+        if (rmod > 0)
+            tsel.setBound(rmod);
+        SeasonalSelector ssel = new SeasonalSelector(sarima.getPeriod());
+        if (epsphi > 0)
+            ssel.setTolerance(epsphi);
+
+        ModelDecomposer decomposer = new ModelDecomposer();
+        decomposer.add(tsel);
+        decomposer.add(ssel);
+
+        UcarimaModel ucm = decomposer.decompose(sarima);
+        ucm = ucm.setVarianceMax(-1, false);
+        return ucm;
+        
     }
 
     public UcarimaModel doCanonical(UcarimaModel ucm, int cmp, boolean adjust) {

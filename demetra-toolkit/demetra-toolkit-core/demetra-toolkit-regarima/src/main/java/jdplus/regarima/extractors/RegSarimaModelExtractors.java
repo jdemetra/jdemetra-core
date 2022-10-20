@@ -234,7 +234,6 @@ public class RegSarimaModelExtractors {
             set(RegressionDictionaries.YCAL, TsData.class, source -> {
                 TsData y = source.getDescription().getSeries();
                 TsData cal = source.getCalendarEffect(y.getDomain());
-                cal = source.backTransform(cal, true);
                 return source.inv_op(y, cal);
             });
 //        MAPPING.set(RegressionDictionaries.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));

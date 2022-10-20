@@ -51,7 +51,7 @@ public final class OutliersProtos {
   /**
    * Protobuf type {@code outliers.Outlier}
    */
-  public static final class Outlier extends
+  public  static final class Outlier extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:outliers.Outlier)
       OutlierOrBuilder {
@@ -153,7 +153,6 @@ public final class OutliersProtos {
      * <code>string code = 1;</code>
      * @return The code.
      */
-    @java.lang.Override
     public java.lang.String getCode() {
       java.lang.Object ref = code_;
       if (ref instanceof java.lang.String) {
@@ -170,7 +169,6 @@ public final class OutliersProtos {
      * <code>string code = 1;</code>
      * @return The bytes for code.
      */
-    @java.lang.Override
     public com.google.protobuf.ByteString
         getCodeBytes() {
       java.lang.Object ref = code_;
@@ -191,7 +189,6 @@ public final class OutliersProtos {
      * <code>int32 position = 2;</code>
      * @return The position.
      */
-    @java.lang.Override
     public int getPosition() {
       return position_;
     }
@@ -202,7 +199,6 @@ public final class OutliersProtos {
      * <code>double coefficient = 10;</code>
      * @return The coefficient.
      */
-    @java.lang.Override
     public double getCoefficient() {
       return coefficient_;
     }
@@ -213,7 +209,6 @@ public final class OutliersProtos {
      * <code>double stde = 11;</code>
      * @return The stde.
      */
-    @java.lang.Override
     public double getStde() {
       return stde_;
     }
@@ -656,7 +651,6 @@ public final class OutliersProtos {
        * <code>int32 position = 2;</code>
        * @return The position.
        */
-      @java.lang.Override
       public int getPosition() {
         return position_;
       }
@@ -687,7 +681,6 @@ public final class OutliersProtos {
        * <code>double coefficient = 10;</code>
        * @return The coefficient.
        */
-      @java.lang.Override
       public double getCoefficient() {
         return coefficient_;
       }
@@ -718,7 +711,6 @@ public final class OutliersProtos {
        * <code>double stde = 11;</code>
        * @return The stde.
        */
-      @java.lang.Override
       public double getStde() {
         return stde_;
       }
@@ -955,7 +947,7 @@ public final class OutliersProtos {
   /**
    * Protobuf type {@code outliers.RegArimaSolution}
    */
-  public static final class RegArimaSolution extends
+  public  static final class RegArimaSolution extends
       com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:outliers.RegArimaSolution)
       RegArimaSolutionOrBuilder {
@@ -1201,7 +1193,6 @@ public final class OutliersProtos {
      * <code>repeated double arima_initial = 1;</code>
      * @return A list containing the arimaInitial.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getArimaInitialList() {
       return arimaInitial_;
@@ -1229,7 +1220,6 @@ public final class OutliersProtos {
      * <code>repeated double arima_final = 2;</code>
      * @return A list containing the arimaFinal.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getArimaFinalList() {
       return arimaFinal_;
@@ -1257,7 +1247,6 @@ public final class OutliersProtos {
      * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      * @return Whether the likelihoodInitial field is set.
      */
-    @java.lang.Override
     public boolean hasLikelihoodInitial() {
       return likelihoodInitial_ != null;
     }
@@ -1265,14 +1254,12 @@ public final class OutliersProtos {
      * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      * @return The likelihoodInitial.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodInitial() {
       return likelihoodInitial_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodInitial_;
     }
     /**
      * <code>.jd3.LikelihoodStatistics likelihood_initial = 3;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodInitialOrBuilder() {
       return getLikelihoodInitial();
     }
@@ -1283,7 +1270,6 @@ public final class OutliersProtos {
      * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      * @return Whether the likelihoodFinal field is set.
      */
-    @java.lang.Override
     public boolean hasLikelihoodFinal() {
       return likelihoodFinal_ != null;
     }
@@ -1291,14 +1277,12 @@ public final class OutliersProtos {
      * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      * @return The likelihoodFinal.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics getLikelihoodFinal() {
       return likelihoodFinal_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatistics.getDefaultInstance() : likelihoodFinal_;
     }
     /**
      * <code>.jd3.LikelihoodStatistics likelihood_final = 4;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.LikelihoodStatisticsOrBuilder getLikelihoodFinalOrBuilder() {
       return getLikelihoodFinal();
     }
@@ -1308,14 +1292,12 @@ public final class OutliersProtos {
     /**
      * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<demetra.outliers.io.protobuf.OutliersProtos.Outlier> getOutliersList() {
       return outliers_;
     }
     /**
      * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
-    @java.lang.Override
     public java.util.List<? extends demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder> 
         getOutliersOrBuilderList() {
       return outliers_;
@@ -1323,21 +1305,18 @@ public final class OutliersProtos {
     /**
      * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
-    @java.lang.Override
     public int getOutliersCount() {
       return outliers_.size();
     }
     /**
      * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
-    @java.lang.Override
     public demetra.outliers.io.protobuf.OutliersProtos.Outlier getOutliers(int index) {
       return outliers_.get(index);
     }
     /**
      * <code>repeated .outliers.Outlier outliers = 5;</code>
      */
-    @java.lang.Override
     public demetra.outliers.io.protobuf.OutliersProtos.OutlierOrBuilder getOutliersOrBuilder(
         int index) {
       return outliers_.get(index);
@@ -1349,7 +1328,6 @@ public final class OutliersProtos {
      * <code>repeated double coefficients = 6;</code>
      * @return A list containing the coefficients.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getCoefficientsList() {
       return coefficients_;
@@ -1377,7 +1355,6 @@ public final class OutliersProtos {
      * <code>.jd3.Matrix covariance = 7;</code>
      * @return Whether the covariance field is set.
      */
-    @java.lang.Override
     public boolean hasCovariance() {
       return covariance_ != null;
     }
@@ -1385,14 +1362,12 @@ public final class OutliersProtos {
      * <code>.jd3.Matrix covariance = 7;</code>
      * @return The covariance.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getCovariance() {
       return covariance_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : covariance_;
     }
     /**
      * <code>.jd3.Matrix covariance = 7;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getCovarianceOrBuilder() {
       return getCovariance();
     }
@@ -1403,7 +1378,6 @@ public final class OutliersProtos {
      * <code>.jd3.Matrix regressors = 8;</code>
      * @return Whether the regressors field is set.
      */
-    @java.lang.Override
     public boolean hasRegressors() {
       return regressors_ != null;
     }
@@ -1411,14 +1385,12 @@ public final class OutliersProtos {
      * <code>.jd3.Matrix regressors = 8;</code>
      * @return The regressors.
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.Matrix getRegressors() {
       return regressors_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Matrix.getDefaultInstance() : regressors_;
     }
     /**
      * <code>.jd3.Matrix regressors = 8;</code>
      */
-    @java.lang.Override
     public demetra.toolkit.io.protobuf.ToolkitProtos.MatrixOrBuilder getRegressorsOrBuilder() {
       return getRegressors();
     }
@@ -1429,7 +1401,6 @@ public final class OutliersProtos {
      * <code>repeated double residuals = 9;</code>
      * @return A list containing the residuals.
      */
-    @java.lang.Override
     public java.util.List<java.lang.Double>
         getResidualsList() {
       return residuals_;

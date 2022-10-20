@@ -21,7 +21,6 @@ import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.util.r.Dictionary;
 import demetra.x13.X13Spec;
 import demetra.x13.io.protobuf.SpecProto;
 import demetra.x13.io.protobuf.X13Output;
@@ -48,8 +47,7 @@ public class X13 {
         return kernel.process(series.cleanExtremities(), null);
     }
 
-    public X13Results process(TsData series, X13Spec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public X13Results process(TsData series, X13Spec spec, ModellingContext context) {
         X13Kernel kernel = X13Kernel.of(spec, context);
         return kernel.process(series.cleanExtremities(), null);
     }
@@ -71,8 +69,7 @@ public class X13 {
         }
     }
 
-    public X13Output fullProcess(TsData series, X13Spec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public X13Output fullProcess(TsData series, X13Spec spec, ModellingContext context) {
         X13Kernel tramoseats = X13Kernel.of(spec, context);
         X13Results estimation = tramoseats.process(series.cleanExtremities(), null);
 

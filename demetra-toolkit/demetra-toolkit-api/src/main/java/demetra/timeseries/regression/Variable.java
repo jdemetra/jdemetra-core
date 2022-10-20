@@ -129,7 +129,7 @@ public class Variable<V extends ITsVariable> {
      * @return True if all coefficients are free, false otherwise
      */
     public boolean isFree() {
-        return coefficients == null || Parameter.isFree(coefficients);
+        return Parameter.isFree(coefficients);
     }
     
     public Variable rename(String name) {

@@ -19,6 +19,8 @@ package demetra.regarima.io.protobuf;
 import demetra.data.Iterables;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.arima.SarimaSpec;
+import demetra.data.Doubles;
+import demetra.data.ParametersEstimation;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.stats.StatisticalTest;
 import demetra.timeseries.TsDomain;
@@ -38,7 +40,13 @@ import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.math.matrices.Matrix;
 import demetra.timeseries.regression.MissingValueEstimation;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.GeneralLinearModel;
+import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaModel;
+import jdplus.sarima.SarimaModel;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import jdplus.stats.likelihood.LogLikelihoodFunction;
 
 /**
  *
@@ -95,6 +103,32 @@ public class RegArimaEstimationProto {
                 builder.addMissings(convert(missing[i]));
             }
         }
+        return builder.build();
+    }
+
+    public RegArimaProtos.RegArimaModel.Estimation convert(RegArimaEstimation<SarimaModel> estimation) {
+        RegArimaProtos.RegArimaModel.Estimation.Builder builder = RegArimaProtos.RegArimaModel.Estimation.newBuilder();
+        Matrix cov = estimation.getConcentratedLikelihood().covariance(estimation.parametersCount(), true);
+        LikelihoodStatistics statistics = estimation.statistics();
+        RegArimaModel<SarimaModel> model = estimation.getModel();
+        LogLikelihoodFunction.Point<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
+        ParametersEstimation pestim;
+        if (max == null) {
+            pestim = new ParametersEstimation(Doubles.EMPTY, FastMatrix.EMPTY, Doubles.EMPTY, null);
+        } else {
+            pestim = new ParametersEstimation(max.getParameters(), max.asymptoticCovariance(), max.getScore(), "sarima (true signs)");
+        }
+
+        // complete for missings
+        builder.addAllY(Iterables.of(model.getY()))
+                .setX(ToolkitProtosUtility.convert(model.variables()))
+                .setParameters(ToolkitProtosUtility.convert(pestim))
+                .setLikelihood(ToolkitProtosUtility.convert(statistics))
+                .addAllB(Iterables.of(estimation.getConcentratedLikelihood().coefficients()))
+                .setBcovariance(ToolkitProtosUtility.convert(cov))
+                .addAllResiduals(Iterables.of(estimation.getConcentratedLikelihood().e()));
+
+        // TODO: missing
         return builder.build();
     }
 

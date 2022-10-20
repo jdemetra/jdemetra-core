@@ -29,7 +29,7 @@ import nbbrd.design.LombokWorkaround;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class OutlierSpec implements Validatable<OutlierSpec> {
 
     public static enum Method {
@@ -64,6 +64,23 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
                 .defaultCriticalValue(0)
                 .span(TimeSelector.all())
                 .maxIter(DEF_NMAX);
+    }
+
+    public static Builder of(boolean ao, boolean ls, boolean tc, boolean so) {
+        Builder builder = builder();
+        if (ao) {
+            builder.type(new SingleOutlierSpec("AO", 0));
+        }
+        if (ls) {
+            builder.type(new SingleOutlierSpec("LS", 0));
+        }
+        if (tc) {
+            builder.type(new SingleOutlierSpec("TC", 0));
+        }
+        if (so) {
+            builder.type(new SingleOutlierSpec("SO", 0));
+        }
+        return builder;
     }
 
     @Override
@@ -113,5 +130,6 @@ public final class OutlierSpec implements Validatable<OutlierSpec> {
             this.defaultCriticalValue = defaultCriticalValue;
             return this;
         }
+
     }
 }

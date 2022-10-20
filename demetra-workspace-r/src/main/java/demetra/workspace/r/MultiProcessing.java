@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,7 +16,6 @@
  */
 package demetra.workspace.r;
 
-import demetra.sa.SaDefinition;
 import demetra.sa.SaItem;
 import demetra.sa.SaItems;
 import demetra.sa.SaSpecification;
@@ -70,6 +69,22 @@ public class MultiProcessing {
 
     public void set(int pos, SaItem newItem) {
         items.set(pos, newItem);
+    }
+
+    public void setDomainSpecification(int pos, SaSpecification newspec){
+        SaItem nitem=items.get(pos).withDomainSpecification(newspec);
+        items.set(pos, nitem);
+    }
+
+    public void setSpecification(int pos, SaSpecification newspec){
+        SaItem nitem=items.get(pos).withSpecification(newspec);
+        items.set(pos, nitem);
+    }
+
+    public void setData(int pos, TsData ndata){
+        SaItem item=items.get(pos);
+        Ts nts=Ts.of(item.getDefinition().getTs().getName(), ndata);
+        items.set(pos, item.withTs(nts));
     }
 
     public int size() {

@@ -112,7 +112,24 @@ public final class SaItem {
                 .build();
     }
 
-    public void accept() {
+    /**
+     * Keep the domain and the estimation specifications and put a new time series
+     * @param ts
+     * @return 
+     */
+   public SaItem withTs(Ts ts){
+        return SaItem.builder()
+                .name(name)
+                .definition(SaDefinition.builder()
+                        .ts(ts)
+                        .domainSpec(definition.getDomainSpec())
+                        .estimationSpec(definition.getEstimationSpec())
+                        .policy(EstimationPolicyType.None)
+                        .build())
+                .build();
+    }
+
+   public void accept() {
         synchronized (this) {
             if (estimation == null) {
                 return;

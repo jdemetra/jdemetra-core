@@ -1,0 +1,182 @@
+syntax = "proto3";
+import public "toolkit.proto";
+
+package modelling;
+
+option java_package = "demetra.modelling.io.protobuf";
+option java_outer_classname = "ModellingProtos";
+
+enum Transformation {
+    FN_LEVEL = 0;
+	FN_LOG = 1;
+    FN_AUTO = 10;
+}
+
+enum LengthOfPeriod{
+	LP_NONE = 0;
+	LP_LEAPYEAR = 1;
+	LP_LENGTHOFPERIOD = 2;
+}
+
+enum TradingDays{
+	TD_NONE = 0;
+	/*
+	mon-fri + sat-sun
+	*/
+	TD2 = 1;
+	/*
+	mon-fri + sat + sun
+	*/
+	TD3 = 2;
+	/*
+	mon-thu + fri-sat + sun
+	*/
+	TD3C = 3;
+	/*
+	mon-thu + fri + sat + sun
+	*/
+	TD4 = 4;
+	TD7 = 5;
+}
+
+message TsVariable{
+    string name = 1;
+	string id = 2;
+    int32 first_lag = 3;
+	int32 last_lag = 4;
+	repeated jd3.Parameter coefficient = 5;
+	map<string, string> metadata = 6;
+}
+
+message Ramp{
+    string name = 1;
+	jd3.Date start = 2;
+	jd3.Date end = 3;
+	jd3.Parameter coefficient = 5;
+	map<string, string> metadata = 6;
+}
+
+message Outlier{
+    string name = 1;
+	string code = 2;
+	jd3.Date position = 3;
+	jd3.Parameter coefficient = 5;
+	map<string, string> metadata = 6;
+}
+
+message InterventionVariable{
+	message Sequence{
+		jd3.Date start = 1;
+		jd3.Date end = 2;
+	}
+    
+    string name = 1;
+	repeated Sequence sequences = 2;
+	double delta = 3;
+	double seasonal_delta = 4;
+	jd3.Parameter coefficient = 5;
+	map<string, string> metadata = 6;
+}
+
+enum VariableType{
+	VAR_UNSPECIFIED = 0;
+	VAR_MEAN = 1;
+	VAR_TD = 10;
+	VAR_LP = 11;
+	VAR_EASTER = 12;
+	VAR_AO = 20;
+	VAR_LS = 21;
+	VAR_TC = 22;
+	VAR_SO = 23;
+	VAR_OUTLIER = 29;
+	VAR_IV = 30;
+	VAR_RAMP = 40;	
+}
+
+message RegressionVariable{
+	string name = 1;
+	VariableType var_type = 2;
+	map<string, string> metadata = 3;
+	repeated jd3.Parameter coefficients = 4;
+}
+
+message MissingEstimation{
+	int32 position = 1;
+	double value = 10;
+	double stde = 11;
+}
+
+message Component{
+	repeated double data = 1;
+	/* The length of stde should be the same as the length of data */
+	repeated double stde = 2;
+	int32 nbcasts = 3; 
+	int32 nfcasts = 4;
+}
+
+message TsComponent{
+	jd3.TsData data = 1;
+	/* The length of stde should be the same as the length of data */
+	repeated double stde = 2;
+	int32 nbcasts = 3; 
+	int32 nfcasts = 4;
+}
+
+message Diagnostics{
+
+	map<string, jd3.StatisticalTest> residuals_tests = 1;
+
+}
+
+/*
+This message describes the transformations to get a stationary series
+*/
+message StationaryTransformation{
+	
+	message Differencing{
+		int32 lag = 1;
+		int32 order = 2;
+	}
+	
+	bool mean_correction = 1;
+	repeated Differencing differences = 2;
+	
+	// The length of the stationary series should be identical to the length of the original series, 
+	// with missing values (NaN) at the beginning
+	repeated double stationary_series = 3;
+}
+
+message ArimaModel{
+	string name = 1;
+	double innovation_variance = 2;
+	repeated double ar = 3;
+	repeated double delta = 4;
+	repeated double ma = 5;
+}
+
+message SarimaModel{
+	string name = 1;
+	int32 period=2;
+	repeated double phi = 3;
+	int32 d = 4;
+	repeated double theta = 5;
+	repeated double bphi = 6;
+	int32 bd = 7;
+	repeated double btheta = 8;
+}
+
+message UcarimaModel{
+   // aggregated model
+   ArimaModel model = 1;
+   // components
+   repeated ArimaModel components = 2;
+   // complements of some components (identified by the context or by their names
+   repeated ArimaModel complements = 3;
+}
+
+message WienerKolmogorovFilter{
+	// symmetric filter
+	repeated double weights = 1;
+	repeated double gain = 2;
+}
+

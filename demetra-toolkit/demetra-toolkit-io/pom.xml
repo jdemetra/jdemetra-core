@@ -18,6 +18,7 @@
         <module>demetra-toolkit-xml</module>
         <module>demetra-toolkit-information</module>
         <module>demetra-toolkit-html</module>
+        <module>demetra-toolkit-grpc</module>
     </modules>
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>

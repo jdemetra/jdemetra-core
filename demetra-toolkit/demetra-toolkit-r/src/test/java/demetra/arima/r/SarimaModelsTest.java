@@ -6,6 +6,8 @@
 package demetra.arima.r;
 
 import demetra.data.Data;
+import demetra.data.DoubleSeq;
+import jdplus.regarima.RegArimaEstimation;
 import jdplus.sarima.SarimaModel;
 import org.junit.jupiter.api.Test;
 
@@ -16,26 +18,23 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author palatej
  */
 public class SarimaModelsTest {
-    
+
     public SarimaModelsTest() {
     }
 
     @Test
     public void testRandom() {
-        double[] rnd=SarimaModels.random(200, 12, new double[]{-.2, -.5}, 1, new double[]{-.5}, null, 1, new double[]{-.8}, 10);
+        double[] rnd = SarimaModels.random(200, 12, new double[]{-.2, -.5}, 1, new double[]{-.5}, null, 1, new double[]{-.8}, 1, 5);
+//        System.out.println(DoubleSeq.of(rnd));
         assertTrue(rnd.length == 200);
-    }
- 
-    @Test
-    public void testArima() {
-        SarimaModel arima = SarimaModels.estimate(Data.PROD, new int[]{0,1,1}, 12, new int[]{0,1,1}, null);
-        assertTrue(arima != null);
     }
 
     @Test
-    public void testSerialize() {
-        SarimaModel arima = SarimaModels.estimate(Data.PROD, new int[]{0,1,1}, 12, new int[]{0,1,1}, null);
-        byte[] buffer = SarimaModels.toBuffer(arima);
+    public void testArima() {
+        RegArimaEstimation<SarimaModel> estimate = SarimaModels.estimate(Data.PROD, new int[]{0, 1, 1}, 12, new int[]{0, 1, 1}, false, null, null, 1e-9);
+        assertTrue(estimate != null);
+        byte[] buffer = SarimaModels.toBuffer(estimate);
         assertTrue(buffer != null);
     }
+
 }

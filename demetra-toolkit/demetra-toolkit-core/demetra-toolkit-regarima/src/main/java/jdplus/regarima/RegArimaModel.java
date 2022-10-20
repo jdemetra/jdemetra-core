@@ -253,7 +253,7 @@ public final class RegArimaModel<M extends IArimaModel> {
     }
     
     /**
-     * Variables without AO corresponding to missing and without mean correction
+     * Gets the variables without AO corresponding to missing and without mean correction
      * @return 
      */
     public FastMatrix variables(){

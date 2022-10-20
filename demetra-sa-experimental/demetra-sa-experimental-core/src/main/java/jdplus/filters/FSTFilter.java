@@ -26,7 +26,6 @@ import jdplus.math.linearfilters.SymmetricFilter;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.math.matrices.decomposition.Gauss;
-import jdplus.math.matrices.decomposition.Householder;
 import jdplus.math.matrices.decomposition.LUDecomposition;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.math.polynomials.UnitRoots;
@@ -126,7 +125,7 @@ public class FSTFilter {
             final int t = q;
             C.row(q).set(k -> kpow(k - nlags, t));
         }
-        SM = S.buildMatrix(builder.sdegree, nleads, nlags);
+        SM = SmoothnessCriterion.buildMatrix(builder.sdegree, nleads, nlags);
         double[] q = new double[p];
         q[0] = 1;
         a = DoubleSeq.of(q);
@@ -272,16 +271,20 @@ public class FSTFilter {
 
         public static double[] weights(int degree) {
             switch (degree) {
-                case 1:
+                case 1 -> {
                     return W1;
-                case 2:
+                }
+                case 2 -> {
                     return W2;
-                case 3:
+                }
+                case 3 -> {
                     return W3;
-                default:
+                }
+                default -> {
                     Polynomial D = UnitRoots.D(degree);
                     SymmetricFilter S = SymmetricFilter.convolutionOf(D, 1);
                     return S.coefficientsAsPolynomial().toArray();
+                }
             }
         }
     }
