@@ -232,7 +232,13 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private boolean isFullySpecified() {
         // Nothing to do.
-        return !(this.isAutoModelling() || this.isOutliersDetection());
+        return !(this.spec.getTransform().getFunction()== TransformationType.Auto 
+                || this.isAutoModelling() 
+                || this.isOutliersDetection()
+                || this.spec.getRegression().getCalendar().getTradingDays().isTest()
+                || this.spec.getRegression().getCalendar().getTradingDays().isAutomatic()
+                || this.spec.getRegression().getCalendar().getEaster().isTest()
+                );
 
     }
 
