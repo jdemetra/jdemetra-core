@@ -25,7 +25,6 @@ import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
-import demetra.util.r.Dictionary;
 import demetra.x13.io.protobuf.RegArimaProto;
 import demetra.x13.io.protobuf.X13Protos;
 import jdplus.math.matrices.FastMatrix;
@@ -54,8 +53,7 @@ public class RegArima {
         return regarima.process(series.cleanExtremities(), null);
     }
 
-    public RegSarimaModel process(TsData series, RegArimaSpec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public RegSarimaModel process(TsData series, RegArimaSpec spec, ModellingContext context) {
         RegArimaKernel regarima = RegArimaKernel.of(spec, context);
         return regarima.process(series.cleanExtremities(), null);
     }
@@ -69,8 +67,7 @@ public class RegArima {
         return forecast(series, spec, null, nf);
     }
 
-    public Matrix forecast(TsData series, RegArimaSpec spec, Dictionary dic, int nf) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public Matrix forecast(TsData series, RegArimaSpec spec, ModellingContext context, int nf) {
         RegArimaKernel kernel = RegArimaKernel.of(spec, context);
         Forecast f = new Forecast(kernel, nf);
         if (!f.process(series.cleanExtremities())) {
@@ -97,8 +94,7 @@ public class RegArima {
         }
     }
 
-    public RegArimaOutput fullProcess(TsData series, RegArimaSpec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public RegArimaOutput fullProcess(TsData series, RegArimaSpec spec, ModellingContext context) {
         RegArimaKernel tramo = RegArimaKernel.of(spec, context);
         RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
 

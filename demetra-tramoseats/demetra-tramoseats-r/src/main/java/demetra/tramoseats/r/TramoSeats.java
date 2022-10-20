@@ -26,7 +26,6 @@ import demetra.tramoseats.io.protobuf.SpecProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import demetra.tramoseats.io.protobuf.TramoSeatsResultsProto;
-import demetra.util.r.Dictionary;
 import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
 import jdplus.tramoseats.TramoSeatsResults;
@@ -48,8 +47,7 @@ public class TramoSeats {
         return kernel.process(series.cleanExtremities(), null);
     }
 
-    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public TramoSeatsResults process(TsData series, TramoSeatsSpec spec, ModellingContext context) {
         TramoSeatsKernel kernel = TramoSeatsKernel.of(spec, context);
         return kernel.process(series.cleanExtremities(), null);
     }
@@ -72,8 +70,7 @@ public class TramoSeats {
         }
     }
 
-    public TramoSeatsOutput fullProcess(TsData series, TramoSeatsSpec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public TramoSeatsOutput fullProcess(TsData series, TramoSeatsSpec spec, ModellingContext context) {
         TramoSeatsKernel tramoseats = TramoSeatsKernel.of(spec, context);
         TramoSeatsResults estimation = tramoseats.process(series.cleanExtremities(), null);
 

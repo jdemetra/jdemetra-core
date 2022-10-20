@@ -103,10 +103,12 @@ public class ModellingContextProto {
 
         CalendarManager cmgr = context.getCalendars();
         for (String key : cmgr.getNames()) {
-            CalendarDefinition cd = cmgr.get(key);
-            ToolkitProtos.CalendarDefinition cdef = CalendarProtosUtility.convert(cd);
-            if (cdef != null) {
-                builder.putCalendars(key, cdef);
+            if (!key.equals(CalendarManager.DEF)) {
+                CalendarDefinition cd = cmgr.get(key);
+                ToolkitProtos.CalendarDefinition cdef = CalendarProtosUtility.convert(cd);
+                if (cdef != null) {
+                    builder.putCalendars(key, cdef);
+                }
             }
         }
         NameManager<TsDataSuppliers> tmgr = context.getTsVariableManagers();

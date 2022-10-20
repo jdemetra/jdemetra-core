@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class Dictionary {
 
-    public static final String R = "R", RPREFIX = "R@";
+    public static final String R = "r", RPREFIX = "r@";
 
     public static Dictionary of(Map<String, TsData> rslt) {
         Dictionary dic = new Dictionary();

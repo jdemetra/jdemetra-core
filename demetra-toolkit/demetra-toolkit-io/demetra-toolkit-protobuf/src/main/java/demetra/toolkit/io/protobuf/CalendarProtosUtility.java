@@ -329,13 +329,12 @@ public class CalendarProtosUtility {
     }
 
     public CalendarDefinition convert(ToolkitProtos.CalendarDefinition cd) {
-        ToolkitProtos.CalendarDefinition.Builder builder = ToolkitProtos.CalendarDefinition.newBuilder();
-        if (builder.hasCalendar()) {
-            return convert(builder.getCalendar());
-        } else if (builder.hasChainedCalendar()){
-            return convert(builder.getChainedCalendar());
-        } else if (builder.hasWeightedCalendar()){
-            return convert(builder.getWeightedCalendar());
+        if (cd.hasCalendar()) {
+            return convert(cd.getCalendar());
+        } else if (cd.hasChainedCalendar()){
+            return convert(cd.getChainedCalendar());
+        } else if (cd.hasWeightedCalendar()){
+            return convert(cd.getWeightedCalendar());
         }else{   
             throw new UnsupportedOperationException();
         }

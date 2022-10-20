@@ -19,7 +19,6 @@ package demetra.regarima.io.protobuf;
 import demetra.data.Iterables;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.arima.SarimaSpec;
-import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.ParametersEstimation;
 import demetra.modelling.io.protobuf.ModellingProtos;

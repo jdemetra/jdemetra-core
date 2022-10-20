@@ -18,7 +18,9 @@ package jdplus.tramo;
 
 import demetra.data.AggregationType;
 import demetra.data.Data;
+import demetra.data.Parameter;
 import demetra.processing.DefaultProcessingLog;
+import demetra.timeseries.StaticTsDataSupplier;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
@@ -26,7 +28,11 @@ import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
+import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.ModellingContext;
+import demetra.timeseries.regression.TsContextVariable;
+import demetra.timeseries.regression.TsDataSuppliers;
+import demetra.timeseries.regression.Variable;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
@@ -36,6 +42,7 @@ import ec.tstoolkit.modelling.arima.IPreprocessor;
 import ec.tstoolkit.timeseries.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import jdplus.regsarima.regular.RegSarimaModel;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -570,6 +577,64 @@ public class TramoKernelTest {
             }
         }
         assertTrue(n >= 45);
+    }
+
+    @Test
+    public void testUser() {
+
+        Random rnd = new Random(0);
+        double[] z = new double[1200];
+        for (int i = 0; i < z.length; ++i) {
+            z[i] = rnd.nextDouble() - .5;
+        }
+        TsData trnd = TsData.ofInternal(TsPeriod.monthly(1960, 1), z);
+        ModellingContext context = new ModellingContext();
+        TsDataSuppliers suppliers = new TsDataSuppliers();
+        suppliers.set("test", new StaticTsDataSupplier(trnd));
+        context.getTsVariableManagers().set("vars", suppliers);
+
+        TsPeriod start = TsPeriod.monthly(1967, 1);
+        TsData s = TsData.ofInternal(start, data);
+        
+        TsContextVariable tv = new TsContextVariable("vars.test");
+        Variable<TsContextVariable> var = Variable.<TsContextVariable>builder()
+                .core(tv)
+                .name("test")
+                .coefficients(null)
+                .build();
+        TramoSpec nspec = TramoSpec.TRfull;
+        RegressionSpec regSpec = nspec.getRegression();
+        regSpec=regSpec.toBuilder()
+                .userDefinedVariable(var)
+                .build();
+
+        nspec = nspec.toBuilder()
+                .regression(regSpec)
+                .build();
+
+        TramoKernel processor = TramoKernel.of(nspec, context);
+        RegSarimaModel rslt = processor.process(s, null);
+        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+       
+        var = Variable.<TsContextVariable>builder()
+                .core(tv)
+                .name("test")
+                .coefficients(new Parameter[]{Parameter.fixed(-0.005)})
+                .build();
+        nspec = TramoSpec.TRfull;
+        regSpec = nspec.getRegression();
+        regSpec=regSpec.toBuilder()
+                .userDefinedVariable(var)
+                .build();
+
+        nspec = nspec.toBuilder()
+                .regression(regSpec)
+                .build();
+
+        processor = TramoKernel.of(nspec, context);
+        rslt = processor.process(s, null);
+        System.out.println(rslt.getEstimation().getStatistics().getAdjustedLogLikelihood());
+
     }
 
     public static void stressTestProd() {

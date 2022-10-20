@@ -250,7 +250,11 @@ public class ToolkitProtosUtility {
         } else {
             Parameter[] np = new Parameter[n];
             for (int i = 0; i < n; ++i) {
-                np[i] = convert(p.get(i));
+                Parameter c = convert(p.get(i));
+                if (c == null)
+                    np[i]=Parameter.undefined();
+                else 
+                    np[i]=c;
             }
             return np;
         }

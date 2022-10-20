@@ -287,11 +287,14 @@ public class Parameter {
      /**
      * Checks that all the parameters are free. Derived parameters are not
      * considered
+     * null is considered as free (no defined parameters)
      *
      * @param spec
      * @return
      */
     public static boolean isFree(Parameter[] spec) {
+        if (spec == null)
+            return true;
         for (int i = 0; i < spec.length; ++i) {
             if (!spec[i].isFree()) {
 //            if (!spec[i].isFree() && !spec[i].isDerived()) {

@@ -21,7 +21,6 @@ import demetra.modelling.TransformationType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
-import demetra.util.r.Dictionary;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.regsarima.regular.CheckLast;
 import jdplus.tramo.TramoKernel;
@@ -38,8 +37,7 @@ public class Terror {
         return process(series, spec, null, nback);
     }
     
-    public Matrix process(TsData series, TramoSpec spec, Dictionary dic, int nback){
-        ModellingContext context=dic == null ? null : dic.toContext();
+    public Matrix process(TsData series, TramoSpec spec, ModellingContext context, int nback){
         series=series.cleanExtremities();
         int n=series.length();
         boolean needlevel=series.getValues().range(n-nback, n).anyMatch(x->Double.isFinite(x) && x <=0);

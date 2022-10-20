@@ -29,7 +29,6 @@ import demetra.tramo.TramoSpec;
 import jdplus.tramo.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoProto;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
-import demetra.util.r.Dictionary;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -54,8 +53,7 @@ public class Tramo {
         return tramo.process(series.cleanExtremities(), null);
     }
 
-    public RegSarimaModel process(TsData series, TramoSpec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public RegSarimaModel process(TsData series, TramoSpec spec, ModellingContext context) {
         TramoKernel tramo = TramoKernel.of(spec, context);
         return tramo.process(series.cleanExtremities(), null);
     }
@@ -69,8 +67,7 @@ public class Tramo {
         return forecast(series, spec, null, nf);
     }
 
-    public Matrix forecast(TsData series, TramoSpec spec, Dictionary dic, int nf) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public Matrix forecast(TsData series, TramoSpec spec, ModellingContext context, int nf) {
         TramoKernel kernel = TramoKernel.of(spec, context);
         Forecast f = new Forecast(kernel, nf);
         if (!f.process(series.cleanExtremities())) {
@@ -84,8 +81,7 @@ public class Tramo {
         return R;
     }
 
-    public TramoOutput fullProcess(TsData series, TramoSpec spec, Dictionary dic) {
-        ModellingContext context = dic == null ? null : dic.toContext();
+    public TramoOutput fullProcess(TsData series, TramoSpec spec, ModellingContext context) {
         TramoKernel tramo = TramoKernel.of(spec, context);
         RegSarimaModel estimation = tramo.process(series.cleanExtremities(), null);
 

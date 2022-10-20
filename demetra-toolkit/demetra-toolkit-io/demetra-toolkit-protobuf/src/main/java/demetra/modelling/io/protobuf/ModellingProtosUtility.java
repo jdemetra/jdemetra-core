@@ -126,6 +126,7 @@ public class ModellingProtosUtility {
                 .setFirstLag(v.getCore().getFirstLag())
                 .setLastLag(v.getCore().getLastLag())
                 .addAllCoefficient(ToolkitProtosUtility.convert(v.getCoefficients()))
+                .putAllMetadata(v.getAttributes())
                 .build();
     }
 

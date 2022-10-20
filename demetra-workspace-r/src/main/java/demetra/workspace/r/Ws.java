@@ -83,6 +83,7 @@ public class Ws {
         return ws;
     }
     
+    @Deprecated
     public ModellingContext context(){
         return context;
     }
