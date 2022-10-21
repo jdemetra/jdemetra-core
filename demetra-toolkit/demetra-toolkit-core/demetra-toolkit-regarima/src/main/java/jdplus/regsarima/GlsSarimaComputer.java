@@ -42,67 +42,67 @@ import jdplus.stats.likelihood.LogLikelihoodFunction;
  */
 @Development(status = Development.Status.Alpha)
 public class GlsSarimaComputer implements IRegArimaComputer<SarimaModel> {
-    
-    public static final GlsSarimaComputer PROCESSOR=new Builder()
+
+    public static final GlsSarimaComputer PROCESSOR = new Builder()
             .precision(1e-7)
-            .build(); 
-    
+            .build();
+
     public static final double DEF_EPS = 1e-7;
-    
+
     @BuilderPattern(GlsSarimaComputer.class)
     public static class Builder {
-        
+
         private IArmaInitializer initializer;
         private double eps = DEF_EPS;
         private SsqFunctionMinimizer.Builder min;
         private boolean ml = true, mt = false, fast = true;
-        
+
         public Builder initializer(IArmaInitializer initializer) {
             this.initializer = initializer;
             return this;
         }
-        
+
         public Builder minimizer(SsqFunctionMinimizer.Builder min) {
             this.min = min;
             return this;
         }
-        
+
         public Builder precision(double eps) {
             this.eps = eps;
             return this;
         }
-        
+
         public Builder useMaximumLikelihood(boolean ml) {
             this.ml = ml;
             return this;
         }
-        
+
         public Builder useParallelProcessing(boolean mt) {
             this.mt = mt;
             return this;
         }
-        
+
         public Builder computeExactFinalDerivatives(boolean exact) {
             this.fast = !exact;
             return this;
         }
-        
+
         public GlsSarimaComputer build() {
             SsqFunctionMinimizer.Builder builder
                     = min == null ? LevenbergMarquardtMinimizer.builder() : min;
-            
+
             return new GlsSarimaComputer(
                     initializer == null ? IArmaInitializer.defaultInitializer() : initializer,
                     builder.functionPrecision(eps).build(),
                     ml, mt, fast);
         }
-        
+
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
-    
+
     private final IArmaInitializer initializer;
     private final SsqFunctionMinimizer min;
     private final boolean ml, mt, fast;
@@ -131,12 +131,12 @@ public class GlsSarimaComputer implements IRegArimaComputer<SarimaModel> {
         // not used for the time being
         return optimize(regs, start, mapping);
     }
-    
+
     @Override
     public RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping) {
         return optimize(regs, null, mapping);
     }
-    
+
     public LogLikelihoodFunction<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> llFunction(RegArimaModel<SarimaModel> regs, IArimaMapping<SarimaModel> mapping) {
         IParametricMapping<RegArimaModel<SarimaModel>> rmapping = mapping == null
                 ? new RegArimaMapping<>(SarimaMapping.of(regs.arima().orders()), regs)
@@ -144,7 +144,7 @@ public class GlsSarimaComputer implements IRegArimaComputer<SarimaModel> {
         Function<RegArimaModel<SarimaModel>, ConcentratedLikelihoodWithMissing> fn = model -> ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
         return new LogLikelihoodFunction(rmapping, fn);
     }
-    
+
     private RegArimaEstimation<SarimaModel> optimize(RegArimaModel<SarimaModel> regs, SarimaModel ststart, IArimaMapping<SarimaModel> mapping) {
         RegArmaModel<SarimaModel> dmodel = regs.differencedModel();
         if (ststart == null) {
@@ -154,17 +154,22 @@ public class GlsSarimaComputer implements IRegArimaComputer<SarimaModel> {
         int ndf = dmodel.getY().length() - dmodel.getX().getColumnsCount();// - mapping.getDim();
         IArimaMapping<SarimaModel> stationaryMapping = mapping == null ? SarimaMapping.of(ststart.orders()) : mapping.stationaryMapping();
         RegArmaEstimation<SarimaModel> rslt = processor.compute(dmodel, stationaryMapping.parametersOf(ststart), stationaryMapping, min, ndf);
-        
-        SarimaModel arima = SarimaModel.builder(regs.arima().orders())
-                .parameters(rslt.getParameters())
-                .build();
+
+        SarimaModel arima;
+        if (mapping == null) {
+            arima = SarimaModel.builder(regs.arima().orders())
+                    .parameters(rslt.getParameters())
+                    .build();
+        } else {
+            arima = mapping.map(rslt.getParameters());
+        }
         RegArimaModel<SarimaModel> nmodel = RegArimaModel.of(regs, arima);
-        
+
         return RegArimaEstimation.<SarimaModel>builder()
                 .model(nmodel)
                 .concentratedLikelihood(ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(nmodel))
                 .max(new LogLikelihoodFunction.Point(llFunction(regs, mapping), rslt.getParameters(), rslt.getScore(), rslt.getInformation()))
                 .build();
     }
-    
+
 }
