@@ -16,7 +16,7 @@
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
-        <hsqldb.version>2.7.0</hsqldb.version>
+        <hsqldb.version>2.7.1</hsqldb.version>
     </properties>
 
     <dependencies>
