@@ -434,6 +434,30 @@
             </build>
         </profile>
 
+        <!-- Gitflow automation -->
+        <profile>
+            <id>gitflow-automation</id>
+            <activation>
+                <property>
+                    <name>!skipGitflowAutomation</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.amashchenko.maven.plugin</groupId>
+                        <artifactId>gitflow-maven-plugin</artifactId>
+                        <version>1.19.0</version>
+                        <configuration>
+                            <gitFlowConfig>
+                                <versionTagPrefix>v</versionTagPrefix>
+                            </gitFlowConfig>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <!-- Base deploy -->
         <profile>
             <id>base-deploy</id>
