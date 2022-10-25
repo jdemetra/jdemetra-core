@@ -12,6 +12,7 @@
     <name>JDemetra+</name>
     <description>Seasonal Adjustment Toolkit</description>
     <url>https://github.com/jdemetra/jdemetra-core</url>
+    <inceptionYear>2013</inceptionYear>
 
     <licenses>
         <license>
@@ -186,19 +187,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-            <!-- Clean binaries directory -->
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>binaries</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
     <modules>
