@@ -55,14 +55,6 @@
                 <artifactId>guava</artifactId>     
                 <version>${guava.version}</version> 
             </dependency> 
-            <!-- java-io-util -->
-            <dependency>
-                <groupId>com.github.nbbrd.java-io-util</groupId>
-                <artifactId>java-io-bom</artifactId>
-                <version>0.0.19</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

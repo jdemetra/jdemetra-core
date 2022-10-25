@@ -68,6 +68,15 @@
                 <version>3.23.1</version>
             </dependency>
 
+            <!-- java-io-util -->
+            <dependency>
+                <groupId>com.github.nbbrd.java-io-util</groupId>
+                <artifactId>java-io-bom</artifactId>
+                <version>0.0.19</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- modules > -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -359,6 +368,16 @@
                                         <requireReleaseDeps>
                                             <onlyWhenRelease>true</onlyWhenRelease>
                                         </requireReleaseDeps>
+                                        <requireSameVersions>
+                                            <dependencies>
+                                                <dependency>com.github.nbbrd.java-io-util</dependency>
+                                            </dependencies>
+                                        </requireSameVersions>
+                                        <requireSameVersions>
+                                            <dependencies>
+                                                <dependency>org.slf4j</dependency>
+                                            </dependencies>
+                                        </requireSameVersions>
                                         <requireUpperBoundDeps/>
                                         <!-- pomchecker-enforcer-rules -->
                                         <checkMavenCentral
