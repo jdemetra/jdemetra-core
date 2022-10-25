@@ -42,12 +42,10 @@ public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<Residu
 
     private final ResidualsDiagnosticsConfiguration config;
     protected final Function<R, RegSarimaModel> extractor;
-    private final boolean active;
 
-    public ResidualsDiagnosticsFactory(boolean active, @NonNull ResidualsDiagnosticsConfiguration config, @NonNull Function<R, RegSarimaModel> extractor) {
+    public ResidualsDiagnosticsFactory(@NonNull ResidualsDiagnosticsConfiguration config, @NonNull Function<R, RegSarimaModel> extractor) {
         this.config = config;
         this.extractor = extractor;
-        this.active=active;
     }
 
     @Override
@@ -56,8 +54,8 @@ public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<Residu
     }
 
     @Override
-    public ResidualsDiagnosticsFactory<R> with(boolean active, @NonNull ResidualsDiagnosticsConfiguration config) {
-        return new ResidualsDiagnosticsFactory(active, config, extractor);
+    public ResidualsDiagnosticsFactory<R> with(@NonNull ResidualsDiagnosticsConfiguration config) {
+        return new ResidualsDiagnosticsFactory(config, extractor);
     }
 
     @Override
@@ -68,11 +66,6 @@ public class ResidualsDiagnosticsFactory<R> implements DiagnosticsFactory<Residu
     @Override
     public List<String> getTestDictionary() {
         return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     @Override

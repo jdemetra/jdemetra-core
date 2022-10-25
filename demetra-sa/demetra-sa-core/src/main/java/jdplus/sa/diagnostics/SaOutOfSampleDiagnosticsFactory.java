@@ -30,9 +30,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class SaOutOfSampleDiagnosticsFactory<R> extends OutOfSampleDiagnosticsFactory<R> implements SaDiagnosticsFactory<OutOfSampleDiagnosticsConfiguration, R>{
     
-    public SaOutOfSampleDiagnosticsFactory(boolean active, 
-            @NonNull OutOfSampleDiagnosticsConfiguration config, @NonNull Function<R, OneStepAheadForecastingTest > extractor) {
-        super(active, config, extractor);
+    public SaOutOfSampleDiagnosticsFactory(@NonNull OutOfSampleDiagnosticsConfiguration config, @NonNull Function<R, OneStepAheadForecastingTest > extractor) {
+        super(config, extractor);
     }
     
     @Override
@@ -46,7 +45,7 @@ public class SaOutOfSampleDiagnosticsFactory<R> extends OutOfSampleDiagnosticsFa
     }
    
     @Override
-    public SaOutOfSampleDiagnosticsFactory<R> with(boolean active, OutOfSampleDiagnosticsConfiguration config){
-        return new SaOutOfSampleDiagnosticsFactory(active, config, extractor);
+    public SaOutOfSampleDiagnosticsFactory<R> with(OutOfSampleDiagnosticsConfiguration config){
+        return new SaOutOfSampleDiagnosticsFactory(config, extractor);
     }
 }

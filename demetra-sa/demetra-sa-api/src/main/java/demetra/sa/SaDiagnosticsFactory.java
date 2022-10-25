@@ -24,6 +24,7 @@ import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.Diagnostics;
+import demetra.processing.DiagnosticsConfiguration;
 
 /**
  *
@@ -32,7 +33,7 @@ import demetra.processing.Diagnostics;
  * @param <R> Result
  */
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
-public interface SaDiagnosticsFactory<C, R> extends DiagnosticsFactory<C, R> {
+public interface SaDiagnosticsFactory<C extends DiagnosticsConfiguration, R> extends DiagnosticsFactory<C, R> {
 
     public static enum Scope {
 
@@ -81,16 +82,17 @@ public interface SaDiagnosticsFactory<C, R> extends DiagnosticsFactory<C, R> {
     }
     
     @Override
-    SaDiagnosticsFactory<C, R> with(boolean active, C newConfig);
-    
-    default SaDiagnosticsFactory<C, R> activate(boolean active){
-        if (isActive() == active)
+    default SaDiagnosticsFactory<C, R> activate(boolean active) {
+        if (isActive() == active) {
             return this;
-        else
-            return with(active, getConfiguration());
+        } else {
+            return with((C) getConfiguration().activate(active));
+        }
     }
-
-
+    
+    @Override
+    SaDiagnosticsFactory<C, R> with(C newConfig);
+    
     default void fill(List<ProcDiagnostic> tests, R sa, String category) {
         if (sa == null) {
             return;

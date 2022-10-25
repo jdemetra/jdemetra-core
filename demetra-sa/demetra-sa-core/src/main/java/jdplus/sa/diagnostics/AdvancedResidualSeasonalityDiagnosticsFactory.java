@@ -40,13 +40,11 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagn
 
     private final AdvancedResidualSeasonalityDiagnosticsConfiguration config;
     private final Function<R, GenericSaTests> extractor;
-    private final boolean active;
 
-    public AdvancedResidualSeasonalityDiagnosticsFactory(boolean active, @NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config,
+    public AdvancedResidualSeasonalityDiagnosticsFactory(@NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config,
             @NonNull Function<R, GenericSaTests> extractor) {
         this.config = config;
         this.extractor = extractor;
-        this.active=active;
     }
 
     @Override
@@ -55,8 +53,8 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagn
     }
     
     @Override
-    public AdvancedResidualSeasonalityDiagnosticsFactory<R> with(boolean active, @NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config){
-        return new AdvancedResidualSeasonalityDiagnosticsFactory(active, config, extractor);
+    public AdvancedResidualSeasonalityDiagnosticsFactory<R> with(@NonNull AdvancedResidualSeasonalityDiagnosticsConfiguration config){
+        return new AdvancedResidualSeasonalityDiagnosticsFactory(config, extractor);
     }
     
     @Override
@@ -67,11 +65,6 @@ public class AdvancedResidualSeasonalityDiagnosticsFactory<R> implements SaDiagn
     @Override
     public List<String> getTestDictionary() {
         return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     @Override

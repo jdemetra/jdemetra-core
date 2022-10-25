@@ -40,13 +40,11 @@ public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<Cohe
 //    public static final CoherenceDiagnosticsFactory Default = new CoherenceDiagnosticsFactory();
     private final CoherenceDiagnosticsConfiguration config;
     private final Function<R, CoherenceDiagnostics.Input> extractor;
-    private final boolean active;
-
-    public CoherenceDiagnosticsFactory(boolean active, @NonNull CoherenceDiagnosticsConfiguration config,
+ 
+    public CoherenceDiagnosticsFactory(@NonNull CoherenceDiagnosticsConfiguration config,
             @NonNull Function<R, CoherenceDiagnostics.Input> extractor) {
         this.config = config;
         this.extractor = extractor;
-        this.active=active;
     }
 
     @Override
@@ -57,11 +55,6 @@ public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<Cohe
     @Override
     public String getName() {
         return NAME;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     @Override
@@ -85,8 +78,8 @@ public class CoherenceDiagnosticsFactory<R> implements SaDiagnosticsFactory<Cohe
     }
 
     @Override
-    public CoherenceDiagnosticsFactory<R> with(boolean active, @NonNull CoherenceDiagnosticsConfiguration newConfig) {
-        return new CoherenceDiagnosticsFactory(active, config, extractor);
+    public CoherenceDiagnosticsFactory<R> with(@NonNull CoherenceDiagnosticsConfiguration newConfig) {
+        return new CoherenceDiagnosticsFactory(config, extractor);
     }
 
 }

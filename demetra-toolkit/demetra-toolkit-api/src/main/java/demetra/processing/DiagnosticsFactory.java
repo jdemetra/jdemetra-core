@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package demetra.processing;
 
 import java.util.List;
@@ -25,28 +24,38 @@ import java.util.List;
  * @param <C> Configuration
  * @param <R> Original result
  */
-public interface DiagnosticsFactory <C, R>{
-    
+public interface DiagnosticsFactory<C extends DiagnosticsConfiguration, R> {
+
     String getName();
 
-    boolean isActive();
-    
     C getConfiguration();
+
+    default boolean isActive() {
+        return getConfiguration().isActive();
+    }
+
+    default DiagnosticsFactory<C, R> activate(boolean active) {
+        if (isActive() == active) {
+            return this;
+        } else {
+            return with((C) getConfiguration().activate(active));
+        }
+    }
 
     /**
      * Gets the list of the tests
+     *
      * @return A non empty list of tests.
      */
     List<String> getTestDictionary();
-    
+
     Diagnostics of(R results);
-    
+
     /**
-     * 
-     * @param active
+     *
      * @param newConfig If null, the current config is used
-     * @return 
+     * @return
      */
-    DiagnosticsFactory<C, R> with(boolean active, C newConfig);
-    
+    DiagnosticsFactory<C, R> with(C newConfig);
+
 }

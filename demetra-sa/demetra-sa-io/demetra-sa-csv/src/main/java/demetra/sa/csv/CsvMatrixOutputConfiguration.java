@@ -23,7 +23,7 @@ import java.util.List;
 /**
  *
  */
-public class CsvMatrixOutputConfiguration implements Cloneable {
+public final class CsvMatrixOutputConfiguration implements Cloneable {
 
     public static final String NAME = "demetra_m";
 
@@ -57,7 +57,7 @@ public class CsvMatrixOutputConfiguration implements Cloneable {
     }
 
     public void setItems(List<String> value) {
-        items = value.toArray(new String[value.size()]);
+        items = value.toArray(String[]::new);
     }
 
     public boolean isFullName() {

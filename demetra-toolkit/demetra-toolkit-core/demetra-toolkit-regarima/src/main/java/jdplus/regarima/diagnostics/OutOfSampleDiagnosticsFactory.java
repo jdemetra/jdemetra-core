@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import jdplus.regarima.RegArimaModel;
-import jdplus.sarima.SarimaModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.processing.DiagnosticsFactory;
 import demetra.processing.Diagnostics;
@@ -43,12 +41,10 @@ public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<OutO
     //public static final OutOfSampleDiagnosticsFactory Default = new OutOfSampleDiagnosticsFactory();
     private final OutOfSampleDiagnosticsConfiguration config;
     protected final Function<R, OneStepAheadForecastingTest > extractor;
-    private final boolean active;
 
-    public OutOfSampleDiagnosticsFactory(boolean active, @NonNull OutOfSampleDiagnosticsConfiguration config, Function<R, OneStepAheadForecastingTest > extractor) {
+    public OutOfSampleDiagnosticsFactory(@NonNull OutOfSampleDiagnosticsConfiguration config, Function<R, OneStepAheadForecastingTest > extractor) {
         this.config = config;
         this.extractor=extractor;
-        this.active=active;
     }
 
     @Override
@@ -57,8 +53,8 @@ public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<OutO
     }
 
     @Override
-    public OutOfSampleDiagnosticsFactory<R> with(boolean active, OutOfSampleDiagnosticsConfiguration config){
-        return new OutOfSampleDiagnosticsFactory(active, config, extractor);
+    public OutOfSampleDiagnosticsFactory<R> with(OutOfSampleDiagnosticsConfiguration config){
+        return new OutOfSampleDiagnosticsFactory(config, extractor);
     }
 
     @Override
@@ -71,11 +67,6 @@ public class OutOfSampleDiagnosticsFactory<R> implements DiagnosticsFactory<OutO
         return ALL.stream().map(s->s+":2").collect(Collectors.toList());
     }
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-    
    @Override
     public Diagnostics of(R rslts) {
         return OutOfSampleDiagnostics.create(config, extractor.apply(rslts));

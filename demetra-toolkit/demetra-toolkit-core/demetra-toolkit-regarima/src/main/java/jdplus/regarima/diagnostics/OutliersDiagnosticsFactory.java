@@ -36,12 +36,10 @@ public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<Outlier
     public static final List<String> ALL = Collections.singletonList(NUMBER);
     private final OutliersDiagnosticsConfiguration config;
     protected final Function<R, RegSarimaModel> extractor;
-    private final boolean active;
     
-    public OutliersDiagnosticsFactory(boolean active, @NonNull OutliersDiagnosticsConfiguration config, @NonNull Function<R, RegSarimaModel> extractor) {
+    public OutliersDiagnosticsFactory(@NonNull OutliersDiagnosticsConfiguration config, @NonNull Function<R, RegSarimaModel> extractor) {
         this.config = config;
         this.extractor = extractor;
-        this.active=active;
     }
     
     @Override
@@ -50,8 +48,8 @@ public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<Outlier
     }
     
     @Override
-    public OutliersDiagnosticsFactory<R> with(boolean active, OutliersDiagnosticsConfiguration config){
-        return new OutliersDiagnosticsFactory(active, config, extractor);
+    public OutliersDiagnosticsFactory<R> with(OutliersDiagnosticsConfiguration config){
+        return new OutliersDiagnosticsFactory(config, extractor);
     }
 
     @Override
@@ -62,11 +60,6 @@ public class OutliersDiagnosticsFactory<R> implements DiagnosticsFactory<Outlier
     @Override
     public List<String> getTestDictionary() {
         return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
-    }
-    
-    @Override
-    public boolean isActive() {
-        return active;
     }
     
     @Override

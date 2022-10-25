@@ -54,28 +54,28 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     public static List<SaDiagnosticsFactory<?, X13Results>> defaultDiagnostics() {
         CoherenceDiagnosticsFactory<X13Results> coherence
-                = new CoherenceDiagnosticsFactory<>(true, CoherenceDiagnosticsConfiguration.getDefault(),
+                = new CoherenceDiagnosticsFactory<>(CoherenceDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> {
                             return new CoherenceDiagnostics.Input(r.getDecomposition().getMode(), r);
                         }
                 );
 
         SaOutOfSampleDiagnosticsFactory<X13Results> outofsample
-                = new SaOutOfSampleDiagnosticsFactory<>(true, OutOfSampleDiagnosticsConfiguration.getDefault(),
+                = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.getDefault(),
                         r -> r.getDiagnostics().getGenericDiagnostics().forecastingTest());
         SaResidualsDiagnosticsFactory<X13Results> residuals
-                = new SaResidualsDiagnosticsFactory<>(true, ResidualsDiagnosticsConfiguration.getDefault(),
+                = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
         SaOutliersDiagnosticsFactory<X13Results> outliers
-                = new SaOutliersDiagnosticsFactory<>(true, OutliersDiagnosticsConfiguration.getDefault(),
+                = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
-        MDiagnosticsFactory mstats = new MDiagnosticsFactory(true, MDiagnosticsConfiguration.getDefault());
+        MDiagnosticsFactory mstats = new MDiagnosticsFactory(MDiagnosticsConfiguration.getDefault());
         AdvancedResidualSeasonalityDiagnosticsFactory<X13Results> advancedResidualSeasonality
-                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(true, AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
+                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> r.getDiagnostics().getGenericDiagnostics()
                 );
         ResidualTradingDaysDiagnosticsFactory<X13Results> residualTradingDays
-                = new ResidualTradingDaysDiagnosticsFactory<>(true, ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
+                = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
                         (X13Results r) -> r.getDiagnostics().getGenericDiagnostics().residualTradingDaysTests()
                 );
 
