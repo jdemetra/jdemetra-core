@@ -47,7 +47,7 @@
                                 <release>
                                     <github>
                                         <skipTag>true</skipTag>
-                                        <draft>false</draft>
+                                        <draft>true</draft>
                                         <!-- Fix default value -->
                                         <branch>master</branch>
                                     </github>
