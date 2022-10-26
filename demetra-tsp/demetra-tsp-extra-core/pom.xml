@@ -46,6 +46,13 @@
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-provider-ri</artifactId>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- Fix RequireUpperBoundDeps rule -->
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test only -->

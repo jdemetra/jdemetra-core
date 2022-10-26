@@ -328,18 +328,36 @@
                                 </goals>
                                 <configuration>
                                     <rules>
+                                        <!-- Built-In Rules -->
+                                        <banDuplicatePomDependencyVersions/>
+                                        <dependencyConvergence/>
+<!--                                        <reactorModuleConvergence/>-->
                                         <requireMavenVersion>
                                             <version>3.6.0</version>
                                         </requireMavenVersion>
-                                        <DependencyConvergence/>
+                                        <requireNoRepositories>
+                                            <allowSnapshotRepositories>true</allowSnapshotRepositories>
+                                            <allowedRepositories>
+                                                <allowedRepository>central</allowedRepository>
+                                                <!-- required by JD+ artifacts <= v2.2.3 -->
+                                                <allowedRepository>jfrog-maven-mirror</allowedRepository>
+                                                <allowedRepository>ossrh-snapshots1</allowedRepository>
+                                            </allowedRepositories>
+                                        </requireNoRepositories>
+                                        <requirePluginVersions/>
                                         <requireReleaseDeps>
                                             <onlyWhenRelease>true</onlyWhenRelease>
                                         </requireReleaseDeps>
-                                        <CheckMavenCentral
+                                        <requireUpperBoundDeps/>
+                                        <!-- pomchecker-enforcer-rules -->
+                                        <checkMavenCentral
                                                 implementation="org.kordamp.maven.enforcer.checker.CheckMavenCentral">
                                             <release>false</release>
                                             <strict>false</strict>
-                                        </CheckMavenCentral>
+                                        </checkMavenCentral>
+                                        <!-- extra-enforcer-rules -->
+                                        <banCircularDependencies/>
+                                        <banDuplicateClasses/>
                                         <enforceBytecodeVersion>
                                             <maxJdkVersion>17</maxJdkVersion>
                                             <ignoredScopes>
@@ -418,7 +436,18 @@
         </profile>
     </profiles>
 
+    <!-- Custom repositories: order matters! -->
     <repositories>
+        <!-- 1. Main -->
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- 2. JD+ artifacts <= v2.2.3 -->
         <repository>
             <id>jfrog-maven-mirror</id>
             <url>https://raw.githubusercontent.com/nbbrd/jfrog-maven-mirror/main</url>
@@ -426,18 +455,10 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- assertj-core: temp fix for binary incompatibility -->
+        <!-- 3. JD+ snapshots -->
         <repository>
             <id>ossrh-snapshots1</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <!-- sdmx-dl: snapshots are located in another repository -->
-        <repository>
-            <id>ossrh-snapshots2</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
