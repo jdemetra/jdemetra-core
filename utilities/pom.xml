@@ -18,7 +18,6 @@
 
     <properties>
         <slf4j.version>1.7.36</slf4j.version>
-        <guava.version>30.1.1-jre</guava.version>
     </properties>
 
     <dependencyManagement>
@@ -49,12 +48,30 @@
                 <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-            <!-- guava -->
+            <!-- guava without compile-time annotations -->
             <dependency>     
                 <groupId>com.google.guava</groupId>     
                 <artifactId>guava</artifactId>     
-                <version>${guava.version}</version> 
-            </dependency> 
+                <version>30.1.1-jre</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>checker-qual</artifactId>
+                        <groupId>org.checkerframework</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>error_prone_annotations</artifactId>
+                        <groupId>com.google.errorprone</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>j2objc-annotations</artifactId>
+                        <groupId>com.google.j2objc</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jsr305</artifactId>
+                        <groupId>com.google.code.findbugs</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -73,8 +90,8 @@
         </dependency>
         <dependency>     
             <groupId>com.google.guava</groupId>     
-            <artifactId>guava</artifactId>     
-        </dependency> 
+            <artifactId>guava</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-xml</artifactId>
