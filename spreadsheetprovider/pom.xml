@@ -57,6 +57,12 @@
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-poi</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j-api</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
@@ -69,6 +75,15 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>demetra-utils</artifactId>
+        </dependency>
+
+        <!-- runtime only -->
+        <dependency>
+            <!-- required by spreadsheet-poi -->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.19.0</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- test only -->
