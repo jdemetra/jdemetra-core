@@ -15,7 +15,7 @@
 
     <properties>
         <hsqldb.version>2.7.1</hsqldb.version>
-        <java-sql-util.version>1.0.2</java-sql-util.version>
+        <java-sql-util.version>1.0.3</java-sql-util.version>
     </properties>
 
     <dependencies>
