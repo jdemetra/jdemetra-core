@@ -15,8 +15,19 @@
 
     <properties>
         <hsqldb.version>2.7.1</hsqldb.version>
-        <java-sql-util.version>1.0.3</java-sql-util.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.nbbrd.java-sql-util</groupId>
+                <artifactId>java-sql-bom</artifactId>
+                <version>1.0.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- compile and runtime -->       
@@ -27,7 +38,6 @@
         <dependency>
             <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-jdbc</artifactId>
-            <version>${java-sql-util.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.nbbrd.java-io-util</groupId>
@@ -38,19 +48,6 @@
         <dependency>
             <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-odbc</artifactId>
-            <version>${java-sql-util.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.nbbrd.java-io-util</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.java-sql-util</groupId>
-            <artifactId>java-sql-lhod</artifactId>
-            <version>${java-sql-util.version}</version>
-            <scope>runtime</scope>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.nbbrd.java-io-util</groupId>
@@ -60,6 +57,17 @@
         </dependency>
 
         <!-- runtime only -->
+        <dependency>
+            <groupId>com.github.nbbrd.java-sql-util</groupId>
+            <artifactId>java-sql-lhod</artifactId>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.nbbrd.java-io-util</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-win</artifactId>
