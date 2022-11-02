@@ -37,7 +37,7 @@
     </scm>
 
     <properties>
-        <sql-util.version>1.0.2</sql-util.version>
+        <sql-util.version>1.0.3</sql-util.version>
     </properties>
 
     <dependencyManagement>
