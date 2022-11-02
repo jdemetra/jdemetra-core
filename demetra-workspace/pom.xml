@@ -15,10 +15,6 @@
     <description>Seasonal Adjustment Toolkit - Workspace</description>
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
-    <properties>
-        <jimfs.version>1.2</jimfs.version>
-    </properties>
-    
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -52,7 +48,7 @@
         <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
-            <version>${jimfs.version}</version>
+            <version>1.2</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>

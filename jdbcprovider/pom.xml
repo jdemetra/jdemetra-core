@@ -15,10 +15,6 @@
     <description>A TS Provider that handles JDBC sources such as Oracle and MySql.</description>
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
-    <properties>
-        <hsqldb.version>2.7.1</hsqldb.version>
-    </properties>
-
     <dependencies>
         <!-- compile only -->
         <dependency>     
@@ -45,7 +41,6 @@
         <dependency>
             <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-jdbc</artifactId>
-            <version>${sql-util.version}</version>
         </dependency>
 
         <!-- test only -->
@@ -57,7 +52,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>     
             <artifactId>hsqldb</artifactId>     
-            <version>${hsqldb.version}</version>
+            <version>2.7.1</version>
             <classifier>jdk8</classifier>
             <scope>test</scope>
         </dependency> 
