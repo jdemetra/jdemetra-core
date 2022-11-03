@@ -59,6 +59,7 @@
             <artifactId>spreadsheet-poi</artifactId>
             <exclusions>
                 <exclusion>
+                    <!-- see log4j-to-slf4j below -->
                     <artifactId>log4j-api</artifactId>
                     <groupId>org.apache.logging.log4j</groupId>
                 </exclusion>

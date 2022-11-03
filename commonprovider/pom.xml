@@ -16,20 +16,6 @@
     <description>A TS Provider that handles several sources such as csv files.</description>
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
-    <properties>
-        <opencsv.version>2.3</opencsv.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>net.sf.opencsv</groupId>
-                <artifactId>opencsv</artifactId>
-                <version>${opencsv.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -51,6 +37,7 @@
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
+            <version>2.3</version>
         </dependency>
 
         <!-- test only -->
