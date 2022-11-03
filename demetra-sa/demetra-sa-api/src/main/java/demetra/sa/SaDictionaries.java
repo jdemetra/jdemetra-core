@@ -32,9 +32,8 @@ import nbbrd.design.Development;
 public final class SaDictionaries {
 
     /**
-     * Subdivision of a SA processing
-     * Pre-processing of the series (usually reg-arima), decomposition of the
-     * linearized series, final decomposition,
+     * Subdivision of a SA processing Pre-processing of the series (usually
+     * reg-arima), decomposition of the linearized series, final decomposition,
      * optional benchmarking and diagnostics
      *
      */
@@ -48,19 +47,16 @@ public final class SaDictionaries {
     public final String Y = "y", T = "t", S = "s", SA = "sa", I = "i", SI = "si", U = "u";
 
     /**
-     * Default suffixes
-     * Linearized series are series after transformation and removal of the
-     * deterministic components.
-     * Components are series after removal of the deterministic components, but
-     * not (log-)transformed
+     * Default suffixes Linearized series are series after transformation and
+     * removal of the deterministic components. Components are series after
+     * removal of the deterministic components, but not (log-)transformed
      */
     public final String FORECAST = "_f", FORECASTERROR = "_ef", BACKCAST = "_b", BACKCASTERROR = "_eb",
             LINEARIZED = "_lin", COMPONENT = "_cmp";
 
     /**
-     * Default prefixes
-     * Outliers, other regression effects and complete deterministic effects
-     * (=out+reg)
+     * Default prefixes Outliers, other regression effects and complete
+     * deterministic effects (=out+reg)
      */
     public final String OUT = "out_", REG = "reg_", DET = "det_";
 
@@ -68,7 +64,7 @@ public final class SaDictionaries {
     /**
      * Decomposition mode of the series
      */
-    public final String MODE = "mode", SEASONAL="seasonal";
+    public final String MODE = "mode", SEASONAL = "seasonal";
 
     public final String Y_CMP = "y_cmp", Y_CMP_F = "y_cmp_f", Y_CMP_B = "y_cmp_b",
             T_CMP = "t_cmp", S_CMP = "s_cmp", SA_CMP = "sa_cmp", I_CMP = "i_cmp", SI_CMP = "si_cmp";
@@ -79,12 +75,12 @@ public final class SaDictionaries {
     public final String Y_LIN_EF = "y_lin_ef", T_LIN_EF = "t_lin_ef", S_LIN_EF = "s_lin_ef", SA_LIN_EF = "sa_lin_ef", I_LIN_EF = "i_lin_ef";
     public final String Y_LIN_B = "y_lin_b", T_LIN_B = "t_lin_b", S_LIN_B = "s_lin_b", SA_LIN_B = "sa_lin_b", I_LIN_B = "i_lin_b";
     public final String Y_LIN_EB = "y_lin_eb", T_LIN_EB = "t_lin_eb", S_LIN_EB = "s_lin_eb", SA_LIN_EB = "sa_lin_eb", I_LIN_EB = "i_lin_eb";
-    
-    public final String OUT_I = "out_i", OUT_S = "out_s", OUT_T = "out_t", 
+
+    public final String OUT_I = "out_i", OUT_S = "out_s", OUT_T = "out_t",
             OUT_I_F = "out_i_f", OUT_S_F = "out_s_f", OUT_T_F = "out_t_f",
             OUT_I_B = "out_i_b", OUT_S_B = "out_s_b", OUT_T_B = "out_t_b";
     public final String REG_I = "reg_i", REG_S = "reg_s", REG_T = "reg_t", REG_SA = "reg_sa",
-            REG_Y = "reg_y", REG_U = "reg_u", 
+            REG_Y = "reg_y", REG_U = "reg_u",
             REG_I_F = "reg_i_f", REG_S_F = "reg_s_f", REG_T_F = "reg_t_f", REG_SA_F = "reg_sa_f",
             REG_Y_F = "reg_y_f", REG_U_F = "reg_u_f",
             REG_I_B = "reg_i_b", REG_S_B = "reg_s_b", REG_T_B = "reg_t_b", REG_SA_B = "reg_sa_b",
@@ -133,13 +129,11 @@ public final class SaDictionaries {
             .item(Item.builder().name(DET_I_B).description("all regression effects associated to the irregular").outputClass(TsData.class).type(EntryType.Parametric).build())
             .build();
 
-
-
     public final Dictionary SADECOMPOSITION = AtomicDictionary.builder()
             .name("sadecomposition")
             .item(Item.builder().name(MODE).description("decomposition mode").outputClass(String.class).build())
             .item(Item.builder().name(SEASONAL).description("has a seasonal component").outputClass(Integer.class).build())
-//            .item(Item.builder().name(Y).description("series").outputClass(TsData.class).build())
+            //            .item(Item.builder().name(Y).description("series").outputClass(TsData.class).build())
             .item(Item.builder().name(SA).description("seasonal adjusted").outputClass(TsData.class).build())
             .item(Item.builder().name(T).description("trend").outputClass(TsData.class).build())
             .item(Item.builder().name(S).description("seasonal").outputClass(TsData.class).build())
@@ -159,7 +153,7 @@ public final class SaDictionaries {
 
     public final Dictionary SADECOMPOSITION_F = AtomicDictionary.builder()
             .name("sadecomposition (forecasts)")
-//            .item(Item.builder().name(Y + FORECAST).description("series (forecasts)").outputClass(TsData.class).build())
+            //            .item(Item.builder().name(Y + FORECAST).description("series (forecasts)").outputClass(TsData.class).build())
             .item(Item.builder().name(SA + FORECAST).description("seasonal adjusted (forecasts)").outputClass(TsData.class).build())
             .item(Item.builder().name(T + FORECAST).description("trend (forecasts)").outputClass(TsData.class).build())
             .item(Item.builder().name(S + FORECAST).description("seasonal (forecasts)").outputClass(TsData.class).build())
@@ -168,7 +162,7 @@ public final class SaDictionaries {
 
     public final Dictionary SADECOMPOSITION_EF = AtomicDictionary.builder()
             .name("sadecomposition (forecast errors")
-//            .item(Item.builder().name(Y + FORECASTERROR).description("series (forecast errors)").outputClass(TsData.class).build())
+            //            .item(Item.builder().name(Y + FORECASTERROR).description("series (forecast errors)").outputClass(TsData.class).build())
             .item(Item.builder().name(SA + FORECASTERROR).description("seasonal adjusted (forecast errors)").outputClass(TsData.class).build())
             .item(Item.builder().name(T + FORECASTERROR).description("trend (forecast errors)").outputClass(TsData.class).build())
             .item(Item.builder().name(S + FORECASTERROR).description("seasonal (forecast errors)").outputClass(TsData.class).build())
@@ -287,18 +281,17 @@ public final class SaDictionaries {
             .item(Item.builder().name(SEAS_I_SP).description("spectral peaks on irregular").outputClass(String.class).build())
             .item(Item.builder().name(SEAS_SA_AC1).description("autocorrelation(1) of the differenced sa component").outputClass(Double.class).build())
             .build();
-    
+
     /*
     * Trading days
-    */
-    
-    public final String  TD_RES_ALL = "td-res-all",
+     */
+    public final String TD_RES_ALL = "td-res-all",
             TD_RES_LAST = "td-res-last",
             TD_I_ALL = "td-i-all",
             TD_I_LAST = "td-i-last",
             TD_SA_ALL = "td-sa-all",
             TD_SA_LAST = "td-sa-last";
-    
+
     public final Dictionary GENERICTRADINGDAYS = AtomicDictionary.builder()
             .name("generic trading days tests")
             .item(Item.builder().name(TD_RES_ALL).description("f test on default td for the residuals").outputClass(StatisticalTest.class).build())
@@ -308,7 +301,13 @@ public final class SaDictionaries {
             .item(Item.builder().name(TD_I_ALL).description("f test on default td for the irregular").outputClass(StatisticalTest.class).build())
             .item(Item.builder().name(TD_I_LAST).description("f test on default td for the irregular (last years)").outputClass(StatisticalTest.class).build())
             .build();
-    
 
+    public final String ORIGINAL = "original", TARGET = "target", BENCHMARKED = "result";
 
+    public final Dictionary SABENCHMARKING = AtomicDictionary.builder()
+            .name("sa benchmarking")
+            .item(Item.builder().name(ORIGINAL).description("unbenchmarked sa series").outputClass(TsData.class).build())
+            .item(Item.builder().name(TARGET).description("annual target (not aggregated").outputClass(TsData.class).build())
+            .item(Item.builder().name(BENCHMARKED).description("benchmarked sa series").outputClass(TsData.class).build())
+            .build();
 }

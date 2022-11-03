@@ -8,6 +8,7 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.ParameterType;
+import demetra.modelling.ComponentInformation;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SaVariable;
@@ -18,6 +19,8 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sa.CholetteProcessor;
+import jdplus.sa.SaBenchmarkingResults;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
 import jdplus.seats.SeatsKernel;
@@ -48,12 +51,13 @@ public class TramoSeatsKernel {
     private PreliminaryChecks preliminary;
     private TramoKernel tramo;
     private SeatsKernel seats;
+    private CholetteProcessor cholette;
 
     public static TramoSeatsKernel of(TramoSeatsSpec spec, ModellingContext context) {
         PreliminaryChecks check = of(spec);
         TramoKernel tramo = TramoKernel.of(spec.getTramo(), context);
         SeatsKernel seats = new SeatsKernel(SeatsToolkit.of(spec.getSeats()));
-        return new TramoSeatsKernel(check, tramo, seats);
+        return new TramoSeatsKernel(check, tramo, seats, CholetteProcessor.of(spec.getBenchmarking()));
     }
 
     public TramoSeatsResults process(TsData s, ProcessingLog log) {
@@ -71,13 +75,20 @@ public class TramoSeatsKernel {
             SeatsResults srslts = seats.process(smodel, log);
             // Step 4. Final decomposition
             SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, srslts.getFinalComponents());
-            // Step 5. Diagnostics
+            // Step 5. Benchmarking
+            SaBenchmarkingResults bench=null;
+            if (cholette != null){
+                bench=cholette.process(s, TsData.concatenate(finals.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Value), 
+                        finals.getSeries(ComponentType.SeasonallyAdjusted, ComponentInformation.Forecast)), preprocessing);
+            }
+            // Step 6. Diagnostics
             TramoSeatsDiagnostics diagnostics = TramoSeatsDiagnostics.of(preprocessing, srslts, finals);
 
             return TramoSeatsResults.builder()
                     .preprocessing(preprocessing)
                     .decomposition(srslts)
                     .finals(finals)
+                    .benchmarking(bench)
                     .diagnostics(diagnostics)
                     .log(log)
                     .build();

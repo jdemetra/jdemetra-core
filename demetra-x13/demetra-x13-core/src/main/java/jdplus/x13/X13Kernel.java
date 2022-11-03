@@ -33,6 +33,8 @@ import demetra.x13.X13Spec;
 import java.util.Arrays;
 import java.util.Optional;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sa.CholetteProcessor;
+import jdplus.sa.SaBenchmarkingResults;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
 import jdplus.sarima.SarimaModel;
@@ -65,6 +67,7 @@ public class X13Kernel {
     private SaVariablesMapping samapping;
     private X11Spec spec;
     private boolean preprop;
+    private CholetteProcessor cholette;
 
     public static X13Kernel of(X13Spec spec, ModellingContext context) {
         PreliminaryChecks check = of(spec);
@@ -72,7 +75,7 @@ public class X13Kernel {
         SaVariablesMapping mapping = new SaVariablesMapping();
         // TO DO: fill maping with existing information in TramoSpec (section Regression)
         boolean blPreprop = spec.getRegArima().getBasic().isPreprocessing();
-        return new X13Kernel(check, regarima, mapping, spec.getX11(), blPreprop);
+        return new X13Kernel(check, regarima, mapping, spec.getX11(), blPreprop, CholetteProcessor.of(spec.getBenchmarking()));
     }
 
     public X13Results process(TsData s, ProcessingLog log) {
@@ -100,11 +103,16 @@ public class X13Kernel {
             X11Spec nspec = updateSpec(spec, preprocessing);
             X11Results xr = x11.process(alin, nspec);
             X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
+            SaBenchmarkingResults bench=null;
+            if (cholette != null){
+                bench=cholette.process(s, TsData.concatenate(finals.getD11final(),finals.getD11a()), preprocessing);
+            }
             return X13Results.builder()
                     .preprocessing(preprocessing)
                     .preadjustment(preadjustment)
                     .decomposition(xr)
                     .finals(finals)
+                    .benchmarking(bench)
                     .diagnostics(X13Diagnostics.of(preprocessing, preadjustment, xr, finals))
                     .log(log)
                     .build();

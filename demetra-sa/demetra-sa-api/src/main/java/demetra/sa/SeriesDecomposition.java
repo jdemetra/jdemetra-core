@@ -16,6 +16,7 @@ package demetra.sa;
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+import demetra.information.GenericExplorable;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import demetra.modelling.ComponentInformation;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 @Immutable
 @Development(status = Development.Status.Beta)
-public final class SeriesDecomposition {
+public final class SeriesDecomposition implements GenericExplorable{
 
     public static class Builder {
 

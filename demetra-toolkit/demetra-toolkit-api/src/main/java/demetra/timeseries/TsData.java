@@ -89,7 +89,8 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
     }
 
     @StaticFactoryMethod
-    public static @NonNull TsData ofInternal(@NonNull TsPeriod start, @NonNull double[] values) {
+    public static @NonNull
+    TsData ofInternal(@NonNull TsPeriod start, @NonNull double[] values) {
         TsDomain domain = TsDomain.of(start, values.length);
         return domain.isEmpty()
                 ? new TsData(domain, Doubles.EMPTY, NO_DATA_CAUSE)
@@ -97,12 +98,14 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
     }
 
     @StaticFactoryMethod
-    public static @NonNull TsData empty(@NonNull TsPeriod start, @NonNull String cause) {
+    public static @NonNull
+    TsData empty(@NonNull TsPeriod start, @NonNull String cause) {
         return new TsData(TsDomain.of(start, 0), Doubles.EMPTY, Objects.requireNonNull(cause));
     }
 
     @StaticFactoryMethod
-    public static @NonNull TsData empty(@NonNull String cause) {
+    public static @NonNull
+    TsData empty(@NonNull String cause) {
         return new TsData(TsDomain.DEFAULT_EMPTY, Doubles.EMPTY, Objects.requireNonNull(cause));
     }
 
@@ -237,7 +240,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
      * series
      *
      * @param start Index of the start
-     * @param n     Number of obs being extracted
+     * @param n Number of obs being extracted
      * @return
      */
     public TsData extract(@NonNegative int start, @NonNegative int n) {
@@ -268,7 +271,7 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
      *
      * @param s
      * @param domain The domain of the new series. Must have the same frequency
-     *               than the original series.
+     * than the original series.
      * @return A new (possibly empty) series is returned (or null if the domain
      * hasn't the right frequency.
      */
@@ -498,6 +501,36 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
         return lag == 0 ? this : TsData.of(getStart().plus(lag), values);
     }
 
+    /**
+     * Updates this series with the specified time series.The new series has as
+     * domain the union of both domains.
+     *
+     * @param start The update series
+     * @param end The updating series.
+     * @return The updated series. Null if the series don't have the same
+     * frequency.
+     */
+    public static TsData update(final TsData start, final TsData end) {
+        if (end == null || end.isEmpty()) {
+            return start;
+        }
+        TsDomain ldom = start.getDomain(), rdom = end.getDomain();
+        TsDomain udom = ldom.union(rdom);
+        if (udom == null) {
+            return null;
+        }
+        TsPeriod pstart = start.getStart(), pend = end.getStart(), punion = udom.getStartPeriod();
+        int n = udom.getLength();
+        double[] data = new double[n];
+        int l0 = pstart.until(punion), l1 = start.getEnd().until(punion), r0 = pend.until(punion);
+        for (int i = l1; i < r0; ++i) {
+            data[i] = Double.NaN;
+        }
+        start.getValues().copyTo(data, l0);
+        end.getValues().copyTo(data, r0);
+        return TsData.ofInternal(punion, data);
+    }
+
     public static TsData concatenate(TsData... s) {
         int ns = s.length;
         switch (ns) {
@@ -600,11 +633,11 @@ public final class TsData implements TimeSeriesData<TsPeriod, TsObs>, HasEmptyCa
     /**
      * Makes a frequency change of this series.
      *
-     * @param newUnit    The new frequency. Must be la divisor of the present
-     *                   frequency.
+     * @param newUnit The new frequency. Must be la divisor of the present
+     * frequency.
      * @param conversion Aggregation mode.
-     * @param complete   If true, the observation for a given period in the new
-     *                   series is set to Missing if some data in the original series are Missing.
+     * @param complete If true, the observation for a given period in the new
+     * series is set to Missing if some data in the original series are Missing.
      * @return A new time series is returned.
      */
     public TsData aggregate(@NonNull TsUnit newUnit, @NonNull AggregationType conversion, boolean complete) {

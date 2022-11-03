@@ -22,6 +22,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.information.GenericExplorable;
 import demetra.processing.HasLog;
 import demetra.processing.ProcessingLog;
+import jdplus.sa.SaBenchmarkingResults;
 import jdplus.sa.modelling.HasRegSarimaPreprocessing;
 import jdplus.seats.HasCanonicalDecomposition;
 
@@ -36,6 +37,7 @@ public class TramoSeatsResults implements GenericExplorable, HasLog, HasRegSarim
     private RegSarimaModel preprocessing;
     private SeatsResults decomposition;
     private SeriesDecomposition finals;
+    private SaBenchmarkingResults benchmarking;
     private TramoSeatsDiagnostics diagnostics;
     private ProcessingLog log;
 

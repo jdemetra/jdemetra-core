@@ -11,9 +11,9 @@ import demetra.modelling.SeriesInfo;
 import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
 import demetra.toolkit.dictionaries.Dictionary;
-import demetra.x11.X11Dictionaries;
 import demetra.x13.X13Dictionaries;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sa.SaBenchmarkingResults;
 import jdplus.x11.X11Results;
 import jdplus.x13.X13Diagnostics;
 import jdplus.x13.X13Results;
@@ -29,18 +29,19 @@ import nbbrd.service.ServiceProvider;
 public class X13Extractor extends InformationMapping<X13Results> {
 
     public static final String FINAL = "";
-    
-    private String decompositionItem(String key){
+
+    private String decompositionItem(String key) {
         return Dictionary.concatenate(SaDictionaries.DECOMPOSITION, key);
     }
 
-    private String preadjustItem(String key){
+    private String preadjustItem(String key) {
         return Dictionary.concatenate(X13Dictionaries.PREADJUST, key);
     }
-    
-    private String finalItem(String key){
+
+    private String finalItem(String key) {
         return Dictionary.concatenate(X13Dictionaries.FINAL, key);
     }
+
     public X13Extractor() {
 //         MAPPING.set(FINAL + ModellingDictionary.Y, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value));
@@ -64,7 +65,6 @@ public class X13Extractor extends InformationMapping<X13Results> {
 //        MAPPING.set(FINAL + SaDictionaries.T + SeriesInfo.EB_SUFFIX, TsData.class, source
 //                -> source.getFinals().getSeries(ComponentType.Trend, ComponentInformation.StdevBackcast));
 //
-    
 
         set(preadjustItem(X13Dictionaries.A1), TsData.class, source
                 -> source.getPreadjustment().getA1());
@@ -107,7 +107,7 @@ public class X13Extractor extends InformationMapping<X13Results> {
                 -> source.getFinals().getD12a());
         set(SaDictionaries.I, TsData.class, source
                 -> source.getFinals().getD13final());
-        
+
         set(decompositionItem(SaDictionaries.Y_CMP), TsData.class, source
                 -> source.getDecomposition().getB1());
         set(decompositionItem(SaDictionaries.Y_CMP_F), TsData.class, source
@@ -150,13 +150,15 @@ public class X13Extractor extends InformationMapping<X13Results> {
                 -> source.getFinals().getE3());
         set(finalItem(X13Dictionaries.E11), TsData.class, source
                 -> source.getFinals().getE11());
-        
 
         delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
-         
+
         delegate(SaDictionaries.DECOMPOSITION, X11Results.class, source -> source.getDecomposition());
-        
+
         delegate(null, X13Diagnostics.class, source -> source.getDiagnostics());
+
+        delegate(SaDictionaries.BENCHMARKING, SaBenchmarkingResults.class, source -> source.getBenchmarking());
+
     }
 
     @Override
