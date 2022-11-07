@@ -243,7 +243,7 @@ class TradingDaysSpecMapping {
             } else {
                 return TradingDaysSpec.stockTradingDays(w, reg);
             }
-        } else if (tdo == TradingDaysType.NONE && lpo == LengthOfPeriodType.None) {
+        } else if (tdo == TradingDaysType.NONE){// && lpo == LengthOfPeriodType.None) {
             return TradingDaysSpec.none();
         }
         if (tdo == TradingDaysType.TD2) {

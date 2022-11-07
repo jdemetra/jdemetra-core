@@ -56,13 +56,13 @@ public class X13SpecMappingTest {
     public void testReadLegacy() {
         X13Spec specInput = X13Spec.builder().build();
 
-        InformationSet infoV2 = X13SpecMapping.write(specInput, true);
+        InformationSet infoV2 = X13SpecMapping.write(specInput, null, true);
         InformationSet infoV2X11 = infoV2.getSubSet(X11);
         String[] vsig = {"Group1", "Group2", "Group1", "Group1"};
         infoV2X11.set(SIGMAVEC, vsig);
         infoV2X11.remove(FCASTS);// The default value could be 0 vor X11 or -1 for X13 this is not saved in the SA Processiong of Version 2
 
-        X13Spec specV3 = X13SpecMapping.readLegacy(infoV2);
+        X13Spec specV3 = X13SpecMapping.readLegacy(infoV2, null);
         org.junit.Assert.assertNull("Sigmavec is not null and Calendarsigma is default", specV3.getX11().getSigmaVec());
         org.junit.Assert.assertEquals("Forecast horizon is wrong: ", -1, specV3.getX11().getForecastHorizon());
 
@@ -72,12 +72,12 @@ public class X13SpecMappingTest {
     public void testReadLegacy2() {
         X13Spec specInput = X13Spec.builder().build();
 
-        InformationSet infoV2 = X13SpecMapping.write(specInput, true);
+        InformationSet infoV2 = X13SpecMapping.write(specInput, null, true);
         InformationSet infoV2X11 = infoV2.getSubSet(X11);
         infoV2X11.set(FCASTS, -2);
         // The default value could be 0 vor X11 or -1 for X13 this is not saved in the SA Processiong of Version 2
 
-        X13Spec specV3 = X13SpecMapping.readLegacy(infoV2);
+        X13Spec specV3 = X13SpecMapping.readLegacy(infoV2, null);
         org.junit.Assert.assertEquals("Forecast horizon is wrong: ", -2, specV3.getX11().getForecastHorizon());
 
     }

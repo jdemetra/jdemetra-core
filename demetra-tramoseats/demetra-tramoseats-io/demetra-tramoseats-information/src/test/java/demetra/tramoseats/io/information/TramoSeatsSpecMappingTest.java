@@ -76,13 +76,13 @@ public class TramoSeatsSpecMappingTest {
     }
 
     private void test(TramoSeatsSpec spec) {
-        InformationSet info = TramoSeatsSpecMapping.write(spec, true);
-        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readV3(info);
+        InformationSet info = TramoSeatsSpecMapping.write(spec, null, true);
+        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readV3(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
-        info = TramoSeatsSpecMapping.write(spec, false);
-        nspec = TramoSeatsSpecMapping.readV3(info);
+        info = TramoSeatsSpecMapping.write(spec, null, false);
+        nspec = TramoSeatsSpecMapping.readV3(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
@@ -100,20 +100,20 @@ public class TramoSeatsSpecMappingTest {
     }
 
     private void testLegacy(TramoSeatsSpec spec) {
-        InformationSet info = TramoSeatsSpecMapping.writeLegacy(spec, true);
-        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readLegacy(info);
+        InformationSet info = TramoSeatsSpecMapping.writeLegacy(spec, null, true);
+        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readLegacy(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
-        info = TramoSeatsSpecMapping.writeLegacy(spec, false);
-        nspec = TramoSeatsSpecMapping.readLegacy(info);
+        info = TramoSeatsSpecMapping.writeLegacy(spec, null, false);
+        nspec = TramoSeatsSpecMapping.readLegacy(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
     }
 
     public static void testXmlSerialization() throws IOException {
-        InformationSet info = TramoSeatsSpecMapping.writeLegacy(TramoSeatsSpec.RSAfull, true);
+        InformationSet info = TramoSeatsSpecMapping.writeLegacy(TramoSeatsSpec.RSAfull, null, true);
 
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
@@ -131,7 +131,7 @@ public class TramoSeatsSpecMappingTest {
                 .parseFile(new File(tmp + "tramoseats.xml"));
 
         InformationSet info = rslt.create();
-        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readLegacy(info);
+        TramoSeatsSpec nspec = TramoSeatsSpecMapping.readLegacy(info, null);
         System.out.println(nspec.equals(TramoSeatsSpec.RSAfull));
     }
 

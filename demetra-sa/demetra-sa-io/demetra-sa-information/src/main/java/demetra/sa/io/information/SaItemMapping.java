@@ -15,6 +15,7 @@ import demetra.sa.SaEstimation;
 import demetra.sa.SaItem;
 import demetra.sa.SaSpecification;
 import demetra.timeseries.Ts;
+import demetra.timeseries.TsDomain;
 import demetra.util.NameManager;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class SaItemMapping {
         if (ts == null) {
             return null;
         }
+        TsDomain context=ts.getData().getDomain();
         String dname = info.get(DOMAIN_SPEC, String.class);
         if (dname == null) {
             return null;
@@ -62,7 +64,7 @@ public class SaItemMapping {
         dbuilder = dbuilder.ts(ts).domainSpec(dspec).policy(policy);
         InformationSet einfo = info.getSubSet(ESTIMATION_SPEC);
         if (einfo != null) {
-            SaSpecification espec = SaSpecificationMapping.of(einfo);
+            SaSpecification espec = SaSpecificationMapping.of(einfo, context);
             if (espec != null) {
                 dbuilder = dbuilder.estimationSpec(espec);
             }
@@ -77,7 +79,7 @@ public class SaItemMapping {
         String q = info.get(QUALITY, String.class);
         if (pinfo != null || q != null) {
             SaEstimation.Builder ebuilder = SaEstimation.builder();
-            SaSpecification pspec = SaSpecificationMapping.of(pinfo);
+            SaSpecification pspec = SaSpecificationMapping.of(pinfo, context);
             if (pspec != null) {
                 ebuilder = ebuilder.pointSpec(pspec);
             }
@@ -123,9 +125,9 @@ public class SaItemMapping {
             defaults.set(dname, def.getDomainSpec());
         }
         info.set(DOMAIN_SPEC, dname);
-
+        TsDomain context = ts.getData().getDomain();
         if (def.getEstimationSpec() != null) {
-            info.set(ESTIMATION_SPEC, SaSpecificationMapping.toInformationSet(def.getEstimationSpec(), verbose, version));
+            info.set(ESTIMATION_SPEC, SaSpecificationMapping.toInformationSet(def.getEstimationSpec(), context, verbose, version));
         }
         if (item.getPriority() > 0 || verbose) {
             info.set(PRIORITY, item.getPriority());
@@ -143,7 +145,7 @@ public class SaItemMapping {
             info.set(COMMENT, comment);
         }
         if (estimation != null) {
-            info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), verbose, version));
+            info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), context, verbose, version));
             if (estimation.getQuality() != null) {
                 info.set(QUALITY, estimation.getQuality().name());
             }

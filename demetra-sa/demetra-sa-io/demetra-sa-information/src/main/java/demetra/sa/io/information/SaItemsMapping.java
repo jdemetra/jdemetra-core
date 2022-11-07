@@ -47,7 +47,7 @@ public class SaItemsMapping {
         // write the default specifications
         InformationSet defspec = info.subSet(DOMAIN_SPECS);
         for (String key : dic.getNames()) {
-            defspec.set(key, SaSpecificationMapping.toInformationSet(dic.get(key), verbose, version));
+            defspec.set(key, SaSpecificationMapping.toInformationSet(dic.get(key), null, verbose, version));
         }
         return info;
     }
@@ -63,7 +63,7 @@ public class SaItemsMapping {
         List<Information<InformationSet>> dspecs = defspec.select(InformationSet.class);
         HashMap<String, String> equivalence = new HashMap<>();
         for (Information<InformationSet> dspec : dspecs) {
-            SaSpecification cur = SaSpecificationMapping.of(dspec.getValue());
+            SaSpecification cur = SaSpecificationMapping.of(dspec.getValue(), null);
             if (cur != null) {
                 // workaround to solve some old serialization problems
                 String cname = dic.get(cur);

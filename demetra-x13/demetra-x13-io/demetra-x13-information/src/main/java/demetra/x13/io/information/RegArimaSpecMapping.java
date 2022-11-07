@@ -20,10 +20,12 @@ import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.arima.SarimaSpec;
+import demetra.information.InformationSetSerializerEx;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
+import demetra.timeseries.TsDomain;
 import java.util.Map;
 
 /**
@@ -33,15 +35,15 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 public class RegArimaSpecMapping {
 
-    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_V3 = new InformationSetSerializer<RegArimaSpec>() {
+    public static final InformationSetSerializerEx<RegArimaSpec, TsDomain> SERIALIZER_V3 = new InformationSetSerializerEx<RegArimaSpec, TsDomain>() {
         @Override
-        public InformationSet write(RegArimaSpec object, boolean verbose) {
-            return RegArimaSpecMapping.write(object, verbose);
+        public InformationSet write(RegArimaSpec object, TsDomain context, boolean verbose) {
+            return RegArimaSpecMapping.write(object, context, verbose);
         }
 
         @Override
-        public RegArimaSpec read(InformationSet info) {
-            return RegArimaSpecMapping.read(info);
+        public RegArimaSpec read(InformationSet info, TsDomain context) {
+            return RegArimaSpecMapping.read(info, context);
         }
 
         @Override
@@ -50,15 +52,15 @@ public class RegArimaSpecMapping {
         }
     };
 
-    public static final InformationSetSerializer<RegArimaSpec> SERIALIZER_LEGACY = new InformationSetSerializer<RegArimaSpec>() {
+    public static final InformationSetSerializerEx<RegArimaSpec, TsDomain> SERIALIZER_LEGACY = new InformationSetSerializerEx<RegArimaSpec, TsDomain>() {
         @Override
-        public InformationSet write(RegArimaSpec object, boolean verbose) {
-            return RegArimaSpecMapping.writeLegacy(object, verbose);
+        public InformationSet write(RegArimaSpec object, TsDomain context, boolean verbose) {
+            return RegArimaSpecMapping.writeLegacy(object, context, verbose);
         }
 
         @Override
-        public RegArimaSpec read(InformationSet info) {
-            return RegArimaSpecMapping.readLegacy(info);
+        public RegArimaSpec read(InformationSet info, TsDomain context) {
+            return RegArimaSpecMapping.readLegacy(info, context);
         }
 
         @Override
@@ -89,19 +91,19 @@ public class RegArimaSpecMapping {
         RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
     }
 
-    public RegArimaSpec read(InformationSet info) {
+    public RegArimaSpec read(InformationSet info, TsDomain context) {
         if (info == null) {
             return RegArimaSpec.DEFAULT_ENABLED;
         }
         AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
         if (desc != null && desc.equals(RegArimaSpec.DESCRIPTOR_LEGACY)) {
-            return readLegacy(info);
+            return readLegacy(info, context);
         } else {
-            return readV3(info);
+            return readV3(info, context);
         }
     }
 
-    public RegArimaSpec readV3(InformationSet info) {
+    public RegArimaSpec readV3(InformationSet info, TsDomain context) {
         return RegArimaSpec.builder()
                 .basic(BasicSpecMapping.read(info.getSubSet(BASIC)))
                 .transform(TransformSpecMapping.read(info.getSubSet(TRANSFORM)))
@@ -113,7 +115,7 @@ public class RegArimaSpecMapping {
                 .build();
     }
 
-    public InformationSet write(RegArimaSpec spec, boolean verbose) {
+    public InformationSet write(RegArimaSpec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.set("algorithm", RegArimaSpecMapping.DESCRIPTOR_V3);
         InformationSet binfo = BasicSpecMapping.write(spec.getBasic(), verbose);
@@ -147,7 +149,7 @@ public class RegArimaSpecMapping {
         return specInfo;
     }
 
-    public RegArimaSpec readLegacy(InformationSet info) {
+    public RegArimaSpec readLegacy(InformationSet info, TsDomain context) {
         RegArimaSpec.Builder builder = RegArimaSpec.builder();
         InformationSet binfo = info.getSubSet(BASIC);
         InformationSet tinfo = info.getSubSet(TRANSFORM);
@@ -179,13 +181,13 @@ public class RegArimaSpecMapping {
             builder.estimate(EstimateSpecMapping.read(einfo));
         }
         if (rinfo != null) {
-            RegressionSpecMapping.readLegacy(rinfo, rb);
+            RegressionSpecMapping.readLegacy(rinfo, context, rb);
             builder.regression(rb.build());
         }
         return builder.build();
     }
 
-    public InformationSet writeLegacy(RegArimaSpec spec, boolean verbose) {
+    public InformationSet writeLegacy(RegArimaSpec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.set("algorithm", RegArimaSpecMapping.DESCRIPTOR_LEGACY);
         InformationSet binfo = BasicSpecMapping.write(spec.getBasic(), verbose);
