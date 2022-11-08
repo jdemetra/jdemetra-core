@@ -127,7 +127,7 @@ public class TramoSpecMapping {
         if (outlierinfo != null) {
             specInfo.set(OUTLIER, outlierinfo);
         }
-        InformationSet reginfo = RegressionSpecMapping.write(spec.getRegression(), verbose);
+        InformationSet reginfo = RegressionSpecMapping.write(spec.getRegression(), context, verbose);
         if (reginfo != null) {
             specInfo.set(REGRESSION, reginfo);
         }
@@ -191,7 +191,7 @@ public class TramoSpecMapping {
         if (outlierinfo != null) {
             specInfo.set(OUTLIER, outlierinfo);
         }
-        InformationSet reginfo = RegressionSpecMapping.writeLegacy(spec.getRegression(), verbose);
+        InformationSet reginfo = RegressionSpecMapping.writeLegacy(spec.getRegression(), context, verbose);
         if (reginfo != null) {
             specInfo.set(REGRESSION, reginfo);
         }

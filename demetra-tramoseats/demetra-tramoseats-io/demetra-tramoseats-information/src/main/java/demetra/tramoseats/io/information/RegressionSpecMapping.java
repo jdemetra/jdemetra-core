@@ -134,7 +134,7 @@ class RegressionSpecMapping {
                 if (o != null) {
                     Parameter c = RegressionSpecMapping.coefficientOf(regInfo, o.name(context));
                     IOutlier io = OutlierMapping.from(o);
-                    builder.outlier(Variable.variable(OutlierMapping.name(io), io, attributes(io)).withCoefficient(c));
+                    builder.outlier(Variable.variable(OutlierMapping.name(io, context), io, attributes(io)).withCoefficient(c));
                 }
             }
         }
@@ -202,7 +202,7 @@ class RegressionSpecMapping {
         return builder.build();
     }
 
-    InformationSet write(RegressionSpec spec, boolean verbose) {
+    InformationSet write(RegressionSpec spec, TsDomain context, boolean verbose) {
         if (!spec.isUsed()) {
             return null;
         }
@@ -250,7 +250,7 @@ class RegressionSpecMapping {
         return info;
     }
 
-    InformationSet writeLegacy(RegressionSpec spec, boolean verbose) {
+    InformationSet writeLegacy(RegressionSpec spec, TsDomain context, boolean verbose) {
         if (!spec.isUsed()) {
             return null;
         }
@@ -263,7 +263,7 @@ class RegressionSpecMapping {
                 Variable<IOutlier> v = voutliers.get(i);
                 outliers[i] = OutlierMapping.format(v.getCore());
                 Parameter p = v.getCoefficient(0);
-                set(info, outliers[i], p);
+                set(info,  OutlierMapping.name(v.getCore(), context), p);
             }
             info.set(OUTLIERS_LEGACY, outliers);
         }

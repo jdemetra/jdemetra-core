@@ -52,7 +52,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.4.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -90,24 +90,12 @@
       <artifactId>java-design-processor</artifactId>
       <version>1.3.1</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>java-design-annotation</artifactId>
-          <groupId>com.github.nbbrd.java-design-util</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.github.nbbrd.java-service-util</groupId>
       <artifactId>java-service-processor</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>java-service-annotation</artifactId>
-          <groupId>com.github.nbbrd.java-service-util</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -162,4 +150,3 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
-

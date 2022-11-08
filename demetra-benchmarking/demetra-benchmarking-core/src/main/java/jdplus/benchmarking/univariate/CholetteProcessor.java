@@ -33,8 +33,6 @@ import demetra.timeseries.TsUnit;
 import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import jdplus.data.DataBlock;
-import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.ssf.arima.AR1;
 import jdplus.ssf.arima.Rw;
 import jdplus.ssf.ISsfLoading;
@@ -65,9 +63,11 @@ public class CholetteProcessor implements Cholette.Processor {
         }
         TsData sy = s.aggregate(target.getTsUnit(), agg, true);
         sy = TsDataToolkit.fitToDomain(sy, sy.getDomain().intersection(target.getDomain()));
+        // TsDataBlock.all(target).data.sum() is the sum of the aggregation constraints
+        //  TsDataBlock.all(sy).data.sum() is the sum of the averages or sums of the original series
         BiasCorrection bias = spec.getBias();
         if (bias == BiasCorrection.Multiplicative) {
-            double b = target.getValues().sum() / sy.getValues().sum();
+            double b=target.getValues().sum() / sy.getValues().sum();
             return multiply(s, b);
         } else {
             double b = (target.getValues().sum() - sy.getValues().sum()) / target.length();
@@ -107,11 +107,6 @@ public class CholetteProcessor implements Cholette.Processor {
      * @return
      */
     private TsData cholette(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpec spec) {
-        AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
-        DataBlock ns = DataBlock.of(highFreqSeries.getValues());
-        double factor = normalizer.normalize(ns);
-        highFreqSeries = TsData.of(highFreqSeries.getStart(), ns);
-        aggregationConstraint = aggregationConstraint.fn(z -> z * factor);
         int ratio = highFreqSeries.getTsUnit().ratioOf(aggregationConstraint.getTsUnit());
         if (ratio == TsUnit.NO_RATIO || ratio == TsUnit.NO_STRICT_RATIO) {
             throw new TsException(TsException.INCOMPATIBLE_FREQ);
@@ -135,8 +130,7 @@ public class CholetteProcessor implements Cholette.Processor {
                 naggregationConstraint = BenchmarkingUtility.constraintsByPosition(highFreqSeries, aggregationConstraint, spec.getObservationPosition());
                 agg = highFreqSeries.aggregateByPosition(aggregationConstraint.getTsUnit(), spec.getObservationPosition());
             }
-            default ->
-                throw new TsException(TsException.INVALID_OPERATION);
+            default -> throw new TsException(TsException.INVALID_OPERATION);
         }
 
         TsPeriod sh = highFreqSeries.getStart();
@@ -149,10 +143,8 @@ public class CholetteProcessor implements Cholette.Processor {
         switch (spec.getAggregationType()) {
             case First -> {
             }
-            case UserDefined ->
-                offset += spec.getObservationPosition();
-            default ->
-                offset += ratio - 1;
+            case UserDefined -> offset += spec.getObservationPosition();
+            default -> offset += ratio - 1;
 
         }
 
@@ -166,10 +158,6 @@ public class CholetteProcessor implements Cholette.Processor {
                 for (int i = 0; i < w.length; ++i) {
                     w[i] = Math.pow(Math.abs(w[i]), spec.getLambda());
                 }
-            } else {
-                for (int i = 0; i < w.length; ++i) {
-                    w[i] = Math.abs(w[i]);
-                }
             }
         }
         TsPeriod start = highFreqSeries.getStart();
@@ -181,18 +169,15 @@ public class CholetteProcessor implements Cholette.Processor {
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSeq.of(w))
                     .build();
-            DefaultSmoothingResults rslts = DkToolkit.sqrtSmooth(ssf, new SsfData(y), false, false);
+            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
 
             double[] b = new double[highFreqSeries.length()];
             if (w != null) {
                 for (int i = 0; i < b.length; ++i) {
-                    b[i] = w[i] / factor * (rslts.a(i).get(1));
+                    b[i] = w[i] * (rslts.a(i).get(1));
                 }
             } else {
                 rslts.getComponent(1).copyTo(b, 0);
-                for (int i = 0; i < b.length; ++i) {
-                    b[i] /= factor;
-                }
             }
             return TsData.add(highFreqSeries, TsData.ofInternal(start, b));
         } else {
@@ -213,7 +198,7 @@ public class CholetteProcessor implements Cholette.Processor {
             DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
             double[] b = new double[highFreqSeries.length()];
             for (int i = 0; i < b.length; ++i) {
-                b[i] = loading.ZX(i, rslts.a(i)) / factor;
+                b[i] = loading.ZX(i, rslts.a(i));
             }
             return TsData.add(highFreqSeries, TsData.ofInternal(start, b));
         }
