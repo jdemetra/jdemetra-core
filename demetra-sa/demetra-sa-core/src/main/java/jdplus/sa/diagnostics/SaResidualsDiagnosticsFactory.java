@@ -29,8 +29,8 @@ import jdplus.regsarima.regular.RegSarimaModel;
  */
 public class SaResidualsDiagnosticsFactory<R> extends ResidualsDiagnosticsFactory<R> implements SaDiagnosticsFactory<ResidualsDiagnosticsConfiguration, R> {
 
-    public SaResidualsDiagnosticsFactory(boolean active, ResidualsDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
-        super(active, config, extractor);
+    public SaResidualsDiagnosticsFactory(ResidualsDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
+        super(config, extractor);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SaResidualsDiagnosticsFactory<R> extends ResidualsDiagnosticsFactor
 
 
     @Override
-    public SaResidualsDiagnosticsFactory<R> with(boolean active, ResidualsDiagnosticsConfiguration config){
-        return new SaResidualsDiagnosticsFactory(active, config, extractor);
+    public SaResidualsDiagnosticsFactory<R> with(ResidualsDiagnosticsConfiguration config){
+        return new SaResidualsDiagnosticsFactory(config, extractor);
     }
 }

@@ -57,31 +57,31 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
 
     public static List<SaDiagnosticsFactory<?, TramoSeatsResults>> defaultDiagnostics() {
         CoherenceDiagnosticsFactory<TramoSeatsResults> coherence
-                = new CoherenceDiagnosticsFactory<>(true, CoherenceDiagnosticsConfiguration.getDefault(),
+                = new CoherenceDiagnosticsFactory<>(CoherenceDiagnosticsConfiguration.getDefault(),
                         (TramoSeatsResults r) -> {
                             return new CoherenceDiagnostics.Input(r.getFinals().getMode(), r);
                         }
                 );
         SaOutOfSampleDiagnosticsFactory<TramoSeatsResults> outofsample
-                = new SaOutOfSampleDiagnosticsFactory<>(true, OutOfSampleDiagnosticsConfiguration.getDefault(),
+                = new SaOutOfSampleDiagnosticsFactory<>(OutOfSampleDiagnosticsConfiguration.getDefault(),
                         r -> r.getDiagnostics().getGenericDiagnostics().forecastingTest());
         SaResidualsDiagnosticsFactory<TramoSeatsResults> residuals
-                = new SaResidualsDiagnosticsFactory<>(true, ResidualsDiagnosticsConfiguration.getDefault(),
+                = new SaResidualsDiagnosticsFactory<>(ResidualsDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
         SaOutliersDiagnosticsFactory<TramoSeatsResults> outliers
-                = new SaOutliersDiagnosticsFactory<>(true, OutliersDiagnosticsConfiguration.getDefault(),
+                = new SaOutliersDiagnosticsFactory<>(OutliersDiagnosticsConfiguration.getDefault(),
                         r -> r.getPreprocessing());
         SeatsDiagnosticsFactory<TramoSeatsResults> seats
-                = new SeatsDiagnosticsFactory<>(true, SeatsDiagnosticsConfiguration.getDefault(),
+                = new SeatsDiagnosticsFactory<>(SeatsDiagnosticsConfiguration.getDefault(),
                         r -> r.getDiagnostics().getSpecificDiagnostics());
         
         AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
-                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(true, AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
+                = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
                         (TramoSeatsResults r) -> r.getDiagnostics().getGenericDiagnostics()
                 );
         
         ResidualTradingDaysDiagnosticsFactory<TramoSeatsResults> residualTradingDays
-                = new ResidualTradingDaysDiagnosticsFactory<>(true, ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
+                = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
                         (TramoSeatsResults r) -> r.getDiagnostics().getGenericDiagnostics().residualTradingDaysTests()
                 );
 

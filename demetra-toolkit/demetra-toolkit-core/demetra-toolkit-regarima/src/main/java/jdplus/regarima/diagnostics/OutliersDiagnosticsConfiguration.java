@@ -13,48 +13,61 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
-*/
-
-
+ */
 package jdplus.regarima.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
-
 
 /**
  *
  * @author Kristof Bayens
  */
 @lombok.Value
-@lombok.Builder
-public class OutliersDiagnosticsConfiguration{
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class OutliersDiagnosticsConfiguration implements DiagnosticsConfiguration {
 
-    private static AtomicReference<OutliersDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<OutliersDiagnosticsConfiguration>(builder().build());
-    
-    public static void setDefault(OutliersDiagnosticsConfiguration config){
+    private static final AtomicReference<OutliersDiagnosticsConfiguration> DEFAULT
+            = new AtomicReference<>(builder().build());
+
+    public static void setDefault(OutliersDiagnosticsConfiguration config) {
         DEFAULT.set(config);
     }
-    
-    public static OutliersDiagnosticsConfiguration getDefault(){
+
+    public static OutliersDiagnosticsConfiguration getDefault() {
         return DEFAULT.get();
     }
 
+    public static final boolean ACTIVE = true;
+    private boolean active;
+
     public static final double SEV = .10, BAD = .05, UNC = .03;
-    
+
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .severeThreshold(SEV)
                 .badThreshold(BAD)
-                .uncertainThreshold(UNC);        
-   }
-    
-    public void check() {
-        if (severeThreshold < badThreshold || badThreshold < uncertainThreshold || uncertainThreshold < 0)
-                throw new IllegalArgumentException();
+                .uncertainThreshold(UNC);
     }
+
+    public void check() {
+        if (severeThreshold < badThreshold || badThreshold < uncertainThreshold || uncertainThreshold < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+
 }

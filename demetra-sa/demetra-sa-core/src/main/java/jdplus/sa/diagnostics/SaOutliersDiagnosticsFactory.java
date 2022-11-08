@@ -29,8 +29,8 @@ import jdplus.regsarima.regular.RegSarimaModel;
  */
 public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<R> implements SaDiagnosticsFactory<OutliersDiagnosticsConfiguration, R> {
 
-    public SaOutliersDiagnosticsFactory(boolean active, OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
-        super(active, config, extractor);
+    public SaOutliersDiagnosticsFactory(OutliersDiagnosticsConfiguration config, Function<R, RegSarimaModel> extractor) {
+        super(config, extractor);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SaOutliersDiagnosticsFactory<R> extends OutliersDiagnosticsFactory<
     }
 
     @Override
-    public SaOutliersDiagnosticsFactory<R> with(boolean active, OutliersDiagnosticsConfiguration config){
-        return new SaOutliersDiagnosticsFactory(active, config, extractor);
+    public SaOutliersDiagnosticsFactory<R> with(OutliersDiagnosticsConfiguration config){
+        return new SaOutliersDiagnosticsFactory(config, extractor);
     }
 }

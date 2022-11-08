@@ -13,6 +13,7 @@ import demetra.information.InformationMapping;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.SeriesInfo;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
@@ -208,24 +209,20 @@ public class RegSarimaModelExtractors {
             });
 
             //*********************
-
             setArray(RegressionDictionaries.Y_F, NFCAST, TsData.class, (source, i) -> source.forecasts(i).getForecasts());
             setArray(RegressionDictionaries.Y_B, NBCAST, TsData.class, (source, i) -> source.backcasts(i).getForecasts());
-            setArray(RegressionDictionaries.Y_EF, NFCAST, TsData.class, (source,i) -> source.forecasts(i).getForecastsStdev());
-            setArray(RegressionDictionaries.Y_EB, NBCAST, TsData.class, (source,i) -> source.backcasts(i).getForecastsStdev());
-
+            setArray(RegressionDictionaries.Y_EF, NFCAST, TsData.class, (source, i) -> source.forecasts(i).getForecastsStdev());
+            setArray(RegressionDictionaries.Y_EB, NBCAST, TsData.class, (source, i) -> source.backcasts(i).getForecastsStdev());
 
             set(RegressionDictionaries.YC, TsData.class, source -> source.interpolatedSeries(false));
-            
+
             set(RegressionDictionaries.L, TsData.class, source -> source.linearizedSeries());
 //            set(RegressionDictionaries.Y_LIN, TsData.class, source -> {
 //                TsData lin = source.linearizedSeries();
 //                return source.backTransform(lin, false);
 //            });
-            
+
             //********************
-            
-            
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.F_SUFFIX, source -> source.forecast(source.getForecastCount(), false));
 //        MAPPING.set(ModellingDictionary.YC + SeriesInfo.EF_SUFFIX, source -> source.getForecastError());
 //        MAPPING.set(RegressionDictionaries.Y_LIN + SeriesInfo.F_SUFFIX, source -> source.linearizedForecast(source.domain(true).getLength(), true));
@@ -236,11 +233,23 @@ public class RegSarimaModelExtractors {
                 TsData cal = source.getCalendarEffect(y.getDomain());
                 return source.inv_op(y, cal);
             });
+            setArray(RegressionDictionaries.YCAL + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
+                    (source, i) -> {
+                        TsDomain fdom = source.forecastDomain(i);
+                        TsData yf = source.forecasts(i).getForecasts();
+                        TsData calf = source.getCalendarEffect(fdom);
+                        return source.inv_op(yf, calf);
+                    });
+            set(RegressionDictionaries.YCAL, TsData.class, source -> {
+                TsData y = source.getDescription().getSeries();
+                TsData cal = source.getCalendarEffect(y.getDomain());
+                return source.inv_op(y, cal);
+            });
 //        MAPPING.set(RegressionDictionaries.YCAL + SeriesInfo.F_SUFFIX, source -> source.getYcal(true));
 
 // All deterministic effects
             set(RegressionDictionaries.DET, TsData.class, (RegSarimaModel source) -> {
-                TsData det = source.deterministicEffect(null, v->true);
+                TsData det = source.deterministicEffect(null, v -> true);
                 return source.backTransform(det, true);
             });
             setArray(RegressionDictionaries.DET + SeriesInfo.F_SUFFIX, NFCAST, TsData.class,
@@ -274,7 +283,7 @@ public class RegSarimaModelExtractors {
                     (source, i) -> source.getMovingHolidayEffect(source.forecastDomain(i)));
             setArray(RegressionDictionaries.MHE_B, NBCAST, TsData.class,
                     (source, i) -> source.getMovingHolidayEffect(source.backcastDomain(i)));
-            
+
 // Easter effect
             set(RegressionDictionaries.EE, TsData.class, source -> source.getEasterEffect(null));
             setArray(RegressionDictionaries.EE_F, NFCAST, TsData.class,
@@ -388,18 +397,18 @@ public class RegSarimaModelExtractors {
                 diag.set(1);
                 return cov;
             });
-            
-            set(residualsItem(ResidualsDictionaries.SER), Double.class, (RegSarimaModel source)->{
+
+            set(residualsItem(ResidualsDictionaries.SER), Double.class, (RegSarimaModel source) -> {
                 LikelihoodStatistics stats = source.getEstimation().getStatistics();
                 double ssqErr = stats.getSsqErr();
-                int ndf=stats.getEffectiveObservationsCount()-stats.getEstimatedParametersCount()-source.freeArimaParametersCount();
-                return Math.sqrt(ssqErr/ndf);
+                int ndf = stats.getEffectiveObservationsCount() - stats.getEstimatedParametersCount() - source.freeArimaParametersCount();
+                return Math.sqrt(ssqErr / ndf);
             });
-            set(residualsItem(ResidualsDictionaries.RES), double[].class, (RegSarimaModel source)->{
+            set(residualsItem(ResidualsDictionaries.RES), double[].class, (RegSarimaModel source) -> {
                 RegSarimaModel.Details details = source.getDetails();
                 return details.getIndependentResiduals().toArray();
             });
-            set(residualsItem(ResidualsDictionaries.TSRES), TsData.class, (RegSarimaModel source)->source.fullResiduals());
+            set(residualsItem(ResidualsDictionaries.TSRES), TsData.class, (RegSarimaModel source) -> source.fullResiduals());
         }
 
         @Override

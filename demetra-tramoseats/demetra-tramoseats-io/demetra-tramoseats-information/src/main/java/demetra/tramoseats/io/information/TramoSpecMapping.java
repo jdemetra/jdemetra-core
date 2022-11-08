@@ -20,8 +20,10 @@ import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
 import demetra.arima.SarimaSpec;
+import demetra.information.InformationSetSerializerEx;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
+import demetra.timeseries.TsDomain;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TramoSpec;
 
@@ -32,15 +34,15 @@ import demetra.tramo.TramoSpec;
 @lombok.experimental.UtilityClass
 public class TramoSpecMapping {
 
-    public static final InformationSetSerializer<TramoSpec> SERIALIZER_V3 = new InformationSetSerializer<TramoSpec>() {
+    public static final InformationSetSerializerEx<TramoSpec, TsDomain> SERIALIZER_V3 = new InformationSetSerializerEx<TramoSpec, TsDomain>() {
         @Override
-        public InformationSet write(TramoSpec object, boolean verbose) {
-            return TramoSpecMapping.write(object, verbose);
+        public InformationSet write(TramoSpec object, TsDomain context, boolean verbose) {
+            return TramoSpecMapping.write(object, context, verbose);
         }
 
         @Override
-        public TramoSpec read(InformationSet info) {
-            return TramoSpecMapping.read(info);
+        public TramoSpec read(InformationSet info, TsDomain context) {
+            return TramoSpecMapping.read(info, context);
         }
 
         @Override
@@ -50,15 +52,15 @@ public class TramoSpecMapping {
 
     };
 
-    public static final InformationSetSerializer<TramoSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSpec>() {
+    public static final InformationSetSerializerEx<TramoSpec, TsDomain> SERIALIZER_LEGACY = new InformationSetSerializerEx<TramoSpec, TsDomain>() {
         @Override
-        public InformationSet write(TramoSpec object, boolean verbose) {
-            return TramoSpecMapping.writeLegacy(object, verbose);
+        public InformationSet write(TramoSpec object, TsDomain context, boolean verbose) {
+            return TramoSpecMapping.writeLegacy(object, context, verbose);
         }
 
         @Override
-        public TramoSpec read(InformationSet info) {
-            return TramoSpecMapping.readLegacy(info);
+        public TramoSpec read(InformationSet info, TsDomain context) {
+            return TramoSpecMapping.readLegacy(info, context);
         }
 
         @Override
@@ -80,19 +82,19 @@ public class TramoSpecMapping {
 //        RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
 //    }
 //
-    public TramoSpec read(InformationSet info) {
+    public TramoSpec read(InformationSet info, TsDomain context) {
         if (info == null) {
             return TramoSpec.DEFAULT;
         }
         AlgorithmDescriptor desc = info.get(ProcSpecification.ALGORITHM, AlgorithmDescriptor.class);
         if (desc != null && desc.equals(TramoSpec.DESCRIPTOR_LEGACY)) {
-            return readLegacy(info);
+            return readLegacy(info, context);
         } else {
-            return readV3(info);
+            return readV3(info, context);
         }
     }
 
-    public TramoSpec readV3(InformationSet info) {
+    public TramoSpec readV3(InformationSet info, TsDomain context) {
         if (info == null) {
             return TramoSpec.DEFAULT;
         }
@@ -106,7 +108,7 @@ public class TramoSpecMapping {
                 .build();
     }
 
-    public InformationSet write(TramoSpec spec, boolean verbose) {
+    public InformationSet write(TramoSpec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.set(ProcSpecification.ALGORITHM, TramoSpec.DESCRIPTOR_V3);
         InformationSet tinfo = TransformSpecMapping.write(spec.getTransform(), verbose);
@@ -125,7 +127,7 @@ public class TramoSpecMapping {
         if (outlierinfo != null) {
             specInfo.set(OUTLIER, outlierinfo);
         }
-        InformationSet reginfo = RegressionSpecMapping.write(spec.getRegression(), verbose);
+        InformationSet reginfo = RegressionSpecMapping.write(spec.getRegression(), context, verbose);
         if (reginfo != null) {
             specInfo.set(REGRESSION, reginfo);
         }
@@ -136,7 +138,7 @@ public class TramoSpecMapping {
         return specInfo;
     }
 
-    public TramoSpec readLegacy(InformationSet info) {
+    public TramoSpec readLegacy(InformationSet info, TsDomain context) {
         TramoSpec.Builder builder = TramoSpec.builder();
         InformationSet tinfo = info.getSubSet(TRANSFORM);
         InformationSet oinfo = info.getSubSet(OUTLIER);
@@ -164,13 +166,13 @@ public class TramoSpecMapping {
             builder.estimate(EstimateSpecMapping.read(einfo));
         }
         if (rinfo != null) {
-            RegressionSpecMapping.readLegacy(rinfo, rb);
+            RegressionSpecMapping.readLegacy(rinfo, context, rb);
         }
         builder.regression(rb.build());
         return builder.build();
     }
 
-    public InformationSet writeLegacy(TramoSpec spec, boolean verbose) {
+    public InformationSet writeLegacy(TramoSpec spec, TsDomain context,boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.set(ProcSpecification.ALGORITHM, TramoSpec.DESCRIPTOR_LEGACY);
         InformationSet tinfo = TransformSpecMapping.write(spec.getTransform(), verbose);
@@ -189,7 +191,7 @@ public class TramoSpecMapping {
         if (outlierinfo != null) {
             specInfo.set(OUTLIER, outlierinfo);
         }
-        InformationSet reginfo = RegressionSpecMapping.writeLegacy(spec.getRegression(), verbose);
+        InformationSet reginfo = RegressionSpecMapping.writeLegacy(spec.getRegression(), context, verbose);
         if (reginfo != null) {
             specInfo.set(REGRESSION, reginfo);
         }

@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.LombokWorkaround;
 
@@ -23,20 +24,23 @@ import nbbrd.design.LombokWorkaround;
  *
  * @author Jean Palate
  */
-@lombok.Builder
 @lombok.Value
-public class ResidualsDiagnosticsConfiguration {
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class ResidualsDiagnosticsConfiguration implements DiagnosticsConfiguration {
 
     private static AtomicReference<ResidualsDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<ResidualsDiagnosticsConfiguration>(builder().build());
-    
-    public static void setDefault(ResidualsDiagnosticsConfiguration config){
+            = new AtomicReference<>(builder().build());
+
+    public static void setDefault(ResidualsDiagnosticsConfiguration config) {
         DEFAULT.set(config);
     }
-    
-    public static ResidualsDiagnosticsConfiguration getDefault(){
+
+    public static ResidualsDiagnosticsConfiguration getDefault() {
         return DEFAULT.get();
     }
+
+    public static final boolean ACTIVE = true;
+    private boolean active;
 
     public static final double NBAD = .01, NUNC = .1,
             TDSEV = .001, TDBAD = .01, TDUNC = .1,
@@ -52,6 +56,7 @@ public class ResidualsDiagnosticsConfiguration {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .badThresholdForNormality(NBAD)
                 .uncertainThresholdForNormality(NUNC)
                 .severeThresholdForTradingDaysPeak(TDSEV)
@@ -61,4 +66,14 @@ public class ResidualsDiagnosticsConfiguration {
                 .badThresholdeForSeasonalPeaks(SBAD)
                 .uncertainThresholdeForSeasonalPeaks(SUNC);
     }
+
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+
 }

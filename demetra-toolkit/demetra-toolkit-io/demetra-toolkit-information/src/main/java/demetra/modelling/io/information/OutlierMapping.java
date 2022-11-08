@@ -18,6 +18,9 @@ package demetra.modelling.io.information;
 
 import demetra.information.InformationException;
 import demetra.information.InformationSet;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.LevelShift;
@@ -115,14 +118,19 @@ public class OutlierMapping {
         return builder.toString();
     }
     
-    public String name(IOutlier o){
+    public String name(IOutlier o, TsDomain context){
         StringBuilder builder = new StringBuilder();
         builder.append(o.getCode()).append(" (");
-             builder.append(o.getPosition().toLocalDate().format(DateTimeFormatter.ISO_DATE));
+        int period = context == null ? 0 : context.getAnnualFrequency();
+        if (period <= 0)
+            builder.append(o.getPosition().toLocalDate());
+        else{
+            TsPeriod p= TsPeriod.of(TsUnit.ofAnnualFrequency(period), o.getPosition());
+            builder.append(p.display());
+        }
         builder.append(')');
         return builder.toString();
         
     }
     
-
 }

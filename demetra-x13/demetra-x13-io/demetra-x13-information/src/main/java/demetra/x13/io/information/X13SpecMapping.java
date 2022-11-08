@@ -19,11 +19,13 @@ package demetra.x13.io.information;
 import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
+import demetra.information.InformationSetSerializerEx;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.sa.SaSpecification;
 import demetra.sa.io.information.SaBenchmarkingSpecMapping;
 import demetra.sa.io.information.SaSpecificationMapping;
+import demetra.timeseries.TsDomain;
 import demetra.x13.X13Spec;
 import nbbrd.service.ServiceProvider;
 
@@ -34,15 +36,15 @@ import nbbrd.service.ServiceProvider;
 @lombok.experimental.UtilityClass
 public class X13SpecMapping {
 
-    public static final InformationSetSerializer<X13Spec> SERIALIZER_V3 = new InformationSetSerializer<X13Spec>() {
+    public static final InformationSetSerializerEx<X13Spec, TsDomain> SERIALIZER_V3 = new InformationSetSerializerEx<X13Spec, TsDomain>() {
         @Override
-        public InformationSet write(X13Spec object, boolean verbose) {
-            return X13SpecMapping.write(object, verbose);
+        public InformationSet write(X13Spec object, TsDomain context, boolean verbose) {
+            return X13SpecMapping.write(object, context, verbose);
         }
 
         @Override
-        public X13Spec read(InformationSet info) {
-            return X13SpecMapping.read(info);
+        public X13Spec read(InformationSet info, TsDomain context) {
+            return X13SpecMapping.read(info, context);
         }
 
         @Override
@@ -52,15 +54,15 @@ public class X13SpecMapping {
 
     };
 
-    public static final InformationSetSerializer<X13Spec> SERIALIZER_LEGACY = new InformationSetSerializer<X13Spec>() {
+    public static final InformationSetSerializerEx<X13Spec, TsDomain> SERIALIZER_LEGACY = new InformationSetSerializerEx<X13Spec, TsDomain>() {
         @Override
-        public InformationSet write(X13Spec object, boolean verbose) {
-            return X13SpecMapping.writeLegacy(object, verbose);
+        public InformationSet write(X13Spec object, TsDomain context, boolean verbose) {
+            return X13SpecMapping.writeLegacy(object, context, verbose);
         }
 
         @Override
-        public X13Spec read(InformationSet info) {
-            return X13SpecMapping.readLegacy(info);
+        public X13Spec read(InformationSet info, TsDomain context) {
+            return X13SpecMapping.readLegacy(info, context);
         }
 
         @Override
@@ -72,19 +74,19 @@ public class X13SpecMapping {
 
     public static final String REGARIMA = "regarima", X11 = "x11", BENCH = "benchmarking";
 
-    public InformationSet write(X13Spec spec, boolean verbose, DemetraVersion version) {
+    public InformationSet write(X13Spec spec, TsDomain context, boolean verbose, DemetraVersion version) {
         switch (version) {
             case JD2:
-                return writeLegacy(spec, verbose);
+                return writeLegacy(spec, context, verbose);
             default:
-                return write(spec, verbose);
+                return write(spec, context, verbose);
         }
     }
 
-    public InformationSet write(X13Spec spec, boolean verbose) {
+    public InformationSet write(X13Spec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.add(ProcSpecification.ALGORITHM, X13Spec.DESCRIPTOR_V3);
-        InformationSet tinfo = RegArimaSpecMapping.write(spec.getRegArima(), verbose);
+        InformationSet tinfo = RegArimaSpecMapping.write(spec.getRegArima(), context, verbose);
         if (tinfo != null) {
             specInfo.add(REGARIMA, tinfo);
         }
@@ -99,10 +101,10 @@ public class X13SpecMapping {
         return specInfo;
     }
 
-    public InformationSet writeLegacy(X13Spec spec, boolean verbose) {
+    public InformationSet writeLegacy(X13Spec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.add(ProcSpecification.ALGORITHM, X13Spec.DESCRIPTOR_LEGACY);
-        InformationSet tinfo = RegArimaSpecMapping.writeLegacy(spec.getRegArima(), verbose);
+        InformationSet tinfo = RegArimaSpecMapping.writeLegacy(spec.getRegArima(), context, verbose);
         if (tinfo != null) {
             specInfo.add(REGARIMA, tinfo);
         }
@@ -117,7 +119,7 @@ public class X13SpecMapping {
         return specInfo;
     }
 
-    public X13Spec read(InformationSet info) {
+    public X13Spec read(InformationSet info, TsDomain context) {
         if (info == null) {
             return null;
         }
@@ -126,26 +128,26 @@ public class X13SpecMapping {
             return null;
         }
         if (desc.equals(X13Spec.DESCRIPTOR_LEGACY)) {
-            return readLegacy(info);
+            return readLegacy(info, context);
         } else if (desc.equals(X13Spec.DESCRIPTOR_V3)) {
-            return readV3(info);
+            return readV3(info, context);
         } else {
             return null;
         }
     }
 
-    public X13Spec readV3(InformationSet info) {
+    public X13Spec readV3(InformationSet info, TsDomain context) {
         if (info == null) {
             return X13Spec.RSA0;
         }
         return X13Spec.builder()
-                .regArima(RegArimaSpecMapping.readV3(info.getSubSet(REGARIMA)))
+                .regArima(RegArimaSpecMapping.readV3(info.getSubSet(REGARIMA), context))
                 .x11(X11SpecMapping.read(info.getSubSet(X11)))
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
                 .build();
     }
 
-    public X13Spec readLegacy(InformationSet info) {
+    public X13Spec readLegacy(InformationSet info, TsDomain context) {
         if (info == null) {
             return X13Spec.RSA0;
         }
@@ -156,7 +158,7 @@ public class X13SpecMapping {
         }
 
         return X13Spec.builder()
-                .regArima(RegArimaSpecMapping.readLegacy(info.getSubSet(REGARIMA)))
+                .regArima(RegArimaSpecMapping.readLegacy(info.getSubSet(REGARIMA), context))
                 // .x11(X11SpecMapping.read(info.getSubSet(X11)))
                 .x11(X11SpecMapping.read(info.getSubSet(X11)))
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
@@ -167,14 +169,14 @@ public class X13SpecMapping {
     public static class Serializer implements SaSpecificationMapping {
 
         @Override
-        public SaSpecification read(InformationSet info) {
-            return X13SpecMapping.read(info);
+        public SaSpecification read(InformationSet info, TsDomain context) {
+            return X13SpecMapping.read(info, context);
         }
 
         @Override
-        public InformationSet write(SaSpecification spec, boolean verbose, DemetraVersion version) {
+        public InformationSet write(SaSpecification spec, TsDomain context, boolean verbose, DemetraVersion version) {
             if (spec instanceof X13Spec) {
-                return X13SpecMapping.write((X13Spec) spec, verbose, version);
+                return X13SpecMapping.write((X13Spec) spec, context, verbose, version);
             } else {
                 return null;
             }

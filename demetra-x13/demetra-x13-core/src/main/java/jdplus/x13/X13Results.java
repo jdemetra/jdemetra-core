@@ -23,6 +23,7 @@ import jdplus.regsarima.regular.RegSarimaModel;
 import demetra.information.GenericExplorable;
 import demetra.processing.HasLog;
 import demetra.processing.ProcessingLog;
+import jdplus.sa.SaBenchmarkingResults;
 
 /**
  *
@@ -36,6 +37,7 @@ public class X13Results implements GenericExplorable , HasLog, HasRegSarimaPrepr
     private X13Preadjustment preadjustment;
     private X11Results decomposition;
     private X13Finals finals;
+    private SaBenchmarkingResults benchmarking;
     private X13Diagnostics diagnostics;
     private ProcessingLog log;
 }

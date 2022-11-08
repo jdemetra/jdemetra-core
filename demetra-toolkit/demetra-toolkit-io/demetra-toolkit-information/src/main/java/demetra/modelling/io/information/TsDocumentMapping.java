@@ -20,9 +20,12 @@ import demetra.information.Explorable;
 import demetra.information.Information;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
+import demetra.information.InformationSetSerializerEx;
 import demetra.processing.ProcSpecification;
 import demetra.timeseries.Ts;
+import demetra.timeseries.TsData;
 import demetra.timeseries.TsDocument;
+import demetra.timeseries.TsDomain;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,16 +40,19 @@ public class TsDocumentMapping {
     public static final String INPUT = "input", SPEC = "specification", RESULTS = "results", METADATA = "metadata";
     public static final String SERIES = "series";
 
-    public <S extends ProcSpecification, R extends Explorable> InformationSet write(TsDocument<S, R> doc, InformationSetSerializer<S> ispec, boolean verbose, boolean legacy) {
+    public <S extends ProcSpecification, R extends Explorable> InformationSet write(TsDocument<S, R> doc, InformationSetSerializerEx<S, TsDomain> ispec, boolean verbose, boolean legacy) {
 
         InformationSet info = new InformationSet();
 
         S spec = doc.getSpecification();
         Ts s = doc.getInput();
+        TsDomain context = null;
+        
         if (s != null) {
             info.subSet(INPUT).set(SERIES, s);
+            context=s.getData().getDomain();
         }
-        info.set(SPEC, ispec.write(spec, verbose));
+        info.set(SPEC, ispec.write(spec, context, verbose));
         if (legacy) {
             info.set(ProcSpecification.ALGORITHM, spec.getAlgorithmDescriptor());
         }
@@ -60,12 +66,21 @@ public class TsDocumentMapping {
         return info;
     }
 
-    public <S extends ProcSpecification, R extends Explorable> void read(InformationSet info, InformationSetSerializer<S> ispec, TsDocument<S, R> doc) {
-        InformationSet spec = info.getSubSet(SPEC);
-        S sp = ispec.read(spec);
+    public <S extends ProcSpecification, R extends Explorable> void read(InformationSet info, InformationSetSerializerEx<S, TsDomain> ispec, TsDocument<S, R> doc) {
         InformationSet input = info.getSubSet(INPUT);
+        Ts s = null;
+        TsDomain context = null;
         if (input != null) {
-            Ts s = input.get(SERIES, Ts.class);
+            s = input.get(SERIES, Ts.class);
+            if (s != null) {
+                TsData data = s.getData();
+                context = data.getDomain();
+            }
+        }
+        InformationSet spec = info.getSubSet(SPEC);
+        S sp = ispec.read(spec, context);
+
+        if (s != null) {
             doc.set(sp, s);
         } else {
             doc.set(sp);

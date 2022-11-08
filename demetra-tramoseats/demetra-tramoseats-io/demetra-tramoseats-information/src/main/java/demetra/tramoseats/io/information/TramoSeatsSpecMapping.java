@@ -19,11 +19,13 @@ package demetra.tramoseats.io.information;
 import demetra.DemetraVersion;
 import demetra.information.InformationSet;
 import demetra.information.InformationSetSerializer;
+import demetra.information.InformationSetSerializerEx;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.sa.SaSpecification;
 import demetra.sa.io.information.SaBenchmarkingSpecMapping;
 import demetra.sa.io.information.SaSpecificationMapping;
+import demetra.timeseries.TsDomain;
 import demetra.tramoseats.TramoSeatsSpec;
 import nbbrd.service.ServiceProvider;
 
@@ -34,15 +36,15 @@ import nbbrd.service.ServiceProvider;
 @lombok.experimental.UtilityClass
 public class TramoSeatsSpecMapping {
 
-    public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_V3 = new InformationSetSerializer<TramoSeatsSpec>() {
+    public static final InformationSetSerializerEx<TramoSeatsSpec, TsDomain> SERIALIZER_V3 = new InformationSetSerializerEx<TramoSeatsSpec, TsDomain>() {
         @Override
-        public InformationSet write(TramoSeatsSpec object, boolean verbose) {
-            return TramoSeatsSpecMapping.write(object, verbose);
+        public InformationSet write(TramoSeatsSpec object, TsDomain context, boolean verbose) {
+            return TramoSeatsSpecMapping.write(object, context, verbose);
         }
 
         @Override
-        public TramoSeatsSpec read(InformationSet info) {
-            return TramoSeatsSpecMapping.read(info);
+        public TramoSeatsSpec read(InformationSet info, TsDomain context) {
+            return TramoSeatsSpecMapping.read(info, context);
         }
         
         @Override
@@ -51,15 +53,15 @@ public class TramoSeatsSpecMapping {
         }
     };
 
-    public static final InformationSetSerializer<TramoSeatsSpec> SERIALIZER_LEGACY = new InformationSetSerializer<TramoSeatsSpec>() {
+    public static final InformationSetSerializerEx<TramoSeatsSpec, TsDomain> SERIALIZER_LEGACY = new InformationSetSerializerEx<TramoSeatsSpec, TsDomain>() {
         @Override
-        public InformationSet write(TramoSeatsSpec object, boolean verbose) {
-            return TramoSeatsSpecMapping.writeLegacy(object, verbose);
+        public InformationSet write(TramoSeatsSpec object, TsDomain context, boolean verbose) {
+            return TramoSeatsSpecMapping.writeLegacy(object, context, verbose);
         }
 
         @Override
-        public TramoSeatsSpec read(InformationSet info) {
-            return TramoSeatsSpecMapping.readLegacy(info);
+        public TramoSeatsSpec read(InformationSet info, TsDomain context) {
+            return TramoSeatsSpecMapping.readLegacy(info, context);
         }
 
         @Override
@@ -70,17 +72,17 @@ public class TramoSeatsSpecMapping {
 
     public static final String TRAMO = "tramo", SEATS = "seats", BENCH = "benchmarking", RSA = "method";
 
-    public InformationSet write(TramoSeatsSpec spec, boolean verbose, DemetraVersion version) {
+    public InformationSet write(TramoSeatsSpec spec, TsDomain context, boolean verbose, DemetraVersion version) {
         return switch (version) {
-            case JD2 -> writeLegacy(spec, verbose);
-            default -> write(spec, verbose);
+            case JD2 -> writeLegacy(spec, context, verbose);
+            default -> write(spec, context, verbose);
         };
         }
 
-    public InformationSet write(TramoSeatsSpec spec, boolean verbose) {
+    public InformationSet write(TramoSeatsSpec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.add(ProcSpecification.ALGORITHM, TramoSeatsSpec.DESCRIPTOR_V3);
-        InformationSet tinfo = TramoSpecMapping.write(spec.getTramo(), verbose);
+        InformationSet tinfo = TramoSpecMapping.write(spec.getTramo(), context, verbose);
         if (tinfo != null) {
             specInfo.add(TRAMO, tinfo);
         }
@@ -95,10 +97,10 @@ public class TramoSeatsSpecMapping {
         return specInfo;
     }
 
-    public InformationSet writeLegacy(TramoSeatsSpec spec, boolean verbose) {
+    public InformationSet writeLegacy(TramoSeatsSpec spec, TsDomain context, boolean verbose) {
         InformationSet specInfo = new InformationSet();
         specInfo.add(ProcSpecification.ALGORITHM, TramoSeatsSpec.DESCRIPTOR_LEGACY);
-        InformationSet tinfo = TramoSpecMapping.writeLegacy(spec.getTramo(), verbose);
+        InformationSet tinfo = TramoSpecMapping.writeLegacy(spec.getTramo(), context, verbose);
         if (tinfo != null) {
             specInfo.add(TRAMO, tinfo);
         }
@@ -113,7 +115,7 @@ public class TramoSeatsSpecMapping {
         return specInfo;
     }
 
-    public TramoSeatsSpec read(InformationSet info) {
+    public TramoSeatsSpec read(InformationSet info, TsDomain context) {
         if (info == null) {
             return null;
         }
@@ -122,31 +124,31 @@ public class TramoSeatsSpecMapping {
             return null;
         }
         if (desc.equals(TramoSeatsSpec.DESCRIPTOR_LEGACY)) {
-            return readLegacy(info);
+            return readLegacy(info, context);
         } else if (desc.equals(TramoSeatsSpec.DESCRIPTOR_V3)) {
-            return readV3(info);
+            return readV3(info, context);
         } else {
             return null;
         }
     }
 
-    public TramoSeatsSpec readV3(InformationSet info) {
+    public TramoSeatsSpec readV3(InformationSet info, TsDomain context) {
         if (info == null) {
             return TramoSeatsSpec.DEFAULT;
         }
         return TramoSeatsSpec.builder()
-                .tramo(TramoSpecMapping.readV3(info.getSubSet(TRAMO)))
+                .tramo(TramoSpecMapping.readV3(info.getSubSet(TRAMO), context))
                 .seats(DecompositionSpecMapping.read(info.getSubSet(SEATS)))
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
                 .build();
     }
 
-    public TramoSeatsSpec readLegacy(InformationSet info) {
+    public TramoSeatsSpec readLegacy(InformationSet info, TsDomain context) {
         if (info == null) {
             return TramoSeatsSpec.DEFAULT;
         }
         return TramoSeatsSpec.builder()
-                .tramo(TramoSpecMapping.readLegacy(info.getSubSet(TRAMO)))
+                .tramo(TramoSpecMapping.readLegacy(info.getSubSet(TRAMO), context))
                 .seats(DecompositionSpecMapping.read(info.getSubSet(SEATS)))
                 .benchmarking(SaBenchmarkingSpecMapping.read(info.getSubSet(BENCH)))
                 .build();
@@ -156,14 +158,14 @@ public class TramoSeatsSpecMapping {
     public static class Serializer implements SaSpecificationMapping {
 
         @Override
-        public SaSpecification read(InformationSet info) {
-            return TramoSeatsSpecMapping.read(info);
+        public SaSpecification read(InformationSet info, TsDomain context) {
+            return TramoSeatsSpecMapping.read(info, context);
         }
 
         @Override
-        public InformationSet write(SaSpecification spec, boolean verbose, DemetraVersion version) {
+        public InformationSet write(SaSpecification spec, TsDomain context, boolean verbose, DemetraVersion version) {
             if (spec instanceof TramoSeatsSpec tramoSeatsSpec) {
-                return TramoSeatsSpecMapping.write(tramoSeatsSpec, verbose, version);
+                return TramoSeatsSpecMapping.write(tramoSeatsSpec, context, verbose, version);
             } else {
                 return null;
             }

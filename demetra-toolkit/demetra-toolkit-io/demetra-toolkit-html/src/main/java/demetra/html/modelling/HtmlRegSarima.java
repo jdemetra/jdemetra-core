@@ -150,7 +150,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
 
         int no = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && var.hasAttribute(ModellingUtility.AMI)).count();
         int nfo = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && !var.isFree()).count();
-        int npo = (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && !var.hasAttribute(ModellingUtility.AMI)).count();
+        int npo = -nfo + (int) Arrays.stream(variables).filter(var -> var.getCore() instanceof IOutlier && !var.hasAttribute(ModellingUtility.AMI)).count();
 
         if (npo > 1) {
             stream.write(Integer.toString(npo)).write(" pre-specified outliers").newLine();
@@ -349,7 +349,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         }
         writeRegressionItems(stream, "Ramps", edom, var -> var.isFree() && var.getCore() instanceof Ramp);
         writeRegressionItems(stream, "Intervention variables", edom, var -> var.isFree() && var.getCore() instanceof InterventionVariable);
-        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.test(v->v instanceof IUserVariable));
+        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.test(v -> v instanceof IUserVariable));
         writeFixedRegressionItems(stream, "Other fixed regression effects", edom, var -> !var.isFree() && var.getCore() instanceof IUserVariable);
         writeMissing(stream);
     }

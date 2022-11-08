@@ -16,6 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -23,19 +24,22 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder
-public class ResidualSeasonalityDiagnosticsConfiguration {
-    
-    private static AtomicReference<ResidualSeasonalityDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<ResidualSeasonalityDiagnosticsConfiguration>(builder().build());
-    
-    public static void setDefault(ResidualSeasonalityDiagnosticsConfiguration config){
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class ResidualSeasonalityDiagnosticsConfiguration implements DiagnosticsConfiguration {
+
+    private static final AtomicReference<ResidualSeasonalityDiagnosticsConfiguration> DEFAULT
+            = new AtomicReference<>(builder().build());
+
+    public static void setDefault(ResidualSeasonalityDiagnosticsConfiguration config) {
         DEFAULT.set(config);
     }
-    
-    public static ResidualSeasonalityDiagnosticsConfiguration getDefault(){
+
+    public static ResidualSeasonalityDiagnosticsConfiguration getDefault() {
         return DEFAULT.get();
     }
+
+    public static final boolean ACTIVE = true;
+    private boolean active;
 
     public static final double SASEV = 0.01, SABAD = 0.05, SAUNC = 0.1, ISEV = 0.01, IBAD = 0.05, IUNC = 0.1, SA3SEV = 0.01, SA3BAD = 0.05, SA3UNC = 0.1;
 
@@ -51,6 +55,7 @@ public class ResidualSeasonalityDiagnosticsConfiguration {
 
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .severeThresholdForSa(SASEV)
                 .badThresholdForSa(SABAD)
                 .uncertainThresholdForSa(SAUNC)
@@ -61,4 +66,14 @@ public class ResidualSeasonalityDiagnosticsConfiguration {
                 .badThresholdForLastSa(SA3BAD)
                 .uncertainThresholdForLastSa(SA3UNC);
     }
+
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+
 }

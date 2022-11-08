@@ -17,6 +17,7 @@
 package jdplus.sa.diagnostics;
 
 import demetra.DemetraException;
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -24,37 +25,50 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder
-public class ResidualTradingDaysDiagnosticsConfiguration {
-
-    private static AtomicReference<ResidualTradingDaysDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<ResidualTradingDaysDiagnosticsConfiguration>(builder().build());
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class ResidualTradingDaysDiagnosticsConfiguration implements DiagnosticsConfiguration {
     
-    public static void setDefault(ResidualTradingDaysDiagnosticsConfiguration config){
+    private static final AtomicReference<ResidualTradingDaysDiagnosticsConfiguration> DEFAULT
+            = new AtomicReference<>(builder().build());
+    
+    public static void setDefault(ResidualTradingDaysDiagnosticsConfiguration config) {
         DEFAULT.set(config);
     }
     
-    public static ResidualTradingDaysDiagnosticsConfiguration getDefault(){
+    public static ResidualTradingDaysDiagnosticsConfiguration getDefault() {
         return DEFAULT.get();
     }
-
+    
+    public static final boolean ACTIVE = true;
+    private boolean active;
+    
     public static final double SEV = .001, BAD = .01, UNC = .05;
-
+    
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;
-
+    
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .severeThreshold(SEV)
                 .badThreshold(BAD)
                 .uncertainThreshold(UNC);
     }
-
+    
     public void check() {
         if (severeThreshold > badThreshold || badThreshold > uncertainThreshold || uncertainThreshold > 1 || severeThreshold <= 0) {
             throw new DemetraException("Invalid settings in thresholds");
         }
     }
-
+    
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+    
 }

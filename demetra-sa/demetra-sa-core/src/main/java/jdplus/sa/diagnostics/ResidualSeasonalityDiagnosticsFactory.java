@@ -35,11 +35,9 @@ public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
 
     private final ResidualSeasonalityDiagnosticsConfiguration config;
-    private final boolean active;
 
-    public ResidualSeasonalityDiagnosticsFactory(boolean active, ResidualSeasonalityDiagnosticsConfiguration config) {
+    public ResidualSeasonalityDiagnosticsFactory(ResidualSeasonalityDiagnosticsConfiguration config) {
         this.config = config;
-        this.active=active;
     }
 
     @Override
@@ -53,21 +51,17 @@ public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory
     }
 
     @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
     public Diagnostics of(Explorable rslts) {
         return ResidualSeasonalityDiagnostics.create(rslts, config);
     }
 
     @Override
     public ResidualSeasonalityDiagnosticsConfiguration getConfiguration() {
- return config;   }
+        return config;
+    }
 
     @Override
-    public ResidualSeasonalityDiagnosticsFactory with(boolean active, ResidualSeasonalityDiagnosticsConfiguration newConfig) {
-        return new ResidualSeasonalityDiagnosticsFactory(active, newConfig);
-     }
+    public ResidualSeasonalityDiagnosticsFactory with(ResidualSeasonalityDiagnosticsConfiguration newConfig) {
+        return new ResidualSeasonalityDiagnosticsFactory(newConfig);
+    }
 }

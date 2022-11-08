@@ -16,6 +16,7 @@
  */
 package jdplus.x13.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
@@ -24,12 +25,12 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
 @Development(status = Development.Status.Release)
-public class MDiagnosticsConfiguration {
+public class MDiagnosticsConfiguration implements DiagnosticsConfiguration{
 
-    private static AtomicReference<MDiagnosticsConfiguration> DEFAULT
-            = new AtomicReference<MDiagnosticsConfiguration>(builder().build());
+    private static final AtomicReference<MDiagnosticsConfiguration> DEFAULT
+            = new AtomicReference<>(builder().build());
 
     public static void setDefault(MDiagnosticsConfiguration config) {
         DEFAULT.set(config);
@@ -39,6 +40,9 @@ public class MDiagnosticsConfiguration {
         return DEFAULT.get();
     }
 
+    public static final boolean ACTIVE = true;
+    private boolean active;
+    
     public static final double SEVERE = 2, BAD = 1;
 
     private double badThreshold;
@@ -53,8 +57,19 @@ public class MDiagnosticsConfiguration {
 
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .badThreshold(BAD)
                 .severeThreshold(SEVERE)
                 .all(true);
     }
+
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+
 }

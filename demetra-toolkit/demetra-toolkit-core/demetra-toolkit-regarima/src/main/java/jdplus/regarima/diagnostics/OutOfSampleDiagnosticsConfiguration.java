@@ -16,6 +16,7 @@
  */
 package jdplus.regarima.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.LombokWorkaround;
 
@@ -24,19 +25,22 @@ import nbbrd.design.LombokWorkaround;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder
-public class OutOfSampleDiagnosticsConfiguration {
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class OutOfSampleDiagnosticsConfiguration implements DiagnosticsConfiguration {
 
-    private static AtomicReference<OutOfSampleDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<OutOfSampleDiagnosticsConfiguration>(builder().build());
-    
-    public static void setDefault(OutOfSampleDiagnosticsConfiguration config){
+    private static final AtomicReference<OutOfSampleDiagnosticsConfiguration> DEFAULT
+            = new AtomicReference<>(builder().build());
+
+    public static void setDefault(OutOfSampleDiagnosticsConfiguration config) {
         DEFAULT.set(config);
     }
-    
-    public static OutOfSampleDiagnosticsConfiguration getDefault(){
+
+    public static OutOfSampleDiagnosticsConfiguration getDefault() {
         return DEFAULT.get();
     }
+
+    public static final boolean ACTIVE = false;
+    private boolean active;
 
     public static final double BAD = .01, UNC = .1, LENGTH = 1.5;
 
@@ -48,10 +52,20 @@ public class OutOfSampleDiagnosticsConfiguration {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .badThreshold(BAD)
                 .uncertainThreshold(UNC)
                 .diagnosticOnMean(true)
                 .diagnosticOnVariance(true)
                 .outOfSampleLength(LENGTH);
+    }
+
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
     }
 }

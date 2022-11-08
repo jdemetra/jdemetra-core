@@ -16,6 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
@@ -24,9 +25,9 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder
+@lombok.Builder(toBuilder=true, builderClassName="Builder")
 @Development(status = Development.Status.Release)
-public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
+public class AdvancedResidualSeasonalityDiagnosticsConfiguration implements DiagnosticsConfiguration{
     
     private static final AtomicReference<AdvancedResidualSeasonalityDiagnosticsConfiguration> DEFAULT
             =new AtomicReference<>(builder().build());
@@ -39,6 +40,9 @@ public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
         return DEFAULT.get();
     }
 
+    public static final boolean ACTIVE = true;
+    private boolean active;
+
     public static final double SEV = .001, BAD = .01, UNC = .05;
 
     private double severeThreshold;
@@ -49,6 +53,7 @@ public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
 
     public static Builder builder(){
         return new Builder()
+                .active(ACTIVE)
                 .severeThreshold(SEV)
                 .badThreshold(BAD)
                 .uncertainThreshold(UNC)
@@ -60,4 +65,14 @@ public class AdvancedResidualSeasonalityDiagnosticsConfiguration {
         if (severeThreshold < badThreshold || badThreshold < uncertainThreshold || uncertainThreshold < 0)
                 throw new IllegalArgumentException();
     }
+    
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+
 }

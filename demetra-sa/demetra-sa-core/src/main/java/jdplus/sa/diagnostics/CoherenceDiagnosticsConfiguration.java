@@ -16,6 +16,7 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
@@ -24,12 +25,12 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder
+@lombok.Builder(toBuilder=true, builderClassName="Builder")
 @Development(status = Development.Status.Release)
-public class CoherenceDiagnosticsConfiguration {
+public class CoherenceDiagnosticsConfiguration implements DiagnosticsConfiguration{
 
-    private static AtomicReference<CoherenceDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<CoherenceDiagnosticsConfiguration>(builder().build());
+    private static final AtomicReference<CoherenceDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<>(builder().build());
     
     public static void setDefault(CoherenceDiagnosticsConfiguration config){
         DEFAULT.set(config);
@@ -38,6 +39,9 @@ public class CoherenceDiagnosticsConfiguration {
     public static CoherenceDiagnosticsConfiguration getDefault(){
         return DEFAULT.get();
     }
+
+    public static final boolean ACTIVE = true;
+    private boolean active;
 
     public static final double TOL = 1e-3, ERR = .5, SEV = .1, BAD = .05, UNC = .01;
     public static final int SHORT = 7;
@@ -51,6 +55,7 @@ public class CoherenceDiagnosticsConfiguration {
 
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .tolerance(TOL)
                 .errorThreshold(ERR)
                 .severeThreshold(SEV)
@@ -64,4 +69,14 @@ public class CoherenceDiagnosticsConfiguration {
             throw new IllegalArgumentException("Invalid settings in Annual totals diagnostics");
         }
     }
+    
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
+
 }

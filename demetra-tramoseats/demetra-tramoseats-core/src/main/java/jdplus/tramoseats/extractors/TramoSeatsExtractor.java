@@ -15,6 +15,7 @@ import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionaries;
 import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sa.SaBenchmarkingResults;
 import jdplus.seats.SeatsResults;
 import jdplus.tramoseats.TramoSeatsDiagnostics;
 import jdplus.tramoseats.TramoSeatsResults;
@@ -104,6 +105,8 @@ public class TramoSeatsExtractor extends InformationMapping<TramoSeatsResults> {
         delegate(null, RegSarimaModel.class, source -> source.getPreprocessing());
 
         delegate(null, TramoSeatsDiagnostics.class, source -> source.getDiagnostics());
+
+        delegate(SaDictionaries.BENCHMARKING, SaBenchmarkingResults.class, source -> source.getBenchmarking());
     }
 
     @Override

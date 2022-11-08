@@ -41,8 +41,7 @@ public final class SaBenchmarkingSpec implements Validatable<SaBenchmarkingSpec>
             TARGET = "target",
             FORECAST = "forecast",
             LAMBDA = "lambda",
-            RHO = "rho",
-            BIAS = "bias";
+            RHO = "rho";
 
     public static enum Target {
         Original,

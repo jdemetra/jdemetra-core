@@ -17,6 +17,7 @@
 package demetra.modelling.io.information;
 
 import demetra.information.InformationSet;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
@@ -33,6 +34,20 @@ public class OutlierDefinition {
 
     private final LocalDate position;
     private final String code;
+
+    public String name(TsDomain context) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getCode()).append(" (");
+        int period = context == null ? 0 : context.getAnnualFrequency();
+        if (period <= 0)
+            builder.append(position);
+        else{
+            TsPeriod p= TsPeriod.of(TsUnit.ofAnnualFrequency(period), position);
+            builder.append(p.display());
+        }
+        builder.append(')');
+        return builder.toString();
+    }
 
     @Override
     public String toString() {

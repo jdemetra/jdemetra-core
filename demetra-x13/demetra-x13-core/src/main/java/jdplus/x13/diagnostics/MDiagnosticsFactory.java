@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import jdplus.x13.X13Results;
-import nbbrd.service.ServiceProvider;
 import demetra.processing.Diagnostics;
 
 /**
@@ -37,11 +36,9 @@ public class MDiagnosticsFactory implements SaDiagnosticsFactory<MDiagnosticsCon
     public static final String Q="q", Q2="q2";
     public static final List<String> ALL=Collections.unmodifiableList(Arrays.asList(Q, Q2));
     private final MDiagnosticsConfiguration config;
-    private final boolean active;
 
-     public MDiagnosticsFactory(boolean active, MDiagnosticsConfiguration config) {
+     public MDiagnosticsFactory(MDiagnosticsConfiguration config) {
         this.config = config;
-        this.active=true;
     }
 
     @Override
@@ -50,8 +47,8 @@ public class MDiagnosticsFactory implements SaDiagnosticsFactory<MDiagnosticsCon
     }
 
     @Override
-    public MDiagnosticsFactory with(boolean active, MDiagnosticsConfiguration config){
-        return new MDiagnosticsFactory(active, config);
+    public MDiagnosticsFactory with(MDiagnosticsConfiguration config){
+        return new MDiagnosticsFactory(config);
     }
     @Override
     public String getName() {
@@ -63,11 +60,6 @@ public class MDiagnosticsFactory implements SaDiagnosticsFactory<MDiagnosticsCon
          return ALL.stream().map(s->s+":2").collect(Collectors.toList());
    }
     
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
     @Override
     public Diagnostics of(X13Results rslts) {
          return MDiagnostics.of(config, rslts);

@@ -36,12 +36,10 @@ public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFa
 
     private final ResidualTradingDaysDiagnosticsConfiguration config;
     private final Function<R, ResidualTradingDaysTests> extractor;
-    private final boolean active;
 
-    public ResidualTradingDaysDiagnosticsFactory(boolean active, ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysTests> extractor) {
+    public ResidualTradingDaysDiagnosticsFactory(ResidualTradingDaysDiagnosticsConfiguration config, Function<R, ResidualTradingDaysTests> extractor) {
         this.config = config;
         this.extractor=extractor;
-        this.active=active;
     }
 
     @Override
@@ -50,8 +48,8 @@ public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFa
     }
 
     @Override
-    public ResidualTradingDaysDiagnosticsFactory<R> with(boolean active, ResidualTradingDaysDiagnosticsConfiguration config){
-        return new ResidualTradingDaysDiagnosticsFactory(active, config, extractor);
+    public ResidualTradingDaysDiagnosticsFactory<R> with(ResidualTradingDaysDiagnosticsConfiguration config){
+        return new ResidualTradingDaysDiagnosticsFactory(config, extractor);
     }
 
     @Override
@@ -62,11 +60,6 @@ public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFa
     @Override
     public List<String> getTestDictionary() {
         return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     @Override

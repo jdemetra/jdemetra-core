@@ -41,12 +41,10 @@ public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<SeatsDia
 
     private final SeatsDiagnosticsConfiguration config;
     private final Function<R, SeatsTests> extractor;
-    private final boolean active;
 
-    public SeatsDiagnosticsFactory(boolean active, SeatsDiagnosticsConfiguration config, Function<R, SeatsTests> extractor) {
+    public SeatsDiagnosticsFactory(SeatsDiagnosticsConfiguration config, Function<R, SeatsTests> extractor) {
         this.config = config;
         this.extractor = extractor;
-        this.active = active;
     }
 
     @Override
@@ -55,8 +53,8 @@ public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<SeatsDia
     }
 
     @Override
-    public SeatsDiagnosticsFactory<R> with(boolean active, SeatsDiagnosticsConfiguration config) {
-        return new SeatsDiagnosticsFactory(active, config, extractor);
+    public SeatsDiagnosticsFactory<R> with(SeatsDiagnosticsConfiguration config) {
+        return new SeatsDiagnosticsFactory(config, extractor);
     }
 
     @Override
@@ -67,11 +65,6 @@ public class SeatsDiagnosticsFactory<R> implements SaDiagnosticsFactory<SeatsDia
     @Override
     public List<String> getTestDictionary() {
         return ALL.stream().map(s -> s + ":2").collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     @Override

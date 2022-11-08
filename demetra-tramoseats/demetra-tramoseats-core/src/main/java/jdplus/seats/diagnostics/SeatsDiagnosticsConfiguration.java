@@ -16,6 +16,7 @@
  */
 package jdplus.seats.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
 import java.util.concurrent.atomic.AtomicReference;
 import nbbrd.design.Development;
 
@@ -24,12 +25,12 @@ import nbbrd.design.Development;
  * @author Jean Palate
  */
 @lombok.Value
-@lombok.Builder
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
 @Development(status = Development.Status.Release)
-public class SeatsDiagnosticsConfiguration {
+public class SeatsDiagnosticsConfiguration implements DiagnosticsConfiguration{
 
-   private static AtomicReference<SeatsDiagnosticsConfiguration> DEFAULT
-            =new AtomicReference<SeatsDiagnosticsConfiguration>(builder().build());
+   private static final AtomicReference<SeatsDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<>(builder().build());
     
     public static void setDefault(SeatsDiagnosticsConfiguration config){
         DEFAULT.set(config);
@@ -38,6 +39,9 @@ public class SeatsDiagnosticsConfiguration {
     public static SeatsDiagnosticsConfiguration getDefault(){
         return DEFAULT.get();
     }
+
+    public static final boolean ACTIVE = true;
+    private boolean active;
 
     public static final double BAD = .005, UNC = .05;
 
@@ -52,8 +56,17 @@ public class SeatsDiagnosticsConfiguration {
 
     public static Builder builder() {
         return new Builder()
+                .active(ACTIVE)
                 .badThreshold(BAD)
                 .uncertainThreshold(UNC);
     }
 
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
+        }
+    }
 }

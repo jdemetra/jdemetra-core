@@ -8,10 +8,13 @@ package jdplus.tramoseats;
 import demetra.data.Data;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsPeriod;
 import demetra.tramo.RegressionSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
+import java.util.Arrays;
+import jdplus.sa.SaBenchmarkingResults;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -44,11 +47,11 @@ public class TramoSeatsKernelTest {
     public void testProd0() {
         RegressionSpec.Builder rspec = TramoSeatsSpec.RSA0.getTramo().getRegression().toBuilder();
         rspec.mean(null);
-        
+
         TramoSeatsSpec nspec = TramoSeatsSpec.RSA0.toBuilder()
                 .tramo(TramoSeatsSpec.RSA0.getTramo().toBuilder()
                         .regression(rspec.build()).build()).build();
-                
+
         TramoSeatsKernel ts = TramoSeatsKernel.of(nspec, null);
         ProcessingLog log = ProcessingLog.dummy();
         TsData s = TsData.ofInternal(TsPeriod.monthly(2001, 1), Data.RETAIL_ALLHOME);
@@ -65,8 +68,25 @@ public class TramoSeatsKernelTest {
     }
 
     @Test
-    public void testDiagnostics() {
-
+    public void testBenchmarking() {
+        TramoSeatsSpec spec = TramoSeatsSpec.RSAfull.toBuilder()
+                .benchmarking(
+                        TramoSeatsSpec.RSAfull.getBenchmarking()
+                                .toBuilder()
+                                .enabled(true)
+                                .build()
+                ).build();
+        TramoSeatsKernel ts = TramoSeatsKernel.of(spec, null);
+        ProcessingLog log = ProcessingLog.dummy();
+        TsData s = TsData.ofInternal(TsPeriod.monthly(2001, 1), Data.RETAIL_ALLHOME);
+        TramoSeatsResults rslt = ts.process(s, log);
+        assertTrue(rslt.getFinals() != null);
+        TramoSeatsDiagnostics diags = rslt.getDiagnostics();
+        assertTrue(diags != null);
+        SaBenchmarkingResults benchmarking = rslt.getBenchmarking();
+        assertTrue(benchmarking != null);
+        TsDataTable table=TsDataTable.of(Arrays.asList(benchmarking.getSa(), benchmarking.getTarget(), benchmarking.getBenchmarkedSa()));
+        System.out.println(table);
     }
 
     @Test

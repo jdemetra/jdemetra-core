@@ -27,6 +27,7 @@ import demetra.modelling.io.information.TsContextVariableMapping;
 import demetra.modelling.io.information.VariableMapping;
 import demetra.regarima.RegressionSpec;
 import demetra.sa.SaVariable;
+import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
@@ -119,7 +120,7 @@ class RegressionSpecMapping {
         scoefs.set(name, Parameter.values(p));
     }
 
-    void readLegacy(InformationSet regInfo, RegressionSpec.Builder builder) {
+    void readLegacy(InformationSet regInfo, TsDomain context, RegressionSpec.Builder builder) {
         if (regInfo == null) {
             return;
         }
@@ -132,9 +133,9 @@ class RegressionSpecMapping {
             for (int i = 0; i < outliers.length; ++i) {
                 OutlierDefinition o = OutlierDefinition.fromString(outliers[i]);
                 if (o != null) {
-                    Parameter c = RegressionSpecMapping.coefficientOf(regInfo, outliers[i]);
+                    Parameter c = RegressionSpecMapping.coefficientOf(regInfo, o.name(context));
                     IOutlier io = OutlierMapping.from(o);
-                    builder.outlier(Variable.variable(OutlierMapping.name(io), io, attributes(io)).withCoefficient(c));
+                    builder.outlier(Variable.variable(OutlierMapping.name(io, context), io, attributes(io)).withCoefficient(c));
                 }
             }
         }
@@ -204,7 +205,7 @@ class RegressionSpecMapping {
         return builder.build();
     }
 
-    InformationSet write(RegressionSpec spec, boolean verbose) {
+    InformationSet write(RegressionSpec spec, TsDomain context, boolean verbose) {
         if (!spec.isUsed()) {
             return null;
         }
@@ -256,7 +257,7 @@ class RegressionSpecMapping {
         return info;
     }
 
-    InformationSet writeLegacy(RegressionSpec spec, boolean verbose) {
+    InformationSet writeLegacy(RegressionSpec spec, TsDomain context, boolean verbose) {
         if (!spec.isUsed()) {
             return null;
         }
@@ -270,7 +271,7 @@ class RegressionSpecMapping {
                 Variable<IOutlier> v = voutliers.get(i);
                 outliers[i] = OutlierMapping.format(v.getCore());
                 Parameter p = v.getCoefficient(0);
-                set(info, outliers[i], p);
+                set(info, OutlierMapping.name(v.getCore(), context), p);
             }
             info.set(OUTLIERS_LEGACY, outliers);
         }

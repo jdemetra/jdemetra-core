@@ -64,13 +64,13 @@ public class TramoSpecMappingTest {
    }
 
     private void test(TramoSpec spec) {
-        InformationSet info = TramoSpecMapping.write(spec, true);
-        TramoSpec nspec = TramoSpecMapping.readV3(info);
+        InformationSet info = TramoSpecMapping.write(spec, null, true);
+        TramoSpec nspec = TramoSpecMapping.readV3(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
-        info = TramoSpecMapping.write(spec, false);
-        nspec = TramoSpecMapping.readV3(info);
+        info = TramoSpecMapping.write(spec, null, false);
+        nspec = TramoSpecMapping.readV3(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
@@ -88,20 +88,20 @@ public class TramoSpecMappingTest {
     }
 
     private void testLegacy(TramoSpec spec) {
-        InformationSet info = TramoSpecMapping.writeLegacy(spec, true);
-        TramoSpec nspec = TramoSpecMapping.readLegacy(info);
+        InformationSet info = TramoSpecMapping.writeLegacy(spec, null, true);
+        TramoSpec nspec = TramoSpecMapping.readLegacy(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
-        info = TramoSpecMapping.writeLegacy(spec, false);
-        nspec = TramoSpecMapping.readLegacy(info);
+        info = TramoSpecMapping.writeLegacy(spec, null, false);
+        nspec = TramoSpecMapping.readLegacy(info, null);
 //        System.out.println(spec);
 //        System.out.println(nspec);
         assertEquals(nspec, spec);
     }
     
     public static void testXmlSerialization() throws JAXBException, FileNotFoundException, IOException {
-        InformationSet info = TramoSpecMapping.writeLegacy(TramoSpec.TRfull, true);
+        InformationSet info = TramoSpecMapping.writeLegacy(TramoSpec.TRfull, null, true);
  
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
@@ -119,7 +119,7 @@ public class TramoSpecMappingTest {
                 .parseFile(new File(tmp + "tramo.xml"));
 
         InformationSet info = rslt.create();
-        TramoSpec nspec = TramoSpecMapping.readLegacy(info);
+        TramoSpec nspec = TramoSpecMapping.readLegacy(info, null);
         System.out.println(nspec.equals(TramoSpec.TRfull));
     }
     
