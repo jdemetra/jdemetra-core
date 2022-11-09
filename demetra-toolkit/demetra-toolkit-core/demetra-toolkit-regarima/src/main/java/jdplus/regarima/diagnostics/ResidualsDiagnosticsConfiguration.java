@@ -28,7 +28,7 @@ import nbbrd.design.LombokWorkaround;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class ResidualsDiagnosticsConfiguration implements DiagnosticsConfiguration {
 
-    private static AtomicReference<ResidualsDiagnosticsConfiguration> DEFAULT
+    private static final AtomicReference<ResidualsDiagnosticsConfiguration> DEFAULT
             = new AtomicReference<>(builder().build());
 
     public static void setDefault(ResidualsDiagnosticsConfiguration config) {
@@ -49,9 +49,9 @@ public class ResidualsDiagnosticsConfiguration implements DiagnosticsConfigurati
     private double badThresholdForNormality, uncertainThresholdForNormality;
     private double severeThresholdForTradingDaysPeak, badThresholdForTradingDaysPeak,
             uncertainThresholdForTradingDaysPeak;
-    private double severeThresholdeForSeasonalPeaks,
-            badThresholdeForSeasonalPeaks,
-            uncertainThresholdeForSeasonalPeaks;
+    private double severeThresholdForSeasonalPeaks,
+            badThresholdForSeasonalPeaks,
+            uncertainThresholdForSeasonalPeaks;
 
     @LombokWorkaround
     public static Builder builder() {
@@ -62,9 +62,9 @@ public class ResidualsDiagnosticsConfiguration implements DiagnosticsConfigurati
                 .severeThresholdForTradingDaysPeak(TDSEV)
                 .badThresholdForTradingDaysPeak(TDBAD)
                 .uncertainThresholdForTradingDaysPeak(TDUNC)
-                .severeThresholdeForSeasonalPeaks(SSEV)
-                .badThresholdeForSeasonalPeaks(SBAD)
-                .uncertainThresholdeForSeasonalPeaks(SUNC);
+                .severeThresholdForSeasonalPeaks(SSEV)
+                .badThresholdForSeasonalPeaks(SBAD)
+                .uncertainThresholdForSeasonalPeaks(SUNC);
     }
 
     @Override

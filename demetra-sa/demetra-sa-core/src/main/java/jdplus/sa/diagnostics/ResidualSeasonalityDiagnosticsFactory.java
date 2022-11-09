@@ -21,16 +21,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import demetra.information.Explorable;
-import demetra.processing.DiagnosticsFactory;
 import demetra.processing.Diagnostics;
+import demetra.sa.SaDiagnosticsFactory;
 
 /**
  *
  * @author Kristof Bayens
  */
-public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory<ResidualSeasonalityDiagnosticsConfiguration, Explorable> {
+public class ResidualSeasonalityDiagnosticsFactory implements SaDiagnosticsFactory<ResidualSeasonalityDiagnosticsConfiguration, Explorable> {
 
-    public static final String NAME = "combined seasonality test",
+    public static final String NAME = "Combined seasonality tests",
             SA = NAME + " on sa", SA_LAST = NAME + " on sa (last 3 years)", IRR = NAME + " on irregular";
     public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SA, SA_LAST, IRR));
 
@@ -63,5 +63,15 @@ public class ResidualSeasonalityDiagnosticsFactory implements DiagnosticsFactory
     @Override
     public ResidualSeasonalityDiagnosticsFactory with(ResidualSeasonalityDiagnosticsConfiguration newConfig) {
         return new ResidualSeasonalityDiagnosticsFactory(newConfig);
+    }
+
+     @Override
+    public Scope getScope() {
+        return Scope.Decomposition;
+    }
+
+    @Override
+    public int getOrder() {
+        return 10;
     }
 }

@@ -16,145 +16,160 @@
  */
 package jdplus.sa.diagnostics;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import demetra.information.Explorable;
+import demetra.processing.Diagnostics;
+import demetra.processing.ProcQuality;
+import demetra.sa.SaDictionaries;
+import demetra.timeseries.TimeSelector;
+import demetra.timeseries.TsData;
+import demetra.toolkit.dictionaries.Dictionary;
 import java.util.Collections;
 import java.util.List;
+import jdplus.modelling.regular.tests.SpectralAnalysis;
 
 /**
  *
- * @author Kristof Bayens
  */
-//public class SpectralDiagnostics implements IDiagnostics {
-//
-//    private boolean sorig_, ssa_, sirr_;
-//    private boolean tdsa_, tdirr_;
-//    private boolean strict_;
-//    private boolean processed_;
-//
-//    protected static SpectralDiagnostics create(SpectralDiagnosticsConfiguration config, CompositeResults rslts) {
-//        try {
-//            if (rslts == null) {
-//                return null;
-//            } else {
-//                return new SpectralDiagnostics(config, rslts);
-//            }
-//        } catch (Exception ex) {
-//            return null;
-//        }
-//    }
-//
-//    public SpectralDiagnostics(SpectralDiagnosticsConfiguration config, CompositeResults rslts) {
-//        processed_=test(rslts, config.getSensitivity(), config.getLength(), config.isStrict());
-//    }
-//
-//    private boolean test(CompositeResults rslt, double sens, int len, boolean strict) {
-//         strict_ = strict;
-//        try {
-//            if (rslt == null || GenericSaResults.getDecomposition(rslt, ISaResults.class) == null) {
-//                return false;
-//            }
-//            boolean r=false;
-//            TsPeriodSelector sel = new TsPeriodSelector();
-//            SpectralDiagnostic diag = new SpectralDiagnostic();
-//            diag.setSensitivity(sens);
-//            TsData s = rslt.getData(ModellingDictionary.Y_LIN, TsData.class);
-//            if (s != null) {
-//                s = s.delta(1);
-//                if (len != 0) {
-//                    sel.last(len * s.getFrequency().intValue());
-//                    s = s.select(sel);
-//                }
-//                diag.setARLength(s.getFrequency() == TsFrequency.Monthly ? 30 : 3 * s.getFrequency().intValue());
-//                if (diag.test(s)) {
-//                     sorig_ = diag.hasSeasonalPeaks();
-//                }
-//            }
-//            s = rslt.getData(ModellingDictionary.SA, TsData.class);
-//            if (s != null) {
-//                int del = Math.max(1, s.getFrequency().intValue() / 4);
-//                s = s.delta(del);
-//                if (len != 0) {
-//                    sel.last(len * s.getFrequency().intValue());
-//                    s = s.select(sel);
-//                }
-//                diag.setARLength(s.getFrequency() == TsFrequency.Monthly ? 30 : 3 * s.getFrequency().intValue());
-//                if (diag.test(s)) {
-//                    r=true;
-//                    ssa_ = diag.hasSeasonalPeaks();
-//                    if (s.getFrequency() == TsFrequency.Monthly) {
-//                        tdsa_ = diag.hasTradingDayPeaks();
-//                    }
-//                }
-//            }
-//            s = rslt.getData(ModellingDictionary.I, TsData.class);
-//            if (s != null) {
-//                if (len != 0) {
-//                    r=true;
-//                    sel.last(len * s.getFrequency().intValue());
-//                    s = s.select(sel);
-//                }
-//                diag.setARLength(s.getFrequency() == TsFrequency.Monthly ? 30 : 3 * s.getFrequency().intValue());
-//                if (diag.test(s)) {
-//                    r=true;
-//                    sirr_ = diag.hasSeasonalPeaks();
-//                    if (s.getFrequency() == TsFrequency.Monthly) {
-//                        tdirr_ = diag.hasTradingDayPeaks();
-//                    }
-//                }
-//            }
-//            return r;
-//        } catch (Exception ex) {
-//            return false;
-//        }
-//    }
-//
-//    @Override
-//    public String getName() {
-//        return SpectralDiagnosticsFactory.NAME;
-//    }
-//
-//    @Override
-//    public List<String> getTests() {
-//        return SpectralDiagnosticsFactory.ALL;
-//    }
-//
-//    @Override
-//    public ProcQuality getDiagnostic(String test) {
-//        if (! processed_)
-//            return ProcQuality.Undefined;
-//        if (test.equals(SpectralDiagnosticsFactory.SEAS)) {
-//            if (!sirr_ && !ssa_) {
-//                return ProcQuality.Good;
-//            } else if (sirr_ && ssa_) {
-//                return ProcQuality.Severe;
-//            } else {
-//                return strict_ ? ProcQuality.Severe : ProcQuality.Bad;
-//            }
-//        }
-//        if (test.equals(SpectralDiagnosticsFactory.TD)) {
-//            if (!tdirr_ && !tdsa_) {
-//                return ProcQuality.Good;
-//            } else if (tdirr_ && tdsa_) {
-//                return ProcQuality.Severe;
-//            } else {
-//                return strict_ ? ProcQuality.Severe : ProcQuality.Bad;
-//            }
-//        }
-//        return ProcQuality.Undefined;
-//    }
-//
-//    @Override
-//    public double getValue(String test) {
-//        return 0;
-//    }
-//
-//    @Override
-//    public List<String> getWarnings() {
-//        if (!sorig_) {
-//            return Collections.singletonList("No seasonal peak in the original differenced series");
-//        } else {
-//            return Collections.emptyList();
-//        }
-//    }
-//}
+public class SpectralDiagnostics implements Diagnostics {
+
+    private boolean sorig, ssa, sirr;
+    private boolean tdsa, tdirr;
+    private boolean strict;
+
+    protected static SpectralDiagnostics of(SpectralDiagnosticsConfiguration config, Explorable rslts) {
+        try {
+            if (rslts == null) {
+                return null;
+            }
+            SpectralDiagnostics diags = new SpectralDiagnostics();
+            if (diags.test(rslts, config.getSensibility(), config.getLength(), config.isStrict())) {
+                return diags;
+            } else {
+                return null;
+            }
+
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private String decompositionItem(String key) {
+        return Dictionary.concatenate(SaDictionaries.DECOMPOSITION, key);
+    }
+
+    private boolean test(Explorable rslts, double sens, int len, boolean strict) {
+        this.strict = strict;
+        try {
+            boolean r = false;
+            TsData s = rslts.getData(decompositionItem(SaDictionaries.Y_LIN), TsData.class);
+            if (s != null) {
+                int sfreq = s.getAnnualFrequency();
+                s = s.delta(1);
+                if (len != 0) {
+                    TimeSelector sel = TimeSelector.last(len * sfreq);
+                    s = s.select(sel);
+                }
+                SpectralAnalysis diag = SpectralAnalysis.test(s)
+                        .sensibility(sens)
+                        .arLength(sfreq == 12 ? 30 : 3 * sfreq)
+                        .build();
+
+                if (diag != null) {
+                    sorig = diag.hasSeasonalPeaks();
+                    r = true;
+                }
+            }
+            s = rslts.getData(SaDictionaries.SA, TsData.class);
+            if (s != null) {
+                int sfreq = s.getAnnualFrequency();
+                int del = Math.max(1, sfreq / 4);
+                s = s.delta(del);
+                if (len != 0) {
+                    TimeSelector sel = TimeSelector.last(len * sfreq);
+                    s = s.select(sel);
+                }
+                SpectralAnalysis diag = SpectralAnalysis.test(s)
+                        .sensibility(sens)
+                        .arLength(sfreq == 12 ? 30 : 3 * sfreq)
+                        .build();
+                if (diag != null) {
+                    r = true;
+                    ssa = diag.hasSeasonalPeaks();
+                    if (sfreq == 12) {
+                        tdsa = diag.hasTradingDayPeaks();
+                    }
+                }
+            }
+            s = rslts.getData(SaDictionaries.SA, TsData.class);
+            if (s != null) {
+                int sfreq = s.getAnnualFrequency();
+                if (len != 0) {
+                    r = true;
+                    TimeSelector sel = TimeSelector.last(len * sfreq);
+                    s = s.select(sel);
+                }
+                SpectralAnalysis diag = SpectralAnalysis.test(s)
+                        .sensibility(sens)
+                        .arLength(sfreq == 12 ? 30 : 3 * sfreq)
+                        .build();
+                if (diag != null) {
+                    r = true;
+                    sirr = diag.hasSeasonalPeaks();
+                    if (sfreq == 12) {
+                        tdirr = diag.hasTradingDayPeaks();
+                    }
+                }
+            }
+            return r;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public String getName() {
+        return SpectralDiagnosticsFactory.NAME;
+    }
+
+    @Override
+    public List<String> getTests() {
+        return SpectralDiagnosticsFactory.ALL;
+    }
+
+    @Override
+    public ProcQuality getDiagnostic(String test) {
+        if (test.equals(SpectralDiagnosticsFactory.SEAS)) {
+            if (!sirr && !ssa) {
+                return ProcQuality.Good;
+            } else if (sirr && ssa) {
+                return ProcQuality.Severe;
+            } else {
+                return strict ? ProcQuality.Severe : ProcQuality.Bad;
+            }
+        }
+        if (test.equals(SpectralDiagnosticsFactory.TD)) {
+            if (!tdirr && !tdsa) {
+                return ProcQuality.Good;
+            } else if (tdirr && tdsa) {
+                return ProcQuality.Severe;
+            } else {
+                return strict ? ProcQuality.Severe : ProcQuality.Bad;
+            }
+        }
+        return ProcQuality.Undefined;
+    }
+
+    @Override
+    public double getValue(String test) {
+        return 0;
+    }
+
+    @Override
+    public List<String> getWarnings() {
+        if (!sorig) {
+            return Collections.singletonList("No seasonal peak in the original differenced series");
+        } else {
+            return Collections.emptyList();
+        }
+    }
+}

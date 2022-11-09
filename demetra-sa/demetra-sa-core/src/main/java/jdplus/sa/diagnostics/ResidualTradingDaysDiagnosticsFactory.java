@@ -27,10 +27,11 @@ import demetra.processing.Diagnostics;
 /**
  *
  * @author Jean Palate
+ * @param <R>
  */
 public class ResidualTradingDaysDiagnosticsFactory<R> implements SaDiagnosticsFactory<ResidualTradingDaysDiagnosticsConfiguration, R> {
     
-    static final String NAME="Residual trading days tests", DESC="Residual trading days tests";
+    public static final String NAME="Residual trading days tests", DESC="Residual trading days tests";
     static final String FTEST_SA = "F-Test on SA (td)", FTEST_I = "F-Test on I (td)";
     static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(FTEST_SA, FTEST_I));
 

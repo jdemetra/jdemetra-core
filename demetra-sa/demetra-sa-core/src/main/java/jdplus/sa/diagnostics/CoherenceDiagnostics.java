@@ -17,7 +17,6 @@
 package jdplus.sa.diagnostics;
 
 import demetra.data.AggregationType;
-import demetra.information.BasicInformationExtractor;
 import nbbrd.design.Development;
 import demetra.processing.ProcQuality;
 import demetra.sa.DecompositionMode;

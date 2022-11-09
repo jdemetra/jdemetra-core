@@ -40,13 +40,13 @@ public class MDiagnosticsConfiguration implements DiagnosticsConfiguration{
         return DEFAULT.get();
     }
 
-    public static final boolean ACTIVE = true;
+    public static final boolean ACTIVE = true, ALL =true;
     private boolean active;
     
     public static final double SEVERE = 2, BAD = 1;
 
-    private double badThreshold;
     private double severeThreshold;
+    private double badThreshold;
     private boolean all;
 
     public void check() {
@@ -60,7 +60,7 @@ public class MDiagnosticsConfiguration implements DiagnosticsConfiguration{
                 .active(ACTIVE)
                 .badThreshold(BAD)
                 .severeThreshold(SEVERE)
-                .all(true);
+                .all(ALL);
     }
 
     @Override
