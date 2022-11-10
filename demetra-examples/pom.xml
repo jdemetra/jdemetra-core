@@ -75,7 +75,13 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-tss</artifactId>
-            <version>${jd2.version}</version>            
+            <version>${jd2.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.nbbrd.java-io-util</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
     </dependencies>   
