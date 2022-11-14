@@ -4,7 +4,6 @@
  */
 package demetra.tsprovider.util;
 
-import com.google.common.collect.ImmutableMap;
 import demetra.data.AggregationType;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.util.ObsGathering;
@@ -68,10 +67,10 @@ public class DataSetConverterTest {
         DataSource.Converter<ObsFormat> x = LegacyHandler.onObsFormat("locale", "date", "number", defaultFormat).asDataSourceConverter();
 
         ObsFormat format1 = ObsFormat.builder().locale(null).dateTimePattern("dd-MM-yyyy").build();
-        assertBehavior(x, defaultFormat, format1, ImmutableMap.of( "date", "dd-MM-yyyy"));
+        assertBehavior(x, defaultFormat, format1, Map.of("date", "dd-MM-yyyy"));
 
         ObsFormat format2 = ObsFormat.builder().locale(null).dateTimePattern("dd-MM-yyyy").numberPattern("#").build();
-        assertBehavior(x, defaultFormat, format2, ImmutableMap.of("date", "dd-MM-yyyy", "number", "#"));
+        assertBehavior(x, defaultFormat, format2, Map.of("date", "dd-MM-yyyy", "number", "#"));
     }
 
     @Test
@@ -79,7 +78,7 @@ public class DataSetConverterTest {
     public void testOnObsGathering() {
         ObsGathering defaultValue = ObsGathering.DEFAULT;
         ObsGathering newValue = ObsGathering.builder().unit(TsUnit.YEAR).aggregationType(AggregationType.Average).includeMissingValues(true).build();
-        assertBehavior(LegacyHandler.onObsGathering("f", "a", "s", defaultValue).asDataSourceConverter(), defaultValue, newValue, ImmutableMap.of("f", "Yearly", "a", "Average", "s", "false"));
+        assertBehavior(LegacyHandler.onObsGathering("f", "a", "s", defaultValue).asDataSourceConverter(), defaultValue, newValue, Map.of("f", "Yearly", "a", "Average", "s", "false"));
         assertThatThrownBy(() -> LegacyHandler.onObsGathering("f", "a", "s", null).asDataSourceConverter()).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> LegacyHandler.onObsGathering(null, "a", "s", defaultValue).asDataSourceConverter()).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> LegacyHandler.onObsGathering("f", null, "s", defaultValue).asDataSourceConverter()).isInstanceOf(NullPointerException.class);

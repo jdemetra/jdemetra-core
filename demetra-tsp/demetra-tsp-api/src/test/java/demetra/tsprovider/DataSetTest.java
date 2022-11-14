@@ -16,14 +16,18 @@
  */
 package demetra.tsprovider;
 
-import com.google.common.collect.ImmutableSortedMap;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import static java.util.Collections.emptySortedMap;
+import static java.util.Collections.unmodifiableSortedMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.HamcrestCondition.matching;
 import static org.assertj.core.condition.MappedCondition.mappedCondition;
@@ -36,8 +40,8 @@ public class DataSetTest {
 
     final DataSource id = DataSourceTest.newSample();
     final String k1 = "domain", v1 = "NB01";
-    final ImmutableSortedMap<String, String> content = ImmutableSortedMap.of(k1, v1);
-    final ImmutableSortedMap<String, String> emptyContent = ImmutableSortedMap.of();
+    final SortedMap<String, String> content = unmodifiableSortedMap(new TreeMap<>(Map.of(k1, v1)));
+    final SortedMap<String, String> emptyContent = emptySortedMap();
 
     DataSet newSample() {
         return new DataSet(id, DataSet.Kind.DUMMY, content);
