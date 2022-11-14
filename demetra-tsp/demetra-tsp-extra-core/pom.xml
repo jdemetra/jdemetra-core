@@ -41,20 +41,6 @@
             <artifactId>sdmx-dl-provider-util</artifactId>
         </dependency>
 
-        <!-- runtime only -->
-        <dependency>
-            <groupId>com.github.nbbrd.sdmx-dl</groupId>
-            <artifactId>sdmx-dl-provider-ri</artifactId>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- Fix RequireUpperBoundDeps rule -->
-                    <groupId>org.projectlombok</groupId>
-                    <artifactId>lombok</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -70,13 +56,6 @@
         <dependency>
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-api</artifactId>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.sdmx-dl</groupId>
-            <artifactId>sdmx-dl-format-xml</artifactId>
             <classifier>tests</classifier>
             <type>test-jar</type>
             <scope>test</scope>

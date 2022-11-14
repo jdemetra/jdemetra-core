@@ -24,7 +24,5 @@
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-base</artifactId>
         </dependency>
-
-        <!-- test only -->
     </dependencies>
 </project>

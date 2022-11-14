@@ -99,10 +99,7 @@ public final class SpreadSheetProvider implements FileLoader<SpreadSheetBean> {
     private static SpreadSheetConnection openConnection(DataSource key, HasFilePaths paths, SpreadSheetParam param, BookSupplier books) throws IOException {
         SpreadSheetBean bean = param.get(key);
         File file = paths.resolveFilePath(bean.getFile());
-        Book.Factory factory = books.getFactory(file);
-        if (factory == null) {
-            throw new IOException("File type not supported");
-        }
+        Book.Factory factory = books.getFactory(file).orElseThrow(() -> new IOException("File type not supported"));
         SheetGrid result = SheetGrid.of(file, factory, getReader(bean));
         return CachedSpreadSheetConnection.of(result, file, IOCacheFactoryLoader.get());
     }
