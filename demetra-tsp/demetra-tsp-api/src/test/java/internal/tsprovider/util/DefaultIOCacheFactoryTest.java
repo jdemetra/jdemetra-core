@@ -1,13 +1,14 @@
 package internal.tsprovider.util;
 
-import com.google.common.io.Files;
 import nbbrd.design.MightBePromoted;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -59,7 +60,7 @@ public class DefaultIOCacheFactoryTest {
 
         assertThat(validator.test(clock, valueHolder)).isTrue();
 
-        Files.touch(file);
+        Files.setLastModifiedTime(file.toPath(), FileTime.from(clock.instant().plusMillis(1)));
         assertThat(validator.test(clock, valueHolder)).isFalse();
 
         assertThat(file.delete()).isTrue();

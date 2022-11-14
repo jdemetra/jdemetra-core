@@ -1,29 +1,31 @@
 /*
  * Copyright 2018 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package demetra.util;
 
-import com.google.common.collect.ImmutableMap;
-import java.beans.IntrospectionException;
-import java.io.StringWriter;
-import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import java.beans.IntrospectionException;
+import java.io.StringWriter;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+
 /**
- *
  * @author Philippe Charles
  */
 public class SubstitutorTest {
@@ -31,7 +33,7 @@ public class SubstitutorTest {
     @Test
     @SuppressWarnings("null")
     public void testReplace() {
-        Substitutor x = Substitutor.of(ImmutableMap.of("user.name", "charphi"));
+        Substitutor x = Substitutor.of(Map.of("user.name", "charphi"));
 
         assertThatNullPointerException().isThrownBy(() -> x.replace(null));
 
@@ -52,7 +54,7 @@ public class SubstitutorTest {
     @Test
     @SuppressWarnings("null")
     public void testReplaceIntoAppendable() {
-        Substitutor x = Substitutor.of(ImmutableMap.of("user.name", "charphi"));
+        Substitutor x = Substitutor.of(Map.of("user.name", "charphi"));
 
         assertThatNullPointerException().isThrownBy(() -> x.replaceInto(null, new StringWriter()));
         assertThatNullPointerException().isThrownBy(() -> x.replaceInto("", (Appendable) null));
@@ -61,7 +63,7 @@ public class SubstitutorTest {
     @Test
     @SuppressWarnings("null")
     public void testReplaceIntoStringBuilder() {
-        Substitutor x = Substitutor.of(ImmutableMap.of("user.name", "charphi"));
+        Substitutor x = Substitutor.of(Map.of("user.name", "charphi"));
 
         assertThatNullPointerException().isThrownBy(() -> x.replaceInto(null, new StringBuilder()));
         assertThatNullPointerException().isThrownBy(() -> x.replaceInto("", (StringBuilder) null));
@@ -73,7 +75,7 @@ public class SubstitutorTest {
                 .builder()
                 .prefix("{{")
                 .suffix("}}")
-                .mapper(ImmutableMap.of("user.name", "charphi")::get)
+                .mapper(Map.of("user.name", "charphi")::get)
                 .build();
 
         assertThat(mustache.replace("hello {{user.name}}")).isEqualTo("hello charphi");
@@ -82,7 +84,7 @@ public class SubstitutorTest {
                 .builder()
                 .prefix("%")
                 .suffix("%")
-                .mapper(ImmutableMap.of("user.name", "charphi")::get)
+                .mapper(Map.of("user.name", "charphi")::get)
                 .build();
 
         assertThat(dos.replace("hello %user.name%")).isEqualTo("hello charphi");

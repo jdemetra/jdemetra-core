@@ -16,13 +16,17 @@
  */
 package demetra.tsprovider;
 
-import com.google.common.collect.ImmutableSortedMap;
 import nbbrd.io.text.Formatter;
 import nbbrd.io.text.Parser;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import static java.util.Collections.emptySortedMap;
+import static java.util.Collections.unmodifiableSortedMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.HamcrestCondition.matching;
@@ -39,9 +43,9 @@ public class DataSourceTest {
             K2 = "locale", V2 = "fr_BE",
             K3 = "datePattern", V3 = "yyyy-MM-dd";
 
-    static final ImmutableSortedMap<String, String> P0 = ImmutableSortedMap.of();
-    static final ImmutableSortedMap<String, String> P1 = ImmutableSortedMap.of(K1, V1);
-    static final ImmutableSortedMap<String, String> P3 = ImmutableSortedMap.of(K1, V1, K2, V2, K3, V3);
+    static final SortedMap<String, String> P0 = emptySortedMap();
+    static final SortedMap<String, String> P1 = unmodifiableSortedMap(new TreeMap<>(Map.of(K1, V1)));
+    static final SortedMap<String, String> P3 = unmodifiableSortedMap(new TreeMap<>(Map.of(K1, V1, K2, V2, K3, V3)));
 
     static final DataSource ZERO = new DataSource(PNAME, VERSION, P0);
     static final DataSource ONE = new DataSource(PNAME, VERSION, P1);
@@ -92,14 +96,14 @@ public class DataSourceTest {
                 .isEqualTo(newSample())
                 .isNotSameAs(newSample())
                 .isNotEqualTo(ZERO)
-                .isEqualTo(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1)));
+                .isEqualTo(new DataSource(PNAME, VERSION, unmodifiableSortedMap(new TreeMap<>(Map.of(K3, V3, K2, V2, K1, V1)))));
     }
 
     @Test
     public void testToString() {
         assertThat(newSample().toString())
                 .isEqualTo(newSample().toString())
-                .isEqualTo(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1)).toString())
+                .isEqualTo(new DataSource(PNAME, VERSION, unmodifiableSortedMap(new TreeMap<>(Map.of(K3, V3, K2, V2, K1, V1)))).toString())
                 .isNotEqualTo(ZERO.toString());
     }
 
@@ -107,7 +111,7 @@ public class DataSourceTest {
     public void testHashCode() {
         assertThat(newSample().hashCode())
                 .isEqualTo(newSample().hashCode())
-                .isEqualTo(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1)).hashCode())
+                .isEqualTo(new DataSource(PNAME, VERSION, unmodifiableSortedMap(new TreeMap<>(Map.of(K3, V3, K2, V2, K1, V1)))).hashCode())
                 .isNotEqualTo(ZERO.hashCode());
     }
 
@@ -172,7 +176,7 @@ public class DataSourceTest {
         assertThat(formatter.format(newSample()))
                 .isNotEmpty()
                 .isEqualTo(formatter.format(newSample()))
-                .isEqualTo(formatter.format(new DataSource(PNAME, VERSION, ImmutableSortedMap.of(K3, V3, K2, V2, K1, V1))))
+                .isEqualTo(formatter.format(new DataSource(PNAME, VERSION, unmodifiableSortedMap(new TreeMap<>(Map.of(K3, V3, K2, V2, K1, V1))))))
                 .isNotEqualTo(formatter.format(ZERO))
                 .startsWith("demetra://tsprovider/");
     }

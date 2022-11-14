@@ -17,7 +17,6 @@
 package demetra.tsprovider.stream;
 
 import _util.tsproviders.FailingTsCursorSupport;
-import com.google.common.collect.ImmutableMap;
 import demetra.timeseries.*;
 import demetra.tsprovider.DataSet;
 import demetra.tsprovider.DataSource;
@@ -46,7 +45,7 @@ public class TsStreamAsProviderTest {
     private final HasDataMoniker monikers = HasDataMoniker.usingUri(provider);
     private final HasTsStream badCursor = new FailingTsCursorSupport(provider, "boom");
 
-    private final Map<String, String> customMeta = ImmutableMap.of("hello", "world");
+    private final Map<String, String> customMeta = Map.of("hello", "world");
 
     private final Runnable doNothing = () -> {
     };
