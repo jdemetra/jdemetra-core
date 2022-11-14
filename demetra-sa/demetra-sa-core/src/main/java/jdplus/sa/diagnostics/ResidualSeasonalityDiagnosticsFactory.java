@@ -27,8 +27,9 @@ import demetra.sa.SaDiagnosticsFactory;
 /**
  *
  * @author Kristof Bayens
+ * @param <R>
  */
-public class ResidualSeasonalityDiagnosticsFactory implements SaDiagnosticsFactory<ResidualSeasonalityDiagnosticsConfiguration, Explorable> {
+public class ResidualSeasonalityDiagnosticsFactory<R extends Explorable> implements SaDiagnosticsFactory<ResidualSeasonalityDiagnosticsConfiguration, R> {
 
     public static final String NAME = "Combined seasonality tests",
             SA = NAME + " on sa", SA_LAST = NAME + " on sa (last 3 years)", IRR = NAME + " on irregular";
