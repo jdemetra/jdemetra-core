@@ -1,23 +1,21 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package internal.workspace.file;
 
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 import ec.demetra.workspace.WorkspaceItem;
 import ec.demetra.workspace.file.FileFormat;
 import ec.demetra.workspace.file.FileWorkspace;
@@ -33,60 +31,24 @@ import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
 import ec.tstoolkit.timeseries.calendars.GregorianCalendarManager;
 import ec.tstoolkit.timeseries.regression.TsVariables;
-import static internal.test.TestResources.GENERIC_INDEX;
-import static internal.test.TestResources.GENERIC_ITEMS;
-import static internal.test.TestResources.GENERIC_MOD_DOC_REGARIMA;
-import static internal.test.TestResources.GENERIC_MOD_DOC_TRAMO;
-import static internal.test.TestResources.GENERIC_MOD_SPEC_REGARIMA;
-import static internal.test.TestResources.GENERIC_MOD_SPEC_TRAMO;
-import static internal.test.TestResources.GENERIC_ROOT;
-import static internal.test.TestResources.GENERIC_SA_DOC_TRAMOSEATS;
-import static internal.test.TestResources.GENERIC_SA_DOC_X13;
-import static internal.test.TestResources.GENERIC_SA_MULTI;
-import static internal.test.TestResources.GENERIC_SA_SPEC_TRAMOSEATS;
-import static internal.test.TestResources.GENERIC_SA_SPEC_X13;
-import static internal.test.TestResources.GENERIC_UTIL_CAL;
-import static internal.test.TestResources.GENERIC_UTIL_VAR;
-import static internal.test.TestResources.LEGACY_INDEX;
-import static internal.test.TestResources.LEGACY_ITEMS;
-import static internal.test.TestResources.LEGACY_ROOT;
-import static internal.test.TestResources.LEGACY_SA_DOC_TRAMOSEATS;
-import static internal.test.TestResources.LEGACY_SA_DOC_X13;
-import static internal.test.TestResources.LEGACY_SA_MULTI;
-import static internal.test.TestResources.LEGACY_SA_SPEC_TRAMOSEATS;
-import static internal.test.TestResources.LEGACY_SA_SPEC_X13;
-import static internal.test.TestResources.LEGACY_UTIL_CAL;
-import static internal.test.TestResources.LEGACY_UTIL_VAR;
 import internal.workspace.file.spi.FamilyHandlerLoader;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Test;
+
+import static internal.test.TestResources.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- *
  * @author Philippe Charles
  */
 public class FileWorkspaceImplTest {
-
-    private static FileSystem JIM_FS;
-
-    @BeforeClass
-    public static void beforeClass() {
-        JIM_FS = Jimfs.newFileSystem(Configuration.unix());
-    }
-
-    @AfterClass
-    public static void afterClass() throws IOException {
-        JIM_FS.close();
-    }
 
     @Test
     public void testLoadGeneric() throws IOException {
@@ -170,8 +132,8 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testRename() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testRename(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         try (FileWorkspace ws = openGenericUsingServiceLoader(copyOfGeneric)) {
             assertThat(ws.getName()).isEqualTo("my_workspace");
@@ -184,8 +146,8 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testDeleteItem() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testDeleteItem(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         try (FileWorkspace ws = openGenericUsingServiceLoader(copyOfGeneric)) {
             assertThat(ws.getFile(GENERIC_SA_MULTI)).exists();
@@ -202,8 +164,8 @@ public class FileWorkspaceImplTest {
 
     @Test
     @SuppressWarnings("null")
-    public void testStoreItem() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testStoreItem(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         try (FileWorkspace ws = openGenericUsingServiceLoader(copyOfGeneric)) {
             assertThatThrownBy(() -> ws.store(GENERIC_SA_MULTI, "hello"))
@@ -215,8 +177,8 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testAddItem() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testAddItem(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         WorkspaceItem newItem = GENERIC_SA_MULTI.toBuilder().id("other").build();
         try (FileWorkspace ws = openGenericUsingServiceLoader(copyOfGeneric)) {
@@ -230,8 +192,8 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testReplaceItem() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testReplaceItem(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         try (FileWorkspace ws = openGenericUsingServiceLoader(copyOfGeneric)) {
             SaProcessing processing = (SaProcessing) ws.load(GENERIC_SA_MULTI);
@@ -246,8 +208,8 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testItemWithoutFile() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testItemWithoutFile(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         Files.delete(FileWorkspaceImpl.getRootFolder(copyOfGeneric).resolve("SAProcessing").resolve("SAProcessing-1.xml"));
         try (FileWorkspace ws = openGenericUsingServiceLoader(copyOfGeneric)) {
@@ -257,8 +219,8 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testFileWithoutItem() throws IOException {
-        Path copyOfGeneric = newGenericSample();
+    public void testFileWithoutItem(@TempDir Path temp) throws IOException {
+        Path copyOfGeneric = newGenericSample(temp);
 
         try (Indexer indexer = new GenericIndexer(copyOfGeneric, FileWorkspaceImpl.getRootFolder(copyOfGeneric))) {
             indexer.storeIndex(indexer.loadIndex().withoutItem(FileWorkspaceImpl.toKey(GENERIC_SA_MULTI)));
@@ -270,22 +232,21 @@ public class FileWorkspaceImplTest {
     }
 
     @Test
-    public void testGetRootFolder() throws IOException {
-        assertThat(FileWorkspaceImpl.getRootFolder(JIM_FS.getPath("/workspace.xml")))
+    public void testGetRootFolder(@TempDir Path temp) throws IOException {
+        assertThat(FileWorkspaceImpl.getRootFolder(temp.resolve("workspace.xml")))
                 .isAbsolute()
-                .hasFileName("workspace")
-                .matches(o -> o.getFileSystem().equals(JIM_FS));
+                .hasFileName("workspace");
 
         assertThatThrownBy(() -> FileWorkspaceImpl.getRootFolder(null)).isInstanceOf(NullPointerException.class);
-        assertThatThrownBy(() -> FileWorkspaceImpl.getRootFolder(JIM_FS.getPath("/"))).isInstanceOf(IOException.class);
+        assertThatThrownBy(() -> FileWorkspaceImpl.getRootFolder(temp.getRoot())).isInstanceOf(IOException.class);
     }
 
     private static FileWorkspaceImpl openGenericUsingServiceLoader(Path file) throws IOException {
         return FileWorkspaceImpl.open(file, FileFormat.GENERIC, new FamilyHandlerLoader()::get);
     }
 
-    private static Path newGenericSample() throws IOException {
-        Path result = Files.createTempFile(JIM_FS.getPath("/"), "ws_", ".xml");
+    private static Path newGenericSample(Path temp) throws IOException {
+        Path result = Files.createTempFile(temp, "ws_", ".xml");
         Files.copy(GENERIC_INDEX, result, StandardCopyOption.REPLACE_EXISTING);
         Files.createDirectories(FileWorkspaceImpl.getRootFolder(result).resolve("SAProcessing"));
         Files.copy(
