@@ -56,24 +56,6 @@
             </exclusions>
         </dependency>
 
-        <!-- runtime only -->
-        <dependency>
-            <groupId>com.github.nbbrd.java-sql-util</groupId>
-            <artifactId>java-sql-lhod</artifactId>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.nbbrd.java-io-util</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.java-io-util</groupId>
-            <artifactId>java-io-win</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- test only -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -93,7 +75,7 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>com.github.nbbrd</groupId>
+                    <groupId>com.github.nbbrd.java-io-util</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>

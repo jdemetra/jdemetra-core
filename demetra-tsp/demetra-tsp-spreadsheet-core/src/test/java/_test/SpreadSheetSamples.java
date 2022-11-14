@@ -19,10 +19,7 @@ package _test;
 import demetra.demo.ProviderResources;
 import demetra.spreadsheet.SpreadSheetBean;
 import demetra.spreadsheet.SpreadSheetProvider;
-import demetra.tsprovider.tck.FileLoaderAssert;
 import ec.tss.tsproviders.IFileBean;
-
-import java.io.File;
 
 /**
  * @author Philippe Charles
@@ -31,12 +28,10 @@ public enum SpreadSheetSamples implements ProviderResources.FileLoader2<ec.tss.t
 
     TOP5;
 
-    private final File file = FileLoaderAssert.urlAsFile(SpreadSheetSamples.class.getResource("/Top5Browsers.xlsx"));
-
     @Override
     public IFileBean getBean2(ec.tss.tsproviders.spreadsheet.SpreadSheetProvider provider) {
         ec.tss.tsproviders.IFileBean bean = provider.newBean();
-        bean.setFile(file);
+        bean.setFile(Top5Browsers.getRefFile());
         return bean;
     }
 
@@ -48,7 +43,7 @@ public enum SpreadSheetSamples implements ProviderResources.FileLoader2<ec.tss.t
     @Override
     public SpreadSheetBean getBean3(SpreadSheetProvider provider) {
         SpreadSheetBean bean = provider.newBean();
-        bean.setFile(file);
+        bean.setFile(Top5Browsers.getRefFile());
         return bean;
     }
 
