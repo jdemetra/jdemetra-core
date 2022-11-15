@@ -74,7 +74,7 @@ public final class SheetGrid implements SpreadSheetConnection {
     }
 
     private Optional<TsCollection> getSheetByName(Book book, String name) throws IOException {
-        for (int i = 0; i < book.getSheetCount(); i++) {
+        for (int i = 0; i < book.getSheetCount2(); i++) {
             if (book.getSheetName(i).equals(name)) {
                 return Optional.of(readSheet(book.getSheet(i)));
             }
@@ -83,7 +83,7 @@ public final class SheetGrid implements SpreadSheetConnection {
     }
 
     private List<String> getSheetNames(Book book) throws IOException {
-        String[] result = new String[book.getSheetCount()];
+        String[] result = new String[book.getSheetCount2()];
         for (int i = 0; i < result.length; i++) {
             result[i] = book.getSheetName(i);
         }
@@ -91,7 +91,7 @@ public final class SheetGrid implements SpreadSheetConnection {
     }
 
     private List<TsCollection> getSheets(Book book) throws IOException {
-        TsCollection[] result = new TsCollection[book.getSheetCount()];
+        TsCollection[] result = new TsCollection[book.getSheetCount2()];
         try {
             book.parallelForEach((sheet, index) -> {
                 try {

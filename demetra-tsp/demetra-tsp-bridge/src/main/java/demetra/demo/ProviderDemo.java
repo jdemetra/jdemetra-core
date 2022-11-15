@@ -48,14 +48,6 @@ import java.util.stream.Collectors;
 @lombok.experimental.UtilityClass
 public class ProviderDemo {
 
-    public File resourceAsFile(Class<?> source, String name) {
-        try {
-            return new File(source.getResource(name).toURI());
-        } catch (URISyntaxException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     public void printTree(DataSourceProvider provider, DataSource dataSource) throws IllegalArgumentException, IOException {
         System.out.println("[TREE]");
         TsProviders.prettyPrintTree(provider, dataSource, Integer.MAX_VALUE, System.out, true);
