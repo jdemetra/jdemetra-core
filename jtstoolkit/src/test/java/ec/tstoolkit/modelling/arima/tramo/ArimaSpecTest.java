@@ -6,7 +6,10 @@
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.information.InformationSet;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -61,39 +64,33 @@ public class ArimaSpecTest {
         assertEquals(1, actual.getBQ());
     }
     
-    @Test(expected = TramoException.class)
+    @Test
     public void testSetPUpperBound() {
-        ArimaSpec spec = new ArimaSpec();
-        spec.setP(5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new ArimaSpec().setP(5));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetDUpperBound() {
-        ArimaSpec spec = new ArimaSpec();
-        spec.setD(5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new ArimaSpec().setD(5));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetQUpperBound() {
-        ArimaSpec spec = new ArimaSpec();
-        spec.setQ(5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() ->new ArimaSpec().setQ(5) );
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetBPUpperBound() {
-        ArimaSpec spec = new ArimaSpec();
-        spec.setBP(5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new ArimaSpec().setBP(5));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetBDUpperBound() {
-        ArimaSpec spec = new ArimaSpec();
-        spec.setBD(5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new ArimaSpec().setBD(5));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetBQUpperBound() {
-        ArimaSpec spec = new ArimaSpec();
-        spec.setBQ(5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new ArimaSpec().setBQ(5));
     }
 }

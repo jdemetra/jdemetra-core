@@ -8,6 +8,8 @@ package ec.satoolkit.x11;
 import ec.satoolkit.DecompositionMode;
 import ec.tstoolkit.information.InformationSet;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -97,28 +99,23 @@ public class X11SpecificationTest {
         assertEquals(SigmavecOption.Group2, actual.getSigmavec()[0]);
     }
 
-    @Test(expected = X11Exception.class)
+    @Test
     public void testsetSigmaLowerBound() {
-        X11Specification expected = new X11Specification();
-        expected.setSigma(0.2, 2.5);
+        assertThatExceptionOfType(X11Exception.class).isThrownBy(() -> new X11Specification().setSigma(0.2, 2.5));
     }
 
-    @Test(expected = X11Exception.class)
+    @Test
     public void testSetHendersonFilterLengthEvenNumber() {
-        X11Specification expected = new X11Specification();
-        expected.setHendersonFilterLength(12);
+        assertThatExceptionOfType(X11Exception.class).isThrownBy(() -> new X11Specification().setHendersonFilterLength(12));
     }
 
-    @Test(expected = X11Exception.class)
+    @Test
     public void testSetHendersonFilterLengthMinZero() {
-        X11Specification expected = new X11Specification();
-        expected.setHendersonFilterLength(-1);
+        assertThatExceptionOfType(X11Exception.class).isThrownBy(() -> new X11Specification().setHendersonFilterLength(-1));
     }
 
-    @Test(expected = X11Exception.class)
+    @Test
     public void testSetHendersonFilterLengthUpperBound() {
-        X11Specification expected = new X11Specification();
-        expected.setHendersonFilterLength(103);
+        assertThatExceptionOfType(X11Exception.class).isThrownBy(() -> new X11Specification().setHendersonFilterLength(103));
     }
-
 }

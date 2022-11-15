@@ -7,6 +7,8 @@ package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.information.InformationSet;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -52,16 +54,14 @@ public class EasterSpecTest {
         actual.read(info);
         assertTrue(actual.isDefault());        
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testDurationToUpperBound() {
-        EasterSpec expected = new EasterSpec();
-        expected.setDuration(17);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new EasterSpec().setDuration(17));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testDurationToLowerBound() {
-        EasterSpec expected = new EasterSpec();
-        expected.setDuration(0);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new EasterSpec().setDuration(0));
     }
 }
