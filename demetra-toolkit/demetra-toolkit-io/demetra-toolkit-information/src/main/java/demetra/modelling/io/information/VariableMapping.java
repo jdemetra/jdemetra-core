@@ -64,7 +64,7 @@ public class VariableMapping {
         if (n > 0) {
             String[] a = attributes.keySet().toArray(new String[n]);
             for (int i = 0; i < n; ++i) {
-                info.set(ATTRIBUTE + (i+1), new String[]{a[i], attributes.get(a[i])});
+                info.set(ATTRIBUTE + (i + 1), new String[]{a[i], attributes.get(a[i])});
             }
         }
     }
@@ -102,7 +102,7 @@ public class VariableMapping {
     }
 
     public Variable<IOutlier> readO(InformationSet info) {
-         return readVariableInfo(OutlierMapping.read(info), info);
+        return readVariableInfo(OutlierMapping.read(info), info);
     }
 
     public InformationSet writeO(Variable<IOutlier> var, boolean verbose) {
@@ -112,7 +112,7 @@ public class VariableMapping {
     }
 
     public Variable<Ramp> readR(InformationSet info) {
-         return readVariableInfo(RampMapping.read(info), info);
+        return readVariableInfo(RampMapping.read(info), info);
     }
 
     public InformationSet writeR(Variable<Ramp> var, boolean verbose) {
@@ -122,7 +122,7 @@ public class VariableMapping {
     }
 
     public Variable<TsContextVariable> readT(InformationSet info) {
-         return readVariableInfo(TsContextVariableMapping.read(info), info);
+        return readVariableInfo(TsContextVariableMapping.read(info), info);
     }
 
     public InformationSet writeT(Variable<TsContextVariable> var, boolean verbose) {
@@ -155,5 +155,24 @@ public class VariableMapping {
     }
 
     private final String INVALID = "Invalid range";
+
+    public Range<LocalDate> rangeFromLegacyString(String s) {
+        String[] ss = InformationSet.split(s);
+        if (ss.length < 2 || !ss[0].equals("rp")) {
+            throw new InformationException(INVALID);
+        }
+        if (ss.length == 2) {
+            LocalDate start = LocalDate.parse(ss[1], DateTimeFormatter.ISO_DATE);
+            if (start != null) {
+                return Range.of(start, start);
+            }
+        }
+        if (ss.length != 3) {
+            throw new InformationException(INVALID);
+        }
+        LocalDate start = LocalDate.parse(ss[1], DateTimeFormatter.ISO_DATE);
+        LocalDate end = LocalDate.parse(ss[2], DateTimeFormatter.ISO_DATE);
+        return Range.of(start, end);
+    }
 
 }

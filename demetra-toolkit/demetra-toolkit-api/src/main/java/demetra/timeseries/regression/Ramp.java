@@ -17,27 +17,49 @@
 package demetra.timeseries.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import demetra.timeseries.TsUnit;
+import java.time.LocalDate;
 import nbbrd.design.Development;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
  * @author Jean Palate
  */
 @lombok.Value
-@Development(status=Development.Status.Release)
-public class Ramp implements ISystemVariable, IUserVariable{
-    
+@Development(status = Development.Status.Release)
+public class Ramp implements ISystemVariable, IUserVariable {
+
     @Override
-    public int dim()
-    {return 1;}
+    public int dim() {
+        return 1;
+    }
 
     @lombok.NonNull
     private LocalDateTime start, end;
-    
+
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {
-        return "ramp";
+        int period = 0;
+        if (context instanceof TsDomain dom) {
+            period = dom.getAnnualFrequency();
+        }
+        StringBuilder builder = new StringBuilder();
+        if (period <= 0) {
+            builder.append("ramp ").append(start.format(DateTimeFormatter.ISO_DATE))
+                    .append(" / ").append(end.format(DateTimeFormatter.ISO_DATE));
+        } else {
+            TsUnit unit = TsUnit.ofAnnualFrequency(period);
+            TsPeriod pstart = TsPeriod.of(unit, start);
+            TsPeriod pend = TsPeriod.of(unit, end);
+            builder.append("ramp ").append(pstart.display())
+                    .append(" / ").append(pend.display());
+
+        }
+        return builder.toString();
     }
-    
+
 }

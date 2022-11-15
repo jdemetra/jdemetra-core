@@ -36,18 +36,17 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
-import demetra.timeseries.regression.ICalendarVariable;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
-import demetra.timeseries.regression.IUserVariable;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.MissingValueEstimation;
 import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
+import demetra.timeseries.regression.UserVariable;
 import demetra.timeseries.regression.Variable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -349,8 +348,8 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         }
         writeRegressionItems(stream, "Ramps", edom, var -> var.isFree() && var.getCore() instanceof Ramp);
         writeRegressionItems(stream, "Intervention variables", edom, var -> var.isFree() && var.getCore() instanceof InterventionVariable);
-        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.test(v -> v instanceof IUserVariable));
-        writeFixedRegressionItems(stream, "Other fixed regression effects", edom, var -> !var.isFree() && var.getCore() instanceof IUserVariable);
+        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.test(v -> v instanceof UserVariable));
+        writeFixedRegressionItems(stream, "Other fixed regression effects", edom, var -> !var.isFree() && var.getCore() instanceof UserVariable);
         writeMissing(stream);
     }
 
@@ -574,11 +573,9 @@ public class HtmlRegSarima extends AbstractHtmlElement {
     }
 
     private DataBlock weights(ITradingDaysVariable var) {
-        if (var instanceof GenericTradingDaysVariable) {
-            GenericTradingDaysVariable td = (GenericTradingDaysVariable) var;
+        if (var instanceof GenericTradingDaysVariable td) {
             return weights(td.getClustering());
-        } else if (var instanceof HolidaysCorrectedTradingDays) {
-            HolidaysCorrectedTradingDays td = (HolidaysCorrectedTradingDays) var;
+        } else if (var instanceof HolidaysCorrectedTradingDays td) {
             return weights(td.getClustering());
         } else {
             return null;
