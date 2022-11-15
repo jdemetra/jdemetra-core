@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 /**
@@ -160,13 +162,15 @@ public class CheckedIteratorTest {
         assertEquals("two", iterator.getLast());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testGetLastNoSuchElementException() {
-        CheckedIterator<String, RuntimeException> iterator;
+        Assertions.assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> {
+            CheckedIterator<String, RuntimeException> iterator;
 
-        iterator = create("one");
-        iterator.next();
-        iterator.getLast();
+            iterator = create("one");
+            iterator.next();
+            iterator.getLast();
+        });
     }
 
     @Test
@@ -193,9 +197,9 @@ public class CheckedIteratorTest {
         assertEquals(2, iterator.advance(3));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAdvanceIllegalArgumentException() {
-        create("one", "two").advance(-1);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> create("one", "two").advance(-1));
     }
 
     @Test
@@ -213,14 +217,14 @@ public class CheckedIteratorTest {
         assertEquals("two", iterator.get(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetIllegalArgumentException() {
-        create("one", "two").get(-1);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> create("one", "two").get(-1));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testGetNoSuchElementException() {
-        create("one", "two").get(3);
+        Assertions.assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> create("one", "two").get(3));
     }
 
     @Test
@@ -241,9 +245,9 @@ public class CheckedIteratorTest {
         assertEquals("hello", iterator.get(3, "hello"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetWithDefaultIllegalArgumentException() {
-        create("one", "two").get(-1, "hello");
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> create("one", "two").get(-1, "hello"));
     }
 
     @Test
@@ -311,9 +315,9 @@ public class CheckedIteratorTest {
         assertEquals("two", iterator.find(o -> o != null));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testFindNoSuchElementException() {
-        create("one", "two").find(o -> "three".equals(o));
+        Assertions.assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> create("one", "two").find(o -> "three".equals(o)));
     }
 
     @Test
@@ -376,9 +380,9 @@ public class CheckedIteratorTest {
         assertEquals(2, iterator.count());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testLimitIllegalArgumentException() {
-        create("one", "two", "one").limit(-1);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> create("one", "two", "one").limit(-1));
     }
 
     @Test

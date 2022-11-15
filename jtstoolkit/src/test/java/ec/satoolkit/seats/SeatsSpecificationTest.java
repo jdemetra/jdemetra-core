@@ -6,7 +6,10 @@
 package ec.satoolkit.seats;
 
 import ec.tstoolkit.information.InformationSet;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -74,51 +77,43 @@ public class SeatsSpecificationTest {
         
     }
     
-    @Test(expected = SeatsException.class)
+    @Test
     public void testSetXlBoundaryUpperBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setXlBoundary(1.5);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setXlBoundary(1.5));
     }
 
-    @Test(expected = SeatsException.class)
+    @Test
     public void testSetXlBoundaryLowerBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setXlBoundary(.89);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setXlBoundary(.89));
     }
-    
-    @Test(expected = SeatsException.class)
+
+    @Test
     public void testSetSeasToleranceUpperBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setSeasTolerance(11.5);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setSeasTolerance(11.5));
     }
 
-    @Test(expected = SeatsException.class)
+    @Test
     public void testSetSeasToleranceLowerBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setSeasTolerance(-0.5);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setSeasTolerance(-0.5));
     }
-    
-    @Test(expected = SeatsException.class)
+
+    @Test
     public void testSetTrendBoundaryUpperBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setTrendBoundary(1.2);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setTrendBoundary(1.2));
     }
 
-    @Test(expected = SeatsException.class)
+    @Test
     public void testSetTrendBoundaryLowerBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setTrendBoundary(-0.5);
-    }
-    
-    @Test(expected = SeatsException.class)
-    public void testSetSeasBoundaryUpperBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setSeasBoundary(1.2);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setTrendBoundary(-0.5));
     }
 
-    @Test(expected = SeatsException.class)
+    @Test
+    public void testSetSeasBoundaryUpperBound() {
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setSeasBoundary(1.2));
+    }
+
+    @Test
     public void testSetSeasBoundaryLowerBound() {
-        SeatsSpecification spec = new SeatsSpecification();
-        spec.setSeasBoundary(-0.5);
+        assertThatExceptionOfType(SeatsException.class).isThrownBy(() -> new SeatsSpecification().setSeasBoundary(-0.5));
     }
 }

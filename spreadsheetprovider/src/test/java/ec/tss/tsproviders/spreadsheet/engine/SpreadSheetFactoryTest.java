@@ -1,51 +1,43 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
+import _test.Top5Browsers;
+import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.Context;
+import ec.tss.tsproviders.utils.ObsGathering;
+import ec.util.spreadsheet.Book;
+import internal.ec.tss.tsproviders.spreadsheet.BookSupplier;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.NoSuchElementException;
+
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.HORIZONTAL;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection.AlignType.VERTICAL;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onDateType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onNumberType;
-import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.onStringType;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.Context;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.date;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.sheet;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Excel;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5ExcelClassic;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5OpenDocument;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.top5Xmlss;
-import static ec.tss.tsproviders.spreadsheet.engine.Top5BrowsersHelper.testContent;
-import ec.util.spreadsheet.Book;
-import ec.util.spreadsheet.od.OpenDocumentBookFactory;
-import ec.util.spreadsheet.poi.ExcelBookFactory;
-import ec.util.spreadsheet.poi.ExcelClassicBookFactory;
-import ec.util.spreadsheet.xmlss.XmlssBookFactory;
-import java.io.IOException;
-import java.net.URL;
-import org.junit.Test;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollectionAssert.assertThat;
+import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.CellParser.*;
 import static ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.DefaultImpl.parseCollection;
-import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.data;
-import ec.tss.tsproviders.utils.ObsGathering;
+import static ec.tss.tsproviders.spreadsheet.engine.TestUtils.*;
+import static ec.tss.tsproviders.spreadsheet.engine.Top5BrowsersHelper.testContent;
 import static ec.tstoolkit.timeseries.TsAggregationType.None;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly;
 import static ec.tstoolkit.timeseries.simplets.TsFrequency.Undefined;
-import java.util.Date;
-import org.junit.Ignore;
 
 /**
  *
@@ -164,33 +156,15 @@ public class SpreadSheetFactoryTest {
                         data(Monthly, 2010, 0, 0, 1, 2));
     }
 
-    private static void testFactory(Book.Factory bookFactory, URL url) throws IOException {
-        try (Book book = bookFactory.load(url)) {
+    @Test
+    public void testFactory() throws IOException {
+        File fileRef = Top5Browsers.getRefFile();
+        testFactory(BookSupplier.getLoaderByFile(fileRef).orElseThrow(NoSuchElementException::new), fileRef);
+    }
+
+    private static void testFactory(Book.Factory bookFactory, File file) throws IOException {
+        try (Book book = bookFactory.load(file)) {
             testContent(SpreadSheetFactory.getDefault().toSource(book, TsImportOptions.getDefault()));
         }
-    }
-
-    @Test
-    public void testExcel() throws IOException {
-        ExcelBookFactory factory = new ExcelBookFactory();
-        factory.setFast(false);
-        testFactory(factory, top5Excel());
-
-        testFactory(new ExcelBookFactory(), top5Excel());
-    }
-
-    @Test
-    public void testExcelClassic() throws IOException {
-        testFactory(new ExcelClassicBookFactory(), top5ExcelClassic());
-    }
-
-    @Test
-    public void testOpenDocument() throws IOException {
-        testFactory(new OpenDocumentBookFactory(), top5OpenDocument());
-    }
-
-    @Test
-    public void testXmlss() throws IOException {
-        testFactory(new XmlssBookFactory(), top5Xmlss());
     }
 }

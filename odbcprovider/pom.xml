@@ -42,13 +42,6 @@
             <artifactId>java-sql-odbc</artifactId>
         </dependency>
 
-        <!-- runtime only -->
-        <dependency>
-            <groupId>com.github.nbbrd.java-sql-util</groupId>
-            <artifactId>java-sql-lhod</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- test only -->
         <dependency>
             <groupId>${project.groupId}</groupId>

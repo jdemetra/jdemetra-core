@@ -6,7 +6,10 @@
 package ec.tstoolkit.modelling.arima.tramo;
 
 import ec.tstoolkit.information.InformationSet;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -99,70 +102,59 @@ public class AutoModelSpecTest {
         actual.read(info);
         assertTrue(actual.isDefault());
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetPcrLowerBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(.79);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(.79));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetPcrUpperBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(1.1);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(1.1));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetUb1LowerBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(.79);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(.79));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetUb1UpperBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(1.1);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(1.1));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetUb2LowerBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(.79);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(.79));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetUb2UpperBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(1.1);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(1.1));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetCancelLowerBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(-1);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(-1));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetCancelUpperBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(0.5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(0.5));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetTsigLowerBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(.5);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(.5));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetPcLowerBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPc(0.01);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPc(0.01));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetPcUpperBound() {
-        AutoModelSpec spec = new AutoModelSpec();
-        spec.setPcr(0.31);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new AutoModelSpec().setPcr(0.31));
     }
 }

@@ -10,7 +10,10 @@ import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.PeriodSelectorType;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import ec.tstoolkit.timeseries.regression.OutlierType;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -84,22 +87,19 @@ public class OutlierSpecTest {
         expected.clearTypes();
         assertNull(expected.getTypes());
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetCriticalValueLowerBound() {
-        OutlierSpec spec = new OutlierSpec();
-        spec.setCriticalValue(1.9);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new OutlierSpec().setCriticalValue(1.9));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetDeltaTCLowerBound() {
-        OutlierSpec spec = new OutlierSpec();
-        spec.setCriticalValue(.2);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new OutlierSpec().setCriticalValue(.2));
     }
-    
-    @Test(expected = TramoException.class)
+
+    @Test
     public void testSetDeltaUpperBound() {
-        OutlierSpec spec = new OutlierSpec();
-        spec.setCriticalValue(1.0);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new OutlierSpec().setCriticalValue(1.0));
     }
 }

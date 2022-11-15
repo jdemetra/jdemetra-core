@@ -22,6 +22,8 @@ import ec.tss.tsproviders.db.DbSetId;
 import static ec.tss.tsproviders.jdbc.JdbcSamples.mydbConnectionSupplier;
 import java.util.List;
 import static org.junit.Assert.*;
+
+import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static ec.tss.tsproviders.jdbc.JdbcSamples.mydbNoDimsBean;
@@ -45,9 +47,9 @@ public class JdbcAccessorTest {
         A2 = new JdbcAccessor(NOP_LOGGER, mydbTwoDimsBean(), mydbConnectionSupplier());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetChildren_Val0Dim0() throws Exception {
-        A0.getChildren();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A0.getChildren());
     }
 
     @Test
@@ -60,14 +62,14 @@ public class JdbcAccessorTest {
         assertArrayEquals(new String[]{"Belgium", "Europe"}, A2.getChildren("Industry").toArray());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetChildren_Val2Dim2() throws Exception {
-        A2.getChildren("Industry", "Belgium");
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A2.getChildren("Industry", "Belgium"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetAllSeries_Val0Dim0() throws Exception {
-        A0.getAllSeries();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A0.getAllSeries());
     }
 
     @Test
@@ -88,14 +90,14 @@ public class JdbcAccessorTest {
         assertEquals(A2.getRoot().child("Industry", "Europe"), data.get(1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetAllSeries_Val2Dim2() throws Exception {
-        A2.getAllSeries("Industry", "Belgium");
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A2.getAllSeries("Industry", "Belgium"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetAllSeriesWithData_Val0Dim0() throws Exception {
-        A0.getAllSeriesWithData();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A0.getAllSeriesWithData());
     }
 
     @Test
@@ -122,9 +124,9 @@ public class JdbcAccessorTest {
         assertArrayEquals(D2[1], data.get(1).getData().get().internalStorage(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetAllSeriesWithData_Val2Dim2() throws Exception {
-        A2.getAllSeriesWithData("Industry", "Belgium");
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A2.getAllSeriesWithData("Industry", "Belgium"));
     }
 
     @Test
@@ -134,14 +136,14 @@ public class JdbcAccessorTest {
         assertArrayEquals(D0[0], data.getData().get().internalStorage(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSeriesWithData_Val0Dim2() throws Exception {
-        A2.getSeriesWithData();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A2.getSeriesWithData());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSeriesWithData_Val1Dim2() throws Exception {
-        A2.getSeriesWithData("Industry");
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> A2.getSeriesWithData("Industry"));
     }
 
     @Test

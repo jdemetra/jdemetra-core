@@ -6,7 +6,10 @@
 package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.information.InformationSet;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -18,39 +21,33 @@ public class ArimaSpecTest {
     public ArimaSpecTest() {
     }
 
-    @Test(expected = X13Exception.class)
+    @Test
     public void testSetPUpperBound() {
-        ArimaSpec expected = new ArimaSpec();
-        expected.setP(7);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new ArimaSpec().setP(7));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetDUpperBound() {
-        ArimaSpec expected = new ArimaSpec();
-        expected.setD(3);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new ArimaSpec().setD(3));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetQUpperBound() {
-        ArimaSpec expected = new ArimaSpec();
-        expected.setQ(8);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new ArimaSpec().setQ(8));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetBPUpperBound() {
-        ArimaSpec expected = new ArimaSpec();
-        expected.setBP(2);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new ArimaSpec().setBP(2));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetBDUpperBound() {
-        ArimaSpec expected = new ArimaSpec();
-        expected.setBD(3);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new ArimaSpec().setBD(3));
     }
     
-    @Test(expected = X13Exception.class)
+    @Test
     public void testSetBQUpperBound() {
-        ArimaSpec expected = new ArimaSpec();
-        expected.setBQ(3);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new ArimaSpec().setBQ(3));
     }
 }

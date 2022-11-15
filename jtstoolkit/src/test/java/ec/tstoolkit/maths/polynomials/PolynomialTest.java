@@ -26,6 +26,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 /**
@@ -51,14 +53,14 @@ public class PolynomialTest {
         assertEquals(666, p1.get(0), NO_DELTA);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOfNull() {
-        Polynomial.of(null);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Polynomial.of(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOfEmpty() {
-        Polynomial.of(new double[]{});
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Polynomial.of(new double[]{}));
     }
 
     @Test
@@ -70,14 +72,14 @@ public class PolynomialTest {
         assertEquals(A, p1.get(0), NO_DELTA);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCopyOfNull() {
-        Polynomial.copyOf(null);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Polynomial.copyOf(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCopyOfEmpty() {
-        Polynomial.copyOf(new double[]{});
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Polynomial.copyOf(new double[]{}));
     }
 
     @Test
