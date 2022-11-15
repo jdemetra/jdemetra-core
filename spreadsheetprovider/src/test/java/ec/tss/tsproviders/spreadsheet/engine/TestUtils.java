@@ -16,12 +16,11 @@
  */
 package ec.tss.tsproviders.spreadsheet.engine;
 
-import com.google.common.io.Resources;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Sheet;
 import ec.util.spreadsheet.helpers.ArraySheet;
-import java.net.URL;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -45,21 +44,5 @@ final class TestUtils {
 
     static Sheet sheet(Object[][] table) {
         return ArraySheet.copyOf("", table);
-    }
-    
-    static URL top5Excel() {
-        return Resources.getResource("Top5Browsers.xlsx");
-    }
-    
-    static URL top5ExcelClassic() {
-        return Resources.getResource("Top5Browsers.xls");
-    }
-    
-    static URL top5OpenDocument() {
-        return Resources.getResource("Top5Browsers.ods");
-    }
-    
-    static URL top5Xmlss() {
-        return Resources.getResource("Top5Browsers.xml");
     }
 }
