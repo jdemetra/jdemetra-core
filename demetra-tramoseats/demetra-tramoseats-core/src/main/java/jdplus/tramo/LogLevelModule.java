@@ -212,10 +212,11 @@ public class LogLevelModule implements ILogLevelModule {
     @Override
     public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
-        if (desc.isLogTransformation()) {
-            return ProcessingResult.Unprocessed;
-        }
         DoubleSeq data = desc.getTransformedSeries().getValues();
+        if (data.anyMatch(x->x <= 0)){
+            return ProcessingResult.Unchanged;
+        }
+            
         ProcessingLog logs = context.getLog();
         if (logs != null) {
             logs.push(LL);

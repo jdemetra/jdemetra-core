@@ -144,7 +144,7 @@ public class LogLevelModule implements ILogLevelModule {
             logs.push(LL);
             ModelDescription model = modelling.getDescription();
             if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
-                return ProcessingResult.Failed;
+                return ProcessingResult.Unchanged;
             }
             IRegArimaComputer processor = X13Utility.processor(true, precision);
             level = model.estimate(processor);

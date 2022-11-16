@@ -16,91 +16,62 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.information.Explorable;
+import demetra.processing.Diagnostics;
+import demetra.sa.SaDiagnosticsFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import nbbrd.service.ServiceProvider;
 
 /**
  *
- * @author Kristof Bayens
+ * @param <R>
  */
-//@ServiceProvider(ISaDiagnosticsFactory.class)
-//public class SpectralDiagnosticsFactory implements ISaDiagnosticsFactory {
-//
-//    public static final String SEAS = "spectral seas peaks", TD = "spectral td peaks";
-//    public static final String NAME = "Visual spectral analysis";
-//    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SEAS, TD));
-//    //public static final SpectralDiagnosticsFactory Default = new SpectralDiagnosticsFactory();
-//    private SpectralDiagnosticsConfiguration config_;
-//
-//    public SpectralDiagnosticsFactory() {
-//        config_ = new SpectralDiagnosticsConfiguration();
-//    }
-//
-//    public SpectralDiagnosticsFactory(SpectralDiagnosticsConfiguration config) {
-//        config_ = config;
-//    }
-//
-//    public SpectralDiagnosticsConfiguration getConfiguration() {
-//        return config_;
-//    }
-//
-//    @Override
-//    public void dispose() {
-//    }
-//
-//    @Override
-//    public String getName() {
-//        return NAME;
-//    }
-//
-//    @Override
-//    public String getDescription() {
-//        return "Visual spectral analysis";
-//    }
-//
-//    @Override
-//    public List<String> getTestDictionary() {
-//        return ALL;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return config_.isEnabled();
-//    }
-//
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//        config_.setEnabled(enabled);
-//    }
-//
-//    @Override
-//    public Object getProperties() {
-//        return config_.clone();
-//    }
-//
-//    @Override
-//    public void setProperties(Object obj) {
-//        SpectralDiagnosticsConfiguration config = (SpectralDiagnosticsConfiguration) obj;
-//        if (config != null) {
-//            config.check();
-//            config_ = config.clone();
-//        }
-//    }
-//
-//    @Override
-//    public IDiagnostics create(CompositeResults rslts) {
-//        return SpectralDiagnostics.create(config_, rslts);
-//    }
-//
-//    @Override
-//    public Scope getScope() {
-//        return Scope.Preliminary;
-//    }
-//
-//    @Override
-//    public int getOrder() {
-//        return 100;
-//    }
-//}
+public class SpectralDiagnosticsFactory<R extends Explorable> implements SaDiagnosticsFactory<SpectralDiagnosticsConfiguration, R> {
+
+    public static final String SEAS = "spectral seas peaks", TD = "spectral td peaks";
+    public static final String NAME = "Visual spectral analysis";
+    public static final List<String> ALL = Collections.unmodifiableList(Arrays.asList(SEAS, TD));
+    //public static final SpectralDiagnosticsFactory Default = new SpectralDiagnosticsFactory();
+    private SpectralDiagnosticsConfiguration config;
+
+    public SpectralDiagnosticsFactory(SpectralDiagnosticsConfiguration config) {
+        this.config=config;
+    }
+
+
+    @Override
+    public SpectralDiagnosticsConfiguration getConfiguration() {
+        return config;
+    }
+
+    @Override
+    public SpectralDiagnosticsFactory<R> with(SpectralDiagnosticsConfiguration config){
+        return new SpectralDiagnosticsFactory(config);
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public List<String> getTestDictionary() {
+        return ALL;
+    }
+
+    @Override
+    public Diagnostics of(R rslts) {
+        return SpectralDiagnostics.of(config, rslts);
+    }
+
+    @Override
+    public Scope getScope() {
+        return Scope.Preliminary;
+    }
+
+    @Override
+    public int getOrder() {
+        return 100;
+    }
+}

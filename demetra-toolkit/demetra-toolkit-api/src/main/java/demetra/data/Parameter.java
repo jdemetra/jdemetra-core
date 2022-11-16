@@ -50,8 +50,8 @@ public class Parameter {
     }
 
     /**
-     * Free parameters are either undefined or initial parameters.
-     * They should be estimated
+     * Free parameters are either undefined or initial parameters. They should
+     * be estimated
      *
      * @return
      */
@@ -126,18 +126,12 @@ public class Parameter {
         if (spec == null || spec.length == 0) {
             return spec;
         }
-        Parameter[] nspec = spec.clone();
-        for (int i = 0; i < spec.length; ++i) {
-            if (!nspec[i].isFixed()) {
-                nspec[i] = UNDEFINED;
-            }
-        }
-        return nspec;
+        return Parameter.make(spec.length);
     }
 
     /**
-     * All the parameters are set to undefined, except those that are fixed
-     * in the reference (which are put in the current array)
+     * All the parameters are set to undefined, except those that are fixed in
+     * the reference (which are put in the current array)
      *
      * @param spec
      * @param ref
@@ -199,8 +193,7 @@ public class Parameter {
     }
 
     /**
-     * All the defined parameters are fixed (keeping the current
-     * value)
+     * All the defined parameters are fixed (keeping the current value)
      *
      * @param spec
      * @return
@@ -273,7 +266,7 @@ public class Parameter {
         return all;
     }
 
-     public static Parameter[] zero(int n) {
+    public static Parameter[] zero(int n) {
         Parameter[] all = new Parameter[n];
         for (int i = 0; i < n; ++i) {
             all[i] = ZERO;
@@ -284,17 +277,18 @@ public class Parameter {
     public static Parameter zero() {
         return ZERO;
     }
-     /**
+
+    /**
      * Checks that all the parameters are free. Derived parameters are not
-     * considered
-     * null is considered as free (no defined parameters)
+     * considered null is considered as free (no defined parameters)
      *
      * @param spec
      * @return
      */
     public static boolean isFree(Parameter[] spec) {
-        if (spec == null)
+        if (spec == null) {
             return true;
+        }
         for (int i = 0; i < spec.length; ++i) {
             if (!spec[i].isFree()) {
 //            if (!spec[i].isFree() && !spec[i].isDerived()) {
@@ -333,8 +327,8 @@ public class Parameter {
     }
 
     /**
-     * Checks that all the parameters in an array are uninitialized.
-     * Opposite of isDefined except for empty or null arrays.
+     * Checks that all the parameters in an array are uninitialized. Opposite of
+     * isDefined except for empty or null arrays.
      *
      * @param p The array of parameters. May be null;
      * @return True if all parameters are undefined (or null)
@@ -423,8 +417,8 @@ public class Parameter {
      * Checks that an array of parameters contains only zero values.
      *
      * @param p The considered array of parameters.
-     * @return True if some defined parameters are different from 0.
-     * An empty array is considered as a 0-array (returns true).
+     * @return True if some defined parameters are different from 0. An empty
+     * array is considered as a 0-array (returns true).
      */
     public static boolean isZero(Parameter[] p) {
         if (p == null) {

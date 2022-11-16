@@ -9,6 +9,7 @@ import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
 import demetra.sa.EstimationPolicyType;
+import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
@@ -42,7 +43,11 @@ import demetra.timeseries.regression.ModellingUtility;
 //@ServiceProvider(SaProcessingFactory.class)
 public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, TramoSeatsResults>*/ {
 
-    public static final TramoFactory INSTANCE = new TramoFactory();
+    private static final TramoFactory INSTANCE = new TramoFactory();
+
+    public static TramoFactory getInstance() {
+        return INSTANCE;
+    }
 
     public TramoSpec generateSpec(TramoSpec spec, GeneralLinearModel.Description<SarimaSpec> desc) {
         TramoSpec.Builder builder = spec.toBuilder();
@@ -63,34 +68,34 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             }
             case Outliers_StochasticComponent -> {
                 resetArima(currentSpec, domainSpec, builder);
-                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
-                freeVariables(currentSpec, domainSpec, builder);
+                RegressionSpec rspec = removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(rspec, domainSpec, builder);
             }
             case Outliers -> {
                 clearArima(currentSpec, domainSpec, builder);
-                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
-                freeVariables(currentSpec, domainSpec, builder);
+                RegressionSpec rspec = removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(rspec, domainSpec, builder);
             }
             case LastOutliers -> {
                 clearArima(currentSpec, domainSpec, builder);
-                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
-                freeVariables(currentSpec, domainSpec, builder);
+                RegressionSpec rspec = removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(rspec, domainSpec, builder);
             }
             case FreeParameters -> {
                 freeArima(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             case FixedAutoRegressiveParameters -> {
                 fixAR(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             case FixedParameters -> {
                 fixArima(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             case Fixed, Current -> {
                 fixArima(currentSpec, domainSpec, builder);
-                fixVariables(currentSpec, domainSpec, builder);
+                fixVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             default -> {
                 return currentSpec;
@@ -177,7 +182,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .filter(v -> ModellingUtility.isUser(v))
                 .filter(v -> !(v.getCore() instanceof InterventionVariable))
                 .filter(v -> !(v.getCore() instanceof Ramp))
-                .map(v-> v.withCore(TsContextVariable.of(v.getCore())))
+                .map(v -> v.withCore(TsContextVariable.of(v.getCore())))
                 .forEach(v -> builder.userDefinedVariable(v));
     }
 
@@ -262,8 +267,13 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.autoModel(domainSpec.getAutoModel());
     }
 
-    private void removeOutliers(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozen) {
-        builder.outliers(domainSpec.getOutliers());
+    private RegressionSpec removeOutliers(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozen) {
+        OutlierSpec ospec = domainSpec.getOutliers();
+        if (frozen != null) {
+            ospec = ospec.toBuilder().span(TimeSelector.from(frozen.getEndPeriod().start())).build();
+        }
+        builder.outliers(ospec);
+
         // remove existing automatic outliers...
         List<Variable<IOutlier>> outliers = currentSpec.getRegression().getOutliers();
         List<Variable<IOutlier>> defoutliers = domainSpec.getRegression().getOutliers();
@@ -281,7 +291,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                 .forEachOrdered(outlier -> {
                     rbuilder.outlier(outlier);
                 });
-        builder.regression(rbuilder.build());
+        return rbuilder.build();
     }
 
     private static boolean belongsTo(Variable<IOutlier> outlier, List<Variable<IOutlier>> defoutliers) {
@@ -320,8 +330,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         builder.arima(currentSpec.getArima().fixParameters());
     }
 
-    private void freeVariables(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
-        RegressionSpec reg = currentSpec.getRegression();
+    private void freeVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder) {
         RegressionSpec dreg = domainSpec.getRegression();
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
@@ -407,8 +416,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         }
     }
 
-    private void fixVariables(TramoSpec currentSpec, TramoSpec domainSpec, TramoSpec.Builder builder) {
-        RegressionSpec reg = currentSpec.getRegression();
+    private void fixVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder) {
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
         if (mean != null && mean.isDefined()) {

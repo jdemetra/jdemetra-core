@@ -35,7 +35,7 @@ class IVFactory implements RegressionVariableFactory<InterventionVariable> {
             return true;
         }
         // first, generates the 0/1
-        LocalDateTime t0 = LocalDateTime.MIN, t1 = LocalDateTime.MAX;
+        LocalDateTime t0 = LocalDateTime.MAX, t1 = LocalDateTime.MIN;
         // search the Start / End of the sequences
 
         for (Range<LocalDateTime> seq :seqs) {

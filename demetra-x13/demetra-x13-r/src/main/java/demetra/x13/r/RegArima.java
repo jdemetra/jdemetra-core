@@ -59,7 +59,7 @@ public class RegArima {
     }
 
     public RegArimaSpec refreshSpec(RegArimaSpec currentSpec, RegArimaSpec domainSpec, TsDomain domain, String policy) {
-        return RegArimaFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+        return RegArimaFactory.getInstance().refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 
     public Matrix forecast(TsData series, String defSpec, int nf) {
@@ -101,7 +101,7 @@ public class RegArima {
         return RegArimaOutput.builder()
                 .estimationSpec(spec)
                 .result(estimation)
-                .resultSpec(estimation == null ? null : RegArimaFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
+                .resultSpec(estimation == null ? null : RegArimaFactory.getInstance().generateSpec(spec, estimation.getDescription()))
                 .build();
     }
 

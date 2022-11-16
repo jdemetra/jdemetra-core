@@ -16,36 +16,69 @@
  */
 package jdplus.sa.diagnostics;
 
+import demetra.processing.DiagnosticsConfiguration;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  *
  * @author PALATEJ
  */
 @lombok.Value
-@lombok.Builder
-public class SpectralDiagnosticsConfiguration {
+@lombok.Builder(toBuilder=true, builderClassName="Builder")
+public class SpectralDiagnosticsConfiguration implements DiagnosticsConfiguration {
 
-    public static SpectralDiagnosticsConfiguration DEFAULT = builder().build();
+    private static final AtomicReference<SpectralDiagnosticsConfiguration> DEFAULT
+            =new AtomicReference<>(builder().build());
+    
+    public static void setDefault(SpectralDiagnosticsConfiguration config){
+        DEFAULT.set(config);
+    }
+    
+    public static SpectralDiagnosticsConfiguration getDefault(){
+        return DEFAULT.get();
+    }
+    
+    public static final boolean ACTIVE=false, STRICT=false;
 
-    public static final double SENSITIVITY = 6.0 / 52;
+    public static final double SENSIBILITY = 6.0 / 52;
     public static final int LENGTH = 8;
+    
+    
 
-    private double sensitivity;
+    private double sensibility;
     private int length;
     private boolean strict;
+    
+    private boolean active;
 
     public static Builder builder() {
         return new Builder()
-                .sensitivity(SENSITIVITY)
+                .sensibility(SENSIBILITY)
                 .length(LENGTH)
-                .strict(false);
+                .strict(STRICT)
+                .active(ACTIVE);
     }
 
     public void check() {
-        if (sensitivity < 3.0 / 52) {
+        if (sensibility < 3.0 / 52) {
             throw new IllegalArgumentException("Value is too low (should be grater than 3/52)");
         }
         if (length != 0 && length < 6) {
             throw new IllegalArgumentException("Value is too low (should be 0 or greater than 5)");
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+     }
+
+    @Override
+    public DiagnosticsConfiguration activate(boolean active) {
+        if (this.active == active) {
+            return this;
+        } else {
+            return toBuilder().active(active).build();
         }
     }
 

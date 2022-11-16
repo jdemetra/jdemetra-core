@@ -17,6 +17,7 @@ import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
 import demetra.sa.EstimationPolicyType;
+import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
@@ -42,7 +43,9 @@ import demetra.timeseries.regression.ModellingUtility;
 //@ServiceProvider(SaProcessingFactory.class)
 public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec, TramoSeatsResults>*/ {
 
-    public static final RegArimaFactory INSTANCE = new RegArimaFactory();
+    private static final RegArimaFactory INSTANCE = new RegArimaFactory();
+    
+    public static RegArimaFactory getInstance(){return INSTANCE;}
 
     public RegArimaSpec generateSpec(RegArimaSpec spec, GeneralLinearModel.Description<SarimaSpec> desc) {
         RegArimaSpec.Builder builder = spec.toBuilder();
@@ -63,34 +66,34 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
             }
             case Outliers_StochasticComponent -> {
                 resetArima(currentSpec, domainSpec, builder);
-                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
-                freeVariables(currentSpec, domainSpec, builder);
+                RegressionSpec rspec=removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(rspec, domainSpec, builder);
             }
             case Outliers -> {
                 clearArima(currentSpec, domainSpec, builder);
-                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
-                freeVariables(currentSpec, domainSpec, builder);
+                RegressionSpec rspec=removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(rspec, domainSpec, builder);
             }
             case LastOutliers -> {
                 clearArima(currentSpec, domainSpec, builder);
-                removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
-                freeVariables(currentSpec, domainSpec, builder);
+                RegressionSpec rspec=removeOutliers(currentSpec, domainSpec, builder, frozenDomain);
+                freeVariables(rspec, domainSpec, builder);
             }
             case FreeParameters -> {
                 freeArima(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             case FixedAutoRegressiveParameters -> {
                 fixAR(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             case FixedParameters -> {
                 fixArima(currentSpec, domainSpec, builder);
-                freeVariables(currentSpec, domainSpec, builder);
+                freeVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             case Fixed, Current -> {
                 fixArima(currentSpec, domainSpec, builder);
-                fixVariables(currentSpec, domainSpec, builder);
+                fixVariables(currentSpec.getRegression(), domainSpec, builder);
             }
             default -> {
                     return currentSpec;
@@ -244,9 +247,13 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         builder.autoModel(domainSpec.getAutoModel());
     }
 
-    private void removeOutliers(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder, TsDomain frozen) {
-        builder.outliers(domainSpec.getOutliers());
-        // remove existing automatic outliers...
+    private RegressionSpec removeOutliers(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder, TsDomain frozen) {
+        OutlierSpec ospec = domainSpec.getOutliers();
+        if (frozen != null){
+            ospec=ospec.toBuilder().span(TimeSelector.from(frozen.getEndPeriod().start())).build();
+        }
+        builder.outliers(ospec);
+       // remove existing automatic outliers...
         List<Variable<IOutlier>> outliers = currentSpec.getRegression().getOutliers();
         List<Variable<IOutlier>> defoutliers = domainSpec.getRegression().getOutliers();
 
@@ -263,7 +270,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                 .forEachOrdered(outlier -> {
                     rbuilder.outlier(outlier);
                 });
-        builder.regression(rbuilder.build());
+        return rbuilder.build();
     }
 
     private static boolean belongsTo(Variable<IOutlier> outlier, List<Variable<IOutlier>> defoutliers) {
@@ -302,8 +309,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         builder.arima(currentSpec.getArima().fixParameters());
     }
 
-    private void freeVariables(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
-        RegressionSpec reg = currentSpec.getRegression();
+    private void freeVariables(RegressionSpec reg, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         RegressionSpec dreg = domainSpec.getRegression();
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
@@ -387,8 +393,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         }
     }
 
-    private void fixVariables(RegArimaSpec currentSpec, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
-        RegressionSpec reg = currentSpec.getRegression();
+    private void fixVariables(RegressionSpec reg, RegArimaSpec domainSpec, RegArimaSpec.Builder builder) {
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
         if (mean != null && mean.isDefined()) {

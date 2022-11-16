@@ -28,7 +28,7 @@ import java.util.Map;
 public class SaItemMapping {
 
     final String DOMAIN_SPEC = "domainspec", ESTIMATION_SPEC = "estimationspec", POINT_SPEC = "pointspec",
-            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata", NAME = "name", COMMENT = "comment";
+            TS = "ts", QUALITY = "quality", PRIORITY = "priority", POLICY = "policy", METADATA = "metadata", NAME = "name";
     final String DIAGNOSTICS = "diagnostics";
     final String DIAGNOSTICS_INTERNAL = "__diagnostics";
 
@@ -94,10 +94,6 @@ public class SaItemMapping {
             List<Information<String>> sel = md.select(String.class);
             sel.forEach(v -> builder.meta(v.getName(), v.getValue()));
         }
-        String c = info.get(COMMENT, String.class);
-        if (c != null){
-            builder.comment(c);
-        }
         String name = info.get(NAME, String.class);
         if (name != null) {
             builder.name(name);
@@ -139,10 +135,6 @@ public class SaItemMapping {
         if (!meta.isEmpty()) {
             InformationSet md = info.subSet(METADATA);
             meta.forEach((k, v) -> md.set(k, v));
-        }
-        String comment = item.getComment();
-        if (comment != null){
-            info.set(COMMENT, comment);
         }
         if (estimation != null) {
             info.set(POINT_SPEC, SaSpecificationMapping.toInformationSet(estimation.getPointSpec(), context, verbose, version));

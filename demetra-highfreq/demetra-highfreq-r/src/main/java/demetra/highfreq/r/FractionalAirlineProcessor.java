@@ -18,12 +18,19 @@ package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
+import demetra.data.ParameterType;
 import jdplus.highfreq.LightExtendedAirlineDecomposition;
 import jdplus.highfreq.ExtendedAirlineEstimation;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.math.matrices.Matrix;
+import jdplus.arima.ArimaModel;
+import jdplus.arima.ArimaSeriesGenerator;
+import jdplus.dstats.Normal;
 import jdplus.highfreq.ExtendedAirlineDecomposer;
 import jdplus.highfreq.ExtendedAirlineKernel;
+import jdplus.highfreq.ExtendedAirlineMapping;
+import jdplus.math.linearfilters.BackFilter;
+import jdplus.math.polynomials.Polynomial;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
 
 /**
@@ -54,6 +61,36 @@ public class FractionalAirlineProcessor {
                 .adjustToInt(false)
                 .build();
         return ExtendedAirlineKernel.fastProcess(DoubleSeq.of(y), x, mean, outliers, cv, spec, precision);
+    }
+
+    public double[] random(double[] periods, double theta, double[] stheta, boolean adjust, int n, double[] initial, double stdev, int warmup) {
+        ExtendedAirlineSpec spec = ExtendedAirlineSpec.builder()
+                .periodicities(periods)
+                .theta(Parameter.undefined())
+                .stheta(Parameter.make(stheta.length))
+                .adjustToInt(adjust)
+                .build();
+
+        ExtendedAirlineMapping mapping = ExtendedAirlineMapping.of(spec);
+        double[] p = new double[stheta.length + 1];
+        p[0] = theta;
+        for (int i = 0; i < stheta.length; ++i) {
+            p[i + 1] = stheta[i];
+        }
+
+        ArimaModel model = mapping.map(DoubleSeq.of(p));
+
+        if (initial == null) {
+            double[] s = ArimaSeriesGenerator.builder()
+                    .initialWarmUp(0)
+                    .startMean(0)
+                    .startStdev(100)
+                    .build()
+                    .generate(model, n);
+            return s;
+        }else{
+            return ArimaSeriesGenerator.generate(model, n, initial, new Normal(0, stdev), warmup);
+        }
     }
 
     public SsfUcarimaEstimation ssfDetails(LightExtendedAirlineDecomposition fad) {

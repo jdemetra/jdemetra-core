@@ -33,6 +33,8 @@ import demetra.timeseries.TsUnit;
 import nbbrd.service.ServiceProvider;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
+import jdplus.data.DataBlock;
+import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.ssf.arima.AR1;
 import jdplus.ssf.arima.Rw;
 import jdplus.ssf.ISsfLoading;
@@ -53,7 +55,15 @@ public class CholetteProcessor implements Cholette.Processor {
     @Override
     public TsData benchmark(TsData highFreqSeries, TsData aggregationConstraint, CholetteSpec spec) {
         TsData s = correctBias(highFreqSeries, aggregationConstraint, spec);
-        return cholette(s, aggregationConstraint, spec);
+        AbsMeanNormalizer normalizer = new AbsMeanNormalizer();
+        DataBlock ns = DataBlock.of(s.getValues());
+        double factor = normalizer.normalize(ns);
+        TsData tmp = TsData.of(s.getStart(), ns);
+        TsData btmp = cholette(tmp, aggregationConstraint.fn(z -> z * factor), spec);
+        if (btmp != null) {
+            btmp = btmp.fn(z -> z / factor);
+        }
+        return btmp;
     }
 
     private TsData correctBias(TsData s, TsData target, CholetteSpec spec) {
@@ -169,7 +179,7 @@ public class CholetteProcessor implements Cholette.Processor {
                     .rho(spec.getRho())
                     .weights(w == null ? null : DoubleSeq.of(w))
                     .build();
-            DefaultSmoothingResults rslts = DkToolkit.smooth(ssf, new SsfData(y), false, false);
+            DefaultSmoothingResults rslts = DkToolkit.sqrtSmooth(ssf, new SsfData(y), false, false);
 
             double[] b = new double[highFreqSeries.length()];
             if (w != null) {

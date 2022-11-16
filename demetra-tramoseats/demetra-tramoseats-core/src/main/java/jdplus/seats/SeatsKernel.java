@@ -76,7 +76,7 @@ public class SeatsKernel {
         if (!validator.validate(model.getCurrentModel())) {
             model.setCurrentModel(validator.getNewModel());
             model.setParametersCutOff(true);
-            log.info(CUT_OFF);
+            log.warning(CUT_OFF);
         }
         log.pop();
     }

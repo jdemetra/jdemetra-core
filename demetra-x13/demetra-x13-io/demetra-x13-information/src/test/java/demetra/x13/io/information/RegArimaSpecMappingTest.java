@@ -88,7 +88,7 @@ public class RegArimaSpecMappingTest {
     public void testSpecific() {
         RegArimaKernel kernel = RegArimaKernel.of(RegArimaSpec.RG5, null);
         RegSarimaModel rslt = kernel.process(Data.TS_PROD, null);
-        RegArimaSpec pspec = RegArimaFactory.INSTANCE.generateSpec(RegArimaSpec.RG5, rslt.getDescription());
+        RegArimaSpec pspec = RegArimaFactory.getInstance().generateSpec(RegArimaSpec.RG5, rslt.getDescription());
         test(pspec);        
         testLegacy(pspec);        
    }

@@ -6,10 +6,14 @@
 package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
+import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
 import jdplus.highfreq.LightExtendedAirlineDecomposition;
 import jdplus.highfreq.ExtendedAirlineEstimation;
 import demetra.math.matrices.Matrix;
+import java.io.IOException;
+import java.io.InputStream;
+import jdplus.highfreq.ExtendedAirlineMapping;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -49,4 +53,26 @@ public class FractionalAirlineProcessorTest {
         SsfUcarimaEstimation details = FractionalAirlineProcessor.ssfDetails(rslt);
         assertTrue(null != details.getData("smoothing.states", Matrix.class));
     }
+    
+//    final static DoubleSeq EDF;
+//
+//    static {
+//        DoubleSeq y;
+//        try {
+//            InputStream stream = ExtendedAirlineMapping.class.getResourceAsStream("/edf.txt");
+//            Matrix edf = MatrixSerializer.read(stream);
+//            y = edf.column(0);
+//        } catch (IOException ex) {
+//            y = null;
+//        }
+//        EDF = y;
+//    }
+//    
+//    @Test
+//    public void testRandom() {
+//        DoubleSeq y = EDF;
+//        double[] rnd = FractionalAirlineProcessor.random(new double[]{7, 365.25}, .1, new double[]{.7, .85}, false, 2000, y.range(0,374).log().toArray(), .01, 0);
+//        System.out.println(DoubleSeq.of(rnd));
+//    }
+//    
 }

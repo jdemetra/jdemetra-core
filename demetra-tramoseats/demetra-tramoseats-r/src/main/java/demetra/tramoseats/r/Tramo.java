@@ -59,7 +59,7 @@ public class Tramo {
     }
 
     public TramoSpec refreshSpec(TramoSpec currentSpec, TramoSpec domainSpec, TsDomain domain, String policy) {
-        return TramoFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+        return TramoFactory.getInstance().refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 
     public Matrix forecast(TsData series, String defSpec, int nf) {
@@ -88,7 +88,7 @@ public class Tramo {
         return TramoOutput.builder()
                 .estimationSpec(spec)
                 .result(estimation)
-                .resultSpec(estimation == null ? null : TramoFactory.INSTANCE.generateSpec(spec, estimation.getDescription()))
+                .resultSpec(estimation == null ? null : TramoFactory.getInstance().generateSpec(spec, estimation.getDescription()))
                 .build();
     }
 

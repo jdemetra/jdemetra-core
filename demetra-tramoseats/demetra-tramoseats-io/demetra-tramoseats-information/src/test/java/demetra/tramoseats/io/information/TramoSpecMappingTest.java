@@ -58,7 +58,7 @@ public class TramoSpecMappingTest {
     public void testSpecific() {
         TramoKernel kernel = TramoKernel.of(TramoSpec.TRfull, null);
         RegSarimaModel rslt = kernel.process(Data.TS_PROD, null);
-        TramoSpec pspec = TramoFactory.INSTANCE.generateSpec(TramoSpec.TRfull, rslt.getDescription());
+        TramoSpec pspec = TramoFactory.getInstance().generateSpec(TramoSpec.TRfull, rslt.getDescription());
         test(pspec);        
         testLegacy(pspec);        
    }

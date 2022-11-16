@@ -103,13 +103,13 @@ public class CholetteTest {
 
     @Test
     public void test4() {
-        DataBlock y = DataBlock.make(20);
+        DataBlock y = DataBlock.make(200);
         y.set(i -> (1 + i));
-        DataBlock x = DataBlock.make(90);
+        DataBlock x = DataBlock.make(900);
         x.set(i -> (1 + i) * (1 + i));
 
         CholetteSpec spec = CholetteSpec.builder()
-                .lambda(-.60)
+                .lambda(.60)
                 .rho(0)
                 .build();
         TsPeriod q = TsPeriod.quarterly(1978, 3);
@@ -143,8 +143,8 @@ public class CholetteTest {
         assertTrue(TsDataToolkit.subtract(t, bc).getValues().allMatch(w -> Math.abs(w) < 1e-9));
     }
 
-    @Test
-    @Disabled
+//    @Test
+//    @Disabled
     public void test1Legacy() {
         ec.tstoolkit.data.DataBlock y = new ec.tstoolkit.data.DataBlock(20);
         y.set(i -> (1 + i));

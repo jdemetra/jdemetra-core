@@ -29,7 +29,7 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class ResidualSeasonalityTestsOptions {
 
-    public static final int DEF_FTEST_LAST = 8, DEF_QSTEST_LAST = 0;
+    public static final int DEF_FTEST_LAST = 12, DEF_QSTEST_LAST = 0;
     public static final int DEF_QS_LAGS = 2;
     public static final SarimaOrders.Prespecified DEF_FTEST_MODEL = SarimaOrders.Prespecified.AR;
     

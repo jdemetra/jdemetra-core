@@ -141,7 +141,7 @@ class RegressionSpecMapping {
         String[] ramps = regInfo.get(RAMPS_LEGACY, String[].class);
         if (ramps != null) {
             for (int i = 0; i < ramps.length; ++i) {
-                Ramp r = RampMapping.parse(ramps[i]);
+                Ramp r = RampMapping.parseLegacy(ramps[i]);
                 if (r != null) {
                     Parameter c = RegressionSpecMapping.coefficientOf(regInfo, ramps[i]);
                     builder.ramp(Variable.variable(ramps[i], r).withCoefficient(c));

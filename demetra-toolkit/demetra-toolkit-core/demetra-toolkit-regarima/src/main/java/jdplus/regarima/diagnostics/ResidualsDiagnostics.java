@@ -18,7 +18,6 @@ package jdplus.regarima.diagnostics;
 
 import jdplus.data.analysis.Periodogram;
 import demetra.processing.ProcQuality;
-import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.stats.tests.NiidTests;
 import java.util.ArrayList;
@@ -52,9 +51,9 @@ public class ResidualsDiagnostics implements Diagnostics {
     }
 
     public ResidualsDiagnostics(ResidualsDiagnosticsConfiguration config, RegSarimaModel rslts) {
-        sPeriodogram2 = config.getSevereThresholdeForSeasonalPeaks();
-        sPeriodogram1 = config.getBadThresholdeForSeasonalPeaks();
-        sPeriodogram0 = config.getUncertainThresholdeForSeasonalPeaks();
+        sPeriodogram2 = config.getSevereThresholdForSeasonalPeaks();
+        sPeriodogram1 = config.getBadThresholdForSeasonalPeaks();
+        sPeriodogram0 = config.getUncertainThresholdForSeasonalPeaks();
 
         tdPeriodogram2 = config.getSevereThresholdForTradingDaysPeak();
         tdPeriodogram1 = config.getBadThresholdForTradingDaysPeak();

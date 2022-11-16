@@ -29,8 +29,8 @@ import java.time.format.DateTimeFormatter;
  */
 @lombok.experimental.UtilityClass
 public class RampMapping {
-    
-    public final String RANGE="range", START="start", END="end";
+
+    public final String RANGE = "range", START = "start", END = "end";
 
     public String format(Ramp ramp) {
         Range<LocalDateTime> range = Range.of(ramp.getStart(), ramp.getEnd());
@@ -41,18 +41,23 @@ public class RampMapping {
         Range<LocalDateTime> range = VariableMapping.rangeFromShortString(sr);
         return new Ramp(range.start(), range.end());
     }
-    
-    public InformationSet write(Ramp ramp){
-        InformationSet info=new InformationSet();
+
+    public Ramp parseLegacy(String sr) {
+        Range<LocalDate> range = VariableMapping.rangeFromLegacyString(sr);
+        return new Ramp(range.start().atStartOfDay(), range.end().atStartOfDay());
+    }
+
+    public InformationSet write(Ramp ramp) {
+        InformationSet info = new InformationSet();
         info.set(START, ramp.getStart().toLocalDate().format(DateTimeFormatter.ISO_DATE));
         info.set(END, ramp.getEnd().toLocalDate().format(DateTimeFormatter.ISO_DATE));
         return info;
     }
 
-    public Ramp read(InformationSet info){
+    public Ramp read(InformationSet info) {
         String start = info.get(START, String.class);
         String end = info.get(END, String.class);
         return new Ramp(LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay(),
-                LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay() );
+                LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atStartOfDay());
     }
 }
