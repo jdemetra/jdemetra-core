@@ -53,7 +53,7 @@ public class TramoSeats {
     }
 
     public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, TsDomain domain, String policy) {
-        return TramoSeatsFactory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+        return TramoSeatsFactory.getInstance().refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 
     public byte[] toBuffer(TramoSeatsSpec spec) {
@@ -77,7 +77,7 @@ public class TramoSeats {
         return TramoSeatsOutput.builder()
                 .estimationSpec(spec)
                 .result(estimation)
-                .resultSpec(estimation == null ? null : TramoSeatsFactory.INSTANCE.generateSpec(spec, estimation.getPreprocessing().getDescription()))
+                .resultSpec(estimation == null ? null : TramoSeatsFactory.getInstance().generateSpec(spec, estimation.getPreprocessing().getDescription()))
                 .build();
     }
 

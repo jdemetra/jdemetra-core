@@ -29,8 +29,8 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Release)
 public class ResidualTradingDaysTestsOptions {
     
-    private static AtomicReference<ResidualTradingDaysTestsOptions> DEFAULT
-            =new AtomicReference<ResidualTradingDaysTestsOptions>(builder().build());
+    private static final AtomicReference<ResidualTradingDaysTestsOptions> DEFAULT
+            =new AtomicReference<>(builder().build());
     
     public static void setDefault(ResidualTradingDaysTestsOptions config){
         DEFAULT.set(config);
@@ -40,7 +40,7 @@ public class ResidualTradingDaysTestsOptions {
         return DEFAULT.get();
     }
 
-    public static final int DEF_FTEST_LAST = 8;
+    public static final int DEF_FTEST_LAST = 0;
 
     private int flast;
 

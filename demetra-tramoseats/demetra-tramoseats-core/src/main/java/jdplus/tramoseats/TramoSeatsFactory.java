@@ -8,6 +8,7 @@ package jdplus.tramoseats;
 import demetra.arima.SarimaSpec;
 import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
+import demetra.sa.SaManager;
 import demetra.sa.SaProcessor;
 import demetra.sa.SaSpecification;
 import demetra.seats.DecompositionSpec;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import jdplus.modelling.GeneralLinearModel;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsConfiguration;
 import jdplus.sa.diagnostics.AdvancedResidualSeasonalityDiagnosticsFactory;
@@ -45,9 +47,11 @@ import jdplus.tramo.TramoFactory;
  * @author PALATEJ
  */
 @ServiceProvider(SaProcessingFactory.class)
-public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, TramoSeatsResults> {
+public final class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, TramoSeatsResults> {
 
-    public static final TramoSeatsFactory INSTANCE = new TramoSeatsFactory();
+    public static TramoSeatsFactory getInstance() {
+        return (TramoSeatsFactory) SaManager.processors().stream().filter(x->x instanceof TramoSeatsFactory).findAny().orElse(new TramoSeatsFactory());
+    }
 
     private final List<SaDiagnosticsFactory<?, TramoSeatsResults>> diagnostics = new CopyOnWriteArrayList<>();
 
@@ -74,12 +78,12 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         SeatsDiagnosticsFactory<TramoSeatsResults> seats
                 = new SeatsDiagnosticsFactory<>(SeatsDiagnosticsConfiguration.getDefault(),
                         r -> r.getDiagnostics().getSpecificDiagnostics());
-        
+
         AdvancedResidualSeasonalityDiagnosticsFactory<TramoSeatsResults> advancedResidualSeasonality
                 = new AdvancedResidualSeasonalityDiagnosticsFactory<>(AdvancedResidualSeasonalityDiagnosticsConfiguration.getDefault(),
                         (TramoSeatsResults r) -> r.getDiagnostics().getGenericDiagnostics()
                 );
-        
+
         ResidualTradingDaysDiagnosticsFactory<TramoSeatsResults> residualTradingDays
                 = new ResidualTradingDaysDiagnosticsFactory<>(ResidualTradingDaysDiagnosticsConfiguration.getDefault(),
                         (TramoSeatsResults r) -> r.getDiagnostics().getGenericDiagnostics().residualTradingDaysTests()
@@ -104,7 +108,7 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
 
     public TramoSeatsSpec generateSpec(TramoSeatsSpec spec, GeneralLinearModel.Description<SarimaSpec> desc) {
 
-        TramoSpec ntspec = TramoFactory.INSTANCE.generateSpec(spec.getTramo(), desc);
+        TramoSpec ntspec = TramoFactory.getInstance().generateSpec(spec.getTramo(), desc);
         DecompositionSpec nsspec = update(spec.getSeats());
 
         return spec.toBuilder()
@@ -116,9 +120,10 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
     @Override
     public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicyType policy, TsDomain domain) {
         // NOT COMPLETE
-        if (policy == policy.None)
+        if (policy == policy.None) {
             return currentSpec;
-        TramoSpec ntspec = TramoFactory.INSTANCE.refreshSpec(currentSpec.getTramo(), domainSpec.getTramo(), policy, domain);
+        }
+        TramoSpec ntspec = TramoFactory.getInstance().refreshSpec(currentSpec.getTramo(), domainSpec.getTramo(), policy, domain);
         return currentSpec.toBuilder()
                 .tramo(ntspec)
                 .build();
@@ -171,9 +176,9 @@ public class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, Tr
         diagnostics.clear();
         diagnostics.addAll(factories);
     }
-    
+
     @Override
-    public  Dictionary outputDictionary(){
+    public Dictionary outputDictionary() {
         return TramoSeatsDictionaries.TRAMOSEATSDICTIONARY;
     }
 

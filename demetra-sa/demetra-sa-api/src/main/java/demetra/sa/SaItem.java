@@ -25,6 +25,7 @@ import demetra.timeseries.TsFactory;
 import demetra.timeseries.TsInformationType;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +35,8 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class SaItem {
+    
+    public static final String COMMENT="comment";
 
     @lombok.NonNull
     String name;
@@ -45,13 +48,19 @@ public final class SaItem {
     @lombok.EqualsAndHashCode.Exclude
     Map<String, String> meta;
 
-    String comment;
-
     /**
      * Operational. Importance of this estimation
      */
     @lombok.EqualsAndHashCode.Exclude
     int priority;
+    
+    public String getComment(){
+        return meta.get(COMMENT);
+    }
+    
+    public SaItem copy(){
+        return toBuilder().estimation(estimation == null ? null : estimation.flush()).build();
+    }
 
     /**
      * All information available after processing. SA processors must be able to
@@ -76,19 +85,21 @@ public final class SaItem {
     }
 
     public SaItem withPriority(int priority) {
-        return new SaItem(name, definition, meta, comment, priority, estimation);
+        return new SaItem(name, definition, meta, priority, estimation);
     }
 
     public SaItem withName(String name) {
-        return new SaItem(name, definition, meta, comment, priority, estimation);
+        return new SaItem(name, definition, meta, priority, estimation);
     }
 
     public SaItem withInformations(Map<String, String> info) {
-        return new SaItem(name, definition, Collections.unmodifiableMap(info), comment, priority, estimation);
+        return new SaItem(name, definition, Collections.unmodifiableMap(info), priority, estimation);
     }
 
     public SaItem withComment(String ncomment) {
-        return new SaItem(name, definition, meta, ncomment, priority, estimation);
+        Map<String, String> info=new HashMap<>(meta);
+        info.put(COMMENT, ncomment);
+        return new SaItem(name, definition, info, priority, estimation);
     }
     
     public SaItem withDomainSpecification(SaSpecification dspec){
@@ -222,7 +233,7 @@ public final class SaItem {
                     e.getResults(), e.getDiagnostics(), e.getQuality());
         }
     }
-
+    
     public SaItem refresh(EstimationPolicy policy, TsInformationType type) {
         TsData oldData = definition.getTs().getData();
         Ts nts = type != TsInformationType.None ? definition.getTs().unfreeze(TsFactory.getDefault(), type) : definition.getTs();
@@ -234,7 +245,7 @@ public final class SaItem {
                     .estimationSpec(definition.activeSpecification())
                     .policy(policy.getPolicy())
                     .build();
-            return new SaItem(name, ndef, meta, comment, priority, estimation);
+            return new SaItem(name, ndef, meta, priority, estimation);
         } else {
             SaSpecification dspec = definition.getDomainSpec();
             SaSpecification pspec = estimation.getPointSpec();
@@ -260,7 +271,7 @@ public final class SaItem {
                     .estimationSpec(espec)
                     .policy(policy.getPolicy())
                     .build();
-            return new SaItem(name, ndef, meta, comment, priority, null);
+            return new SaItem(name, ndef, meta, priority, null);
         }
     }
 

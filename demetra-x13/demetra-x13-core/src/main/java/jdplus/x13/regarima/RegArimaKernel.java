@@ -245,6 +245,12 @@ public class RegArimaKernel implements RegSarimaProcessor {
 
             if (transformation != null) {
                 transformation.process(context);
+            } else if (context.getDescription().isLogTransformation()) {
+                if (context.getDescription().getSeries().getValues().anyMatch(x -> x <= 0)) {
+                    context.getLog().warning("logs changed to levels");
+                    context.getDescription().setLogTransformation(false);
+                    context.clearEstimation();
+                }
             }
 
             regAIC(context);

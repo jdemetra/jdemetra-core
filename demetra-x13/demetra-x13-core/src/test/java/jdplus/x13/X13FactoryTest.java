@@ -47,13 +47,13 @@ public class X13FactoryTest {
         ProcessingLog log = ProcessingLog.dummy();
         X13Results rslt = x13.process(Data.TS_PROD, log);
         assertTrue(rslt.getFinals() != null);
-        X13Spec nspec = X13Factory.INSTANCE.generateSpec(X13Spec.RSA4, rslt);
+        X13Spec nspec = X13Factory.getInstance().generateSpec(X13Spec.RSA4, rslt);
         log = new DefaultProcessingLog();
 //        System.out.println(nspec);
         x13 = X13Kernel.of(nspec, null);
         X13Results rslt2 = x13.process(Data.TS_PROD, log);
         assertTrue(rslt2.getFinals() != null);
-        X13Spec nspec2 = X13Factory.INSTANCE.generateSpec(nspec, rslt2);
+        X13Spec nspec2 = X13Factory.getInstance().generateSpec(nspec, rslt2);
 //        System.out.println(nspec2);
         assertEquals(rslt.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(),
                 rslt2.getPreprocessing().getEstimation().getStatistics().getLogLikelihood(), 1e-4);

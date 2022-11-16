@@ -48,7 +48,7 @@ public class HtmlX13Summary extends AbstractHtmlElement {
         title_ = title;
         preprocessing_ = results.getPreprocessing();
         decomposition_ = results.getDecomposition();
-        X13Factory.INSTANCE.fillDiagnostics(diags_, results);
+        X13Factory.getInstance().fillDiagnostics(diags_, results);
         infos_ = results.getLog();
     }
 

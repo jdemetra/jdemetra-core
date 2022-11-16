@@ -83,9 +83,9 @@ public class TramoSeatsAPI3 {
         System.out.println(arima);
         
         // Generate the spec corresponding to the results
-        TramoSeatsSpec pspec = TramoSeatsFactory.INSTANCE.generateSpec(dspec, rslt1);
+        TramoSeatsSpec pspec = TramoSeatsFactory.getInstance().generateSpec(dspec, rslt1);
         // Refresh the specification
-        TramoSeatsSpec nspec = TramoSeatsFactory.INSTANCE.refreshSpec(pspec, dspec, EstimationPolicyType.FreeParameters, null);
+        TramoSeatsSpec nspec = TramoSeatsFactory.getInstance().refreshSpec(pspec, dspec, EstimationPolicyType.FreeParameters, null);
         // Re-execute with new figures (fixed model, except ARIMA parameters)
         double[] xprod = Doubles.concat(Data.PROD, new double[]{125, 130, 73});
         TsData ndata = TsData.ofInternal(TsPeriod.monthly(1967, 1), xprod);
@@ -97,7 +97,7 @@ public class TramoSeatsAPI3 {
         System.out.println(arima);
        
         // same with outliers detection at the end
-        TramoSeatsSpec nspec1 = TramoSeatsFactory.INSTANCE.refreshSpec(pspec, dspec, EstimationPolicyType.LastOutliers, null);
+        TramoSeatsSpec nspec1 = TramoSeatsFactory.getInstance().refreshSpec(pspec, dspec, EstimationPolicyType.LastOutliers, null);
         
         TramoSeatsResults rslt3 = TramoSeatsKernel.of(nspec1, null).process(ndata, null);
        
@@ -106,7 +106,7 @@ public class TramoSeatsAPI3 {
         System.out.println(arima);
         
         // or (old domain is frozen)
-        TramoSeatsSpec nspec2 = TramoSeatsFactory.INSTANCE.refreshSpec(pspec, dspec, EstimationPolicyType.Outliers, data.getDomain());
+        TramoSeatsSpec nspec2 = TramoSeatsFactory.getInstance().refreshSpec(pspec, dspec, EstimationPolicyType.Outliers, data.getDomain());
         
         TramoSeatsResults rslt4 = TramoSeatsKernel.of(nspec2, null).process(ndata, null);
        

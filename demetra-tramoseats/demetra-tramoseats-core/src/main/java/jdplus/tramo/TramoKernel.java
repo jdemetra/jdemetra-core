@@ -700,6 +700,12 @@ public class TramoKernel implements RegSarimaProcessor {
                     .seasonal(context.seasonal)
                     .build();
             module.process(modelling);
+        }else if (modelling.getDescription().isLogTransformation()){
+            if (modelling.getDescription().getSeries().getValues().anyMatch(x->x<=0)){
+                modelling.getLog().warning("logs changed to levels");
+                modelling.getDescription().setLogTransformation(false);
+                modelling.clearEstimation();
+            }
         }
     }
 

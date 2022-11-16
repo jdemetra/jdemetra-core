@@ -53,7 +53,7 @@ public class X13 {
     }
 
     public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, TsDomain domain, String policy) {
-        return X13Factory.INSTANCE.refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
+        return X13Factory.getInstance().refreshSpec(currentSpec, domainSpec, EstimationPolicyType.valueOf(policy), domain);
     }
 
     public byte[] toBuffer(X13Spec spec) {
@@ -76,7 +76,7 @@ public class X13 {
         return X13Output.builder()
                 .estimationSpec(spec)
                 .result(estimation)
-                .resultSpec(estimation == null ? null : X13Factory.INSTANCE.generateSpec(spec, estimation))
+                .resultSpec(estimation == null ? null : X13Factory.getInstance().generateSpec(spec, estimation))
                 .build();
     }
 

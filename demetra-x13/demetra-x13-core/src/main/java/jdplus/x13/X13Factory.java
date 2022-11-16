@@ -10,6 +10,7 @@ import demetra.regarima.RegArimaSpec;
 import demetra.sa.DecompositionMode;
 import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
+import demetra.sa.SaManager;
 import demetra.sa.SaProcessor;
 import demetra.sa.SaSpecification;
 import jdplus.x11.X11Results;
@@ -48,7 +49,9 @@ import jdplus.x13.regarima.RegArimaFactory;
 @ServiceProvider(SaProcessingFactory.class)
 public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
-    public static final X13Factory INSTANCE = new X13Factory();
+    public static X13Factory getInstance() {
+        return (X13Factory) SaManager.processors().stream().filter(x->x instanceof X13Factory).findAny().orElse(new X13Factory());
+    }
 
     private final List<SaDiagnosticsFactory<?, X13Results>> diagnostics = new CopyOnWriteArrayList<>();
 
@@ -97,7 +100,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
     @Override
     public X13Spec generateSpec(X13Spec spec, X13Results estimation) {
 
-        RegArimaSpec nrspec = RegArimaFactory.INSTANCE.generateSpec(spec.getRegArima(), estimation.getPreprocessing().getDescription());
+        RegArimaSpec nrspec = RegArimaFactory.getInstance().generateSpec(spec.getRegArima(), estimation.getPreprocessing().getDescription());
         X11Spec nxspec = update(spec.getX11(), estimation.getDecomposition());
 
         return spec.toBuilder()
@@ -111,7 +114,7 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
         if (policy == policy.None) {
             return currentSpec;
         }
-        RegArimaSpec nrspec = RegArimaFactory.INSTANCE.refreshSpec(currentSpec.getRegArima(), domainSpec.getRegArima(), policy, frozen);
+        RegArimaSpec nrspec = RegArimaFactory.getInstance().refreshSpec(currentSpec.getRegArima(), domainSpec.getRegArima(), policy, frozen);
         X11Spec x11 = currentSpec.getX11();
         if (nrspec.getTransform().getFunction() == TransformationType.Auto) {
             x11 = x11.toBuilder()

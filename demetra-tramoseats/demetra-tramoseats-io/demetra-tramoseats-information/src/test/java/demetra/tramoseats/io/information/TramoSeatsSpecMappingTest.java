@@ -70,7 +70,7 @@ public class TramoSeatsSpecMappingTest {
     public void testSpecific() {
         TramoSeatsKernel kernel = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         TramoSeatsResults rslt = kernel.process(Data.TS_PROD, null);
-        TramoSeatsSpec pspec = TramoSeatsFactory.INSTANCE.generateSpec(TramoSeatsSpec.RSAfull, rslt);
+        TramoSeatsSpec pspec = TramoSeatsFactory.getInstance().generateSpec(TramoSeatsSpec.RSAfull, rslt);
         test(pspec);
         testLegacy(pspec);
     }

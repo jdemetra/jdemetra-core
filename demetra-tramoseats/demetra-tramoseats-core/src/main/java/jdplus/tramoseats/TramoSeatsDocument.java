@@ -64,8 +64,8 @@ public class TramoSeatsDocument extends AbstractTsDocument<TramoSeatsSpec, Tramo
         }
         List<ProcDiagnostic> tests = new ArrayList<>();
         TramoSeatsResults result = getResult();
-        TramoSeatsFactory.INSTANCE.fillDiagnostics(tests, result);
-        SaSpecification pspec = TramoSeatsFactory.INSTANCE.generateSpec(getSpecification(), result);
+        TramoSeatsFactory.getInstance().fillDiagnostics(tests, result);
+        SaSpecification pspec = TramoSeatsFactory.getInstance().generateSpec(getSpecification(), result);
         ProcQuality quality = ProcDiagnostic.summary(tests);
         return SaEstimation.builder()
                 .results(result)
