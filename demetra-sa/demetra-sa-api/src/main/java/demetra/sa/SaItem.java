@@ -203,7 +203,6 @@ public final class SaItem {
      * Gets the current estimation (Processing should be controlled by
      * isProcessed).
      *
-     * @param context
      * @return The current estimation
      */
     public SaEstimation getEstimation() {
