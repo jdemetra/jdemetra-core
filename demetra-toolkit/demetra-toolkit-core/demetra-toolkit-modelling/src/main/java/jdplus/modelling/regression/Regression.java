@@ -12,6 +12,7 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.Constant;
 import demetra.timeseries.regression.EasterVariable;
+import demetra.timeseries.regression.GenericHolidaysVariable;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
 import demetra.timeseries.regression.HolidaysVariable;
@@ -89,6 +90,7 @@ public class Regression {
             // Trading Days
             FACTORIES.put(LengthOfPeriod.class, LPFactory.FACTORY);
             FACTORIES.put(GenericTradingDaysVariable.class, GenericTradingDaysFactory.FACTORY);
+            FACTORIES.put(GenericHolidaysVariable.class, GenericHolidaysFactory.FACTORY);
             FACTORIES.put(HolidaysCorrectedTradingDays.class, HolidaysCorrectionFactory.FACTORY);
             FACTORIES.put(StockTradingDays.class, StockTDFactory.FACTORY);
             FACTORIES.put(HolidaysVariable.class, HolidaysFactory.FACTORY);

@@ -72,4 +72,6 @@ public class GenericTradingDaysVariableTest {
             assertEquals(m.get(r, 0), om.get(r, 0), 1e-9);
         }
     }
+    
+    
 }

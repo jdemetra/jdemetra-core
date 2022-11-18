@@ -27,6 +27,7 @@ public class TradingDaysProto {
             builder.setHolidays(holidays)
                     .setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
                     .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
+                    .setAuto(TramoSeatsProtosUtility.convert(spec.getAutomaticMethod()))
                     .setTest(TramoSeatsProtosUtility.convert(spec.getRegressionTestType()));
             return;
         }
@@ -87,6 +88,10 @@ public class TradingDaysProto {
         Parameter[] tdc = ToolkitProtosUtility.convert(spec.getTdcoefficientsList());
         boolean test = isTest(spec);
         if (holidays != null && holidays.length() > 0) {
+            TradingDaysSpec.AutoMethod auto = TramoSeatsProtosUtility.convert(spec.getAuto());
+            if (auto != TradingDaysSpec.AutoMethod.Unused) {
+                return TradingDaysSpec.automaticHolidays(holidays, auto, spec.getPtest());
+            }
             if (test) {
                 return TradingDaysSpec.holidays(holidays, td, lp,
                         TramoSeatsProtosUtility.convert(spec.getTest()));

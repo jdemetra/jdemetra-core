@@ -14,6 +14,7 @@ import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.Holiday;
+import demetra.timeseries.regression.GenericHolidaysVariable;
 import ec.tstoolkit.timeseries.Month;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -61,6 +62,14 @@ public class HolidaysCorrectionFactoryTest {
     }
 
     public HolidaysCorrectionFactoryTest() {
+    }
+
+    @Test
+    public void testH6() {
+        TsDomain dom = TsDomain.of(TsPeriod.monthly(1980, 5), 360);
+        GenericHolidaysVariable vars = new GenericHolidaysVariable(DayClustering.TD7, belgium);
+        FastMatrix m = Regression.matrix(dom, vars);
+//        System.out.println(m);
     }
 
     @Test
@@ -142,7 +151,7 @@ public class HolidaysCorrectionFactoryTest {
     public static void stressTest() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY,true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY, true);
             HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
             FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         }
@@ -160,8 +169,8 @@ public class HolidaysCorrectionFactoryTest {
         t1 = System.currentTimeMillis();
         System.out.println("Old: " + (t1 - t0));
     }
-    
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         stressTest();
     }
 

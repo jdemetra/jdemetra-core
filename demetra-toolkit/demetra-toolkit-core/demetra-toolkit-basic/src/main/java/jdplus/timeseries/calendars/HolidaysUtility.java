@@ -32,6 +32,8 @@ import java.util.Map;
 import jdplus.math.matrices.FastMatrix;
 import demetra.math.matrices.Matrix;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.Calendar;
+import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.HolidaysOption;
 import java.time.temporal.ChronoUnit;
@@ -73,10 +75,14 @@ public class HolidaysUtility {
 
         FastMatrix A = FastMatrix.make(length, nhol);
         switch (option) {
-            case Previous -> fillPreviousWorkingDays(holidays, A, start, nonworking);
-            case Next -> fillNextWorkingDays(holidays, A, start, nonworking);
-            case Skip -> fillDays(holidays, A, start, nonworking, true);
-            default -> fillDays(holidays, A, start, nonworking, false);
+            case Previous ->
+                fillPreviousWorkingDays(holidays, A, start, nonworking);
+            case Next ->
+                fillNextWorkingDays(holidays, A, start, nonworking);
+            case Skip ->
+                fillDays(holidays, A, start, nonworking, true);
+            default ->
+                fillDays(holidays, A, start, nonworking, false);
         }
         TsPeriod p = P0;
         boolean ok = false;
@@ -380,13 +386,12 @@ public class HolidaysUtility {
      * @param holidays
      * @param freq
      * @return Returns an array of "annualFrequency" length, corresponding to
-     * each period in one year (for instance, Jan, Feb..., Dec).
-     * Each item of the result will contain 7 elements, corresponding to the
-     * long term average for Mondays...Sundays
-     * The sum of the longTermMean must be equal to the sum of the weights of
-     * the different holidays.
-     * Some element of the array can be null, which means that there are no
-     * effect for the considered period.
+     * each period in one year (for instance, Jan, Feb..., Dec). Each item of
+     * the result will contain 7 elements, corresponding to the long term
+     * average for Mondays...Sundays The sum of the longTermMean must be equal
+     * to the sum of the weights of the different holidays. Some element of the
+     * array can be null, which means that there are no effect for the
+     * considered period.
      */
     public double[][] longTermMean(Holiday[] holidays, int freq) {
         double[][] rslt = null;
@@ -411,6 +416,45 @@ public class HolidaysUtility {
             }
         }
         return rslt != null ? rslt : new double[freq][];
+    }
+
+    private static final double[] NDAYS = new double[]{31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    public static FastMatrix days(final Calendar calendar, int freq, int contrast) {
+
+        // long term average number of holidays. mean[j][0] for means of Mondays for period j
+        double[][] mean = longTermMean(calendar.getHolidays(), freq);
+        DataBlock[] Mean = new DataBlock[freq];
+        for (int i = 0; i < freq; ++i) {
+            if (mean[i] != null) {
+                Mean[i] = DataBlock.of(mean[i]);
+                mean[i][contrast] -= Mean[i].sum();
+            }
+        }
+        int c = 12 / freq;
+        FastMatrix M = FastMatrix.make(freq, 7);
+        for (int i = 0, m = 0; i < freq; ++i) {
+            double avg = 0;
+            for (int j = 0; j < c; ++m, ++j) {
+                avg += NDAYS[m];
+            }
+            DataBlock row = M.row(i);
+            row.set(avg / 7);
+            if (Mean[i] != null) {
+                row.sub(Mean[i]);
+            }
+        }
+        return M;
+    }
+    
+    public static FastMatrix clustering(final FastMatrix days, DayClustering clustering) {
+        if (days.getColumnsCount() != 7)
+            throw new IllegalArgumentException();
+        FastMatrix M=FastMatrix.make(days.getRowsCount(), clustering.getGroupsCount());
+        for (int i=0; i<7; ++i){
+            M.column(clustering.groupOf(i)).add(days.column(i));
+        }
+        return M;
     }
 
 }
