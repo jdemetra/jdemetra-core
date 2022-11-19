@@ -23,6 +23,7 @@ import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
@@ -36,7 +37,7 @@ public final class Top5Browsers extends Book.Factory {
 
     public static File getRefFile() {
         try {
-            File result = File.createTempFile("Top5Browsers", ".top5");
+            File result = Files.createTempFile("Top5Browsers", ".top5").toFile();
             result.deleteOnExit();
             return result;
         } catch (IOException ex) {

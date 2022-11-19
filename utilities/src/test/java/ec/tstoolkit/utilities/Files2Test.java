@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -49,7 +50,7 @@ public class Files2Test {
         Preconditions.checkState(ABSOLUTE_DIR_INSIDE.mkdir());
         RELATIVE_INSIDE = new File(ABSOLUTE_INSIDE.getName());
         RELATIVE_DIR_INSIDE = new File(ABSOLUTE_DIR_INSIDE.getName());
-        ABSOLUTE_OUTSIDE = File.createTempFile("boom", "xml");
+        ABSOLUTE_OUTSIDE = Files.createTempFile("boom", "xml").toFile();
         RELATIVE_OUTSIDE = new File(ABSOLUTE_OUTSIDE.getName());
         PATHS = new File[]{PATH};
     }

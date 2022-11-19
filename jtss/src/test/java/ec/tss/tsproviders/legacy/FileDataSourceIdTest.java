@@ -20,6 +20,8 @@ package ec.tss.tsproviders.legacy;
 import ec.tss.tsproviders.DataSource;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -36,8 +38,8 @@ public class FileDataSourceIdTest {
     
     @BeforeClass
     public static void beforeClass() throws IOException {
-        FILE = File.createTempFile("123", "456");
-        OTHER = File.createTempFile("aaa", "bbb");
+        FILE = Files.createTempFile("123", "456").toFile();
+        OTHER = Files.createTempFile("aaa", "bbb").toFile();
     }
     
     @AfterClass
