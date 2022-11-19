@@ -14,7 +14,6 @@ import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.calendars.Holiday;
-import demetra.timeseries.regression.GenericHolidaysVariable;
 import ec.tstoolkit.timeseries.Month;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -62,14 +61,6 @@ public class HolidaysCorrectionFactoryTest {
     }
 
     public HolidaysCorrectionFactoryTest() {
-    }
-
-    @Test
-    public void testH6() {
-        TsDomain dom = TsDomain.of(TsPeriod.monthly(1980, 5), 360);
-        GenericHolidaysVariable vars = new GenericHolidaysVariable(DayClustering.TD7, belgium);
-        FastMatrix m = Regression.matrix(dom, vars);
-//        System.out.println(m);
     }
 
     @Test

@@ -17,7 +17,6 @@
 package jdplus.tramo;
 
 import demetra.data.Parameter;
-import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
