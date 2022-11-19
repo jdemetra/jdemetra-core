@@ -25,6 +25,7 @@ import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.calendars.DayClustering;
 import java.time.DayOfWeek;
 
 /**
@@ -45,18 +46,16 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     }
 
     public static HolidaysCorrector corrector(CalendarDefinition cur, CalendarManager mgr, DayOfWeek hol, boolean meanCorrection) {
-        if (cur instanceof Calendar) {
-            return corrector((Calendar) cur, hol, meanCorrection);
-        } else if (cur instanceof ChainedCalendar) {
-            ChainedCalendar ccur = (ChainedCalendar) cur;
+        if (cur instanceof Calendar calendar) {
+            return corrector(calendar, hol, meanCorrection);
+        } else if (cur instanceof ChainedCalendar ccur) {
             HolidaysCorrector beg = corrector(ccur.getFirst(), mgr, hol, meanCorrection);
             HolidaysCorrector end = corrector(ccur.getSecond(), mgr, hol, meanCorrection);
             if (beg == null || end == null) {
                 return null;
             }
             return corrector(beg, end, ccur.getBreakDate());
-        } else if (cur instanceof CompositeCalendar) {
-            CompositeCalendar ccur = (CompositeCalendar) cur;
+        } else if (cur instanceof CompositeCalendar ccur) {
             WeightedItem<String>[] calendars = ccur.getCalendars();
             HolidaysCorrector[] corr = new HolidaysCorrector[calendars.length];
             double[] weights = new double[calendars.length];
@@ -175,5 +174,23 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(HolidaysCorrectedTradingDays var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    /**
+     * Computes the long term weights to compute contrasts with holidays
+     * The weights are defined as (Di+Hi)(Dk+Hk) where Di is the average number of days for period i,
+     * Hi is the average number of holidays for period i (+ for the contrast group, - for the other groups),
+     * k is the contrasting group
+     * @param calendar
+     * @return 
+     */
+    
+    /**
+     * 
+     * @param calendar
+     * @param freq
+     * @param contrast
+     * @return 
+     */
+    
 
 }

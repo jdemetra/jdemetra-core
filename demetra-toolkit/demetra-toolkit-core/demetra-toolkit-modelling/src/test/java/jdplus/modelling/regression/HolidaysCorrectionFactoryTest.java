@@ -142,7 +142,7 @@ public class HolidaysCorrectionFactoryTest {
     public static void stressTest() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY,true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(belgium, DayOfWeek.SUNDAY, true);
             HolidaysCorrectedTradingDays var = new HolidaysCorrectedTradingDays(GenericTradingDays.contrasts(DayClustering.TD2), corrector);
             FastMatrix td2 = Regression.matrix(TsDomain.of(TsPeriod.monthly(1980, 1), 360), var);
         }
@@ -160,8 +160,8 @@ public class HolidaysCorrectionFactoryTest {
         t1 = System.currentTimeMillis();
         System.out.println("Old: " + (t1 - t0));
     }
-    
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         stressTest();
     }
 

@@ -96,14 +96,14 @@ public class SaItems {
         Builder builder = this.toBuilder()
                 .clearItems();
         for (SaItem cur : items) {
-            if (test.test(cur))
+            if (test.test(cur)) {
                 builder.item(cur.refresh(policy, info));
-            else
+            } else {
                 builder.item(cur);
+            }
         }
         return builder.build();
     }
-
 
     public SaItems removeItems(SaItem... nitems) {
         List<SaItem> ritems = new ArrayList<>();
@@ -132,6 +132,14 @@ public class SaItems {
 
     public boolean isEmpty() {
         return items.isEmpty();
+    }
+
+    public int size() {
+        return items.size();
+    }
+    
+    public SaItem item(int i){
+        return items.get(i);
     }
 
 }

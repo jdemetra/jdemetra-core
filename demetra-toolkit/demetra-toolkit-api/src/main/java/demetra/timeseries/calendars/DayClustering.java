@@ -95,6 +95,15 @@ public class DayClustering {
     }
 
     /**
+     * Group of the 0-based day. Raw equivalent of getGroup
+     * @param day 0 for Mondays...
+     * @return 
+     */
+    public int groupOf(int day){
+        return groups[day];
+    }
+
+    /**
      * The number of groups
      * @return 
      */
@@ -138,7 +147,7 @@ public class DayClustering {
         }
         return dw;
     }
-
+    
     
     public int[] positions(int idx) {
         int n = 0;
