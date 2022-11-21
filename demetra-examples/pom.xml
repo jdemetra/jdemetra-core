@@ -16,7 +16,6 @@
         <jd3-tramoseats.version>1.0.0-SNAPSHOT</jd3-tramoseats.version>
         <jd3-benchmarking.version>1.0.0-SNAPSHOT</jd3-benchmarking.version>
         <jd3-sts.version>1.0.0-SNAPSHOT</jd3-sts.version>
-        <jd2.version>2.2.3</jd2.version>
     </properties>
     
     <dependencies>
