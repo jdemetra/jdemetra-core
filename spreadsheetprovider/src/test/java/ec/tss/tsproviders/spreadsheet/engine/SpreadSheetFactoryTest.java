@@ -21,10 +21,12 @@ import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory.Context;
 import ec.tss.tsproviders.utils.ObsGathering;
 import ec.util.spreadsheet.Book;
 import internal.ec.tss.tsproviders.spreadsheet.BookSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -157,8 +159,8 @@ public class SpreadSheetFactoryTest {
     }
 
     @Test
-    public void testFactory() throws IOException {
-        File fileRef = Top5Browsers.getRefFile();
+    public void testFactory(@TempDir Path temp) throws IOException {
+        File fileRef = Top5Browsers.getRefFile(temp).toFile();
         testFactory(BookSupplier.getLoaderByFile(fileRef).orElseThrow(NoSuchElementException::new), fileRef);
     }
 

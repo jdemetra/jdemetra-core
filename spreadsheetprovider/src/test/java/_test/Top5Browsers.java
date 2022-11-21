@@ -23,6 +23,8 @@ import nbbrd.service.ServiceProvider;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
@@ -34,11 +36,9 @@ import java.util.Date;
 @ServiceProvider(Book.Factory.class)
 public final class Top5Browsers extends Book.Factory {
 
-    public static File getRefFile() {
+    public static Path getRefFile(Path temp) {
         try {
-            File result = File.createTempFile("Top5Browsers", ".top5");
-            result.deleteOnExit();
-            return result;
+            return Files.createTempFile(temp, "Top5Browsers", ".top5");
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }

@@ -28,10 +28,12 @@ import ec.tss.tsproviders.utils.DataFormat;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,8 +44,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SpreadSheetProviderTest {
 
     @Test
-    public void testCompliance() {
-        IFileLoaderAssert.assertCompliance(SpreadSheetProvider::new, SpreadSheetProviderTest::getSampleBean);
+    public void testCompliance(@TempDir Path temp) {
+        IFileLoaderAssert.assertCompliance(SpreadSheetProvider::new, provider -> getSampleBean(provider, temp));
     }
 
     @Test
@@ -85,9 +87,9 @@ public class SpreadSheetProviderTest {
     }
 
     @Test
-    public void testSample() throws IOException {
+    public void testSample(@TempDir Path temp) throws IOException {
         try (SpreadSheetProvider p = new SpreadSheetProvider()) {
-            SpreadSheetBean bean = getSampleBean(p);
+            SpreadSheetBean bean = getSampleBean(p, temp);
             DataSource dataSource = p.encodeBean(bean);
             assertThat(p.getDataSources()).isEmpty();
             assertThat(p.open(dataSource)).isTrue();
@@ -126,9 +128,9 @@ public class SpreadSheetProviderTest {
 
     private static final double[] VALUES = {0.0, 0.0, 1.03, 1.02, 0.93, 1.21, 1.38, 1.52, 1.73, 2.07, 2.42, 2.82, 3.01, 3.38, 3.69, 4.17, 4.66, 5.45, 6.04, 6.72, 7.29, 8.06, 8.61, 9.24, 9.88, 10.76, 11.54, 12.39, 13.35, 14.85, 15.68, 16.54, 17.37, 18.29, 19.36, 20.65, 22.14, 23.16, 23.61, 25.0, 25.65};
 
-    private static SpreadSheetBean getSampleBean(SpreadSheetProvider p) {
+    private static SpreadSheetBean getSampleBean(SpreadSheetProvider p, Path temp) {
         SpreadSheetBean bean = p.newBean();
-        bean.setFile(Top5Browsers.getRefFile());
+        bean.setFile(Top5Browsers.getRefFile(temp).toFile());
         return bean;
     }
 }
