@@ -27,7 +27,7 @@ import demetra.tsprovider.cube.CubeSeries;
 import demetra.tsprovider.cube.CubeSeriesWithData;
 import nbbrd.design.VisibleForTesting;
 import sdmxdl.*;
-import sdmxdl.provider.SdmxCubeUtil;
+import sdmxdl.ext.SdmxCubeUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -117,7 +117,7 @@ public final class SdmxCubeConnection implements CubeConnection {
 
     @Override
     public String getDisplayName() {
-        return String.format("%s ~ %s", sourceLabel, flow.getLabel());
+        return String.format("%s ~ %s", sourceLabel, flow.getName());
     }
 
     @Override
