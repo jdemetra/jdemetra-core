@@ -36,10 +36,6 @@
             <groupId>com.github.nbbrd.sdmx-dl</groupId>
             <artifactId>sdmx-dl-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.sdmx-dl</groupId>
-            <artifactId>sdmx-dl-provider-util</artifactId>
-        </dependency>
 
         <!-- test only -->
         <dependency>
