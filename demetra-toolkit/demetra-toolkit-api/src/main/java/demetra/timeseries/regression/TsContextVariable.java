@@ -33,59 +33,48 @@ public class TsContextVariable implements ITsVariable {
     @lombok.NonNull
     String id;
     
-    int firstLag, lastLag;
+    int lag;
     
     public TsContextVariable(String id) {
         this.id = id;
-        firstLag = 0;
-        lastLag = 0;
+        lag = 0;
     }
     
+    /**
+     * For instance, if lag = -1 we have the following variables:
+     * v(t+1)
+     *
+     * @param id
+     * @param lag (negative values = leads)
+     */
     public TsContextVariable(String id, int lag) {
         this.id = id;
-        firstLag = lag;
-        lastLag = lag;
+        this.lag = lag;
     }
     
     public TsContextVariable withId(String nid) {
         if (id.equals(nid)) {
             return this;
         } else {
-            return new TsContextVariable(nid, firstLag, lastLag);
+            return new TsContextVariable(nid, lag);
         }
     }
     
-    public TsContextVariable withLags(int firstlag, int lastlag) {
-        if (firstlag == firstLag && lastlag == lastLag) {
+    public TsContextVariable withLag(int nlag) {
+        if (nlag == lag) {
             return this;
         } else {
-            return new TsContextVariable(id, firstlag, lastlag);
+            return new TsContextVariable(id, nlag);
         }
     }
 
-    /**
-     * first &le last !!
-     *
-     * For instance, if first = -1 and last = 2 we have the following variables:
-     * v(t+1), v(t), v(t-1), v(t-2)
-     *
-     * @param id
-     * @param first First lag (negative values = leads)
-     * @param last Last lag (negative values = leads)
-     */
-    public TsContextVariable(String id, int first, int last) {
-        this.id = id;
-        firstLag = first;
-        lastLag = last;
-    }
-    
     public boolean isLag() {
-        return firstLag != 0 || lastLag != 0;
+        return lag != 0;
     }
     
     @Override
     public int dim() {
-        return lastLag - firstLag + 1;
+        return 1;
     }
     
     @Override
@@ -97,7 +86,6 @@ public class TsContextVariable implements ITsVariable {
     public <D extends TimeSeriesDomain<?>> String description(int idx, D context) {
         if (isLag()) {
             StringBuilder builder = new StringBuilder();
-            int lag = firstLag + idx;
             builder.append(id);
             if (lag < 0) {
                 builder.append('+').append(-lag).append(')');
@@ -115,7 +103,7 @@ public class TsContextVariable implements ITsVariable {
         if (isLag()) {
             return ModifiedTsVariable.builder()
                     .variable(var)
-                    .modifier(new TsLags(firstLag, lastLag))
+                    .modifier(new TsLag(lag))
                     .build();
         } else {
             return var;
@@ -126,11 +114,11 @@ public class TsContextVariable implements ITsVariable {
         if (var instanceof TsContextVariable tvar) {
             return tvar;
         } else if (var instanceof UserVariable user) {
-            return new TsContextVariable(user.getId(), 0, 0);
+            return new TsContextVariable(user.getId(), 0);
         } else if (var instanceof ModifiedTsVariable mvar) {
             List<ModifiedTsVariable.Modifier> modifiers = mvar.getModifiers();
-            if (modifiers.size() == 1 && modifiers.get(0) instanceof TsLags lags && mvar.getVariable() instanceof UserVariable user) {
-                return new TsContextVariable(user.getId(), lags.getFirstLag(), lags.getLastLag());
+            if (modifiers.size() == 1 && modifiers.get(0) instanceof TsLag lag && mvar.getVariable() instanceof UserVariable user) {
+                return new TsContextVariable(user.getId(), lag.getLag());
             }
         }
         throw new IllegalArgumentException();
@@ -138,22 +126,15 @@ public class TsContextVariable implements ITsVariable {
     
     @Override
     public String toString() {
-        if (firstLag == 0 && lastLag == 0) {
+        if (lag == 0) {
             return id;
         }
         StringBuilder builder = new StringBuilder();
         builder.append(id).append('[');
-        if (firstLag < 0) {
+        if (lag < 0) {
             builder.append('+');
         }
-        builder.append(-firstLag);
-        if (lastLag != firstLag) {
-            builder.append(':');
-            if (lastLag < 0) {
-                builder.append('+');
-            }
-            builder.append(-lastLag);
-        }
+        builder.append(-lag);
         return builder.append(']').toString();
         
     }

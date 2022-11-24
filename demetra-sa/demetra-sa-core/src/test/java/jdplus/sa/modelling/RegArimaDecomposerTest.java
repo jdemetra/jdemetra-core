@@ -53,7 +53,7 @@ public class RegArimaDecomposerTest {
         model.setLogTransformation(true);
         model.setPreadjustment(LengthOfPeriodType.LeapYear);
         GenericTradingDaysVariable td = new GenericTradingDaysVariable(GenericTradingDays.contrasts(DayClustering.TD3));
-        model.addVariable(Variable.variable("td", td).addAttribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()));
+        model.addVariable(Variable.variable("td", td).setAttribute(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name()));
         EasterVariable easter = EasterVariable.builder()
                 .duration(6)
                 .meanCorrection(EasterVariable.Correction.Theoretical)

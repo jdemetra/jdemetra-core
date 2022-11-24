@@ -39,7 +39,7 @@ public abstract class TsVariable implements ITsVariable {
 
     private final String id;
     private final TsData data;
-    private String desc;
+    private final String desc;
 
     protected TsVariable(final String id, final TsData data, final String desc) {
         this.id = id;

@@ -178,7 +178,7 @@ public class Variable<V extends ITsVariable> {
                 : new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
     
-    public Variable addAttribute(String key, String value) {
+    public Variable setAttribute(String key, String value) {
         Map<String, String> natts;
         natts = new HashMap<>(attributes);
         natts.put(key, value);
@@ -208,7 +208,7 @@ public class Variable<V extends ITsVariable> {
         return new Variable(name, core, coefficients, Collections.unmodifiableMap(natts));
     }
     
-    public Variable addAttributes(Map<String, String> additionalAttributes) {
+    public Variable setAttributes(Map<String, String> additionalAttributes) {
         if (additionalAttributes.isEmpty()) {
             return this;
         }
@@ -233,7 +233,7 @@ public class Variable<V extends ITsVariable> {
         if (!excluded) {
             return removeAttribute(EXCLUDED).withCoefficients(null);
         } else {
-            return addAttribute(EXCLUDED, Boolean.toString(excluded)).withCoefficients(Parameter.zero(core.dim()));
+            return setAttribute(EXCLUDED, Boolean.toString(excluded)).withCoefficients(Parameter.zero(core.dim()));
         }
     }
     

@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package jd3;
 
-option java_multiple_files = false;
 option java_package = "demetra.toolkit.io.protobuf";
 option java_outer_classname = "ToolkitProtos";
 
@@ -351,12 +350,18 @@ message TsMoniker{
 	string id = 2;
 }
 
+message DynamicTsData{
+	TsMoniker moniker = 1;
+	TsData current = 2;
+}
+
+
 message TsDataSuppliers{
 	message Item{
 		string name=1;
 		oneof supplier{
 			TsData data = 2;
-			TsMoniker moniker = 3;
+			DynamicTsData dynamic_data = 3;
 		}
 	}
 	repeated Item items = 1;

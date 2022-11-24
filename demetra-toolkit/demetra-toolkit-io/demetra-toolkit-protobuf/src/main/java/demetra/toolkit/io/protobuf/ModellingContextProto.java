@@ -53,7 +53,10 @@ public class ModellingContextProto {
         if (supplier instanceof StaticTsDataSupplier s) {
             builder.setData(ToolkitProtosUtility.convert(s.getData()));
         } else if (supplier instanceof DynamicTsDataSupplier s) {
-            builder.setMoniker(convert(s.getMoniker()));
+            ToolkitProtos.DynamicTsData.Builder dbuilder=ToolkitProtos.DynamicTsData.newBuilder();
+            dbuilder.setMoniker(convert(s.getMoniker()));
+            dbuilder.setCurrent(ToolkitProtosUtility.convert(s.get()));
+            builder.setDynamicData(dbuilder.build());
         }
         return builder.build();
     }
@@ -69,8 +72,8 @@ public class ModellingContextProto {
     public TsDataSupplier convert(ToolkitProtos.TsDataSuppliers.Item supplier) {
         if (supplier.hasData()) {
             return new StaticTsDataSupplier(ToolkitProtosUtility.convert(supplier.getData()));
-        } else if (supplier.hasMoniker()) {
-            return new DynamicTsDataSupplier(convert(supplier.getMoniker()));
+        } else if (supplier.hasDynamicData()) {
+            return new DynamicTsDataSupplier(convert(supplier.getDynamicData().getMoniker()), ToolkitProtosUtility.convert(supplier.getDynamicData().getCurrent()));
         } else {
             return null;
         }

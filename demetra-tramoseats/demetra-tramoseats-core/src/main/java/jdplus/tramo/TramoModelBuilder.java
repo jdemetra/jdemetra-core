@@ -222,7 +222,7 @@ class TramoModelBuilder implements IModelBuilder {
             if (v != null) {
                 Variable nvar=outlier.withCore(v);
                 if (! nvar.hasAttribute(SaVariable.REGEFFECT)){
-                    nvar=nvar.addAttribute(SaVariable.REGEFFECT, cmp.name());
+                    nvar=nvar.setAttribute(SaVariable.REGEFFECT, cmp.name());
                 }
                 model.addVariable(nvar);
             }

@@ -45,7 +45,7 @@ public class HolidaysCorrectionFactoryTest {
         holidays.add(EasterRelatedDay.EASTERMONDAY);
         holidays.add(EasterRelatedDay.WHITMONDAY);
 
-        belgium = new Calendar(holidays.toArray(new Holiday[holidays.size()]));
+        belgium = new Calendar(holidays.toArray(Holiday[]::new));
 
         obelgium = new ec.tstoolkit.timeseries.calendars.NationalCalendar();
         obelgium.add(new ec.tstoolkit.timeseries.calendars.FixedDay(20, Month.July));

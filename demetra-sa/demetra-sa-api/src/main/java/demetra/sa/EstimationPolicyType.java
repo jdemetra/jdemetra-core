@@ -81,4 +81,5 @@ public enum EstimationPolicyType{
      */
     Custom;
     
+    public static final String IV_AO="AO:";
 }

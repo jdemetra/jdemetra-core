@@ -25,12 +25,14 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.util.IntList;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -179,10 +181,12 @@ public final class ModelDescription {
         variables.stream()
                 .filter(v -> ModellingUtility.isOutlier(v))
                 .filter(v -> !ModellingUtility.isAutomaticallyIdentified(v))
+                .sorted(OUTLIER_COMPARATOR)
                 .forEachOrdered(v -> vars.add(v));
         variables.stream()
                 .filter(v -> ModellingUtility.isOutlier(v))
                 .filter(v -> ModellingUtility.isAutomaticallyIdentified(v))
+                .sorted(OUTLIER_COMPARATOR)
                 .forEachOrdered(v -> vars.add(v));
         variables.clear();
         variables.addAll(vars);
@@ -773,5 +777,13 @@ public final class ModelDescription {
         builder.btheta(P);
         arima = builder.buildWithoutValidation();
     }
+    
+    
+    public static final Comparator<Variable> OUTLIER_COMPARATOR= (Variable o1, Variable o2) -> {
+        // variable are assumed to refer to outliers
+        IOutlier c1 = (IOutlier) o1.getCore();
+        IOutlier c2 = (IOutlier) o2.getCore();
+        return c1.getPosition().compareTo(c2.getPosition());
+    };
 
 }

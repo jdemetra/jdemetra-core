@@ -28797,6 +28797,824 @@ public final class ToolkitProtos {
 
   }
 
+  public interface DynamicTsDataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jd3.DynamicTsData)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.jd3.TsMoniker moniker = 1;</code>
+     * @return Whether the moniker field is set.
+     */
+    boolean hasMoniker();
+    /**
+     * <code>.jd3.TsMoniker moniker = 1;</code>
+     * @return The moniker.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker();
+    /**
+     * <code>.jd3.TsMoniker moniker = 1;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder();
+
+    /**
+     * <code>.jd3.TsData current = 2;</code>
+     * @return Whether the current field is set.
+     */
+    boolean hasCurrent();
+    /**
+     * <code>.jd3.TsData current = 2;</code>
+     * @return The current.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsData getCurrent();
+    /**
+     * <code>.jd3.TsData current = 2;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getCurrentOrBuilder();
+  }
+  /**
+   * Protobuf type {@code jd3.DynamicTsData}
+   */
+  public  static final class DynamicTsData extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jd3.DynamicTsData)
+      DynamicTsDataOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use DynamicTsData.newBuilder() to construct.
+    private DynamicTsData(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private DynamicTsData() {
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new DynamicTsData();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DynamicTsData(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder subBuilder = null;
+              if (moniker_ != null) {
+                subBuilder = moniker_.toBuilder();
+              }
+              moniker_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(moniker_);
+                moniker_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder subBuilder = null;
+              if (current_ != null) {
+                subBuilder = current_.toBuilder();
+              }
+              current_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(current_);
+                current_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DynamicTsData_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DynamicTsData_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.class, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder.class);
+    }
+
+    public static final int MONIKER_FIELD_NUMBER = 1;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker moniker_;
+    /**
+     * <code>.jd3.TsMoniker moniker = 1;</code>
+     * @return Whether the moniker field is set.
+     */
+    public boolean hasMoniker() {
+      return moniker_ != null;
+    }
+    /**
+     * <code>.jd3.TsMoniker moniker = 1;</code>
+     * @return The moniker.
+     */
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker() {
+      return moniker_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance() : moniker_;
+    }
+    /**
+     * <code>.jd3.TsMoniker moniker = 1;</code>
+     */
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder() {
+      return getMoniker();
+    }
+
+    public static final int CURRENT_FIELD_NUMBER = 2;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.TsData current_;
+    /**
+     * <code>.jd3.TsData current = 2;</code>
+     * @return Whether the current field is set.
+     */
+    public boolean hasCurrent() {
+      return current_ != null;
+    }
+    /**
+     * <code>.jd3.TsData current = 2;</code>
+     * @return The current.
+     */
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getCurrent() {
+      return current_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : current_;
+    }
+    /**
+     * <code>.jd3.TsData current = 2;</code>
+     */
+    public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getCurrentOrBuilder() {
+      return getCurrent();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (moniker_ != null) {
+        output.writeMessage(1, getMoniker());
+      }
+      if (current_ != null) {
+        output.writeMessage(2, getCurrent());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (moniker_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMoniker());
+      }
+      if (current_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getCurrent());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData)) {
+        return super.equals(obj);
+      }
+      demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData other = (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) obj;
+
+      if (hasMoniker() != other.hasMoniker()) return false;
+      if (hasMoniker()) {
+        if (!getMoniker()
+            .equals(other.getMoniker())) return false;
+      }
+      if (hasCurrent() != other.hasCurrent()) return false;
+      if (hasCurrent()) {
+        if (!getCurrent()
+            .equals(other.getCurrent())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasMoniker()) {
+        hash = (37 * hash) + MONIKER_FIELD_NUMBER;
+        hash = (53 * hash) + getMoniker().hashCode();
+      }
+      if (hasCurrent()) {
+        hash = (37 * hash) + CURRENT_FIELD_NUMBER;
+        hash = (53 * hash) + getCurrent().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jd3.DynamicTsData}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jd3.DynamicTsData)
+        demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DynamicTsData_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DynamicTsData_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.class, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder.class);
+      }
+
+      // Construct using demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        if (monikerBuilder_ == null) {
+          moniker_ = null;
+        } else {
+          moniker_ = null;
+          monikerBuilder_ = null;
+        }
+        if (currentBuilder_ == null) {
+          current_ = null;
+        } else {
+          current_ = null;
+          currentBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.internal_static_jd3_DynamicTsData_descriptor;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData getDefaultInstanceForType() {
+        return demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData build() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData buildPartial() {
+        demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData result = new demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData(this);
+        if (monikerBuilder_ == null) {
+          result.moniker_ = moniker_;
+        } else {
+          result.moniker_ = monikerBuilder_.build();
+        }
+        if (currentBuilder_ == null) {
+          result.current_ = current_;
+        } else {
+          result.current_ = currentBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) {
+          return mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData other) {
+        if (other == demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance()) return this;
+        if (other.hasMoniker()) {
+          mergeMoniker(other.getMoniker());
+        }
+        if (other.hasCurrent()) {
+          mergeCurrent(other.getCurrent());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker moniker_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker, demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder> monikerBuilder_;
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       * @return Whether the moniker field is set.
+       */
+      public boolean hasMoniker() {
+        return monikerBuilder_ != null || moniker_ != null;
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       * @return The moniker.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker() {
+        if (monikerBuilder_ == null) {
+          return moniker_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance() : moniker_;
+        } else {
+          return monikerBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      public Builder setMoniker(demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker value) {
+        if (monikerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          moniker_ = value;
+          onChanged();
+        } else {
+          monikerBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      public Builder setMoniker(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder builderForValue) {
+        if (monikerBuilder_ == null) {
+          moniker_ = builderForValue.build();
+          onChanged();
+        } else {
+          monikerBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      public Builder mergeMoniker(demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker value) {
+        if (monikerBuilder_ == null) {
+          if (moniker_ != null) {
+            moniker_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.newBuilder(moniker_).mergeFrom(value).buildPartial();
+          } else {
+            moniker_ = value;
+          }
+          onChanged();
+        } else {
+          monikerBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      public Builder clearMoniker() {
+        if (monikerBuilder_ == null) {
+          moniker_ = null;
+          onChanged();
+        } else {
+          moniker_ = null;
+          monikerBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder getMonikerBuilder() {
+        
+        onChanged();
+        return getMonikerFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder() {
+        if (monikerBuilder_ != null) {
+          return monikerBuilder_.getMessageOrBuilder();
+        } else {
+          return moniker_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance() : moniker_;
+        }
+      }
+      /**
+       * <code>.jd3.TsMoniker moniker = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker, demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder> 
+          getMonikerFieldBuilder() {
+        if (monikerBuilder_ == null) {
+          monikerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker, demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder>(
+                  getMoniker(),
+                  getParentForChildren(),
+                  isClean());
+          moniker_ = null;
+        }
+        return monikerBuilder_;
+      }
+
+      private demetra.toolkit.io.protobuf.ToolkitProtos.TsData current_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> currentBuilder_;
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       * @return Whether the current field is set.
+       */
+      public boolean hasCurrent() {
+        return currentBuilder_ != null || current_ != null;
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       * @return The current.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData getCurrent() {
+        if (currentBuilder_ == null) {
+          return current_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : current_;
+        } else {
+          return currentBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      public Builder setCurrent(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (currentBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          current_ = value;
+          onChanged();
+        } else {
+          currentBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      public Builder setCurrent(
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder builderForValue) {
+        if (currentBuilder_ == null) {
+          current_ = builderForValue.build();
+          onChanged();
+        } else {
+          currentBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      public Builder mergeCurrent(demetra.toolkit.io.protobuf.ToolkitProtos.TsData value) {
+        if (currentBuilder_ == null) {
+          if (current_ != null) {
+            current_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.newBuilder(current_).mergeFrom(value).buildPartial();
+          } else {
+            current_ = value;
+          }
+          onChanged();
+        } else {
+          currentBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      public Builder clearCurrent() {
+        if (currentBuilder_ == null) {
+          current_ = null;
+          onChanged();
+        } else {
+          current_ = null;
+          currentBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder getCurrentBuilder() {
+        
+        onChanged();
+        return getCurrentFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getCurrentOrBuilder() {
+        if (currentBuilder_ != null) {
+          return currentBuilder_.getMessageOrBuilder();
+        } else {
+          return current_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance() : current_;
+        }
+      }
+      /**
+       * <code>.jd3.TsData current = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder> 
+          getCurrentFieldBuilder() {
+        if (currentBuilder_ == null) {
+          currentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              demetra.toolkit.io.protobuf.ToolkitProtos.TsData, demetra.toolkit.io.protobuf.ToolkitProtos.TsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder>(
+                  getCurrent(),
+                  getParentForChildren(),
+                  isClean());
+          current_ = null;
+        }
+        return currentBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jd3.DynamicTsData)
+    }
+
+    // @@protoc_insertion_point(class_scope:jd3.DynamicTsData)
+    private static final demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData();
+    }
+
+    public static demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DynamicTsData>
+        PARSER = new com.google.protobuf.AbstractParser<DynamicTsData>() {
+      @java.lang.Override
+      public DynamicTsData parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new DynamicTsData(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<DynamicTsData> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DynamicTsData> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface TsDataSuppliersOrBuilder extends
       // @@protoc_insertion_point(interface_extends:jd3.TsDataSuppliers)
       com.google.protobuf.MessageOrBuilder {
@@ -28948,19 +29766,19 @@ public final class ToolkitProtos {
       demetra.toolkit.io.protobuf.ToolkitProtos.TsDataOrBuilder getDataOrBuilder();
 
       /**
-       * <code>.jd3.TsMoniker moniker = 3;</code>
-       * @return Whether the moniker field is set.
+       * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
+       * @return Whether the dynamicData field is set.
        */
-      boolean hasMoniker();
+      boolean hasDynamicData();
       /**
-       * <code>.jd3.TsMoniker moniker = 3;</code>
-       * @return The moniker.
+       * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
+       * @return The dynamicData.
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker();
+      demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData getDynamicData();
       /**
-       * <code>.jd3.TsMoniker moniker = 3;</code>
+       * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
        */
-      demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder();
+      demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder getDynamicDataOrBuilder();
 
       public demetra.toolkit.io.protobuf.ToolkitProtos.TsDataSuppliers.Item.SupplierCase getSupplierCase();
     }
@@ -29031,14 +29849,14 @@ public final class ToolkitProtos {
                 break;
               }
               case 26: {
-                demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder subBuilder = null;
+                demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder subBuilder = null;
                 if (supplierCase_ == 3) {
-                  subBuilder = ((demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_).toBuilder();
+                  subBuilder = ((demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_).toBuilder();
                 }
                 supplier_ =
-                    input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.parser(), extensionRegistry);
+                    input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.parser(), extensionRegistry);
                 if (subBuilder != null) {
-                  subBuilder.mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_);
+                  subBuilder.mergeFrom((demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_);
                   supplier_ = subBuilder.buildPartial();
                 }
                 supplierCase_ = 3;
@@ -29082,7 +29900,7 @@ public final class ToolkitProtos {
           implements com.google.protobuf.Internal.EnumLite,
               com.google.protobuf.AbstractMessage.InternalOneOfEnum {
         DATA(2),
-        MONIKER(3),
+        DYNAMIC_DATA(3),
         SUPPLIER_NOT_SET(0);
         private final int value;
         private SupplierCase(int value) {
@@ -29101,7 +29919,7 @@ public final class ToolkitProtos {
         public static SupplierCase forNumber(int value) {
           switch (value) {
             case 2: return DATA;
-            case 3: return MONIKER;
+            case 3: return DYNAMIC_DATA;
             case 0: return SUPPLIER_NOT_SET;
             default: return null;
           }
@@ -29181,32 +29999,32 @@ public final class ToolkitProtos {
         return demetra.toolkit.io.protobuf.ToolkitProtos.TsData.getDefaultInstance();
       }
 
-      public static final int MONIKER_FIELD_NUMBER = 3;
+      public static final int DYNAMIC_DATA_FIELD_NUMBER = 3;
       /**
-       * <code>.jd3.TsMoniker moniker = 3;</code>
-       * @return Whether the moniker field is set.
+       * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
+       * @return Whether the dynamicData field is set.
        */
-      public boolean hasMoniker() {
+      public boolean hasDynamicData() {
         return supplierCase_ == 3;
       }
       /**
-       * <code>.jd3.TsMoniker moniker = 3;</code>
-       * @return The moniker.
+       * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
+       * @return The dynamicData.
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData getDynamicData() {
         if (supplierCase_ == 3) {
-           return (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_;
+           return (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_;
         }
-        return demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance();
+        return demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
       }
       /**
-       * <code>.jd3.TsMoniker moniker = 3;</code>
+       * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder getDynamicDataOrBuilder() {
         if (supplierCase_ == 3) {
-           return (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_;
+           return (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_;
         }
-        return demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance();
+        return demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
       }
 
       private byte memoizedIsInitialized = -1;
@@ -29230,7 +30048,7 @@ public final class ToolkitProtos {
           output.writeMessage(2, (demetra.toolkit.io.protobuf.ToolkitProtos.TsData) supplier_);
         }
         if (supplierCase_ == 3) {
-          output.writeMessage(3, (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_);
+          output.writeMessage(3, (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_);
         }
         unknownFields.writeTo(output);
       }
@@ -29250,7 +30068,7 @@ public final class ToolkitProtos {
         }
         if (supplierCase_ == 3) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(3, (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_);
+            .computeMessageSize(3, (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_);
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -29276,8 +30094,8 @@ public final class ToolkitProtos {
                 .equals(other.getData())) return false;
             break;
           case 3:
-            if (!getMoniker()
-                .equals(other.getMoniker())) return false;
+            if (!getDynamicData()
+                .equals(other.getDynamicData())) return false;
             break;
           case 0:
           default:
@@ -29301,8 +30119,8 @@ public final class ToolkitProtos {
             hash = (53 * hash) + getData().hashCode();
             break;
           case 3:
-            hash = (37 * hash) + MONIKER_FIELD_NUMBER;
-            hash = (53 * hash) + getMoniker().hashCode();
+            hash = (37 * hash) + DYNAMIC_DATA_FIELD_NUMBER;
+            hash = (53 * hash) + getDynamicData().hashCode();
             break;
           case 0:
           default:
@@ -29479,10 +30297,10 @@ public final class ToolkitProtos {
             }
           }
           if (supplierCase_ == 3) {
-            if (monikerBuilder_ == null) {
+            if (dynamicDataBuilder_ == null) {
               result.supplier_ = supplier_;
             } else {
-              result.supplier_ = monikerBuilder_.build();
+              result.supplier_ = dynamicDataBuilder_.build();
             }
           }
           result.supplierCase_ = supplierCase_;
@@ -29543,8 +30361,8 @@ public final class ToolkitProtos {
               mergeData(other.getData());
               break;
             }
-            case MONIKER: {
-              mergeMoniker(other.getMoniker());
+            case DYNAMIC_DATA: {
+              mergeDynamicData(other.getDynamicData());
               break;
             }
             case SUPPLIER_NOT_SET: {
@@ -29810,69 +30628,69 @@ public final class ToolkitProtos {
         }
 
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker, demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder> monikerBuilder_;
+            demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder> dynamicDataBuilder_;
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
-         * @return Whether the moniker field is set.
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
+         * @return Whether the dynamicData field is set.
          */
-        public boolean hasMoniker() {
+        public boolean hasDynamicData() {
           return supplierCase_ == 3;
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
-         * @return The moniker.
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
+         * @return The dynamicData.
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker getMoniker() {
-          if (monikerBuilder_ == null) {
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData getDynamicData() {
+          if (dynamicDataBuilder_ == null) {
             if (supplierCase_ == 3) {
-              return (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_;
+              return (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_;
             }
-            return demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance();
+            return demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
           } else {
             if (supplierCase_ == 3) {
-              return monikerBuilder_.getMessage();
+              return dynamicDataBuilder_.getMessage();
             }
-            return demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance();
+            return demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
           }
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
-        public Builder setMoniker(demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker value) {
-          if (monikerBuilder_ == null) {
+        public Builder setDynamicData(demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData value) {
+          if (dynamicDataBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
             }
             supplier_ = value;
             onChanged();
           } else {
-            monikerBuilder_.setMessage(value);
+            dynamicDataBuilder_.setMessage(value);
           }
           supplierCase_ = 3;
           return this;
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
-        public Builder setMoniker(
-            demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder builderForValue) {
-          if (monikerBuilder_ == null) {
+        public Builder setDynamicData(
+            demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder builderForValue) {
+          if (dynamicDataBuilder_ == null) {
             supplier_ = builderForValue.build();
             onChanged();
           } else {
-            monikerBuilder_.setMessage(builderForValue.build());
+            dynamicDataBuilder_.setMessage(builderForValue.build());
           }
           supplierCase_ = 3;
           return this;
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
-        public Builder mergeMoniker(demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker value) {
-          if (monikerBuilder_ == null) {
+        public Builder mergeDynamicData(demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData value) {
+          if (dynamicDataBuilder_ == null) {
             if (supplierCase_ == 3 &&
-                supplier_ != demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance()) {
-              supplier_ = demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.newBuilder((demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_)
+                supplier_ != demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance()) {
+              supplier_ = demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.newBuilder((demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_)
                   .mergeFrom(value).buildPartial();
             } else {
               supplier_ = value;
@@ -29880,18 +30698,18 @@ public final class ToolkitProtos {
             onChanged();
           } else {
             if (supplierCase_ == 3) {
-              monikerBuilder_.mergeFrom(value);
+              dynamicDataBuilder_.mergeFrom(value);
             }
-            monikerBuilder_.setMessage(value);
+            dynamicDataBuilder_.setMessage(value);
           }
           supplierCase_ = 3;
           return this;
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
-        public Builder clearMoniker() {
-          if (monikerBuilder_ == null) {
+        public Builder clearDynamicData() {
+          if (dynamicDataBuilder_ == null) {
             if (supplierCase_ == 3) {
               supplierCase_ = 0;
               supplier_ = null;
@@ -29902,49 +30720,49 @@ public final class ToolkitProtos {
               supplierCase_ = 0;
               supplier_ = null;
             }
-            monikerBuilder_.clear();
+            dynamicDataBuilder_.clear();
           }
           return this;
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder getMonikerBuilder() {
-          return getMonikerFieldBuilder().getBuilder();
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder getDynamicDataBuilder() {
+          return getDynamicDataFieldBuilder().getBuilder();
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
-        public demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder getMonikerOrBuilder() {
-          if ((supplierCase_ == 3) && (monikerBuilder_ != null)) {
-            return monikerBuilder_.getMessageOrBuilder();
+        public demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder getDynamicDataOrBuilder() {
+          if ((supplierCase_ == 3) && (dynamicDataBuilder_ != null)) {
+            return dynamicDataBuilder_.getMessageOrBuilder();
           } else {
             if (supplierCase_ == 3) {
-              return (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_;
+              return (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_;
             }
-            return demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance();
+            return demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
           }
         }
         /**
-         * <code>.jd3.TsMoniker moniker = 3;</code>
+         * <code>.jd3.DynamicTsData dynamic_data = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
-            demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker, demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder> 
-            getMonikerFieldBuilder() {
-          if (monikerBuilder_ == null) {
+            demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder> 
+            getDynamicDataFieldBuilder() {
+          if (dynamicDataBuilder_ == null) {
             if (!(supplierCase_ == 3)) {
-              supplier_ = demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.getDefaultInstance();
+              supplier_ = demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.getDefaultInstance();
             }
-            monikerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-                demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker, demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.TsMonikerOrBuilder>(
-                    (demetra.toolkit.io.protobuf.ToolkitProtos.TsMoniker) supplier_,
+            dynamicDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsDataOrBuilder>(
+                    (demetra.toolkit.io.protobuf.ToolkitProtos.DynamicTsData) supplier_,
                     getParentForChildren(),
                     isClean());
             supplier_ = null;
           }
           supplierCase_ = 3;
           onChanged();;
-          return monikerBuilder_;
+          return dynamicDataBuilder_;
         }
         @java.lang.Override
         public final Builder setUnknownFields(
@@ -35660,6 +36478,11 @@ public final class ToolkitProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jd3_TsMoniker_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jd3_DynamicTsData_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jd3_DynamicTsData_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jd3_TsDataSuppliers_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -35794,52 +36617,54 @@ public final class ToolkitProtos {
       "ht\030\002 \001(\001\"V\n\017ChainedCalendar\022\021\n\tcalendar1" +
       "\030\001 \001(\t\022\021\n\tcalendar2\030\002 \001(\t\022\035\n\nbreak_date\030" +
       "\003 \001(\0132\t.jd3.Date\"\'\n\tTsMoniker\022\016\n\006source\030" +
-      "\001 \001(\t\022\n\n\002id\030\002 \001(\t\"\235\001\n\017TsDataSuppliers\022(\n" +
+      "\001 \001(\t\022\n\n\002id\030\002 \001(\t\"N\n\rDynamicTsData\022\037\n\007mo" +
+      "niker\030\001 \001(\0132\016.jd3.TsMoniker\022\034\n\007current\030\002" +
+      " \001(\0132\013.jd3.TsData\"\246\001\n\017TsDataSuppliers\022(\n" +
       "\005items\030\001 \003(\0132\031.jd3.TsDataSuppliers.Item\032" +
-      "`\n\004Item\022\014\n\004name\030\001 \001(\t\022\033\n\004data\030\002 \001(\0132\013.jd" +
-      "3.TsDataH\000\022!\n\007moniker\030\003 \001(\0132\016.jd3.TsMoni" +
-      "kerH\000B\n\n\010supplier\"\227\002\n\020ModellingContext\0227" +
-      "\n\tcalendars\030\001 \003(\0132$.jd3.ModellingContext" +
-      ".CalendarsEntry\0227\n\tvariables\030\002 \003(\0132$.jd3" +
-      ".ModellingContext.VariablesEntry\032I\n\016Cale" +
-      "ndarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027" +
-      ".jd3.CalendarDefinition:\0028\001\032F\n\016Variables" +
-      "Entry\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002 \001(\0132\024.jd3." +
-      "TsDataSuppliers:\0028\001\"\320\001\n\020ProcessingDetail" +
-      "\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsDataH\000\022\035\n\005array\030\002 \001" +
-      "(\0132\014.jd3.DoublesH\000\022\035\n\006matrix\030\003 \001(\0132\013.jd3" +
-      ".MatrixH\000\022$\n\004test\030\004 \001(\0132\024.jd3.Statistica" +
-      "lTestH\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n\006ivalue\030\006 \001" +
-      "(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000B\006\n\004data\"\216\001\n\025Proce" +
-      "ssingInformation\022\014\n\004name\030\001 \001(\t\022\016\n\006origin" +
-      "\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004 \001(\0162\024.jd3." +
-      "InformationType\022&\n\007details\030\005 \003(\0132\025.jd3.P" +
-      "rocessingDetail\"9\n\016ProcessingLogs\022\'\n\003log" +
-      "\030\001 \003(\0132\032.jd3.ProcessingInformation*\215\001\n\rS" +
-      "electionType\022\014\n\010SPAN_ALL\020\000\022\r\n\tSPAN_FROM\020" +
-      "\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN_BETWEEN\020\003\022\r\n\tSPAN" +
-      "_LAST\020\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SPAN_EXCLUDIN" +
-      "G\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n\rParameterType\022\024\n\020" +
-      "PARAMETER_UNUSED\020\000\022\027\n\023PARAMETER_UNDEFINE" +
-      "D\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021PARAMETER_IN" +
-      "ITIAL\020\003\022\027\n\023PARAMETER_ESTIMATED\020\004*\244\004\n\rCal" +
-      "endarEvent\022\027\n\023HOLIDAY_UNSPECIFIED\020\000\022\023\n\017H" +
-      "OLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHROVEMONDAY" +
-      "\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003\022\030\n\024HOLIDAY" +
-      "_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EASTER\020\005\022\030\n\024H" +
-      "OLIDAY_JULIANEASTER\020\006\022\032\n\026HOLIDAY_MAUNDYT" +
-      "HURSDAY\020\007\022\026\n\022HOLIDAY_GOODFRIDAY\020\010\022\030\n\024HOL" +
-      "IDAY_EASTERMONDAY\020\t\022\025\n\021HOLIDAY_ASCENSION" +
-      "\020\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025HOLIDAY_COR" +
-      "PUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITMONDAY\020\r\022\022\n\016" +
-      "HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_ASSUMPTION\020\017" +
-      "\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOLIDAY_HALLOW" +
-      "EEN\020\021\022\030\n\024HOLIDAY_ALLSAINTSDAY\020\022\022\025\n\021HOLID" +
-      "AY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANKSGIVING\020\024" +
-      "\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017InformationTy" +
-      "pe\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Error\020\002B.\n\033" +
-      "demetra.toolkit.io.protobufB\rToolkitProt" +
-      "osP\000b\006proto3"
+      "i\n\004Item\022\014\n\004name\030\001 \001(\t\022\033\n\004data\030\002 \001(\0132\013.jd" +
+      "3.TsDataH\000\022*\n\014dynamic_data\030\003 \001(\0132\022.jd3.D" +
+      "ynamicTsDataH\000B\n\n\010supplier\"\227\002\n\020Modelling" +
+      "Context\0227\n\tcalendars\030\001 \003(\0132$.jd3.Modelli" +
+      "ngContext.CalendarsEntry\0227\n\tvariables\030\002 " +
+      "\003(\0132$.jd3.ModellingContext.VariablesEntr" +
+      "y\032I\n\016CalendarsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005valu" +
+      "e\030\002 \001(\0132\027.jd3.CalendarDefinition:\0028\001\032F\n\016" +
+      "VariablesEntry\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002 \001" +
+      "(\0132\024.jd3.TsDataSuppliers:\0028\001\"\320\001\n\020Process" +
+      "ingDetail\022\031\n\002ts\030\001 \001(\0132\013.jd3.TsDataH\000\022\035\n\005" +
+      "array\030\002 \001(\0132\014.jd3.DoublesH\000\022\035\n\006matrix\030\003 " +
+      "\001(\0132\013.jd3.MatrixH\000\022$\n\004test\030\004 \001(\0132\024.jd3.S" +
+      "tatisticalTestH\000\022\021\n\007message\030\005 \001(\tH\000\022\020\n\006i" +
+      "value\030\006 \001(\005H\000\022\020\n\006dvalue\030\007 \001(\001H\000B\006\n\004data\"" +
+      "\216\001\n\025ProcessingInformation\022\014\n\004name\030\001 \001(\t\022" +
+      "\016\n\006origin\030\002 \001(\t\022\013\n\003msg\030\003 \001(\t\022\"\n\004type\030\004 \001" +
+      "(\0162\024.jd3.InformationType\022&\n\007details\030\005 \003(" +
+      "\0132\025.jd3.ProcessingDetail\"9\n\016ProcessingLo" +
+      "gs\022\'\n\003log\030\001 \003(\0132\032.jd3.ProcessingInformat" +
+      "ion*\215\001\n\rSelectionType\022\014\n\010SPAN_ALL\020\000\022\r\n\tS" +
+      "PAN_FROM\020\001\022\013\n\007SPAN_TO\020\002\022\020\n\014SPAN_BETWEEN\020" +
+      "\003\022\r\n\tSPAN_LAST\020\004\022\016\n\nSPAN_FIRST\020\005\022\022\n\016SPAN" +
+      "_EXCLUDING\020\006\022\r\n\tSPAN_NONE\020\007*\203\001\n\rParamete" +
+      "rType\022\024\n\020PARAMETER_UNUSED\020\000\022\027\n\023PARAMETER" +
+      "_UNDEFINED\020\001\022\023\n\017PARAMETER_FIXED\020\002\022\025\n\021PAR" +
+      "AMETER_INITIAL\020\003\022\027\n\023PARAMETER_ESTIMATED\020" +
+      "\004*\244\004\n\rCalendarEvent\022\027\n\023HOLIDAY_UNSPECIFI" +
+      "ED\020\000\022\023\n\017HOLIDAY_NEWYEAR\020\001\022\030\n\024HOLIDAY_SHR" +
+      "OVEMONDAY\020\002\022\031\n\025HOLIDAY_SHROVETUESDAY\020\003\022\030" +
+      "\n\024HOLIDAY_ASHWEDNESDAY\020\004\022\022\n\016HOLIDAY_EAST" +
+      "ER\020\005\022\030\n\024HOLIDAY_JULIANEASTER\020\006\022\032\n\026HOLIDA" +
+      "Y_MAUNDYTHURSDAY\020\007\022\026\n\022HOLIDAY_GOODFRIDAY" +
+      "\020\010\022\030\n\024HOLIDAY_EASTERMONDAY\020\t\022\025\n\021HOLIDAY_" +
+      "ASCENSION\020\n\022\025\n\021HOLIDAY_PENTECOST\020\013\022\031\n\025HO" +
+      "LIDAY_CORPUSCHRISTI\020\014\022\026\n\022HOLIDAY_WHITMON" +
+      "DAY\020\r\022\022\n\016HOLIDAY_MAYDAY\020\016\022\026\n\022HOLIDAY_ASS" +
+      "UMPTION\020\017\022\024\n\020HOLIDAY_LABORDAY\020\020\022\025\n\021HOLID" +
+      "AY_HALLOWEEN\020\021\022\030\n\024HOLIDAY_ALLSAINTSDAY\020\022" +
+      "\022\025\n\021HOLIDAY_ARMISTICE\020\023\022\030\n\024HOLIDAY_THANK" +
+      "SGIVING\020\024\022\025\n\021HOLIDAY_CHRISTMAS\020\025*3\n\017Info" +
+      "rmationType\022\010\n\004Info\020\000\022\013\n\007Warning\020\001\022\t\n\005Er" +
+      "ror\020\002B,\n\033demetra.toolkit.io.protobufB\rTo" +
+      "olkitProtosb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -36007,8 +36832,14 @@ public final class ToolkitProtos {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsMoniker_descriptor,
         new java.lang.String[] { "Source", "Id", });
-    internal_static_jd3_TsDataSuppliers_descriptor =
+    internal_static_jd3_DynamicTsData_descriptor =
       getDescriptor().getMessageTypes().get(26);
+    internal_static_jd3_DynamicTsData_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jd3_DynamicTsData_descriptor,
+        new java.lang.String[] { "Moniker", "Current", });
+    internal_static_jd3_TsDataSuppliers_descriptor =
+      getDescriptor().getMessageTypes().get(27);
     internal_static_jd3_TsDataSuppliers_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsDataSuppliers_descriptor,
@@ -36018,9 +36849,9 @@ public final class ToolkitProtos {
     internal_static_jd3_TsDataSuppliers_Item_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_TsDataSuppliers_Item_descriptor,
-        new java.lang.String[] { "Name", "Data", "Moniker", "Supplier", });
+        new java.lang.String[] { "Name", "Data", "DynamicData", "Supplier", });
     internal_static_jd3_ModellingContext_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_jd3_ModellingContext_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ModellingContext_descriptor,
@@ -36038,19 +36869,19 @@ public final class ToolkitProtos {
         internal_static_jd3_ModellingContext_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_jd3_ProcessingDetail_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_jd3_ProcessingDetail_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingDetail_descriptor,
         new java.lang.String[] { "Ts", "Array", "Matrix", "Test", "Message", "Ivalue", "Dvalue", "Data", });
     internal_static_jd3_ProcessingInformation_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_jd3_ProcessingInformation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingInformation_descriptor,
         new java.lang.String[] { "Name", "Origin", "Msg", "Type", "Details", });
     internal_static_jd3_ProcessingLogs_descriptor =
-      getDescriptor().getMessageTypes().get(30);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_jd3_ProcessingLogs_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jd3_ProcessingLogs_descriptor,

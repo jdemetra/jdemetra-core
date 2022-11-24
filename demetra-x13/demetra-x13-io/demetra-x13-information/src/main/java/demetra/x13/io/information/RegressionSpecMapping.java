@@ -159,8 +159,16 @@ class RegressionSpecMapping {
         sel = regInfo.select(USERS, InformationSet.class);
         if (!sel.isEmpty()) {
             for (Information<InformationSet> sub : sel) {
-                Variable<TsContextVariable> v = TsContextVariableMapping.readLegacy(sub.getValue());
-                builder.userDefinedVariable(v.withCoefficients(coefficientsOf(regInfo, v.getName())));
+                List<Variable<TsContextVariable>> v = TsContextVariableMapping.readLegacy(sub.getValue());
+                if (!v.isEmpty()) {
+                    Parameter[] c = coefficientsOf(regInfo, v.get(0).getName());
+                    int j = 0;
+                    if (c != null) {
+                        v.forEach(var -> builder.userDefinedVariable(var.withCoefficient(c[j])));
+                    } else {
+                        v.forEach(var -> builder.userDefinedVariable(var));
+                    }
+                }
             }
         }
     }
@@ -251,7 +259,7 @@ class RegressionSpecMapping {
             int idx = 1;
             for (Variable<InterventionVariable> v : viv) {
                 InformationSet w = VariableMapping.writeIV(v, verbose);
-                info.set(USER + (idx++), w);
+                info.set(INTERVENTION + (idx++), w);
             }
         }
         return info;

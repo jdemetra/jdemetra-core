@@ -19,7 +19,9 @@ package demetra.modelling.io.information;
 import demetra.information.InformationSet;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -30,6 +32,7 @@ public class TsContextVariableMapping {
 
     public static final String NAME_LEGACY = "name", ID = "id",
             EFFECT_LEGACY = "effect",
+            LAG = "lag",
             FIRSTLAG = "firstlag",
             LASTLAG = "lastlag";
 
@@ -37,11 +40,9 @@ public class TsContextVariableMapping {
         TsContextVariable var = v.getCore();
         InformationSet info = new InformationSet();
         info.set(NAME_LEGACY, var.getId());
-        if (verbose || var.getFirstLag() != 0) {
-            info.add(FIRSTLAG, var.getFirstLag());
-        }
-        if (verbose || var.getLastLag() != 0) {
-            info.add(LASTLAG, var.getLastLag());
+        if (verbose || var.getLag() != 0) {
+            info.add(FIRSTLAG, var.getLag());
+            info.add(LASTLAG, var.getLag());
         }
         String effect = v.attribute("regeffect");
         if (effect == null) {
@@ -57,16 +58,13 @@ public class TsContextVariableMapping {
         TsContextVariable var = v.getCore();
         InformationSet info = new InformationSet();
         info.set(ID, var.getId());
-        if (verbose || var.getFirstLag() != 0) {
-            info.add(FIRSTLAG, var.getFirstLag());
-        }
-        if (verbose || var.getLastLag() != 0) {
-            info.add(LASTLAG, var.getLastLag());
+        if (verbose || var.getLag() != 0) {
+            info.add(LAG, var.getLag());
         }
         return info;
     }
 
-    public Variable<TsContextVariable> readLegacy(InformationSet info) {
+    public List<Variable<TsContextVariable>> readLegacy(InformationSet info) {
 
         String id = info.get(NAME_LEGACY, String.class);
         Integer FL = info.get(FIRSTLAG, Integer.class);
@@ -77,17 +75,28 @@ public class TsContextVariableMapping {
         if (effect == null) {
             effect = "Undefined";
         }
-        TsContextVariable var = new TsContextVariable(id, fl, ll);
-        return Variable.variable(id, var, Collections.singletonMap("regeffect", effect));
+        if (fl > ll) {
+            return Collections.emptyList();
+        }
+        if (ll == fl) {
+            TsContextVariable var = new TsContextVariable(id, ll);
+            Variable v = Variable.variable(id, var, Collections.singletonMap("regeffect", effect));
+            return Collections.singletonList(v);
+        }
+        ArrayList<Variable<TsContextVariable>> list = new ArrayList<>();
+        for (int i = fl; i < ll; ++i) {
+            TsContextVariable var = new TsContextVariable(id, i);
+            list.add(Variable.<TsContextVariable>variable(id, var, Collections.singletonMap("regeffect", effect)));
+
+        }
+        return list;
     }
 
     public TsContextVariable read(InformationSet info) {
 
         String id = info.get(ID, String.class);
-        Integer FL = info.get(FIRSTLAG, Integer.class);
-        int fl = FL == null ? 0 : FL;
-        Integer LL = info.get(LASTLAG, Integer.class);
-        int ll = LL == null ? 0 : LL;
-        return new TsContextVariable(id, fl, ll);
+        Integer L = info.get(LAG, Integer.class);
+        int l = L == null ? 0 : L;
+         return new TsContextVariable(id, l);
     }
 }
