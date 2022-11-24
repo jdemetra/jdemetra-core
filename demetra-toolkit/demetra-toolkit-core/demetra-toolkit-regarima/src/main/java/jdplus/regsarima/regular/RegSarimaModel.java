@@ -109,7 +109,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         if (description.isMean()) {
             ITsVariable cur = new TrendConstant(arima.getD(), arima.getBd());
             double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
-            regressionDesc.add(new RegressionDesc(cur, 0, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+            regressionDesc.add(new RegressionDesc("const", cur, 0, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
             variables[k++] = Variable.variable("const", cur)
                     .withCoefficient(Parameter.estimated(c));
         }
@@ -122,10 +122,10 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                     double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
                     if (e == 0) {
                         p[j] = Parameter.zero();
-                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, 0, 0, 0));
+                        regressionDesc.add(new RegressionDesc(var.getName(), var.getCore(), j, pos++, 0, 0, 0));
                     } else {
                         p[j] = Parameter.estimated(c);
-                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                        regressionDesc.add(new RegressionDesc(var.getName(), var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
                     }
                 }
                 variables[k++] = var.withCoefficients(p);
@@ -135,7 +135,7 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                     if (p[j].isFree()) {
                         double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
                         p[j] = Parameter.estimated(c);
-                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                        regressionDesc.add(new RegressionDesc(var.getName(), var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
                     }
                 }
                 variables[k++] = var.withCoefficients(p);

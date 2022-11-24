@@ -18,11 +18,8 @@ package demetra.timeseries.regression;
 
 import demetra.data.Range;
 import demetra.timeseries.TimeSeriesDomain;
-import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
-import demetra.timeseries.TsException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

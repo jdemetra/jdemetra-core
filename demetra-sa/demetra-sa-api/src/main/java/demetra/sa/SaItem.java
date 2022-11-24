@@ -23,6 +23,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsFactory;
 import demetra.timeseries.TsInformationType;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ModellingContext;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,8 +36,8 @@ import java.util.Map;
 @lombok.Value
 @lombok.Builder(builderClassName = "Builder", toBuilder = true)
 public final class SaItem {
-    
-    public static final String COMMENT="comment";
+
+    public static final String COMMENT = "comment";
 
     @lombok.NonNull
     String name;
@@ -53,12 +54,12 @@ public final class SaItem {
      */
     @lombok.EqualsAndHashCode.Exclude
     int priority;
-    
-    public String getComment(){
+
+    public String getComment() {
         return meta.get(COMMENT);
     }
-    
-    public SaItem copy(){
+
+    public SaItem copy() {
         return toBuilder().estimation(estimation == null ? null : estimation.flush()).build();
     }
 
@@ -97,21 +98,22 @@ public final class SaItem {
     }
 
     public SaItem withComment(String ncomment) {
-        Map<String, String> info=new HashMap<>(meta);
+        Map<String, String> info = new HashMap<>(meta);
         info.put(COMMENT, ncomment);
         return new SaItem(name, definition, info, priority, estimation);
     }
-    
-    public SaItem withDomainSpecification(SaSpecification dspec){
+
+    public SaItem withDomainSpecification(SaSpecification dspec) {
         return of(definition.getTs(), dspec);
     }
 
     /**
      * Keep the domain specification and use the new estimationspec
-     * @param espec Estimation spec 
-     * @return 
+     *
+     * @param espec Estimation spec
+     * @return
      */
-    public SaItem withSpecification(SaSpecification espec){
+    public SaItem withSpecification(SaSpecification espec) {
         return SaItem.builder()
                 .name(name)
                 .definition(SaDefinition.builder()
@@ -124,11 +126,13 @@ public final class SaItem {
     }
 
     /**
-     * Keep the domain and the estimation specifications and put a new time series
+     * Keep the domain and the estimation specifications and put a new time
+     * series
+     *
      * @param ts
-     * @return 
+     * @return
      */
-   public SaItem withTs(Ts ts){
+    public SaItem withTs(Ts ts) {
         return SaItem.builder()
                 .name(name)
                 .definition(SaDefinition.builder()
@@ -140,7 +144,7 @@ public final class SaItem {
                 .build();
     }
 
-   public void accept() {
+    public void accept() {
         synchronized (this) {
             if (estimation == null) {
                 return;
@@ -157,6 +161,7 @@ public final class SaItem {
             estimation = SaManager.resetQuality(estimation);
         }
     }
+
     /**
      * Process this item.The Processing is always executed, even if the item has
      * already been estimated. To avoid re-estimation, use getEstimation (which
@@ -170,7 +175,7 @@ public final class SaItem {
         synchronized (this) {
             estimation = SaManager.process(definition, context, verbose);
         }
-        return estimation.getQuality() != ProcQuality.Undefined;
+        return estimation != null && estimation.getQuality() != ProcQuality.Undefined;
     }
 
     public boolean compute(ModellingContext context, boolean verbose) {
@@ -182,12 +187,15 @@ public final class SaItem {
                 // Unoptimized solution
                 // SaSpecification pointSpec = estimation.getPointSpec();
                 //if (pointSpec == null)
-                SaSpecification pointSpec=definition.activeSpecification();
+                SaSpecification pointSpec = definition.activeSpecification();
                 SaDefinition pdef = SaDefinition.builder()
                         .ts(definition.getTs())
                         .domainSpec(pointSpec)
                         .build();
                 SaEstimation nestimation = SaManager.process(pdef, context, verbose);
+                if (nestimation == null) {
+                    return false;
+                }
                 estimation = nestimation.withQuality(estimation.getQuality());
             }
         }
@@ -232,7 +240,7 @@ public final class SaItem {
                     e.getResults(), e.getDiagnostics(), e.getQuality());
         }
     }
-    
+
     public SaItem refresh(EstimationPolicy policy, TsInformationType type) {
         TsData oldData = definition.getTs().getData();
         Ts nts = type != TsInformationType.None ? definition.getTs().unfreeze(TsFactory.getDefault(), type) : definition.getTs();
@@ -257,9 +265,13 @@ public final class SaItem {
                         case LastOutliers:
                             frozenSpan = oldData.getDomain().select(TimeSelector.excluding(0, oldData.getAnnualFrequency()));
                             break;
-                        case Current: {
-                            frozenSpan = oldData.getDomain();
-                        }
+                        case Current:
+                            TsPeriod end = oldData.getEnd();
+                            TsPeriod nend = nts.getData().getEnd();
+                            int n = end.until(nend);
+                            if (n > 0) {
+                                frozenSpan = TsDomain.of(end, n);
+                            }
                     }
                 }
                 espec = fac.refreshSpec(pspec, dspec, policy.getPolicy(), frozenSpan);

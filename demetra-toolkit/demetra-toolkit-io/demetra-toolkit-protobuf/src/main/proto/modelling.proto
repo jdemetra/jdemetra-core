@@ -41,11 +41,10 @@ enum TradingDays{
 
 message TsVariable{
     string name = 1;
-	string id = 2;
-    int32 first_lag = 3;
-	int32 last_lag = 4;
-	repeated jd3.Parameter coefficient = 5;
-	map<string, string> metadata = 6;
+    string id = 2;
+    int32 lag = 3;
+    jd3.Parameter coefficient = 4;
+    map<string, string> metadata = 5;
 }
 
 message Ramp{

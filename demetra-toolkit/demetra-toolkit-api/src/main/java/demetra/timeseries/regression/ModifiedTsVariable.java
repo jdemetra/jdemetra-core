@@ -61,7 +61,9 @@ public class ModifiedTsVariable implements ITsVariable {
          * @param idx Index of the output of the modifier
          * @return
          */
-        String description(int idx);
+        default String description(int idx){
+            return description();
+        }
     }
 
     @lombok.NonNull

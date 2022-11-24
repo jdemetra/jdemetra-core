@@ -7,10 +7,12 @@ package jdplus.tramo;
 
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
+import demetra.data.Range;
 import demetra.modelling.TransformationType;
 import demetra.sa.EstimationPolicyType;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.AutoModelSpec;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.ModellingUtility;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -95,7 +98,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             }
             case Fixed, Current -> {
                 fixArima(currentSpec, domainSpec, builder);
-                fixVariables(currentSpec.getRegression(), domainSpec, builder);
+                fixVariables(currentSpec.getRegression(), domainSpec, builder, null);
             }
             default -> {
                 return currentSpec;
@@ -416,7 +419,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         }
     }
 
-    private void fixVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder) {
+    private void fixVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozenDomain) {
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
         if (mean != null && mean.isDefined()) {
@@ -426,8 +429,27 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         List<Variable<InterventionVariable>> iv = reg.getInterventionVariables();
         List<Variable<InterventionVariable>> niv = new ArrayList<>();
         iv.forEach(v -> {
-            niv.add(v.withCoefficients(Parameter.fixParameters(v.getCoefficients())));
+            String n = v.getName();
+            if (!n.startsWith(EstimationPolicyType.IV_AO)) {
+                niv.add(v.withCoefficients(Parameter.fixParameters(v.getCoefficients())));
+            } else {
+                niv.add(v);
+            }
         });
+        if (frozenDomain != null) {
+            // Current AO: Add IV (ao for the frozen period)
+                for (int i=0; i<frozenDomain.getLength(); ++i){
+                    TsPeriod period = frozenDomain.get(i);
+                    LocalDateTime day = period.start();
+                    InterventionVariable ao = InterventionVariable.builder()
+                            .sequence(Range.of(day, day))
+                            .build();
+                    niv.add(Variable.<InterventionVariable>builder()
+                            .name(EstimationPolicyType.IV_AO+period.display())
+                            .core(ao)
+                            .build());
+                }
+        }
 
         List<Variable<IOutlier>> o = reg.getOutliers();
         List<Variable<IOutlier>> no = new ArrayList<>();

@@ -635,47 +635,32 @@ public final class ModellingProtos {
         getIdBytes();
 
     /**
-     * <code>int32 first_lag = 3;</code>
-     * @return The firstLag.
+     * <code>int32 lag = 3;</code>
+     * @return The lag.
      */
-    int getFirstLag();
+    int getLag();
 
     /**
-     * <code>int32 last_lag = 4;</code>
-     * @return The lastLag.
+     * <code>.jd3.Parameter coefficient = 4;</code>
+     * @return Whether the coefficient field is set.
      */
-    int getLastLag();
+    boolean hasCoefficient();
+    /**
+     * <code>.jd3.Parameter coefficient = 4;</code>
+     * @return The coefficient.
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient();
+    /**
+     * <code>.jd3.Parameter coefficient = 4;</code>
+     */
+    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder();
 
     /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
-        getCoefficientList();
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient(int index);
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    int getCoefficientCount();
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-        getCoefficientOrBuilderList();
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder(
-        int index);
-
-    /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
     int getMetadataCount();
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
     boolean containsMetadata(
         java.lang.String key);
@@ -686,19 +671,19 @@ public final class ModellingProtos {
     java.util.Map<java.lang.String, java.lang.String>
     getMetadata();
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
     java.util.Map<java.lang.String, java.lang.String>
     getMetadataMap();
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
 
     java.lang.String getMetadataOrDefault(
         java.lang.String key,
         java.lang.String defaultValue);
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
 
     java.lang.String getMetadataOrThrow(
@@ -719,7 +704,6 @@ public final class ModellingProtos {
     private TsVariable() {
       name_ = "";
       id_ = "";
-      coefficient_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -767,28 +751,27 @@ public final class ModellingProtos {
             }
             case 24: {
 
-              firstLag_ = input.readInt32();
+              lag_ = input.readInt32();
               break;
             }
-            case 32: {
+            case 34: {
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
+              if (coefficient_ != null) {
+                subBuilder = coefficient_.toBuilder();
+              }
+              coefficient_ = input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(coefficient_);
+                coefficient_ = subBuilder.buildPartial();
+              }
 
-              lastLag_ = input.readInt32();
               break;
             }
             case 42: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                coefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              coefficient_.add(
-                  input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
-              break;
-            }
-            case 50: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
                 metadata_ = com.google.protobuf.MapField.newMapField(
                     MetadataDefaultEntryHolder.defaultEntry);
-                mutable_bitField0_ |= 0x00000002;
+                mutable_bitField0_ |= 0x00000001;
               }
               com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
               metadata__ = input.readMessage(
@@ -812,9 +795,6 @@ public final class ModellingProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000001) != 0)) {
-          coefficient_ = java.util.Collections.unmodifiableList(coefficient_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -829,7 +809,7 @@ public final class ModellingProtos {
     protected com.google.protobuf.MapField internalGetMapField(
         int number) {
       switch (number) {
-        case 6:
+        case 5:
           return internalGetMetadata();
         default:
           throw new RuntimeException(
@@ -916,62 +896,40 @@ public final class ModellingProtos {
       }
     }
 
-    public static final int FIRST_LAG_FIELD_NUMBER = 3;
-    private int firstLag_;
+    public static final int LAG_FIELD_NUMBER = 3;
+    private int lag_;
     /**
-     * <code>int32 first_lag = 3;</code>
-     * @return The firstLag.
+     * <code>int32 lag = 3;</code>
+     * @return The lag.
      */
-    public int getFirstLag() {
-      return firstLag_;
+    public int getLag() {
+      return lag_;
     }
 
-    public static final int LAST_LAG_FIELD_NUMBER = 4;
-    private int lastLag_;
+    public static final int COEFFICIENT_FIELD_NUMBER = 4;
+    private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter coefficient_;
     /**
-     * <code>int32 last_lag = 4;</code>
-     * @return The lastLag.
+     * <code>.jd3.Parameter coefficient = 4;</code>
+     * @return Whether the coefficient field is set.
      */
-    public int getLastLag() {
-      return lastLag_;
+    public boolean hasCoefficient() {
+      return coefficient_ != null;
+    }
+    /**
+     * <code>.jd3.Parameter coefficient = 4;</code>
+     * @return The coefficient.
+     */
+    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
+      return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
+    }
+    /**
+     * <code>.jd3.Parameter coefficient = 4;</code>
+     */
+    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
+      return getCoefficient();
     }
 
-    public static final int COEFFICIENT_FIELD_NUMBER = 5;
-    private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> coefficient_;
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getCoefficientList() {
-      return coefficient_;
-    }
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-        getCoefficientOrBuilderList() {
-      return coefficient_;
-    }
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    public int getCoefficientCount() {
-      return coefficient_.size();
-    }
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient(int index) {
-      return coefficient_.get(index);
-    }
-    /**
-     * <code>repeated .jd3.Parameter coefficient = 5;</code>
-     */
-    public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder(
-        int index) {
-      return coefficient_.get(index);
-    }
-
-    public static final int METADATA_FIELD_NUMBER = 6;
+    public static final int METADATA_FIELD_NUMBER = 5;
     private static final class MetadataDefaultEntryHolder {
       static final com.google.protobuf.MapEntry<
           java.lang.String, java.lang.String> defaultEntry =
@@ -998,7 +956,7 @@ public final class ModellingProtos {
       return internalGetMetadata().getMap().size();
     }
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
 
     public boolean containsMetadata(
@@ -1014,14 +972,14 @@ public final class ModellingProtos {
       return getMetadataMap();
     }
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
 
     public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
       return internalGetMetadata().getMap();
     }
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
 
     public java.lang.String getMetadataOrDefault(
@@ -1033,7 +991,7 @@ public final class ModellingProtos {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <code>map&lt;string, string&gt; metadata = 6;</code>
+     * <code>map&lt;string, string&gt; metadata = 5;</code>
      */
 
     public java.lang.String getMetadataOrThrow(
@@ -1067,21 +1025,18 @@ public final class ModellingProtos {
       if (!getIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, id_);
       }
-      if (firstLag_ != 0) {
-        output.writeInt32(3, firstLag_);
+      if (lag_ != 0) {
+        output.writeInt32(3, lag_);
       }
-      if (lastLag_ != 0) {
-        output.writeInt32(4, lastLag_);
-      }
-      for (int i = 0; i < coefficient_.size(); i++) {
-        output.writeMessage(5, coefficient_.get(i));
+      if (coefficient_ != null) {
+        output.writeMessage(4, getCoefficient());
       }
       com.google.protobuf.GeneratedMessageV3
         .serializeStringMapTo(
           output,
           internalGetMetadata(),
           MetadataDefaultEntryHolder.defaultEntry,
-          6);
+          5);
       unknownFields.writeTo(output);
     }
 
@@ -1097,17 +1052,13 @@ public final class ModellingProtos {
       if (!getIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, id_);
       }
-      if (firstLag_ != 0) {
+      if (lag_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, firstLag_);
+          .computeInt32Size(3, lag_);
       }
-      if (lastLag_ != 0) {
+      if (coefficient_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, lastLag_);
-      }
-      for (int i = 0; i < coefficient_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, coefficient_.get(i));
+          .computeMessageSize(4, getCoefficient());
       }
       for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
            : internalGetMetadata().getMap().entrySet()) {
@@ -1117,7 +1068,7 @@ public final class ModellingProtos {
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(6, metadata__);
+            .computeMessageSize(5, metadata__);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1138,12 +1089,13 @@ public final class ModellingProtos {
           .equals(other.getName())) return false;
       if (!getId()
           .equals(other.getId())) return false;
-      if (getFirstLag()
-          != other.getFirstLag()) return false;
-      if (getLastLag()
-          != other.getLastLag()) return false;
-      if (!getCoefficientList()
-          .equals(other.getCoefficientList())) return false;
+      if (getLag()
+          != other.getLag()) return false;
+      if (hasCoefficient() != other.hasCoefficient()) return false;
+      if (hasCoefficient()) {
+        if (!getCoefficient()
+            .equals(other.getCoefficient())) return false;
+      }
       if (!internalGetMetadata().equals(
           other.internalGetMetadata())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1161,13 +1113,11 @@ public final class ModellingProtos {
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
-      hash = (37 * hash) + FIRST_LAG_FIELD_NUMBER;
-      hash = (53 * hash) + getFirstLag();
-      hash = (37 * hash) + LAST_LAG_FIELD_NUMBER;
-      hash = (53 * hash) + getLastLag();
-      if (getCoefficientCount() > 0) {
+      hash = (37 * hash) + LAG_FIELD_NUMBER;
+      hash = (53 * hash) + getLag();
+      if (hasCoefficient()) {
         hash = (37 * hash) + COEFFICIENT_FIELD_NUMBER;
-        hash = (53 * hash) + getCoefficientList().hashCode();
+        hash = (53 * hash) + getCoefficient().hashCode();
       }
       if (!internalGetMetadata().getMap().isEmpty()) {
         hash = (37 * hash) + METADATA_FIELD_NUMBER;
@@ -1284,7 +1234,7 @@ public final class ModellingProtos {
       protected com.google.protobuf.MapField internalGetMapField(
           int number) {
         switch (number) {
-          case 6:
+          case 5:
             return internalGetMetadata();
           default:
             throw new RuntimeException(
@@ -1295,7 +1245,7 @@ public final class ModellingProtos {
       protected com.google.protobuf.MapField internalGetMutableMapField(
           int number) {
         switch (number) {
-          case 6:
+          case 5:
             return internalGetMutableMetadata();
           default:
             throw new RuntimeException(
@@ -1323,7 +1273,6 @@ public final class ModellingProtos {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getCoefficientFieldBuilder();
         }
       }
       @java.lang.Override
@@ -1333,15 +1282,13 @@ public final class ModellingProtos {
 
         id_ = "";
 
-        firstLag_ = 0;
-
-        lastLag_ = 0;
+        lag_ = 0;
 
         if (coefficientBuilder_ == null) {
-          coefficient_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          coefficient_ = null;
         } else {
-          coefficientBuilder_.clear();
+          coefficient_ = null;
+          coefficientBuilder_ = null;
         }
         internalGetMutableMetadata().clear();
         return this;
@@ -1373,13 +1320,8 @@ public final class ModellingProtos {
         int from_bitField0_ = bitField0_;
         result.name_ = name_;
         result.id_ = id_;
-        result.firstLag_ = firstLag_;
-        result.lastLag_ = lastLag_;
+        result.lag_ = lag_;
         if (coefficientBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            coefficient_ = java.util.Collections.unmodifiableList(coefficient_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
           result.coefficient_ = coefficient_;
         } else {
           result.coefficient_ = coefficientBuilder_.build();
@@ -1442,37 +1384,11 @@ public final class ModellingProtos {
           id_ = other.id_;
           onChanged();
         }
-        if (other.getFirstLag() != 0) {
-          setFirstLag(other.getFirstLag());
+        if (other.getLag() != 0) {
+          setLag(other.getLag());
         }
-        if (other.getLastLag() != 0) {
-          setLastLag(other.getLastLag());
-        }
-        if (coefficientBuilder_ == null) {
-          if (!other.coefficient_.isEmpty()) {
-            if (coefficient_.isEmpty()) {
-              coefficient_ = other.coefficient_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureCoefficientIsMutable();
-              coefficient_.addAll(other.coefficient_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.coefficient_.isEmpty()) {
-            if (coefficientBuilder_.isEmpty()) {
-              coefficientBuilder_.dispose();
-              coefficientBuilder_ = null;
-              coefficient_ = other.coefficient_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              coefficientBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getCoefficientFieldBuilder() : null;
-            } else {
-              coefficientBuilder_.addAllMessages(other.coefficient_);
-            }
-          }
+        if (other.hasCoefficient()) {
+          mergeCoefficient(other.getCoefficient());
         }
         internalGetMutableMetadata().mergeFrom(
             other.internalGetMetadata());
@@ -1658,299 +1574,148 @@ public final class ModellingProtos {
         return this;
       }
 
-      private int firstLag_ ;
+      private int lag_ ;
       /**
-       * <code>int32 first_lag = 3;</code>
-       * @return The firstLag.
+       * <code>int32 lag = 3;</code>
+       * @return The lag.
        */
-      public int getFirstLag() {
-        return firstLag_;
+      public int getLag() {
+        return lag_;
       }
       /**
-       * <code>int32 first_lag = 3;</code>
-       * @param value The firstLag to set.
+       * <code>int32 lag = 3;</code>
+       * @param value The lag to set.
        * @return This builder for chaining.
        */
-      public Builder setFirstLag(int value) {
+      public Builder setLag(int value) {
         
-        firstLag_ = value;
+        lag_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 first_lag = 3;</code>
+       * <code>int32 lag = 3;</code>
        * @return This builder for chaining.
        */
-      public Builder clearFirstLag() {
+      public Builder clearLag() {
         
-        firstLag_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int lastLag_ ;
-      /**
-       * <code>int32 last_lag = 4;</code>
-       * @return The lastLag.
-       */
-      public int getLastLag() {
-        return lastLag_;
-      }
-      /**
-       * <code>int32 last_lag = 4;</code>
-       * @param value The lastLag to set.
-       * @return This builder for chaining.
-       */
-      public Builder setLastLag(int value) {
-        
-        lastLag_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 last_lag = 4;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearLastLag() {
-        
-        lastLag_ = 0;
+        lag_ = 0;
         onChanged();
         return this;
       }
 
-      private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> coefficient_ =
-        java.util.Collections.emptyList();
-      private void ensureCoefficientIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          coefficient_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>(coefficient_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter coefficient_;
+      private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> coefficientBuilder_;
+      /**
+       * <code>.jd3.Parameter coefficient = 4;</code>
+       * @return Whether the coefficient field is set.
+       */
+      public boolean hasCoefficient() {
+        return coefficientBuilder_ != null || coefficient_ != null;
+      }
+      /**
+       * <code>.jd3.Parameter coefficient = 4;</code>
+       * @return The coefficient.
+       */
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient() {
+        if (coefficientBuilder_ == null) {
+          return coefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
+        } else {
+          return coefficientBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.jd3.Parameter coefficient = 4;</code>
+       */
+      public Builder setCoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
+        if (coefficientBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          coefficient_ = value;
+          onChanged();
+        } else {
+          coefficientBuilder_.setMessage(value);
+        }
 
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getCoefficientList() {
-        if (coefficientBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(coefficient_);
-        } else {
-          return coefficientBuilder_.getMessageList();
-        }
+        return this;
       }
       /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public int getCoefficientCount() {
-        if (coefficientBuilder_ == null) {
-          return coefficient_.size();
-        } else {
-          return coefficientBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getCoefficient(int index) {
-        if (coefficientBuilder_ == null) {
-          return coefficient_.get(index);
-        } else {
-          return coefficientBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
+       * <code>.jd3.Parameter coefficient = 4;</code>
        */
       public Builder setCoefficient(
-          int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-        if (coefficientBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCoefficientIsMutable();
-          coefficient_.set(index, value);
-          onChanged();
-        } else {
-          coefficientBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public Builder setCoefficient(
-          int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
-        if (coefficientBuilder_ == null) {
-          ensureCoefficientIsMutable();
-          coefficient_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          coefficientBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public Builder addCoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-        if (coefficientBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCoefficientIsMutable();
-          coefficient_.add(value);
-          onChanged();
-        } else {
-          coefficientBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public Builder addCoefficient(
-          int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
-        if (coefficientBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureCoefficientIsMutable();
-          coefficient_.add(index, value);
-          onChanged();
-        } else {
-          coefficientBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public Builder addCoefficient(
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
         if (coefficientBuilder_ == null) {
-          ensureCoefficientIsMutable();
-          coefficient_.add(builderForValue.build());
+          coefficient_ = builderForValue.build();
           onChanged();
         } else {
-          coefficientBuilder_.addMessage(builderForValue.build());
+          coefficientBuilder_.setMessage(builderForValue.build());
         }
+
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
+       * <code>.jd3.Parameter coefficient = 4;</code>
        */
-      public Builder addCoefficient(
-          int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
+      public Builder mergeCoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
         if (coefficientBuilder_ == null) {
-          ensureCoefficientIsMutable();
-          coefficient_.add(index, builderForValue.build());
+          if (coefficient_ != null) {
+            coefficient_ =
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.newBuilder(coefficient_).mergeFrom(value).buildPartial();
+          } else {
+            coefficient_ = value;
+          }
           onChanged();
         } else {
-          coefficientBuilder_.addMessage(index, builderForValue.build());
+          coefficientBuilder_.mergeFrom(value);
         }
+
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public Builder addAllCoefficient(
-          java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
-        if (coefficientBuilder_ == null) {
-          ensureCoefficientIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, coefficient_);
-          onChanged();
-        } else {
-          coefficientBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
+       * <code>.jd3.Parameter coefficient = 4;</code>
        */
       public Builder clearCoefficient() {
         if (coefficientBuilder_ == null) {
-          coefficient_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
+          coefficient_ = null;
           onChanged();
         } else {
-          coefficientBuilder_.clear();
+          coefficient_ = null;
+          coefficientBuilder_ = null;
         }
+
         return this;
       }
       /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
+       * <code>.jd3.Parameter coefficient = 4;</code>
        */
-      public Builder removeCoefficient(int index) {
-        if (coefficientBuilder_ == null) {
-          ensureCoefficientIsMutable();
-          coefficient_.remove(index);
-          onChanged();
-        } else {
-          coefficientBuilder_.remove(index);
-        }
-        return this;
+      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCoefficientBuilder() {
+        
+        onChanged();
+        return getCoefficientFieldBuilder().getBuilder();
       }
       /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
+       * <code>.jd3.Parameter coefficient = 4;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getCoefficientBuilder(
-          int index) {
-        return getCoefficientFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder(
-          int index) {
-        if (coefficientBuilder_ == null) {
-          return coefficient_.get(index);  } else {
-          return coefficientBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
-           getCoefficientOrBuilderList() {
+      public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getCoefficientOrBuilder() {
         if (coefficientBuilder_ != null) {
-          return coefficientBuilder_.getMessageOrBuilderList();
+          return coefficientBuilder_.getMessageOrBuilder();
         } else {
-          return java.util.Collections.unmodifiableList(coefficient_);
+          return coefficient_ == null ?
+              demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : coefficient_;
         }
       }
       /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
+       * <code>.jd3.Parameter coefficient = 4;</code>
        */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addCoefficientBuilder() {
-        return getCoefficientFieldBuilder().addBuilder(
-            demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addCoefficientBuilder(
-          int index) {
-        return getCoefficientFieldBuilder().addBuilder(
-            index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .jd3.Parameter coefficient = 5;</code>
-       */
-      public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
-           getCoefficientBuilderList() {
-        return getCoefficientFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilderV3<
           demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
           getCoefficientFieldBuilder() {
         if (coefficientBuilder_ == null) {
-          coefficientBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          coefficientBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder>(
-                  coefficient_,
-                  ((bitField0_ & 0x00000001) != 0),
+                  getCoefficient(),
                   getParentForChildren(),
                   isClean());
           coefficient_ = null;
@@ -1985,7 +1750,7 @@ public final class ModellingProtos {
         return internalGetMetadata().getMap().size();
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
 
       public boolean containsMetadata(
@@ -2001,14 +1766,14 @@ public final class ModellingProtos {
         return getMetadataMap();
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
 
       public java.util.Map<java.lang.String, java.lang.String> getMetadataMap() {
         return internalGetMetadata().getMap();
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
 
       public java.lang.String getMetadataOrDefault(
@@ -2020,7 +1785,7 @@ public final class ModellingProtos {
         return map.containsKey(key) ? map.get(key) : defaultValue;
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
 
       public java.lang.String getMetadataOrThrow(
@@ -2040,7 +1805,7 @@ public final class ModellingProtos {
         return this;
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
 
       public Builder removeMetadata(
@@ -2059,7 +1824,7 @@ public final class ModellingProtos {
         return internalGetMutableMetadata().getMutableMap();
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
       public Builder putMetadata(
           java.lang.String key,
@@ -2071,7 +1836,7 @@ public final class ModellingProtos {
         return this;
       }
       /**
-       * <code>map&lt;string, string&gt; metadata = 6;</code>
+       * <code>map&lt;string, string&gt; metadata = 5;</code>
        */
 
       public Builder putAllMetadata(
@@ -19145,73 +18910,73 @@ public final class ModellingProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\017modelling.proto\022\tmodelling\032\rtoolkit.pr" +
-      "oto\"\330\001\n\nTsVariable\022\014\n\004name\030\001 \001(\t\022\n\n\002id\030\002" +
-      " \001(\t\022\021\n\tfirst_lag\030\003 \001(\005\022\020\n\010last_lag\030\004 \001(" +
-      "\005\022#\n\013coefficient\030\005 \003(\0132\016.jd3.Parameter\0225" +
-      "\n\010metadata\030\006 \003(\0132#.modelling.TsVariable." +
-      "MetadataEntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\315\001\n\004Ramp\022\014\n\004name\030" +
-      "\001 \001(\t\022\030\n\005start\030\002 \001(\0132\t.jd3.Date\022\026\n\003end\030\003" +
-      " \001(\0132\t.jd3.Date\022#\n\013coefficient\030\005 \001(\0132\016.j" +
-      "d3.Parameter\022/\n\010metadata\030\006 \003(\0132\035.modelli" +
-      "ng.Ramp.MetadataEntry\032/\n\rMetadataEntry\022\013" +
-      "\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\314\001\n\007Outli" +
-      "er\022\014\n\004name\030\001 \001(\t\022\014\n\004code\030\002 \001(\t\022\033\n\010positi" +
-      "on\030\003 \001(\0132\t.jd3.Date\022#\n\013coefficient\030\005 \001(\013" +
-      "2\016.jd3.Parameter\0222\n\010metadata\030\006 \003(\0132 .mod" +
-      "elling.Outlier.MetadataEntry\032/\n\rMetadata" +
-      "Entry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\335\002" +
-      "\n\024InterventionVariable\022\014\n\004name\030\001 \001(\t\022;\n\t" +
-      "sequences\030\002 \003(\0132(.modelling.Intervention" +
-      "Variable.Sequence\022\r\n\005delta\030\003 \001(\001\022\026\n\016seas" +
-      "onal_delta\030\004 \001(\001\022#\n\013coefficient\030\005 \001(\0132\016." +
-      "jd3.Parameter\022?\n\010metadata\030\006 \003(\0132-.modell" +
-      "ing.InterventionVariable.MetadataEntry\032<" +
-      "\n\010Sequence\022\030\n\005start\030\001 \001(\0132\t.jd3.Date\022\026\n\003" +
-      "end\030\002 \001(\0132\t.jd3.Date\032/\n\rMetadataEntry\022\013\n" +
-      "\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\343\001\n\022Regres" +
-      "sionVariable\022\014\n\004name\030\001 \001(\t\022)\n\010var_type\030\002" +
-      " \001(\0162\027.modelling.VariableType\022=\n\010metadat" +
-      "a\030\003 \003(\0132+.modelling.RegressionVariable.M" +
-      "etadataEntry\022$\n\014coefficients\030\004 \003(\0132\016.jd3" +
-      ".Parameter\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t" +
-      "\022\r\n\005value\030\002 \001(\t:\0028\001\"B\n\021MissingEstimation" +
-      "\022\020\n\010position\030\001 \001(\005\022\r\n\005value\030\n \001(\001\022\014\n\004std" +
-      "e\030\013 \001(\001\"I\n\tComponent\022\014\n\004data\030\001 \003(\001\022\014\n\004st" +
-      "de\030\002 \003(\001\022\017\n\007nbcasts\030\003 \001(\005\022\017\n\007nfcasts\030\004 \001" +
-      "(\005\"X\n\013TsComponent\022\031\n\004data\030\001 \001(\0132\013.jd3.Ts" +
-      "Data\022\014\n\004stde\030\002 \003(\001\022\017\n\007nbcasts\030\003 \001(\005\022\017\n\007n" +
-      "fcasts\030\004 \001(\005\"\237\001\n\013Diagnostics\022C\n\017residual" +
-      "s_tests\030\001 \003(\0132*.modelling.Diagnostics.Re" +
-      "sidualsTestsEntry\032K\n\023ResidualsTestsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002 \001(\0132\024.jd3.Stati" +
-      "sticalTest:\0028\001\"\301\001\n\030StationaryTransformat" +
-      "ion\022\027\n\017mean_correction\030\001 \001(\010\022E\n\013differen" +
-      "ces\030\002 \003(\01320.modelling.StationaryTransfor" +
-      "mation.Differencing\022\031\n\021stationary_series" +
-      "\030\003 \003(\001\032*\n\014Differencing\022\013\n\003lag\030\001 \001(\005\022\r\n\005o" +
-      "rder\030\002 \001(\005\"^\n\nArimaModel\022\014\n\004name\030\001 \001(\t\022\033" +
-      "\n\023innovation_variance\030\002 \001(\001\022\n\n\002ar\030\003 \003(\001\022" +
-      "\r\n\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003(\001\"|\n\013SarimaMode" +
-      "l\022\014\n\004name\030\001 \001(\t\022\016\n\006period\030\002 \001(\005\022\013\n\003phi\030\003" +
-      " \003(\001\022\t\n\001d\030\004 \001(\005\022\r\n\005theta\030\005 \003(\001\022\014\n\004bphi\030\006" +
-      " \003(\001\022\n\n\002bd\030\007 \001(\005\022\016\n\006btheta\030\010 \003(\001\"\213\001\n\014Uca" +
-      "rimaModel\022$\n\005model\030\001 \001(\0132\025.modelling.Ari" +
-      "maModel\022)\n\ncomponents\030\002 \003(\0132\025.modelling." +
-      "ArimaModel\022*\n\013complements\030\003 \003(\0132\025.modell" +
-      "ing.ArimaModel\"7\n\026WienerKolmogorovFilter" +
-      "\022\017\n\007weights\030\001 \003(\001\022\014\n\004gain\030\002 \003(\001*7\n\016Trans" +
-      "formation\022\014\n\010FN_LEVEL\020\000\022\n\n\006FN_LOG\020\001\022\013\n\007F" +
-      "N_AUTO\020\n*E\n\016LengthOfPeriod\022\013\n\007LP_NONE\020\000\022" +
-      "\017\n\013LP_LEAPYEAR\020\001\022\025\n\021LP_LENGTHOFPERIOD\020\002*" +
-      "H\n\013TradingDays\022\013\n\007TD_NONE\020\000\022\007\n\003TD2\020\001\022\007\n\003" +
-      "TD3\020\002\022\010\n\004TD3C\020\003\022\007\n\003TD4\020\004\022\007\n\003TD7\020\005*\264\001\n\014Va" +
-      "riableType\022\023\n\017VAR_UNSPECIFIED\020\000\022\014\n\010VAR_M" +
-      "EAN\020\001\022\n\n\006VAR_TD\020\n\022\n\n\006VAR_LP\020\013\022\016\n\nVAR_EAS" +
-      "TER\020\014\022\n\n\006VAR_AO\020\024\022\n\n\006VAR_LS\020\025\022\n\n\006VAR_TC\020" +
-      "\026\022\n\n\006VAR_SO\020\027\022\017\n\013VAR_OUTLIER\020\035\022\n\n\006VAR_IV" +
-      "\020\036\022\014\n\010VAR_RAMP\020(B0\n\035demetra.modelling.io" +
-      ".protobufB\017ModellingProtosP\000b\006proto3"
+      "oto\"\300\001\n\nTsVariable\022\014\n\004name\030\001 \001(\t\022\n\n\002id\030\002" +
+      " \001(\t\022\013\n\003lag\030\003 \001(\005\022#\n\013coefficient\030\004 \001(\0132\016" +
+      ".jd3.Parameter\0225\n\010metadata\030\005 \003(\0132#.model" +
+      "ling.TsVariable.MetadataEntry\032/\n\rMetadat" +
+      "aEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\315" +
+      "\001\n\004Ramp\022\014\n\004name\030\001 \001(\t\022\030\n\005start\030\002 \001(\0132\t.j" +
+      "d3.Date\022\026\n\003end\030\003 \001(\0132\t.jd3.Date\022#\n\013coeff" +
+      "icient\030\005 \001(\0132\016.jd3.Parameter\022/\n\010metadata" +
+      "\030\006 \003(\0132\035.modelling.Ramp.MetadataEntry\032/\n" +
+      "\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001" +
+      "(\t:\0028\001\"\314\001\n\007Outlier\022\014\n\004name\030\001 \001(\t\022\014\n\004code" +
+      "\030\002 \001(\t\022\033\n\010position\030\003 \001(\0132\t.jd3.Date\022#\n\013c" +
+      "oefficient\030\005 \001(\0132\016.jd3.Parameter\0222\n\010meta" +
+      "data\030\006 \003(\0132 .modelling.Outlier.MetadataE" +
+      "ntry\032/\n\rMetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005va" +
+      "lue\030\002 \001(\t:\0028\001\"\335\002\n\024InterventionVariable\022\014" +
+      "\n\004name\030\001 \001(\t\022;\n\tsequences\030\002 \003(\0132(.modell" +
+      "ing.InterventionVariable.Sequence\022\r\n\005del" +
+      "ta\030\003 \001(\001\022\026\n\016seasonal_delta\030\004 \001(\001\022#\n\013coef" +
+      "ficient\030\005 \001(\0132\016.jd3.Parameter\022?\n\010metadat" +
+      "a\030\006 \003(\0132-.modelling.InterventionVariable" +
+      ".MetadataEntry\032<\n\010Sequence\022\030\n\005start\030\001 \001(" +
+      "\0132\t.jd3.Date\022\026\n\003end\030\002 \001(\0132\t.jd3.Date\032/\n\r" +
+      "MetadataEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
+      "\t:\0028\001\"\343\001\n\022RegressionVariable\022\014\n\004name\030\001 \001" +
+      "(\t\022)\n\010var_type\030\002 \001(\0162\027.modelling.Variabl" +
+      "eType\022=\n\010metadata\030\003 \003(\0132+.modelling.Regr" +
+      "essionVariable.MetadataEntry\022$\n\014coeffici" +
+      "ents\030\004 \003(\0132\016.jd3.Parameter\032/\n\rMetadataEn" +
+      "try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"B\n\021M" +
+      "issingEstimation\022\020\n\010position\030\001 \001(\005\022\r\n\005va" +
+      "lue\030\n \001(\001\022\014\n\004stde\030\013 \001(\001\"I\n\tComponent\022\014\n\004" +
+      "data\030\001 \003(\001\022\014\n\004stde\030\002 \003(\001\022\017\n\007nbcasts\030\003 \001(" +
+      "\005\022\017\n\007nfcasts\030\004 \001(\005\"X\n\013TsComponent\022\031\n\004dat" +
+      "a\030\001 \001(\0132\013.jd3.TsData\022\014\n\004stde\030\002 \003(\001\022\017\n\007nb" +
+      "casts\030\003 \001(\005\022\017\n\007nfcasts\030\004 \001(\005\"\237\001\n\013Diagnos" +
+      "tics\022C\n\017residuals_tests\030\001 \003(\0132*.modellin" +
+      "g.Diagnostics.ResidualsTestsEntry\032K\n\023Res" +
+      "idualsTestsEntry\022\013\n\003key\030\001 \001(\t\022#\n\005value\030\002" +
+      " \001(\0132\024.jd3.StatisticalTest:\0028\001\"\301\001\n\030Stati" +
+      "onaryTransformation\022\027\n\017mean_correction\030\001" +
+      " \001(\010\022E\n\013differences\030\002 \003(\01320.modelling.St" +
+      "ationaryTransformation.Differencing\022\031\n\021s" +
+      "tationary_series\030\003 \003(\001\032*\n\014Differencing\022\013" +
+      "\n\003lag\030\001 \001(\005\022\r\n\005order\030\002 \001(\005\"^\n\nArimaModel" +
+      "\022\014\n\004name\030\001 \001(\t\022\033\n\023innovation_variance\030\002 " +
+      "\001(\001\022\n\n\002ar\030\003 \003(\001\022\r\n\005delta\030\004 \003(\001\022\n\n\002ma\030\005 \003" +
+      "(\001\"|\n\013SarimaModel\022\014\n\004name\030\001 \001(\t\022\016\n\006perio" +
+      "d\030\002 \001(\005\022\013\n\003phi\030\003 \003(\001\022\t\n\001d\030\004 \001(\005\022\r\n\005theta" +
+      "\030\005 \003(\001\022\014\n\004bphi\030\006 \003(\001\022\n\n\002bd\030\007 \001(\005\022\016\n\006bthe" +
+      "ta\030\010 \003(\001\"\213\001\n\014UcarimaModel\022$\n\005model\030\001 \001(\013" +
+      "2\025.modelling.ArimaModel\022)\n\ncomponents\030\002 " +
+      "\003(\0132\025.modelling.ArimaModel\022*\n\013complement" +
+      "s\030\003 \003(\0132\025.modelling.ArimaModel\"7\n\026Wiener" +
+      "KolmogorovFilter\022\017\n\007weights\030\001 \003(\001\022\014\n\004gai" +
+      "n\030\002 \003(\001*7\n\016Transformation\022\014\n\010FN_LEVEL\020\000\022" +
+      "\n\n\006FN_LOG\020\001\022\013\n\007FN_AUTO\020\n*E\n\016LengthOfPeri" +
+      "od\022\013\n\007LP_NONE\020\000\022\017\n\013LP_LEAPYEAR\020\001\022\025\n\021LP_L" +
+      "ENGTHOFPERIOD\020\002*H\n\013TradingDays\022\013\n\007TD_NON" +
+      "E\020\000\022\007\n\003TD2\020\001\022\007\n\003TD3\020\002\022\010\n\004TD3C\020\003\022\007\n\003TD4\020\004" +
+      "\022\007\n\003TD7\020\005*\264\001\n\014VariableType\022\023\n\017VAR_UNSPEC" +
+      "IFIED\020\000\022\014\n\010VAR_MEAN\020\001\022\n\n\006VAR_TD\020\n\022\n\n\006VAR" +
+      "_LP\020\013\022\016\n\nVAR_EASTER\020\014\022\n\n\006VAR_AO\020\024\022\n\n\006VAR" +
+      "_LS\020\025\022\n\n\006VAR_TC\020\026\022\n\n\006VAR_SO\020\027\022\017\n\013VAR_OUT" +
+      "LIER\020\035\022\n\n\006VAR_IV\020\036\022\014\n\010VAR_RAMP\020(B0\n\035deme" +
+      "tra.modelling.io.protobufB\017ModellingProt" +
+      "osP\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -19223,7 +18988,7 @@ public final class ModellingProtos {
     internal_static_modelling_TsVariable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_modelling_TsVariable_descriptor,
-        new java.lang.String[] { "Name", "Id", "FirstLag", "LastLag", "Coefficient", "Metadata", });
+        new java.lang.String[] { "Name", "Id", "Lag", "Coefficient", "Metadata", });
     internal_static_modelling_TsVariable_MetadataEntry_descriptor =
       internal_static_modelling_TsVariable_descriptor.getNestedTypes().get(0);
     internal_static_modelling_TsVariable_MetadataEntry_fieldAccessorTable = new

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -81,4 +81,14 @@ public class SaVariable {
         String effect=var.attribute(REGEFFECT);
         return effect == null ? type == ComponentType.Undefined : effect.equals(type.name());
     }
+    
+    public ComponentType regressionEffect(Variable var){
+        String effect=var.attribute(REGEFFECT);
+        return effect == null ? null : ComponentType.valueOf(effect);
+    }
+    
+    public Variable setComponentType(Variable var, ComponentType type){
+        return var.setAttribute(REGEFFECT, type.name());
+    }
+    
 }

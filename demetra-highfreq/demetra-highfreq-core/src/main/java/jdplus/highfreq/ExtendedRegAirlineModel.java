@@ -74,7 +74,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
         if (description.isMean()) {
             ITsVariable cur = Constant.C;
             double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
-            regressionDesc.add(new RegressionDesc(cur, 0, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+            regressionDesc.add(new RegressionDesc("const", cur, 0, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
             variables[k++] = Variable.variable("const", cur)
                     .withCoefficient(Parameter.estimated(c));
         }
@@ -86,7 +86,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                 for (int j = 0; j < nfree; ++j) {
                     double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
                     p[j] = Parameter.estimated(c);
-                    regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                    regressionDesc.add(new RegressionDesc(var.getName(), var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
                 }
                 variables[k++] = var.withCoefficients(p);
             } else if (nfree > 0) {
@@ -95,7 +95,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                     if (p[j].isFree()) {
                         double c = cursor.getAndNext(), e = Math.sqrt(diag.getAndNext() * vscale);
                         p[j] = Parameter.estimated(c);
-                        regressionDesc.add(new RegressionDesc(var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
+                        regressionDesc.add(new RegressionDesc(var.getName(), var.getCore(), j, pos++, c, e, 2 * tstat.getProbability(Math.abs(c / e), ProbabilityType.Upper)));
                     }
                 }
                 variables[k++] = var.withCoefficients(p);

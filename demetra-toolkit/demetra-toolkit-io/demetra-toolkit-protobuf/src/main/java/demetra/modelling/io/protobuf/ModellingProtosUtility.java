@@ -123,19 +123,19 @@ public class ModellingProtosUtility {
         return ModellingProtos.TsVariable.newBuilder()
                 .setName(v.getName())
                 .setId(v.getCore().getId())
-                .setFirstLag(v.getCore().getFirstLag())
-                .setLastLag(v.getCore().getLastLag())
-                .addAllCoefficient(ToolkitProtosUtility.convert(v.getCoefficients()))
+                .setLag(v.getCore().getLag())
+                .setCoefficient(ToolkitProtosUtility.convert(v.getCoefficient(0)))
                 .putAllMetadata(v.getAttributes())
                 .build();
     }
 
     public Variable<TsContextVariable> convert(ModellingProtos.TsVariable v) {
+        Parameter c = ToolkitProtosUtility.convert(v.getCoefficient());
         return Variable.<TsContextVariable>builder()
                 .name(v.getName())
-                .core(new TsContextVariable(v.getId(), v.getFirstLag(), v.getLastLag()))
+                .core(new TsContextVariable(v.getId(), v.getLag()))
                 .attributes(v.getMetadataMap())
-                .coefficients(ToolkitProtosUtility.convert(v.getCoefficientList()))
+                 .coefficients(c == null ? null : new Parameter[]{c})
                 .build();
     }
 
