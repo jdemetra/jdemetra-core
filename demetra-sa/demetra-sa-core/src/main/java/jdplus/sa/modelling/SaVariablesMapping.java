@@ -221,7 +221,7 @@ public class SaVariablesMapping {
                 vars.add(var);
             }
         });
-        return vars.toArray(new ITsVariable[vars.size()]);
+        return vars.toArray(ITsVariable[]::new);
     }
 
 }

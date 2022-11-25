@@ -79,8 +79,9 @@ public class X13Kernel {
     }
 
     public X13Results process(TsData s, ProcessingLog log) {
-        if (log == null)
-            log=ProcessingLog.dummy();
+        if (log == null) {
+            log = ProcessingLog.dummy();
+        }
         try {
             // Step 0. Preliminary checks
             TsData sc = preliminary.check(s, log);
@@ -103,9 +104,9 @@ public class X13Kernel {
             X11Spec nspec = updateSpec(spec, preprocessing);
             X11Results xr = x11.process(alin, nspec);
             X13Finals finals = finals(nspec.getMode(), preadjustment, xr);
-            SaBenchmarkingResults bench=null;
-            if (cholette != null){
-                bench=cholette.process(s, TsData.concatenate(finals.getD11final(),finals.getD11a()), preprocessing);
+            SaBenchmarkingResults bench = null;
+            if (cholette != null) {
+                bench = cholette.process(s, TsData.concatenate(finals.getD11final(), finals.getD11a()), preprocessing);
             }
             return X13Results.builder()
                     .preprocessing(preprocessing)
@@ -143,11 +144,10 @@ public class X13Kernel {
         TsData usa = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.SeasonallyAdjusted, true, v -> ModellingUtility.isUser(v));
         TsData user = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Series, true, v -> ModellingUtility.isUser(v));
         TsData uu = RegArimaDecomposer.deterministicEffect(model, domain, ComponentType.Undefined, true, v -> ModellingUtility.isUser(v));
-        TsData p = TsData.add(pt, ps, pi);
-
         pt = TsData.add(pt, ut);
         ps = TsData.add(ps, us);
         pi = TsData.add(pi, ui);
+        TsData p = TsData.add(pt, ps, pi);
         TsData pall = TsData.add(pt, ps, pi);
         TsData u = TsData.add(usa, user);
 
