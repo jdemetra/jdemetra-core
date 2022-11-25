@@ -110,7 +110,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         return tradingDaysType != TradingDaysType.NONE || userVariables != null || stockTradingDays != 0;
     }
 
-    boolean isDefined() {
+    public boolean isDefined() {
         return isUsed() && regressionTestType == RegressionTestSpec.None;
     }
 

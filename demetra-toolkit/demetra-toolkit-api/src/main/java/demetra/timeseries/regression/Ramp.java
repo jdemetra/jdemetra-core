@@ -20,7 +20,6 @@ import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.time.LocalDate;
 import nbbrd.design.Development;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
