@@ -335,23 +335,23 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         TsDomain edom = model.getEstimation().getDomain();
         writeMean(stream);
 
-        writeFullRegressionItems(stream, edom, var -> !var.isPreadjustment() && var.getCore() instanceof ITradingDaysVariable);
-        writeFullRegressionItems(stream, edom, var -> !var.isPreadjustment() && var.getCore() instanceof ILengthOfPeriodVariable);
-        writeFixedRegressionItems(stream, "Fixed trading days", edom, var -> !var.isFree() && var.getCore() instanceof ITradingDaysVariable);
-        writeFixedRegressionItems(stream, "Fixed leap year", edom, var -> !var.isFree() && var.getCore() instanceof ILengthOfPeriodVariable);
-        writeRegressionItems(stream, "Easter", edom, var -> !var.isPreadjustment() && var.getCore() instanceof IEasterVariable);
-        writeFixedRegressionItems(stream, "Fixed Easter", edom, var -> var.isPreadjustment() && var.getCore() instanceof IEasterVariable);
+        writeFullRegressionItems(stream, edom, true, var -> !var.isPreadjustment() && var.getCore() instanceof ITradingDaysVariable);
+        writeFullRegressionItems(stream, edom, true, var -> !var.isPreadjustment() && var.getCore() instanceof ILengthOfPeriodVariable);
+        writeFixedRegressionItems(stream, "Fixed trading days", edom, true, var -> !var.isFree() && var.getCore() instanceof ITradingDaysVariable);
+        writeFixedRegressionItems(stream, "Fixed leap year", edom, true, var -> !var.isFree() && var.getCore() instanceof ILengthOfPeriodVariable);
+        writeRegressionItems(stream, "Easter", edom, true, var -> !var.isPreadjustment() && var.getCore() instanceof IEasterVariable);
+        writeFixedRegressionItems(stream, "Fixed Easter", edom, false,var -> var.isPreadjustment() && var.getCore() instanceof IEasterVariable);
         if (outliers) {
             writeOutliers(stream, true, edom);
             writeOutliers(stream, false, edom);
-            writeFixedRegressionItems(stream, "Fixed outliers", edom, var -> var.isPreadjustment() && var.getCore() instanceof IOutlier);
+            writeFixedRegressionItems(stream, "Fixed outliers", edom, false, var -> var.isPreadjustment() && var.getCore() instanceof IOutlier);
         }
-        writeRegressionItems(stream, "Ramps", edom, var -> var.isFree() && var.getCore() instanceof Ramp);
-        writeRegressionItems(stream, "Intervention variables", edom, var -> var.isFree() && var.getCore() instanceof InterventionVariable);
-        writeRegressionItems(stream, "User variables", edom, var -> !var.isPreadjustment() && var.test(v -> v instanceof UserVariable));
-        writeFixedRegressionItems(stream, "Fixed ramps", edom, var -> !var.isFree() && var.getCore() instanceof Ramp);
-        writeFixedRegressionItems(stream, "Fixed intervention variables", edom, var -> !var.isFree() && var.getCore() instanceof InterventionVariable);
-        writeFixedRegressionItems(stream, "Other fixed regression effects", edom, var -> !var.isFree() && var.getCore() instanceof UserVariable);
+        writeRegressionItems(stream, "Ramps", edom, false, var -> var.isFree() && var.getCore() instanceof Ramp);
+        writeRegressionItems(stream, "Intervention variables", edom, false, var -> var.isFree() && var.getCore() instanceof InterventionVariable);
+        writeRegressionItems(stream, "User variables", edom, false, var -> !var.isPreadjustment() && var.test(v -> v instanceof UserVariable));
+        writeFixedRegressionItems(stream, "Fixed ramps", edom, false, var -> !var.isFree() && var.getCore() instanceof Ramp);
+        writeFixedRegressionItems(stream, "Fixed intervention variables", edom, false, var -> !var.isFree() && var.getCore() instanceof InterventionVariable);
+        writeFixedRegressionItems(stream, "Other fixed regression effects", edom, false, var -> !var.isFree() && var.getCore() instanceof UserVariable);
         writeMissing(stream);
     }
 
@@ -413,11 +413,11 @@ public class HtmlRegSarima extends AbstractHtmlElement {
                 .map(var -> var.getCore()).collect(Collectors.toSet());
         if (!outliers.isEmpty()) {
             stream.write(HtmlTag.HEADER3, header);
-            writeRegressionItems(stream, outliers, context);
+            writeRegressionItems(stream, outliers, context, false);
         }
     }
 
-    private <V extends ITsVariable> void writeFixedRegressionItems(HtmlStream stream, String header, TsDomain context, Predicate<Variable> predicate) throws IOException {
+    private <V extends ITsVariable> void writeFixedRegressionItems(HtmlStream stream, String header, TsDomain context, boolean description, Predicate<Variable> predicate) throws IOException {
 
         List<Variable> regs = Arrays.stream(model.getDescription().getVariables()).filter(predicate).collect(Collectors.toList());
         if (regs.isEmpty()) {
@@ -437,7 +437,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
                 Parameter[] c = reg.getCoefficients();
                 if (c[i].isFixed()) {
                     stream.open(HtmlTag.TABLEROW);
-                    stream.write(new HtmlTableCell(reg.getName()).withWidth(100));
+                    stream.write(new HtmlTableCell(display(reg, i, context, description || c.length > 1)).withWidth(100));
                     stream.write(new HtmlTableCell(df4.format(c[i].getValue())).withWidth(100));
                     stream.close(HtmlTag.TABLEROW);
                 }
@@ -447,28 +447,28 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         stream.newLine();
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsDomain context, Predicate<Variable> predicate) throws IOException {
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, String header, TsDomain context, boolean description, Predicate<Variable> predicate) throws IOException {
         Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty() && header != null) {
             stream.write(HtmlTag.HEADER3, header);
-            writeRegressionItems(stream, selection, context);
+            writeRegressionItems(stream, selection, context, description);
         }
     }
 
-    private <V extends ITsVariable> void writeFullRegressionItems(HtmlStream stream, TsDomain context, Predicate<Variable> predicate) throws IOException {
+    private <V extends ITsVariable> void writeFullRegressionItems(HtmlStream stream, TsDomain context, boolean description, Predicate<Variable> predicate) throws IOException {
         Set<ITsVariable> selection = Arrays.stream(model.getDescription().getVariables()).filter(var -> predicate.test(var))
                 .map(var -> var.getCore())
                 .collect(Collectors.toSet());
         if (!selection.isEmpty()) {
             for (ITsVariable var : selection) {
-                writeRegressionItems(stream, var, context);
+                writeRegressionItems(stream, var, context, description);
             }
         }
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, List<RegressionDesc> regs, TsDomain context) throws IOException {
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, List<RegressionDesc> regs, TsDomain context, boolean description) throws IOException {
 
         stream.open(new HtmlTable().withWidth(400));
         stream.open(HtmlTag.TABLEROW);
@@ -479,7 +479,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLEROW);
         for (RegressionDesc reg : regs) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(reg.getName()).withWidth(100));
+            stream.write(new HtmlTableCell(display(reg, context, description)).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(reg.getCoef())).withWidth(100));
             stream.write(new HtmlTableCell(formatT(reg.getTStat())).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(reg.getPvalue())).withWidth(100));
@@ -489,26 +489,35 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         stream.newLine();
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, Set<ITsVariable> vars, TsDomain context) throws IOException {
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, Set<ITsVariable> vars, TsDomain context, boolean description) throws IOException {
         List<RegressionDesc> regs = new ArrayList<>();
         for (RegressionDesc reg : model.getDetails().getRegressionItems()) {
             if (vars.contains(reg.getCore())) {
                 regs.add(reg);
             }
         }
-        writeRegressionItems(stream, regs, context);
+        writeRegressionItems(stream, regs, context, description);
     }
     
-    private static String display(RegressionDesc reg, TsDomain context, boolean single){
+    private static String display(RegressionDesc reg, TsDomain context, boolean description){
         String name = reg.getName();
-        if (single && name != null && ! name.isBlank())
+        if (!description && name != null && ! name.isBlank())
             return name;
         else{
             return reg.getCore().description(reg.getItem(), context);
         }
     }
 
-    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, ITsVariable var, TsDomain context) throws IOException {
+    private static String display(Variable reg, int idx, TsDomain context, boolean description){
+        String name = reg.getName();
+        if (!description &&  ! name.isBlank())
+            return name;
+        else{
+            return reg.getCore().description(idx, context);
+        }
+    }
+
+    private <V extends ITsVariable> void writeRegressionItems(HtmlStream stream, ITsVariable var, TsDomain context, boolean description) throws IOException {
 
         List<RegressionDesc> regs = model.getDetails().getRegressionItems().stream()
                 .filter(desc -> desc.getCore() == var)
@@ -530,7 +539,7 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         stream.close(HtmlTag.TABLEROW);
         for (RegressionDesc reg : regs) {
             stream.open(HtmlTag.TABLEROW);
-            stream.write(new HtmlTableCell(display(reg, context, size == 1)).withWidth(100));
+            stream.write(new HtmlTableCell(display(reg, context, description || size > 1)).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(reg.getCoef())).withWidth(100));
             stream.write(new HtmlTableCell(formatT(reg.getTStat())).withWidth(100));
             stream.write(new HtmlTableCell(df4.format(reg.getPvalue())).withWidth(100));
