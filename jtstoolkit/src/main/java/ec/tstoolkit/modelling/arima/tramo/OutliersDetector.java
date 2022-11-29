@@ -58,7 +58,7 @@ import java.util.List;
 public class OutliersDetector implements IOutliersDetectionModule {
 
     private static final double EPS = 1e-5;
-    private static final int MAXROUND = 50, MAXOUTLIERS = 24;
+    private static final int MAXROUND = 50, MAXOUTLIERS = 30;
     private RegArimaModel<SarimaModel> regarima_;
     private final ArrayList<IOutlierVariable> outliers_ = new ArrayList<>();
     private final SingleOutlierDetector sod_ = new SingleOutlierDetector();
