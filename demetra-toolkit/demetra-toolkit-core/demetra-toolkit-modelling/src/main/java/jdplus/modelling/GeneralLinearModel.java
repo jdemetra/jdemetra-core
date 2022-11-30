@@ -268,6 +268,8 @@ public interface GeneralLinearModel<M> extends Explorable {
      * @return
      */
     default TsData backTransform(TsData s, boolean includeLp) {
+        if (s.isEmpty())
+            return s;
         Description description = getDescription();
         if (description.isLogTransformation()) {
             s = s.exp();

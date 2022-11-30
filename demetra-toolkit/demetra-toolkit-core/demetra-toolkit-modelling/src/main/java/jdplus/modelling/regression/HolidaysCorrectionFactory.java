@@ -5,6 +5,7 @@
  */
 package jdplus.modelling.regression;
 
+import demetra.data.DoubleSeq;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import demetra.timeseries.regression.HolidaysCorrectedTradingDays;
@@ -25,7 +26,6 @@ import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.math.matrices.Matrix;
-import demetra.timeseries.calendars.DayClustering;
 import java.time.DayOfWeek;
 
 /**
@@ -43,6 +43,79 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             return null;
         }
         return corrector(cur, mgr, hol, meanCorrection);
+    }
+
+    @lombok.AllArgsConstructor
+    static class CalendarCorrector implements HolidaysCorrector {
+
+        final Calendar calendar;
+        final DayOfWeek hol;
+        final boolean meanCorrection;
+
+        @Override
+        public Matrix holidaysCorrection(TsDomain domain) {
+            int phol = hol.getValue() - 1;
+            Matrix M = HolidaysUtility.holidays(calendar.getHolidays(), domain);
+            FastMatrix Mc = FastMatrix.of(M);
+            if (meanCorrection) {
+                TsPeriod start = domain.getStartPeriod();
+                int freq = domain.getAnnualFrequency();
+                double[][] mean = HolidaysUtility.longTermMean(calendar.getHolidays(), freq);
+                if (mean != null) {
+                    int pstart = start.annualPosition();
+                    DataBlock[] Mean = new DataBlock[freq];
+                    for (int i = 0; i < freq; ++i) {
+                        Mean[i] = mean[i] == null ? null : DataBlock.of(mean[i]);
+                    }
+                    int n = Mc.getRowsCount();
+                    for (int i = 0; i < n; ++i) {
+                        DataBlock m = Mean[(i + pstart) % freq];
+                        if (m != null) {
+                            DataBlock row = Mc.row(i);
+                            row.sub(m);
+                        }
+                    }
+                }
+            }
+            // we put in the hpos column the sum of all the other days
+            // and we change the sign of the other days
+            DataBlock chol = Mc.column(phol);
+            chol.set(0);
+            for (int i = 0; i < 7; ++i) {
+                if (i != phol) {
+                    DataBlock cur = Mc.column(i);
+                    chol.add(cur);
+                    cur.chs();
+                }
+            }
+            return Mc;
+        }
+
+        @Override
+        public DoubleSeq longTermYearlyCorrection() {
+            if (calendar.isempty()) {
+                return DoubleSeq.onMapping(7, i -> 0);
+            }
+            double[][] corr = HolidaysUtility.longTermMean(calendar.getHolidays(), 1);
+            double[] c = corr[0];
+            double sum = 0;
+            int ihol = hol.getValue() - 1;
+            for (int i = 0; i < c.length; ++i) {
+                if (i != ihol) {
+                    sum += c[i];
+                }
+            }
+            for (int i = 0; i < c.length; ++i) {
+                if (i != ihol) {
+                    c[i] = -c[i];
+                } else {
+                    c[i] = sum;
+                }
+            }
+
+            return DoubleSeq.of(c);
+        }
+
     }
 
     public static HolidaysCorrector corrector(CalendarDefinition cur, CalendarManager mgr, DayOfWeek hol, boolean meanCorrection) {
@@ -81,47 +154,21 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      * @return
      */
     public static HolidaysCorrector corrector(final Calendar calendar, DayOfWeek hol, boolean meanCorrection) {
-        return (TsDomain domain) -> {
-            int phol = hol.getValue() - 1;
-            Matrix M = HolidaysUtility.holidays(calendar.getHolidays(), domain);
-            FastMatrix Mc = FastMatrix.of(M);
-            if (meanCorrection) {
-                TsPeriod start = domain.getStartPeriod();
-                int freq = domain.getAnnualFrequency();
-                double[][] mean = HolidaysUtility.longTermMean(calendar.getHolidays(), freq);
-                if (mean != null) {
-                    int pstart = start.annualPosition();
-                    DataBlock[] Mean = new DataBlock[freq];
-                    for (int i = 0; i < freq; ++i) {
-                        Mean[i] = mean[i] == null ? null : DataBlock.of(mean[i]);
-                    }
-                    int n = Mc.getRowsCount();
-                    for (int i = 0; i < n; ++i) {
-                        DataBlock m = Mean[(i + pstart) % freq];
-                        if (m != null) {
-                            DataBlock row = Mc.row(i);
-                            row.sub(m);
-                        }
-                    }
-                }
-            }
-            // we put in the hpos column the sum of all the other days
-            // and we change the sign of the other days
-            DataBlock chol = Mc.column(phol);
-            chol.set(0);
-            for (int i = 0; i < 7; ++i) {
-                if (i != phol) {
-                    DataBlock cur = Mc.column(i);
-                    chol.add(cur);
-                    cur.chs();
-                }
-            }
-            return Mc;
-        };
+        return new CalendarCorrector(calendar, hol, meanCorrection);
     }
 
     public static HolidaysCorrector corrector(final HolidaysCorrector beg, final HolidaysCorrector end, final LocalDate breakDate) {
-        return (TsDomain domain) -> {
+        return new ChainedCorrector(beg, end, breakDate);
+    }
+
+    @lombok.AllArgsConstructor
+    static class ChainedCorrector implements HolidaysCorrector {
+
+        final HolidaysCorrector beg, end;
+        final LocalDate breakDate;
+
+        @Override
+        public Matrix holidaysCorrection(TsDomain domain) {
             int n = domain.getLength();
             int pos = domain.indexOf(breakDate.atStartOfDay());
             if (pos > 0) {
@@ -133,11 +180,28 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             } else {
                 return beg.holidaysCorrection(domain);
             }
-        };
+        }
+
+        @Override
+        public DoubleSeq longTermYearlyCorrection() {
+            // no actual solution
+            //prefer focusing on the recent part
+            return end.longTermYearlyCorrection();
+        }
     }
 
     public static HolidaysCorrector corrector(final HolidaysCorrector[] correctors, double[] weights) {
-        return (TsDomain domain) -> {
+        return new CompositeCorrector(correctors, weights);
+    }
+
+    @lombok.AllArgsConstructor
+    static class CompositeCorrector implements HolidaysCorrector {
+
+        final HolidaysCorrector[] correctors;
+        final double[] weights;
+
+        @Override
+        public Matrix holidaysCorrection(TsDomain domain) {
             FastMatrix M = FastMatrix.of(correctors[0].holidaysCorrection(domain));
             M.mul(weights[0]);
             for (int i = 1; i < correctors.length; ++i) {
@@ -145,24 +209,44 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
                 M.addAY(weights[i], cur);
             }
             return M;
-        };
+        }
+
+        @Override
+        public DoubleSeq longTermYearlyCorrection() {
+            DataBlock all = DataBlock.make(7);
+            all.setAY(weights[0], correctors[0].longTermYearlyCorrection());
+            for (int i = 1; i < correctors.length; ++i) {
+                all.addAY(weights[i], correctors[i].longTermYearlyCorrection());
+            }
+            return all;
+        }
     }
 
     private HolidaysCorrectionFactory() {
     }
+
+    private double AVG = 1.0 / 7.0;
 
     @Override
     public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start, FastMatrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
         FastMatrix days = FastMatrix.make(n, 7);
-        GenericTradingDaysFactory.fillTdMatrix(start, days);
+        GenericTradingDaysFactory.fillTdMatrix(start, true, days);
         Matrix corr = var.getCorrector().holidaysCorrection(domain);
         for (int i = 0; i < 7; ++i) {
             days.column(i).apply(corr.column(i), (a, b) -> a + b);
         }
         if (var.getType() == GenericTradingDays.Type.CONTRAST) {
-            GenericTradingDaysFactory.fillContrasts(var.getClustering(), days, buffer);
+            double[] weights = null;
+            if (var.isWeighted()) {
+                DoubleSeq dc = var.getCorrector().longTermYearlyCorrection();
+                weights = dc.toArray();
+                for (int j = 0; j < weights.length; ++j) {
+                    weights[j] = AVG + weights[j] / 365.25;
+                }
+            }
+            GenericTradingDaysFactory.fillContrasts(var.getClustering(), days, buffer, weights);
         } else {
             GenericTradingDaysFactory.fillNoContrasts(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
                     var.getType() == GenericTradingDays.Type.MEANCORRECTED ? start : null, days, buffer);
@@ -174,23 +258,22 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     public <P extends TimeSeriesInterval<?>, D extends TimeSeriesDomain<P>> boolean fill(HolidaysCorrectedTradingDays var, D domain, FastMatrix buffer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     /**
-     * Computes the long term weights to compute contrasts with holidays
-     * The weights are defined as (Di+Hi)(Dk+Hk) where Di is the average number of days for period i,
-     * Hi is the average number of holidays for period i (+ for the contrast group, - for the other groups),
-     * k is the contrasting group
+     * Computes the long term weights to compute contrasts with holidays The
+     * weights are defined as (Di+Hi)(Dk+Hk) where Di is the average number of
+     * days for period i, Hi is the average number of holidays for period i (+
+     * for the contrast group, - for the other groups), k is the contrasting
+     * group
+     *
      * @param calendar
-     * @return 
+     * @return
      */
-    
     /**
-     * 
+     *
      * @param calendar
      * @param freq
      * @param contrast
-     * @return 
+     * @return
      */
-    
-
 }

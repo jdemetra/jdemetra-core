@@ -37,8 +37,8 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     private TradingDaysType tradingDaysType;
     private LengthOfPeriodType lengthOfPeriodType;
     private RegressionTestSpec regressionTestType;
-    private boolean autoAdjust;
-    private int stockTradingDays;
+   private boolean autoAdjust;
+     private int stockTradingDays;
     private Parameter[] tdCoefficients;
     private Parameter lpCoefficient;
 

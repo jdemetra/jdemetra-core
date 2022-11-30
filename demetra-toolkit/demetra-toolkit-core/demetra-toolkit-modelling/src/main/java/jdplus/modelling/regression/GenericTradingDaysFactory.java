@@ -218,11 +218,19 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     public static FastMatrix generateContrasts(DayClustering clustering, FastMatrix days) {
         FastMatrix m = FastMatrix.make(days.getRowsCount(), clustering.getGroupsCount() - 1);
-        fillContrasts(clustering, days, m);
+        fillContrasts(clustering, days, m, null);
         return m;
     }
 
-    public static FastMatrix fillContrasts(DayClustering clustering, FastMatrix days, FastMatrix data) {
+    private static double weight(int[] group, double[] w) {
+        double s = 0;
+        for (int i = 0; i < group.length; ++i) {
+            s += w[group[i]];
+        }
+        return s;
+    }
+
+    public static FastMatrix fillContrasts(DayClustering clustering, FastMatrix days, FastMatrix data, double[] weights) {
         int n = days.getRowsCount();
         int[][] groups = clustering.allPositions();
         rotate(groups);
@@ -232,6 +240,21 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         for (int i = 0; i < cells.length; ++i) {
             cells[i] = data.column(i).cursor();
         }
+        // computation of the weights that will be applied in the contrasts
+        double[] w = new double[ng];
+        if (weights == null) {
+            double denom = cgroup.length;
+            for (int ig = 0; ig < ng; ++ig) {
+                w[ig] = groups[ig].length / denom;
+            }
+        } else {
+            double denom = weight(cgroup, weights);
+            for (int ig = 0; ig < ng; ++ig) {
+                w[ig] = weight(groups[ig], weights) / denom;
+            }
+
+        }
+
         for (int i = 0; i < n; ++i) {
             DataBlock rdays = days.row(i);
             double csum = rdays.get(cgroup[0]);
@@ -239,7 +262,6 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
             for (int ip = 1; ip < cnp; ++ip) {
                 csum += rdays.get(cgroup[ip]);
             }
-            csum /= cnp;
             for (int ig = 0; ig < ng; ++ig) {
                 int[] group = groups[ig];
                 double sum = rdays.get(group[0]);
@@ -248,7 +270,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                     sum += rdays.get(group[ip]);
                 }
                 double dsum = sum;
-                double val = dsum - np * csum;
+                double val = dsum - w[ig] * csum;
                 double ival = Math.round(val);
                 if (Math.abs(val - ival) < 1e-9) {
                     val = ival;
@@ -352,10 +374,24 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     }
 
     public static void fillTdMatrix(TsPeriod start, FastMatrix mtd) {
+        fillTdMatrix(start, false, mtd);
+    }
+
+    public static void fillTdMatrix(TsPeriod start, boolean corrected, FastMatrix mtd) {
         int[][] td = tdCount(TsDomain.of(start, mtd.getRowsCount()));
         for (int i = 0; i < 7; ++i) {
             int[] curtd = td[i];
             mtd.column(i).set(k -> curtd[k]);
+        }
+        if (corrected) {
+            int period=start.annualFrequency();
+            double[] means = meanDays(period);
+            int pos=start.annualPosition();
+            for (int r=0; r<mtd.getRowsCount(); ++r){
+                mtd.row(r).sub(means[pos]);
+                if (++pos == period)
+                    pos=0;
+            }
         }
     }
 

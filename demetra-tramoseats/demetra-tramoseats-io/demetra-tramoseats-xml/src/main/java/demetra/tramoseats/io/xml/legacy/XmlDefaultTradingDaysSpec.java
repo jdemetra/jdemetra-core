@@ -104,9 +104,9 @@ public class XmlDefaultTradingDaysSpec
         LengthOfPeriodType lp = xml.lpOption == null ? LengthOfPeriodType.None : xml.getLpOption();
         RegressionTestType test = xml.test == null ? RegressionTestType.None : xml.getTest();
         if (xml.calendar == null) {
-            return TradingDaysSpec.td(td, lp, test);
+            return TradingDaysSpec.td(td, lp, test, false);
         } else {
-            return TradingDaysSpec.holidays(xml.calendar, td, lp, test);
+            return TradingDaysSpec.holidays(xml.calendar, td, lp, test, false);
         }
     }
     

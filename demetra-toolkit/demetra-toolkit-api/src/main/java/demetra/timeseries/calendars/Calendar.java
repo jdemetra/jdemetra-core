@@ -28,6 +28,10 @@ public class Calendar implements CalendarDefinition {
 
     @lombok.NonNull
     private Holiday[] holidays;
+    
+    public boolean isempty(){
+        return holidays.length == 0;
+    }
 
     public static final Calendar DEFAULT = new Calendar(new Holiday[0]);
 

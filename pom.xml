@@ -38,7 +38,7 @@
     <properties>
         <!-- dependencies -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.4-RC2-SNAPSHOT</jd2.version>
+        <jd2.version>2.2.4-RC3-SNAPSHOT</jd2.version>
     </properties>
 
     <modules>

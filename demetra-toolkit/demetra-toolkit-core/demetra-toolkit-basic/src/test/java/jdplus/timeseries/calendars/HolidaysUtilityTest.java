@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import demetra.math.matrices.Matrix;
 import demetra.timeseries.calendars.DayClustering;
+import java.time.DayOfWeek;
 
 /**
  *
@@ -116,18 +117,18 @@ public class HolidaysUtilityTest {
     
     @Test
     public void testDays(){
-        FastMatrix days = HolidaysUtility.days(belgium, 12, 6);
+        FastMatrix days = HolidaysUtility.days(belgium, 12, DayOfWeek.SUNDAY);
         assertEquals(days.sum(), 365.25, 1e-9);
-        days = HolidaysUtility.days(belgium, 4, 6);
+        days = HolidaysUtility.days(belgium, 4, DayOfWeek.SUNDAY);
         assertEquals(days.sum(), 365.25, 1e-9);
     }
 
     @Test
     public void testDaysClustering(){
-        FastMatrix days = HolidaysUtility.days(belgium, 12, 6);
+        FastMatrix days = HolidaysUtility.days(belgium, 12, DayOfWeek.SUNDAY);
         days=HolidaysUtility.clustering(days, DayClustering.TD2);
         assertEquals(days.sum(), 365.25, 1e-9);
-        days = HolidaysUtility.days(belgium, 4, 6);
+        days = HolidaysUtility.days(belgium, 4, DayOfWeek.SUNDAY);
         days=HolidaysUtility.clustering(days, DayClustering.TD2);
         assertEquals(days.sum(), 365.25, 1e-9);
     }

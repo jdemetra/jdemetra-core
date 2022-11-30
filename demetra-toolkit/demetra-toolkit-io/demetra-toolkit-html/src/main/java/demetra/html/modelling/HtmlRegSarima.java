@@ -119,8 +119,10 @@ public class HtmlRegSarima extends AbstractHtmlElement {
         if (description.isLogTransformation()) {
             stream.write("Series has been log-transformed").newLine();
         }
-        if (description.getLengthOfPeriodTransformation() != LengthOfPeriodType.None) {
+        if (description.getLengthOfPeriodTransformation() == LengthOfPeriodType.LeapYear) {
             stream.write("Series has been corrected for leap year").newLine();
+        }else if (description.getLengthOfPeriodTransformation() == LengthOfPeriodType.LengthOfPeriod) {
+            stream.write("Series has been corrected for length of period").newLine();
         }
         int ntd = countVariables(ITradingDaysVariable.class, false);
         int nftd = countVariables(ITradingDaysVariable.class, true);

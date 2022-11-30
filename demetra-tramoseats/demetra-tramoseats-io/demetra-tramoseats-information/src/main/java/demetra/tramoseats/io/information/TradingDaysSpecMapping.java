@@ -31,7 +31,7 @@ import demetra.tramoseats.TramoSeatsException;
 @lombok.experimental.UtilityClass
 class TradingDaysSpecMapping {
 
-    final String AUTO = "auto", MAUTO = "mauto", PFTD = "pftd", TDOPTION = "option", LPOPTION = "leapyear",
+    final String AUTO = "auto", MAUTO = "mauto", PFTD = "pftd", TDOPTION = "option", LPOPTION = "leapyear", ADJUST = "autoadjust", 
             HOLIDAYS = "holidays", USER = "user", TEST = "test", TESTTYPE = "testtype", W = "stocktd",
             LPCOEF = "lpcoef", TDCOEF = "tdcoef";
 
@@ -167,6 +167,9 @@ class TradingDaysSpecMapping {
         if (verbose || spec.isTest()) {
             tdInfo.set(TESTTYPE, spec.getRegressionTestType().name());
         }
+        if (verbose || !spec.isAutoAdjust()) {
+            tdInfo.add(ADJUST, spec.isAutoAdjust());
+        }
     }
 
     TradingDaysSpec readLegacy(InformationSet regInfo) {
@@ -208,9 +211,9 @@ class TradingDaysSpecMapping {
         }
         if (method != TradingDaysSpec.AutoMethod.Unused) {
             if (holidays != null) {
-                return TradingDaysSpec.automaticHolidays(holidays, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
+                return TradingDaysSpec.automaticHolidays(holidays, lpo, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd, false);
             } else {
-                return TradingDaysSpec.automatic(method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
+                return TradingDaysSpec.automatic(lpo, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd, false);
             }
         }
         RegressionTestType reg = test != null ? RegressionTestType.Separate_T : RegressionTestType.None;
@@ -256,14 +259,14 @@ class TradingDaysSpecMapping {
             if (tdcoef != null || lcoef != null) {
                 return TradingDaysSpec.holidays(holidays, tdo, lpo, tdcoef, lcoef);
             } else {
-                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg);
+                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg, false);
             }
 
         } else {
             if (tdcoef != null || lcoef != null) {
                 return TradingDaysSpec.td(tdo, lpo, tdcoef, lcoef);
             } else {
-                return TradingDaysSpec.td(tdo, lpo, reg);
+                return TradingDaysSpec.td(tdo, lpo, reg, false);
             }
         }
     }
@@ -286,6 +289,11 @@ class TradingDaysSpecMapping {
         Integer w = tdInfo.get(W, Integer.class);
         Boolean test = tdInfo.get(TEST, Boolean.class);
         String testtype = tdInfo.get(TESTTYPE, String.class);
+        boolean adjust = TradingDaysSpec.DEF_ADJUST;
+        Boolean adj = tdInfo.get(ADJUST, Boolean.class);
+        if (adj != null) {
+            adjust = adj;
+        }
 
         TradingDaysType tdo = td == null ? TradingDaysType.NONE : TradingDaysType.valueOf(td);
         LengthOfPeriodType lpo = lp == null ? LengthOfPeriodType.None : LengthOfPeriodType.LeapYear;
@@ -298,9 +306,9 @@ class TradingDaysSpecMapping {
         }
         if (method != TradingDaysSpec.AutoMethod.Unused) {
             if (holidays != null) {
-                return TradingDaysSpec.automaticHolidays(holidays, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
+                return TradingDaysSpec.automaticHolidays(holidays, lpo, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd, adjust);
             } else {
-                return TradingDaysSpec.automatic(method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
+                return TradingDaysSpec.automatic(lpo, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd, adjust);
             }
         }
         RegressionTestType reg = test != null ? RegressionTestType.Separate_T : RegressionTestType.None;
@@ -325,14 +333,14 @@ class TradingDaysSpecMapping {
             if (tdcoef != null || lcoef != null) {
                 return TradingDaysSpec.holidays(holidays, tdo, lpo, tdcoef, lcoef);
             } else {
-                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg);
+                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg, adjust);
             }
 
         } else {
             if (tdcoef != null || lcoef != null) {
                 return TradingDaysSpec.td(tdo, lpo, tdcoef, lcoef);
             } else {
-                return TradingDaysSpec.td(tdo, lpo, reg);
+                return TradingDaysSpec.td(tdo, lpo, reg, adjust);
             }
         }
     }
@@ -364,66 +372,66 @@ class TradingDaysSpecMapping {
         }
     }
 
-    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef, boolean v3) {
-        Boolean auto = tdInfo.get(AUTO, Boolean.class);
-        String mauto = tdInfo.get(MAUTO, String.class);
-        Double pftd = tdInfo.get(PFTD, Double.class);
-        String td = tdInfo.get(TDOPTION, String.class);
-        Boolean lp = tdInfo.get(LPOPTION, Boolean.class);
-        String lpt = tdInfo.get(LPOPTION, String.class);
-        String holidays = tdInfo.get(HOLIDAYS, String.class);
-        String[] user = tdInfo.get(USER, String[].class);
-        Integer w = tdInfo.get(W, Integer.class);
-        Boolean test = tdInfo.get(TEST, Boolean.class);
-        String testtype = tdInfo.get(TESTTYPE, String.class);
-
-        TradingDaysType tdo = td == null ? TradingDaysType.NONE : (v3 ? TradingDaysType.valueOf(td) : tdOf(td));
-        LengthOfPeriodType lpo = lp == null ? LengthOfPeriodType.None : LengthOfPeriodType.LeapYear;
-        if (lpt != null) {
-            lpo = LengthOfPeriodType.valueOf(lpt);
-        }
-        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.Unused;
-        if ((auto != null && auto) || mauto != null) {
-            method = mauto == null ? TradingDaysSpec.AutoMethod.FTest : TradingDaysSpec.AutoMethod.valueOf(mauto);
-        }
-        if (method != TradingDaysSpec.AutoMethod.Unused) {
-            if (holidays != null) {
-                return TradingDaysSpec.automaticHolidays(holidays, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
-            } else {
-                return TradingDaysSpec.automatic(method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
-            }
-        }
-        RegressionTestType reg = test != null ? RegressionTestType.Separate_T : RegressionTestType.None;
-        if (testtype != null) {
-            reg = RegressionTestType.valueOf(testtype);
-        }
-        if (user != null) {
-            if (tdcoef != null) {
-                return TradingDaysSpec.userDefined(user, tdcoef);
-            } else {
-                return TradingDaysSpec.userDefined(user, reg);
-            }
-        } else if (w != null && w != 0) {
-            if (tdcoef != null) {
-                return TradingDaysSpec.stockTradingDays(w, tdcoef);
-            } else {
-                return TradingDaysSpec.stockTradingDays(w, reg);
-            }
-        } else if (tdo == TradingDaysType.NONE && lpo == LengthOfPeriodType.None) {
-            return TradingDaysSpec.none();
-        } else if (holidays != null) {
-            if (tdcoef != null || lcoef != null) {
-                return TradingDaysSpec.holidays(holidays, tdo, lpo, tdcoef, lcoef);
-            } else {
-                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg);
-            }
-
-        } else {
-            if (tdcoef != null || lcoef != null) {
-                return TradingDaysSpec.td(tdo, lpo, tdcoef, lcoef);
-            } else {
-                return TradingDaysSpec.td(tdo, lpo, reg);
-            }
-        }
-    }
+//    TradingDaysSpec readProperties(InformationSet tdInfo, Parameter lcoef, Parameter[] tdcoef, boolean v3) {
+//        Boolean auto = tdInfo.get(AUTO, Boolean.class);
+//        String mauto = tdInfo.get(MAUTO, String.class);
+//        Double pftd = tdInfo.get(PFTD, Double.class);
+//        String td = tdInfo.get(TDOPTION, String.class);
+//        Boolean lp = tdInfo.get(LPOPTION, Boolean.class);
+//        String lpt = tdInfo.get(LPOPTION, String.class);
+//        String holidays = tdInfo.get(HOLIDAYS, String.class);
+//        String[] user = tdInfo.get(USER, String[].class);
+//        Integer w = tdInfo.get(W, Integer.class);
+//        Boolean test = tdInfo.get(TEST, Boolean.class);
+//        String testtype = tdInfo.get(TESTTYPE, String.class);
+//
+//        TradingDaysType tdo = td == null ? TradingDaysType.NONE : (v3 ? TradingDaysType.valueOf(td) : tdOf(td));
+//        LengthOfPeriodType lpo = lp == null ? LengthOfPeriodType.None : LengthOfPeriodType.LeapYear;
+//        if (lpt != null) {
+//            lpo = LengthOfPeriodType.valueOf(lpt);
+//        }
+//        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.Unused;
+//        if ((auto != null && auto) || mauto != null) {
+//            method = mauto == null ? TradingDaysSpec.AutoMethod.FTest : TradingDaysSpec.AutoMethod.valueOf(mauto);
+//        }
+//        if (method != TradingDaysSpec.AutoMethod.Unused) {
+//            if (holidays != null) {
+//                return TradingDaysSpec.automaticHolidays(holidays, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
+//            } else {
+//                return TradingDaysSpec.automatic(method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd);
+//            }
+//        }
+//        RegressionTestType reg = test != null ? RegressionTestType.Separate_T : RegressionTestType.None;
+//        if (testtype != null) {
+//            reg = RegressionTestType.valueOf(testtype);
+//        }
+//        if (user != null) {
+//            if (tdcoef != null) {
+//                return TradingDaysSpec.userDefined(user, tdcoef);
+//            } else {
+//                return TradingDaysSpec.userDefined(user, reg);
+//            }
+//        } else if (w != null && w != 0) {
+//            if (tdcoef != null) {
+//                return TradingDaysSpec.stockTradingDays(w, tdcoef);
+//            } else {
+//                return TradingDaysSpec.stockTradingDays(w, reg);
+//            }
+//        } else if (tdo == TradingDaysType.NONE && lpo == LengthOfPeriodType.None) {
+//            return TradingDaysSpec.none();
+//        } else if (holidays != null) {
+//            if (tdcoef != null || lcoef != null) {
+//                return TradingDaysSpec.holidays(holidays, tdo, lpo, tdcoef, lcoef);
+//            } else {
+//                return TradingDaysSpec.holidays(holidays, tdo, lpo, reg);
+//            }
+//
+//        } else {
+//            if (tdcoef != null || lcoef != null) {
+//                return TradingDaysSpec.td(tdo, lpo, tdcoef, lcoef);
+//            } else {
+//                return TradingDaysSpec.td(tdo, lpo, reg);
+//            }
+//        }
+//    }
 }

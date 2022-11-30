@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,8 +30,8 @@ public class TradingDaysSpecTest {
     
     @Test
     public void test() {
-        TradingDaysSpec spec1 = TradingDaysSpec.automaticHolidays("test", TradingDaysSpec.AutoMethod.FTest, .99);
-        TradingDaysSpec spec2 = TradingDaysSpec.automatic(TradingDaysSpec.AutoMethod.FTest, .99);
+        TradingDaysSpec spec1 = TradingDaysSpec.automaticHolidays("test", LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTest, .99, false);
+        TradingDaysSpec spec2 = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTest, .99, false);
        
         assertNotEquals(spec1, spec2);
     }

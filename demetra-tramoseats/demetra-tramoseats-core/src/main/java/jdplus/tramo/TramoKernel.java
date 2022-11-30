@@ -31,6 +31,8 @@ import demetra.timeseries.TsData;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.tramo.AutoModelSpec;
 import demetra.tramo.EasterSpec;
 import demetra.tramo.OutlierSpec;
@@ -138,14 +140,15 @@ public class TramoKernel implements RegSarimaProcessor {
                 .build();
     }
 
-    private IRegressionModule regressionModule() {
+    private IRegressionModule regressionModule(boolean preadjust) {
         TradingDaysSpec tdspec = spec.getRegression().getCalendar().getTradingDays();
         EasterSpec espec = spec.getRegression().getCalendar().getEaster();
+        ILengthOfPeriodVariable lp=preadjust ? null : TramoModelBuilder.leapYear(tdspec);
         if (tdspec.isAutomatic()) {
             if (tdspec.getAutomaticMethod() == TradingDaysSpec.AutoMethod.FTest) {
                 return AutomaticFRegressionTest.builder()
                         .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
-                        .leapYear(TramoModelBuilder.leapYear(tdspec))
+                        .leapYear(lp)
                         .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
                         .testMean(spec.isUsingAutoModel())
@@ -155,7 +158,7 @@ public class TramoKernel implements RegSarimaProcessor {
             } else {
                 return AutomaticWaldRegressionTest.builder()
                         .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
-                        .leapYear(TramoModelBuilder.leapYear(tdspec))
+                        .leapYear(lp)
                         .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                         .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
                         .testMean(spec.isUsingAutoModel())
@@ -167,7 +170,7 @@ public class TramoKernel implements RegSarimaProcessor {
         } else {
             return DefaultRegressionTest.builder()
                     .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
-                    .leapYear(tdspec.isTest() ? TramoModelBuilder.leapYear(tdspec) : null)
+                    .leapYear(tdspec.isTest() ? lp : null)
                     .tradingDays(tdspec.isTest() ? TramoModelBuilder.tradingDays(spec, modellingContext) : null)
                     .useJoinTest(tdspec.getRegressionTestType() == RegressionTestType.Joint_F)
                     .testMean(spec.isUsingAutoModel())
@@ -255,7 +258,8 @@ public class TramoKernel implements RegSarimaProcessor {
         // Test for loglevel transformation
         testTransformation(modelling);
 
-        regressionModule().test(modelling);
+        boolean adjust=modelling.getDescription().isAdjusted();
+        regressionModule(adjust).test(modelling);
 
         initProcessing(modelling.getDescription().regarima().getActualObservationsCount());
 
@@ -700,10 +704,18 @@ public class TramoKernel implements RegSarimaProcessor {
                     .seasonal(context.seasonal)
                     .build();
             module.process(modelling);
+            ModelDescription desc = modelling.getDescription();
+            TradingDaysSpec td = spec.getRegression().getCalendar().getTradingDays();
+            if (desc.isLogTransformation() && 
+                    td.isAutoAdjust()){
+                desc.setPreadjustment(td.getLengthOfPeriodType());
+                modelling.clearEstimation();
+            }
         }else if (modelling.getDescription().isLogTransformation()){
             if (modelling.getDescription().getSeries().getValues().anyMatch(x->x<=0)){
                 modelling.getLog().warning("logs changed to levels");
                 modelling.getDescription().setLogTransformation(false);
+                modelling.getDescription().setPreadjustment(LengthOfPeriodType.None);
                 modelling.clearEstimation();
             }
         }
