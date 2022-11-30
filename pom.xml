@@ -331,7 +331,7 @@
                                         <!-- Built-In Rules -->
                                         <banDuplicatePomDependencyVersions/>
                                         <dependencyConvergence/>
-<!--                                        <reactorModuleConvergence/>-->
+                                        <!--                                        <reactorModuleConvergence/>-->
                                         <requireMavenVersion>
                                             <version>3.6.0</version>
                                         </requireMavenVersion>
@@ -447,18 +447,13 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- 2. JD+ artifacts <= v2.2.3 -->
-        <repository>
-            <id>jfrog-maven-mirror</id>
-            <url>https://raw.githubusercontent.com/nbbrd/jfrog-maven-mirror/main</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <!-- 3. JD+ snapshots -->
+        <!-- 2. JD+ snapshots >= v2.2.4 -->
         <repository>
             <id>ossrh-snapshots1</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
