@@ -709,6 +709,7 @@ public class TramoKernel implements RegSarimaProcessor {
             if (desc.isLogTransformation() && 
                     td.isAutoAdjust()){
                 desc.setPreadjustment(td.getLengthOfPeriodType());
+                desc.remove("lp");
                 modelling.clearEstimation();
             }
         }else if (modelling.getDescription().isLogTransformation()){

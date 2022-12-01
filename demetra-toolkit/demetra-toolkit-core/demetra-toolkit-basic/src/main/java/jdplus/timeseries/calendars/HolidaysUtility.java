@@ -388,7 +388,7 @@ public class HolidaysUtility {
      * @return Returns an array of "annualFrequency" length, corresponding to
      * each period in one year (for instance, Jan, Feb..., Dec). Each item of
      * the result will contain 7 elements, corresponding to the long term
-     * average for Mondays...Sundays The sum of the longTermMean must be equal
+     * average for Mondays...Sundays. The sum of the longTermMean must be equal
      * to the sum of the weights of the different holidays. Some element of the
      * array can be null, which means that there are no effect for the
      * considered period.

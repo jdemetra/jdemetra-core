@@ -27,9 +27,15 @@ import demetra.timeseries.TimeSeriesInterval;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.math.matrices.Matrix;
 import java.time.DayOfWeek;
+import jdplus.data.DataBlockIterator;
 
 /**
- *
+ * The trading days are computed as the sum of the "normal" calendar and the corrections implied by the holidays (holidays are assimilated to a given day)
+ * TD(i,t) = D(i, t) + C(i, t)
+ * To remove the systematic seasonal component, we must compute the long term averages of each period (Jan..., Q1...)
+ * TDc(i,t) = D(i,t) - mean D(i) + C(i,t) - mean C(i) 
+ * 
+ * 
  * @author PALATEJ
  */
 @Development(status = Development.Status.Release)
@@ -37,6 +43,14 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
 
     public static HolidaysCorrectionFactory FACTORY = new HolidaysCorrectionFactory();
 
+    /**
+     * 
+     * @param name Name of the calendar
+     * @param mgr 
+     * @param hol The day to which the holidays correspond (holidays are considered as a "hol")
+     * @param meanCorrection Long term mean corrections are applied on the calendar 
+     * @return 
+     */
     public static HolidaysCorrector corrector(String name, CalendarManager mgr, DayOfWeek hol, boolean meanCorrection) {
         CalendarDefinition cur = mgr.get(name);
         if (cur == null) {
@@ -52,43 +66,51 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         final DayOfWeek hol;
         final boolean meanCorrection;
 
+        /**
+         * C(i,t) if meanCorrection is false, C(i,t)-mean C(i) otherwise
+         * @param domain
+         * @return 
+         */
         @Override
         public Matrix holidaysCorrection(TsDomain domain) {
             int phol = hol.getValue() - 1;
-            Matrix M = HolidaysUtility.holidays(calendar.getHolidays(), domain);
-            FastMatrix Mc = FastMatrix.of(M);
+            Matrix C = HolidaysUtility.holidays(calendar.getHolidays(), domain);
+            FastMatrix Cc = FastMatrix.of(C);
             if (meanCorrection) {
                 TsPeriod start = domain.getStartPeriod();
                 int freq = domain.getAnnualFrequency();
                 double[][] mean = HolidaysUtility.longTermMean(calendar.getHolidays(), freq);
                 if (mean != null) {
-                    int pstart = start.annualPosition();
+                    int pos = start.annualPosition();
                     DataBlock[] Mean = new DataBlock[freq];
                     for (int i = 0; i < freq; ++i) {
                         Mean[i] = mean[i] == null ? null : DataBlock.of(mean[i]);
                     }
-                    int n = Mc.getRowsCount();
-                    for (int i = 0; i < n; ++i) {
-                        DataBlock m = Mean[(i + pstart) % freq];
+                    int n = Cc.getRowsCount();
+                    DataBlockIterator rows = Cc.rowsIterator();
+                    while (rows.hasNext()){
+                        DataBlock row = rows.next();
+                        DataBlock m = Mean[pos++];
                         if (m != null) {
-                            DataBlock row = Mc.row(i);
-                            row.sub(m);
+                             row.sub(m);
                         }
+                        if (pos == freq)
+                            pos=0;
                     }
                 }
             }
             // we put in the hpos column the sum of all the other days
             // and we change the sign of the other days
-            DataBlock chol = Mc.column(phol);
+            DataBlock chol = Cc.column(phol);
             chol.set(0);
             for (int i = 0; i < 7; ++i) {
                 if (i != phol) {
-                    DataBlock cur = Mc.column(i);
+                    DataBlock cur = Cc.column(i);
                     chol.add(cur);
                     cur.chs();
                 }
             }
-            return Mc;
+            return Cc;
         }
 
         @Override
@@ -232,7 +254,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
         FastMatrix days = FastMatrix.make(n, 7);
-        GenericTradingDaysFactory.fillTdMatrix(start, true, days);
+        GenericTradingDaysFactory.fillTradingDaysMatrix(start, true, days);
         Matrix corr = var.getCorrector().holidaysCorrection(domain);
         for (int i = 0; i < 7; ++i) {
             days.column(i).apply(corr.column(i), (a, b) -> a + b);
@@ -248,7 +270,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             }
             GenericTradingDaysFactory.fillContrasts(var.getClustering(), days, buffer, weights);
         } else {
-            GenericTradingDaysFactory.fillNoContrasts(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
+            GenericTradingDaysFactory.fillNoContrasts(var.getClustering(),
                     var.getType() == GenericTradingDays.Type.MEANCORRECTED ? start : null, days, buffer);
         }
         return true;

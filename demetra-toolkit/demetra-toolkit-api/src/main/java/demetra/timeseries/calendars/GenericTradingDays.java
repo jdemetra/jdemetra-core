@@ -38,11 +38,7 @@ public class GenericTradingDays {
         /**
          * Number of days in group(i) - avg(Number of days in group(i))
          */
-        MEANCORRECTED,
-        /**
-         * Number of days in group(i)/#group[i)
-         */
-        NORMALIZED
+        MEANCORRECTED
     }
 
     private DayClustering clustering;
@@ -54,10 +50,6 @@ public class GenericTradingDays {
  
     public static GenericTradingDays raw(DayClustering clustering){
         return new GenericTradingDays(clustering, Type.RAW);
-    }
-
-    public static GenericTradingDays normalized(DayClustering clustering){
-        return new GenericTradingDays(clustering, Type.NORMALIZED);
     }
 
     public static GenericTradingDays meanCorrected(DayClustering clustering){

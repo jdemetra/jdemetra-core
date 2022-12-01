@@ -34,13 +34,13 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     public static interface HolidaysCorrector {
 
         /**
-         * Gets the corrections (in days) to be applied on normal calendars 
-         * For each period, the sum of the correction should be 0
+         * Gets the corrections (in days) to be applied on normal calendars. 
+         * For each period, the sum of the correction should be 0.
          *
          * @param domain
          * @return The corrections for each period of the
          * domain. The different columns of the matrix correspond to
-         * Mondays...Sundays
+         * Mondays...Sundays. The dimensions of the matrix are (domain.length() x 7)
          */
         Matrix holidaysCorrection(TsDomain domain);
         
@@ -69,7 +69,7 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
         this.clustering = td.getClustering();
         this.type=td.getType();
         this.corrector = corrector;
-        this.weighted=true;
+        this.weighted=false;
     }
 
     @Override

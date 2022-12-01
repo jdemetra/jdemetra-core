@@ -27,6 +27,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import jdplus.data.DataBlock;
@@ -117,7 +118,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             dataContrast(var.getClustering(), start, buffer);
         } else {
-            dataNoContrast(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
+            dataNoContrast(var.getClustering(),
                     var.getType() == GenericTradingDays.Type.MEANCORRECTED, start, buffer);
         }
         return true;
@@ -130,7 +131,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         if (var.getType() == GenericTradingDays.Type.CONTRAST) {
             dataContrast(var.getClustering(), start, buffer);
         } else {
-            dataNoContrast(var.getClustering(), var.getType() == GenericTradingDays.Type.NORMALIZED,
+            dataNoContrast(var.getClustering(),
                     var.getType() == GenericTradingDays.Type.MEANCORRECTED, start, buffer);
         }
         return true;
@@ -143,7 +144,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     private static final double[] MDAYS = new double[]{31.0, 28.25, 31.0, 30.0, 31.0, 30.0, 31.0, 31.0, 30.0, 31.0, 30.0, 31.0};
 
-    private void dataNoContrast(DayClustering clustering, boolean normalized, boolean meanCorrected,
+    private void dataNoContrast(DayClustering clustering, boolean meanCorrected,
             TsPeriod start, FastMatrix buffer) {
         int n = buffer.getRowsCount();
         TsDomain domain = TsDomain.of(start, n);
@@ -167,10 +168,7 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                 double dsum = sum;
                 if (mdays != null) {
                     dsum -= np * mdays[i];
-                } else if (normalized) {
-                    dsum /= np;
-                }
-
+                } 
                 cells[ig].setAndNext(dsum);
             }
         }
@@ -216,6 +214,12 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return data;
     }
 
+    /**
+     * Generates the contrasts (using identical weights for each day) for a given matrix of days
+     * @param clustering Clustering of days
+     * @param days Matrix containing the days. Must be a n x 7 matrix. The contrasting group is the 0-group of the clustering
+     * @return 
+     */
     public static FastMatrix generateContrasts(DayClustering clustering, FastMatrix days) {
         FastMatrix m = FastMatrix.make(days.getRowsCount(), clustering.getGroupsCount() - 1);
         fillContrasts(clustering, days, m, null);
@@ -230,7 +234,14 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return s;
     }
 
-    public static FastMatrix fillContrasts(DayClustering clustering, FastMatrix days, FastMatrix data, double[] weights) {
+    /**
+     * Fill the contrasts (using the given weights for the days) for a given matrix of days
+      * @param clustering
+     * @param days a n x 7 matrix of days. Could be corrected for long term averages
+     * @param data
+     * @param weights 
+     */
+    public static void fillContrasts(DayClustering clustering, FastMatrix days, FastMatrix data, double[] weights) {
         int n = days.getRowsCount();
         int[][] groups = clustering.allPositions();
         rotate(groups);
@@ -278,17 +289,16 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                 cells[ig].setAndNext(val);
             }
         }
-        return data;
     }
 
-    public static FastMatrix generateNoContrast(DayClustering clustering, boolean normalized, TsPeriod start,
+    public static FastMatrix generateNoContrast(DayClustering clustering, TsPeriod start,
             FastMatrix days) {
         FastMatrix m = FastMatrix.make(days.getRowsCount(), clustering.getGroupsCount());
-        fillNoContrasts(clustering, normalized, start, days, m);
+        fillNoContrasts(clustering, start, days, m);
         return m;
     }
 
-    public static FastMatrix fillNoContrasts(DayClustering clustering, boolean normalized, TsPeriod start, FastMatrix days, FastMatrix data) {
+    public static FastMatrix fillNoContrasts(DayClustering clustering, TsPeriod start, FastMatrix days, FastMatrix data) {
         int n = days.getRowsCount();
         double[] mdays = null;
         if (start != null) {
@@ -313,8 +323,6 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
                 double dsum = sum;
                 if (mdays != null) {
                     dsum -= np * mdays[i];
-                } else if (normalized) {
-                    dsum /= np;
                 }
 
                 cells[ig].setAndNext(dsum);
@@ -373,24 +381,33 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return rslt;
     }
 
-    public static void fillTdMatrix(TsPeriod start, FastMatrix mtd) {
-        fillTdMatrix(start, false, mtd);
+    @Deprecated
+    public static void fillTradingDaysMatrix(TsPeriod start, FastMatrix mtd) {
+        fillTradingDaysMatrix(start, false, mtd);
     }
 
-    public static void fillTdMatrix(TsPeriod start, boolean corrected, FastMatrix mtd) {
+    /**
+     * Fill the matrix with the number of Mondays...Sundays, starting at a given period
+     * The data can be corrected for long term averages 
+     * @param start
+     * @param corrected
+     * @param mtd 
+     */
+    public static void fillTradingDaysMatrix(TsPeriod start, boolean corrected, FastMatrix mtd) {
         int[][] td = tdCount(TsDomain.of(start, mtd.getRowsCount()));
         for (int i = 0; i < 7; ++i) {
             int[] curtd = td[i];
             mtd.column(i).set(k -> curtd[k]);
         }
         if (corrected) {
-            int period=start.annualFrequency();
+            int period = start.annualFrequency();
             double[] means = meanDays(period);
-            int pos=start.annualPosition();
-            for (int r=0; r<mtd.getRowsCount(); ++r){
+            int pos = start.annualPosition();
+            for (int r = 0; r < mtd.getRowsCount(); ++r) {
                 mtd.row(r).sub(means[pos]);
-                if (++pos == period)
-                    pos=0;
+                if (++pos == period) {
+                    pos = 0;
+                }
             }
         }
     }
@@ -408,24 +425,21 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
         return m;
     }
 
+    /**
+     * Average number of Mondays...Sundays for the periods corresponding to a given domain
+     * @param domain
+     * @return 
+     */
     public static double[] meanDays(TsDomain domain) {
-        int conv = TsUnit.MONTH.ratioOf(domain.getStartPeriod().getUnit());
-        if (conv <= 0) {
-            return null;
-        }
-        LocalDate cur = domain.start().toLocalDate();
-        int month = cur.getMonthValue() - 1;
+        TsPeriod start = domain.getStartPeriod();
+        int p=start.annualFrequency();
+        double[] meanDays = meanDays(p);
+        int pos = start.annualPosition();
         double[] m = new double[domain.getLength()];
-        int p = 12 / conv, pmax = Math.min(p, m.length);
-        for (int i = 0, k = month; i < pmax; ++i) {
-            double s = 0;
-            for (int j = 0; j < conv; ++j, ++k) {
-                s += MDAYS[k % 12];
-            }
-            m[i] = s / 7;
-        }
-        for (int i = p; i < m.length; ++i) {
-            m[i] = m[i - p];
+        for (int i = 0; i < m.length; ++i) {
+            m[i]=meanDays[pos];
+            if (++pos == p)
+                pos=0;
         }
         return m;
     }
