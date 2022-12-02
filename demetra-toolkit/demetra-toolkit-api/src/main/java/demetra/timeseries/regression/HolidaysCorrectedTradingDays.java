@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.data.DoubleSeq;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
@@ -33,25 +34,42 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     public static interface HolidaysCorrector {
 
         /**
-         * Gets the number of days corresponding to the holidays
+         * Gets the corrections (in days) to be applied on normal calendars. 
+         * For each period, the sum of the correction should be 0.
          *
          * @param domain
-         * @return The (weighted) number of holidays for each period of the
+         * @return The corrections for each period of the
          * domain. The different columns of the matrix correspond to
-         * Mondays...Sundays
+         * Mondays...Sundays. The dimensions of the matrix are (domain.length() x 7)
          */
         Matrix holidaysCorrection(TsDomain domain);
+        
+        /**
+         * Gets the average annual corrections (in days) to be applied on Mondays...Sundays
+         * The sum should be 0
+         * @return An array of 7 elements
+         */
+        DoubleSeq longTermYearlyCorrection();
 
     }
 
     private DayClustering clustering;
     private GenericTradingDays.Type type;
+    private boolean weighted;
     private HolidaysCorrector corrector;
+
+    public HolidaysCorrectedTradingDays(GenericTradingDays td, boolean weighted, HolidaysCorrector corrector ) {
+        this.clustering = td.getClustering();
+        this.type=td.getType();
+        this.corrector = corrector;
+        this.weighted=weighted;
+    }
 
     public HolidaysCorrectedTradingDays(GenericTradingDays td, HolidaysCorrector corrector) {
         this.clustering = td.getClustering();
         this.type=td.getType();
         this.corrector = corrector;
+        this.weighted=false;
     }
 
     @Override

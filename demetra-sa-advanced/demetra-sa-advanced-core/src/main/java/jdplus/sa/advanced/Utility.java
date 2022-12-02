@@ -53,7 +53,7 @@ public class Utility {
                         .regression(RegressionSpec.builder()
                                 .calendar(CalendarSpec.builder()
                                         .tradingDays(TradingDaysSpec
-                                                .td(spec.getDtype(), spec.getLtype(), spec.pretest ? RegressionTestType.Joint_F : RegressionTestType.None ))
+                                                .td(spec.getDtype(), spec.getLtype(), spec.pretest ? RegressionTestType.Joint_F : RegressionTestType.None, false))
                                         .easter(spec.easter ?
                                                 EasterSpec.builder()
                                                         .type(EasterSpec.Type.IncludeEaster)

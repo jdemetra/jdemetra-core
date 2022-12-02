@@ -111,6 +111,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         if (transform.getFunction() == TransformationType.Auto) {
             TransformSpec ntransform = transform.toBuilder()
                     .function(rslts.isLogTransformation() ? TransformationType.Log : TransformationType.None)
+                    .adjust(rslts.getLengthOfPeriodTransformation())
                     .build();
             builder.transform(ntransform);
         }

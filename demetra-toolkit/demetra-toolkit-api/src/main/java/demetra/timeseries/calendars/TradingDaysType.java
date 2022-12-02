@@ -58,4 +58,26 @@ public enum TradingDaysType {
     public int getVariablesCount() {
         return variablesCount;
     }
+    
+    public String[] contrastNames(){
+        return switch (this){
+            case TD2 ->new String[]{"Week days"};
+            case TD3 ->new String[]{"Mon-Fri", "Sat"};
+            case TD3c ->new String[]{"Mon-Thu", "Fri-Sat"};
+            case TD4 ->new String[]{"Mon-Thu", "Fri", "Sat"};
+            case TD7 ->new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+            default-> null;
+        };
+    }
+    
+    public String[] names(){
+        return switch (this){
+            case TD2 ->new String[]{"Week days", "Week-end"};
+            case TD3 ->new String[]{"Mon-Fri", "Sat", "Sun"};
+            case TD3c ->new String[]{"Mon-Thu", "Fri-Sat", "Sun"};
+            case TD4 ->new String[]{"Mon-Thu", "Fri", "Sat", "Sun"};
+            case TD7 ->new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+            default-> null;
+        };
+    }
 }

@@ -388,7 +388,7 @@ public class HolidaysUtility {
      * @return Returns an array of "annualFrequency" length, corresponding to
      * each period in one year (for instance, Jan, Feb..., Dec). Each item of
      * the result will contain 7 elements, corresponding to the long term
-     * average for Mondays...Sundays The sum of the longTermMean must be equal
+     * average for Mondays...Sundays. The sum of the longTermMean must be equal
      * to the sum of the weights of the different holidays. Some element of the
      * array can be null, which means that there are no effect for the
      * considered period.
@@ -420,7 +420,15 @@ public class HolidaysUtility {
 
     private static final double[] NDAYS = new double[]{31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    public static FastMatrix days(final Calendar calendar, int freq, int contrast) {
+    /**
+     * Computes the number of days for each period of the given periodicity, corrected for holidays.
+     * The holidays are considered as a day of type "hol"
+     * @param calendar
+     * @param freq
+     * @param hol
+     * @return A freq x 7 matrix. The first column corresponds to the number of (corrected) Mondays...
+     */
+    public static FastMatrix days(final Calendar calendar, int freq, DayOfWeek hol) {
 
         // long term average number of holidays. mean[j][0] for means of Mondays for period j
         double[][] mean = longTermMean(calendar.getHolidays(), freq);
@@ -428,7 +436,7 @@ public class HolidaysUtility {
         for (int i = 0; i < freq; ++i) {
             if (mean[i] != null) {
                 Mean[i] = DataBlock.of(mean[i]);
-                mean[i][contrast] -= Mean[i].sum();
+                mean[i][hol.getValue()-1] -= Mean[i].sum();
             }
         }
         int c = 12 / freq;

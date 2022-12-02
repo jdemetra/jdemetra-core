@@ -28,6 +28,7 @@ import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.TsContextVariable;
@@ -198,7 +199,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = spec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("belgium", AutoMethod.FTest, TradingDaysSpec.DEF_PFTD);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("belgium", LengthOfPeriodType.LeapYear, AutoMethod.FTest, TradingDaysSpec.DEF_PFTD, false);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()
@@ -245,7 +246,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = spec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("france", AutoMethod.FTest, TradingDaysSpec.DEF_PFTD);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("france", LengthOfPeriodType.LeapYear, AutoMethod.FTest, TradingDaysSpec.DEF_PFTD, false);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()
@@ -494,7 +495,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = nspec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automatic(AutoMethod.WaldTest, TradingDaysSpec.DEF_PFTD);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, AutoMethod.WaldTest, TradingDaysSpec.DEF_PFTD, false);
         nspec = nspec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()

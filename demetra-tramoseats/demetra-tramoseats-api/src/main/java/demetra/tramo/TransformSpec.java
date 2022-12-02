@@ -20,6 +20,7 @@ import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.TimeSelector;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.util.Validatable;
 
 /**
@@ -38,6 +39,7 @@ public final class TransformSpec implements Validatable<TransformSpec> {
     private double fct;
     private boolean preliminaryCheck;
     private TransformationType function;
+    private LengthOfPeriodType adjust;
 
     public static final TransformSpec DEFAULT = TransformSpec.builder().build();
 
@@ -47,7 +49,9 @@ public final class TransformSpec implements Validatable<TransformSpec> {
                 .span(TimeSelector.all())
                 .fct(DEF_FCT)
                 .preliminaryCheck(true)
-                .function(TransformationType.None);
+                .function(TransformationType.None)
+                .adjust(LengthOfPeriodType.None)
+                ;
     }
 
     public boolean isDefault() {

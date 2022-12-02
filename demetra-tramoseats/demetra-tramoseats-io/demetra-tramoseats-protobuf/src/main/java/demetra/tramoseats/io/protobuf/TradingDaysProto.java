@@ -90,11 +90,11 @@ public class TradingDaysProto {
         if (holidays != null && holidays.length() > 0) {
             TradingDaysSpec.AutoMethod auto = TramoSeatsProtosUtility.convert(spec.getAuto());
             if (auto != TradingDaysSpec.AutoMethod.Unused) {
-                return TradingDaysSpec.automaticHolidays(holidays, auto, spec.getPtest());
+                return TradingDaysSpec.automaticHolidays(holidays, lp, auto, spec.getPtest(), spec.getAutoAdjust());
             }
             if (test) {
                 return TradingDaysSpec.holidays(holidays, td, lp,
-                        TramoSeatsProtosUtility.convert(spec.getTest()));
+                        TramoSeatsProtosUtility.convert(spec.getTest()), spec.getAutoAdjust());
             } else {
                 return TradingDaysSpec.holidays(holidays, td, lp,
                         tdc, lpc);
@@ -118,13 +118,13 @@ public class TradingDaysProto {
         }
         TradingDaysSpec.AutoMethod auto = TramoSeatsProtosUtility.convert(spec.getAuto());
         if (auto != TradingDaysSpec.AutoMethod.Unused) {
-            return TradingDaysSpec.automatic(auto, spec.getPtest());
+            return TradingDaysSpec.automatic(lp, auto, spec.getPtest(), spec.getAutoAdjust());
         } else if (td == TradingDaysType.NONE) {
             return TradingDaysSpec.none();
         } else {
             if (test) {
                 return TradingDaysSpec.td(td, lp,
-                        TramoSeatsProtosUtility.convert(spec.getTest()));
+                        TramoSeatsProtosUtility.convert(spec.getTest()), spec.getAutoAdjust());
             } else {
                 return TradingDaysSpec.td(td, lp,
                         tdc, lpc);

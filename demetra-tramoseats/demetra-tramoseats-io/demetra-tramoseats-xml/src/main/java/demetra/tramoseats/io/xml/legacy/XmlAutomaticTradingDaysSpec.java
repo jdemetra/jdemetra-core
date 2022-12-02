@@ -16,6 +16,7 @@
  */
 package demetra.tramoseats.io.xml.legacy;
 
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.tramo.TradingDaysSpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -344,9 +345,9 @@ public class XmlAutomaticTradingDaysSpec {
         }
 
         if (xml.calendar != null) {
-            return TradingDaysSpec.automaticHolidays(xml.calendar, method, pf);
+            return TradingDaysSpec.automaticHolidays(xml.calendar, LengthOfPeriodType.LeapYear, method, pf, false);
         } else {
-            return TradingDaysSpec.automatic(method, pf);
+            return TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, method, pf, false);
         }
     }
 

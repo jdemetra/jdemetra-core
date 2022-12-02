@@ -148,6 +148,7 @@ class TramoModelBuilder implements IModelBuilder {
         if (fnSpec.getFunction() == TransformationType.Log) {
             model.setLogTransformation(true);
         }
+        model.setPreadjustment(fnSpec.getAdjust());
     }
     
     private void initializeMean(ModelDescription model, Parameter mu) {

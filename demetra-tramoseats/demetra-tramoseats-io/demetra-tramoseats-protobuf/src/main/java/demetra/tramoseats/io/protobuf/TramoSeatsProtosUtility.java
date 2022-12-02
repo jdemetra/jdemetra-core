@@ -81,6 +81,10 @@ public class TramoSeatsProtosUtility {
                 return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_FTEST;
             case WaldTest:
                 return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALDTEST;
+            case NESTED:
+                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NESTED;
+            case AIC:
+                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_AIC;
             default:
                 return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NO;
         }
@@ -92,6 +96,10 @@ public class TramoSeatsProtosUtility {
                 return TradingDaysSpec.AutoMethod.FTest;
             case TD_AUTO_WALDTEST:
                 return TradingDaysSpec.AutoMethod.WaldTest;
+            case TD_AUTO_NESTED:
+                return TradingDaysSpec.AutoMethod.NESTED;
+            case TD_AUTO_AIC:
+                return TradingDaysSpec.AutoMethod.AIC;
             default:
                 return TradingDaysSpec.AutoMethod.Unused;
         }

@@ -50,7 +50,7 @@ public class ExactSingleOutlierDetectorTest {
         A[55] *= .7;
         DoubleSeq Y = DoubleSeq.of(A);
         FastMatrix days = FastMatrix.make(A.length, 7);
-        GenericTradingDaysFactory.fillTdMatrix(TsPeriod.monthly(1967, 1), days);
+        GenericTradingDaysFactory.fillTradingDaysMatrix(TsPeriod.monthly(1967, 1), false, days);
         FastMatrix td = GenericTradingDaysFactory.generateContrasts(DayClustering.TD3, days);
 
         int[] length = new int[]{40, 60, 120, 180, 240, 300, 336};

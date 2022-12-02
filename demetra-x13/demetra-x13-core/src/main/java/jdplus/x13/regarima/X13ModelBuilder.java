@@ -17,7 +17,6 @@
 package jdplus.x13.regarima;
 
 import demetra.data.Parameter;
-import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.EasterSpec;

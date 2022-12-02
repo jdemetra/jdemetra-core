@@ -33,7 +33,6 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.IEasterVariable;
-import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.IRegArimaComputer;
 
 /**
