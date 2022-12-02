@@ -36,9 +36,14 @@
     </scm>
 
     <properties>
-        <!-- dependencies -->
+        <!-- Java 17 config -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.release>17</maven.compiler.release>
+        <!-- JD+ dependency versions -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.4-RC3-SNAPSHOT</jd2.version>
+        <jd2.version>2.2.4-RC2</jd2.version>
     </properties>
 
     <modules>
@@ -92,11 +97,6 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>3.23.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.errorprone</groupId>
-                <artifactId>error_prone_annotations</artifactId>
-                <version>2.16</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -188,36 +188,19 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <!-- Disable module path for unit tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
-        <!-- Base build java17 -->
-        <profile>
-            <id>base-java17</id>
-            <activation>
-                <property>
-                    <name>!skipBaseJava17</name>
-                </property>
-            </activation>
-            <properties>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <maven.compiler.target>17</maven.compiler.target>
-                <maven.compiler.source>17</maven.compiler.source>
-                <maven.compiler.release>17</maven.compiler.release>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <useModulePath>false</useModulePath>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <!-- Base processors -->
         <profile>
             <id>base-processors</id>
@@ -331,18 +314,12 @@
                                         <!-- Built-In Rules -->
                                         <banDuplicatePomDependencyVersions/>
                                         <dependencyConvergence/>
-<!--                                        <reactorModuleConvergence/>-->
+                                        <!--                                        <reactorModuleConvergence/>-->
                                         <requireMavenVersion>
                                             <version>3.6.0</version>
                                         </requireMavenVersion>
                                         <requireNoRepositories>
                                             <allowSnapshotRepositories>true</allowSnapshotRepositories>
-                                            <allowedRepositories>
-                                                <allowedRepository>central</allowedRepository>
-                                                <!-- required by JD+ artifacts <= v2.2.3 -->
-                                                <allowedRepository>jfrog-maven-mirror</allowedRepository>
-                                                <allowedRepository>ossrh-snapshots1</allowedRepository>
-                                            </allowedRepositories>
                                         </requireNoRepositories>
                                         <requirePluginVersions/>
                                         <requireReleaseDeps>
@@ -438,27 +415,13 @@
 
     <!-- Custom repositories: order matters! -->
     <repositories>
-        <!-- 1. Main -->
+        <!-- JD+ snapshots >= v2.2.4 -->
         <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <!-- 2. JD+ artifacts <= v2.2.3 -->
-        <repository>
-            <id>jfrog-maven-mirror</id>
-            <url>https://raw.githubusercontent.com/nbbrd/jfrog-maven-mirror/main</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <!-- 3. JD+ snapshots -->
-        <repository>
-            <id>ossrh-snapshots1</id>
+            <id>ossrh-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
