@@ -17,6 +17,7 @@
 package demetra.sa;
 
 import demetra.information.Explorable;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.DefaultProcessingLog;
 import demetra.processing.ProcDiagnostic;
 import demetra.processing.ProcQuality;
@@ -109,4 +110,8 @@ public class SaManager {
         return all.stream().filter(p -> p.canHandle(spec)).findFirst().get();
     }
 
+    public <I extends SaSpecification> SaProcessingFactory factoryFor(AlgorithmDescriptor desc) {
+        List<SaProcessingFactory> all = SaProcessingFactoryLoader.get();
+        return all.stream().filter(p -> p.descriptor().isCompatible(desc)).findFirst().get();
+    }
 }

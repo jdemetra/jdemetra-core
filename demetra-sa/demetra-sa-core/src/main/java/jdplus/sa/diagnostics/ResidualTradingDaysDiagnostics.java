@@ -41,6 +41,8 @@ public class ResidualTradingDaysDiagnostics implements Diagnostics {
             if (sa == null || i == null) {
                 return null;
             }
+            if (i.getAnnualFrequency() != 12 && config.isMonthlyOnly())
+                return null;
 
             test.f_sa=tests.saTest(true);
             boolean isignif = SaDiagnosticsUtility.isSignificant(i.getValues(), sa.getValues());

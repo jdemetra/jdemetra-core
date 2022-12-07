@@ -6,6 +6,7 @@
 package jdplus.x13;
 
 import demetra.modelling.TransformationType;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.regarima.RegArimaSpec;
 import demetra.sa.DecompositionMode;
 import demetra.sa.EstimationPolicyType;
@@ -50,7 +51,7 @@ import jdplus.x13.regarima.RegArimaFactory;
 public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     public static X13Factory getInstance() {
-        return (X13Factory) SaManager.processors().stream().filter(x->x instanceof X13Factory).findAny().orElse(new X13Factory());
+        return (X13Factory) SaManager.processors().stream().filter(x -> x instanceof X13Factory).findAny().orElse(new X13Factory());
     }
 
     private final List<SaDiagnosticsFactory<?, X13Results>> diagnostics = new CopyOnWriteArrayList<>();
@@ -95,6 +96,11 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     public X13Factory() {
         diagnostics.addAll(defaultDiagnostics());
+    }
+
+    @Override
+    public AlgorithmDescriptor descriptor() {
+        return X13Spec.DESCRIPTOR_V3;
     }
 
     @Override

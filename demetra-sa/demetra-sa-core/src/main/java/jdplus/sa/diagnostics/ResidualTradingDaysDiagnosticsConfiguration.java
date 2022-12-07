@@ -39,17 +39,19 @@ public class ResidualTradingDaysDiagnosticsConfiguration implements DiagnosticsC
         return DEFAULT.get();
     }
     
-    public static final boolean ACTIVE = true;
+    public static final boolean ACTIVE = true, MONTHLY=true;
     private boolean active;
     
     public static final double SEV = .001, BAD = .01, UNC = .05;
     
+    private boolean monthlyOnly;
     private double severeThreshold;
     private double badThreshold;
     private double uncertainThreshold;
     
     public static Builder builder() {
         return new Builder()
+                .monthlyOnly(MONTHLY)
                 .active(ACTIVE)
                 .severeThreshold(SEV)
                 .badThreshold(BAD)

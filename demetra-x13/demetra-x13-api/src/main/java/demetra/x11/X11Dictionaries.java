@@ -44,7 +44,7 @@ public class X11Dictionaries {
             .build();
     
     public final String C1="c1", C2="c2", C4="c4", C5="c5",
-        C6="c6", C7="c7", C9="c9", C10="c10", C11="c11", C13="c13", C17="c17", C20="C20";
+        C6="c6", C7="c7", C9="c9", C10="c10", C11="c11", C13="c13", C17="c17", C20="c20";
     
     public final String[] C_TABLE = new String[]{C1, C2, C4, C5,
         C6, C7, C9, C10, C11, C13, C17, C20};

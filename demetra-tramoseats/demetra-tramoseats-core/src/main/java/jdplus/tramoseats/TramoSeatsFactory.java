@@ -6,6 +6,7 @@
 package jdplus.tramoseats;
 
 import demetra.arima.SarimaSpec;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.sa.EstimationPolicyType;
 import demetra.sa.SaDiagnosticsFactory;
 import demetra.sa.SaManager;
@@ -50,7 +51,7 @@ import jdplus.tramo.TramoFactory;
 public final class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSpec, TramoSeatsResults> {
 
     public static TramoSeatsFactory getInstance() {
-        return (TramoSeatsFactory) SaManager.processors().stream().filter(x->x instanceof TramoSeatsFactory).findAny().orElse(new TramoSeatsFactory());
+        return (TramoSeatsFactory) SaManager.processors().stream().filter(x -> x instanceof TramoSeatsFactory).findAny().orElse(new TramoSeatsFactory());
     }
 
     private final List<SaDiagnosticsFactory<?, TramoSeatsResults>> diagnostics = new CopyOnWriteArrayList<>();
@@ -99,6 +100,11 @@ public final class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSp
         all.add(advancedResidualSeasonality);
         all.add(residualTradingDays);
         return all;
+    }
+
+    @Override
+    public AlgorithmDescriptor descriptor() {
+        return TramoSeatsSpec.DESCRIPTOR_V3;
     }
 
     @Override
