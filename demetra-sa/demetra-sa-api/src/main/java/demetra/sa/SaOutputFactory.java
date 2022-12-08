@@ -30,4 +30,5 @@ import nbbrd.service.ServiceDefinition;
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
 public interface SaOutputFactory<R extends Explorable> extends OutputFactory<R> {
 
+    Object getConfiguration();
 }

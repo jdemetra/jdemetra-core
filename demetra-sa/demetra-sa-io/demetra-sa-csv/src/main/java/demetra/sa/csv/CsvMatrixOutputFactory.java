@@ -44,6 +44,7 @@ public class CsvMatrixOutputFactory implements SaOutputFactory {
         this.config = config;
     }
 
+    @Override
     public CsvMatrixOutputConfiguration getConfiguration() {
         return config;
     }

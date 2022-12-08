@@ -29,7 +29,7 @@ public class CsvOutputFactory implements SaOutputFactory {
     //public static final CsvOutputFactory Default = new CsvOutputFactory();
 
     public static final String NAME = "Csv";
-    private CsvOutputConfiguration config;
+    private final CsvOutputConfiguration config;
     private boolean enabled_ = true;
 
     public CsvOutputFactory() {
@@ -40,6 +40,7 @@ public class CsvOutputFactory implements SaOutputFactory {
         this.config = config;
     }
 
+    @Override
     public CsvOutputConfiguration getConfiguration() {
         return config;
     }
