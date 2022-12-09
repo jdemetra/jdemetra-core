@@ -108,6 +108,16 @@ public class RegArimaEstimation<M extends IArimaModel> {
                 .build();
     }
 
+    public static <M extends IArimaModel> RegArimaEstimation<M> of(RegArimaModel<M> model, double llcorr, int nparams) {
+        ConcentratedLikelihoodWithMissing ll = ConcentratedLikelihoodComputer.DEFAULT_COMPUTER.compute(model);
+        return RegArimaEstimation.<M>builder()
+                .model(model)
+                .concentratedLikelihood(ll)
+                .llAdjustment(llcorr)
+                .max(null)
+                .build();
+    }
+
     public DoubleSeq interpolatedSeries() {
         DoubleSeq y = model.getY();
         int[] missing = model.missing();

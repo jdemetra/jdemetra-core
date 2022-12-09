@@ -40,6 +40,7 @@ public class CsvArrayOutputFactory implements SaOutputFactory {
         this.config = config;
     }
 
+    @Override
     public CsvArrayOutputConfiguration getConfiguration() {
         return config;
     }

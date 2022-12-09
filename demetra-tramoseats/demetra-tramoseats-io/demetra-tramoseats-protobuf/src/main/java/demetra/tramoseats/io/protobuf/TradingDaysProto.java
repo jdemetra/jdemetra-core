@@ -74,7 +74,7 @@ public class TradingDaysProto {
     }
 
     private boolean isTest(TramoSeatsProtos.TramoSpec.TradingDaysSpec spec) {
-        return spec.getAuto() == TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALDTEST
+        return spec.getAuto() == TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALD
                 || spec.getAuto() == TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_FTEST
                 || spec.getTest() == TramoSeatsProtos.TradingDaysTest.TD_TEST_JOINT_F
                 || spec.getTest() == TramoSeatsProtos.TradingDaysTest.TD_TEST_SEPARATE_T;
@@ -89,7 +89,7 @@ public class TradingDaysProto {
         boolean test = isTest(spec);
         if (holidays != null && holidays.length() > 0) {
             TradingDaysSpec.AutoMethod auto = TramoSeatsProtosUtility.convert(spec.getAuto());
-            if (auto != TradingDaysSpec.AutoMethod.Unused) {
+            if (auto != TradingDaysSpec.AutoMethod.UNUSED) {
                 return TradingDaysSpec.automaticHolidays(holidays, lp, auto, spec.getPtest(), spec.getAutoAdjust());
             }
             if (test) {
@@ -117,7 +117,7 @@ public class TradingDaysProto {
             return TradingDaysSpec.stockTradingDays(w, TramoSeatsProtosUtility.convert(spec.getTest()));
         }
         TradingDaysSpec.AutoMethod auto = TramoSeatsProtosUtility.convert(spec.getAuto());
-        if (auto != TradingDaysSpec.AutoMethod.Unused) {
+        if (auto != TradingDaysSpec.AutoMethod.UNUSED) {
             return TradingDaysSpec.automatic(lp, auto, spec.getPtest(), spec.getAutoAdjust());
         } else if (td == TradingDaysType.NONE) {
             return TradingDaysSpec.none();

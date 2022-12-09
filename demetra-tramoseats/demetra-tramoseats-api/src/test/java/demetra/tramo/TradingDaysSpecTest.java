@@ -30,8 +30,8 @@ public class TradingDaysSpecTest {
     
     @Test
     public void test() {
-        TradingDaysSpec spec1 = TradingDaysSpec.automaticHolidays("test", LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTest, .99, false);
-        TradingDaysSpec spec2 = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTest, .99, false);
+        TradingDaysSpec spec1 = TradingDaysSpec.automaticHolidays("test", LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTEST, .99, false);
+        TradingDaysSpec spec2 = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTEST, .99, false);
        
         assertNotEquals(spec1, spec2);
     }

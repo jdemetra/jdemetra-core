@@ -404,13 +404,4 @@ public class FastOutliersDetector implements GenericOutliersDetection<SarimaMode
             coeff = DoubleSeq.of(tmp);
         }
     }
-
-    /**
-     *
-     * @return
-     */
-    IOutlierFactory[] factories() {
-        return sod.getOutliersFactories();
-    }
-
-}
+ }

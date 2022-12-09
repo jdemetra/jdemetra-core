@@ -22,6 +22,7 @@ import ec.tstoolkit.modelling.DefaultTransformationType;
 import static org.junit.jupiter.api.Assertions.*;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
+import jdplus.math.matrices.FastMatrix;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -42,7 +43,7 @@ public class LogLeveModuleTest {
         LogLevelModule ll = LogLevelModule.builder()
                 .estimationPrecision(1e-7)
                 .build();
-        ll.process(DoubleSeq.of(Data.PROD), 12, true, null);
+        ll.process(DoubleSeq.of(Data.PROD), 12, FastMatrix.EMPTY, true, null);
         assertTrue(ll.isChoosingLog());
 //        System.out.println(ll.getLevelLL());
 //        System.out.println(ll.getLogCorrection());
@@ -84,7 +85,7 @@ public class LogLeveModuleTest {
                         .logPreference(0)
                         .estimationPrecision(1e-7)
                         .build();
-                ll.process(all[i].drop(0, j).getValues(), 12, true, null);
+                ll.process(all[i].drop(0, j).getValues(), 12, FastMatrix.EMPTY, true, null);
                 System.out.print(ll.isChoosingLog() ? 1 : 0);
                 System.out.print('\t');
             }
@@ -99,7 +100,7 @@ public class LogLeveModuleTest {
                     .logPreference(0)
                     .estimationPrecision(1e-7)
                     .build();
-            ll.process(all[i].getValues(), 12, true, null);
+            ll.process(all[i].getValues(), 12, FastMatrix.EMPTY, true, null);
             System.out.print(ll.getLogLL());
             System.out.print('\t');
             System.out.println(ll.getLevelLL());

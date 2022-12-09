@@ -226,7 +226,7 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
         TradingDaysSpec td = TradingDaysSpec.td(TradingDaysType.TD7,
                 LengthOfPeriodType.LeapYear, RegressionTestType.Separate_T, false);
 
-        TradingDaysSpec dc = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTest,
+        TradingDaysSpec dc = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.FTEST,
                 TradingDaysSpec.DEF_PFTD, false);
 
         EasterSpec ec = e.toBuilder()

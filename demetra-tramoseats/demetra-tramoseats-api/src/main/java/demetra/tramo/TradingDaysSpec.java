@@ -34,11 +34,11 @@ public class TradingDaysSpec {
     public static final boolean DEF_ADJUST = false, DEF_SIMPLIFIED = true;
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.NONE,
-            LengthOfPeriodType.None, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, null, null);
+            LengthOfPeriodType.None, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, null, null);
 
     public static TradingDaysSpec stockTradingDays(int w, RegressionTestType type) {
         return new TradingDaysSpec(null, null, TradingDaysType.TD7,
-                LengthOfPeriodType.None, type, DEF_ADJUST, DEF_SIMPLIFIED, w, AutoMethod.Unused, 0, null, null);
+                LengthOfPeriodType.None, type, DEF_ADJUST, DEF_SIMPLIFIED, w, AutoMethod.UNUSED, 0, null, null);
     }
 
     public static TradingDaysSpec stockTradingDays(int w, @NonNull Parameter[] tdcoeff) {
@@ -46,7 +46,7 @@ public class TradingDaysSpec {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, TradingDaysType.TD7,
-                LengthOfPeriodType.None, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, w, AutoMethod.Unused, 0, tdcoeff, null);
+                LengthOfPeriodType.None, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, w, AutoMethod.UNUSED, 0, tdcoeff, null);
     }
 
     public static TradingDaysSpec none() {
@@ -55,7 +55,7 @@ public class TradingDaysSpec {
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestType type) {
         return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
-                LengthOfPeriodType.None, type, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, null, null);
+                LengthOfPeriodType.None, type, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, null, null);
     }
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, @NonNull Parameter[] coeff) {
@@ -63,11 +63,11 @@ public class TradingDaysSpec {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
-                LengthOfPeriodType.None, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, coeff, null);
+                LengthOfPeriodType.None, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, coeff, null);
     }
 
     public static TradingDaysSpec automaticHolidays(String holidays, LengthOfPeriodType lp, AutoMethod automaticMethod, double probabilityForFTest, boolean autoadjust) {
-        if (automaticMethod == AutoMethod.Unused) {
+        if (automaticMethod == AutoMethod.UNUSED) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, TradingDaysType.TD7,
@@ -75,7 +75,7 @@ public class TradingDaysSpec {
     }
 
     public static TradingDaysSpec automatic(LengthOfPeriodType lp, AutoMethod automaticMethod, double probabilityForFTest, boolean autoadjust) {
-        if (automaticMethod == AutoMethod.Unused) {
+        if (automaticMethod == AutoMethod.UNUSED) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, TradingDaysType.TD7,
@@ -87,7 +87,7 @@ public class TradingDaysSpec {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
-                lp, regtype, autoadjust, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, null, null);
+                lp, regtype, autoadjust, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, null, null);
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, Parameter[] ctd, Parameter clp) {
@@ -95,7 +95,7 @@ public class TradingDaysSpec {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
-                lp, RegressionTestType.None, false, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, ctd, clp);
+                lp, RegressionTestType.None, false, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, ctd, clp);
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestType regtype, boolean autoadjust) {
@@ -103,7 +103,7 @@ public class TradingDaysSpec {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
-                lp, regtype, autoadjust, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, null, null);
+                lp, regtype, autoadjust, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, null, null);
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
@@ -115,14 +115,14 @@ public class TradingDaysSpec {
         }
 
         return new TradingDaysSpec(null, null, type,
-                lp, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.Unused, 0, tdcoeff, lpcoeff);
+                lp, RegressionTestType.None, DEF_ADJUST, DEF_SIMPLIFIED, 0, AutoMethod.UNUSED, 0, tdcoeff, lpcoeff);
     }
 
     public static enum AutoMethod {
-        Unused,
-        FTest,
-        WaldTest,
-        NESTED,
+        UNUSED,
+        FTEST,
+        WALD,
+        BIC,
         AIC
     }
 
@@ -149,11 +149,11 @@ public class TradingDaysSpec {
     public boolean isDefined() {
         return userVariables != null || (stockTradingDays != 0 && regressionTestType == RegressionTestType.None)
                 || ((lengthOfPeriodType != LengthOfPeriodType.None || tradingDaysType != TradingDaysType.NONE)
-                && (regressionTestType == RegressionTestType.None && automaticMethod == AutoMethod.Unused));
+                && (regressionTestType == RegressionTestType.None && automaticMethod == AutoMethod.UNUSED));
     }
 
     public boolean isAutomatic() {
-        return automaticMethod != AutoMethod.Unused;
+        return automaticMethod != AutoMethod.UNUSED;
     }
 
     public boolean isStockTradingDays() {
@@ -195,7 +195,7 @@ public class TradingDaysSpec {
 
     public TradingDaysSpec withCoefficients(Parameter[] tdc, Parameter lpc) {
         return new TradingDaysSpec(holidays, userVariables, tradingDaysType, lengthOfPeriodType,
-                RegressionTestType.None, autoAdjust, simplified, stockTradingDays, AutoMethod.Unused, probabilityForFTest, tdc, lpc);
+                RegressionTestType.None, autoAdjust, simplified, stockTradingDays, AutoMethod.UNUSED, probabilityForFTest, tdc, lpc);
     }
 
     public boolean hasFixedCoefficients() {

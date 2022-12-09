@@ -33,6 +33,7 @@ import jdplus.sarima.SarimaModel;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.tramo.AutoModelSpec;
 import demetra.tramo.EasterSpec;
 import demetra.tramo.OutlierSpec;
@@ -139,33 +140,75 @@ public class TramoKernel implements RegSarimaProcessor {
                 .acceptAirline(ami.isAcceptDefault())
                 .build();
     }
+    
+//    private ITradingDaysVariable[] alltd(){
+//        return new ITradingDaysVariable[]{
+//                        TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext),
+//                        TramoModelBuilder.td(spec, DayClustering.TD3, modellingContext),
+//                        TramoModelBuilder.td(spec, DayClustering.TD3c, modellingContext),
+//                        TramoModelBuilder.td(spec, DayClustering.TD4, modellingContext),
+//                        TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext)
+//                    };
+//    }
+
+    private ITradingDaysVariable[] nestedtd(){
+        return new ITradingDaysVariable[]{
+                        TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD3, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD4, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext)
+                    };
+    }
 
     private IRegressionModule regressionModule(boolean preadjust) {
         TradingDaysSpec tdspec = spec.getRegression().getCalendar().getTradingDays();
         EasterSpec espec = spec.getRegression().getCalendar().getEaster();
-        ILengthOfPeriodVariable lp=preadjust ? null : TramoModelBuilder.leapYear(tdspec);
+        ILengthOfPeriodVariable lp = preadjust ? null : TramoModelBuilder.leapYear(tdspec);
         if (tdspec.isAutomatic()) {
-            if (tdspec.getAutomaticMethod() == TradingDaysSpec.AutoMethod.FTest) {
-                return AutomaticFRegressionTest.builder()
-                        .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
-                        .leapYear(lp)
-                        .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
-                        .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
-                        .testMean(spec.isUsingAutoModel())
-                        .fPValue(tdspec.getProbabilityForFTest())
-                        .estimationPrecision(options.intermediatePrecision)
-                        .build();
-            } else {
-                return AutomaticWaldRegressionTest.builder()
-                        .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
-                        .leapYear(lp)
-                        .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
-                        .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
-                        .testMean(spec.isUsingAutoModel())
-                        .fPValue(tdspec.getProbabilityForFTest())
-                        .PConstraint(tdspec.getProbabilityForFTest())
-                        .estimationPrecision(options.intermediatePrecision)
-                        .build();
+            switch (tdspec.getAutomaticMethod()) {
+                case FTEST:
+                    return AutomaticFRegressionTest.builder()
+                            .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
+                            .leapYear(lp)
+                            .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
+                            .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
+                            .testMean(spec.isUsingAutoModel())
+                            .fPValue(tdspec.getProbabilityForFTest())
+                            .estimationPrecision(options.intermediatePrecision)
+                            .build();
+                case AIC:
+                {
+                    return AutomaticRegressionTest.builder()
+                            .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
+                            .leapYear(lp)
+                            .tradingDays(nestedtd())
+                            .testMean(spec.isUsingAutoModel())
+                            .estimationPrecision(options.intermediatePrecision)
+                            .aic()
+                            .build();
+                }
+                case BIC:
+                {
+                    return AutomaticRegressionTest.builder()
+                            .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
+                            .leapYear(lp)
+                            .tradingDays(nestedtd())
+                            .testMean(spec.isUsingAutoModel())
+                            .estimationPrecision(options.intermediatePrecision)
+                            .bic()
+                            .build();
+                }
+                default: 
+                    return AutomaticWaldRegressionTest.builder()
+                            .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
+                            .leapYear(lp)
+                            .tradingDays(nestedtd())
+                            .testMean(spec.isUsingAutoModel())
+                            .estimationPrecision(options.intermediatePrecision)
+                            .pconstraint(0.1)
+                            .pmodel(tdspec.getProbabilityForFTest())
+                            .build();
+                    
             }
         } else {
             return DefaultRegressionTest.builder()
@@ -190,6 +233,14 @@ public class TramoKernel implements RegSarimaProcessor {
                 .tcrate(outliers.getDeltaTC())
                 .maximumLikelihood(outliers.isMaximumLikelihood())
                 .precision(options.intermediatePrecision)
+                .build();
+    }
+
+    private OutliersDetectionModule robustOutliersModule() {
+        return OutliersDetectionModule.builder()
+                .ao(true)
+                .ls(true)
+                .precision(1e-3)
                 .build();
     }
 
@@ -235,13 +286,12 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private boolean isFullySpecified() {
         // Nothing to do.
-        return !(this.spec.getTransform().getFunction()== TransformationType.Auto 
-                || this.isAutoModelling() 
+        return !(this.spec.getTransform().getFunction() == TransformationType.Auto
+                || this.isAutoModelling()
                 || this.isOutliersDetection()
                 || this.spec.getRegression().getCalendar().getTradingDays().isTest()
                 || this.spec.getRegression().getCalendar().getTradingDays().isAutomatic()
-                || this.spec.getRegression().getCalendar().getEaster().isTest()
-                );
+                || this.spec.getRegression().getCalendar().getEaster().isTest());
 
     }
 
@@ -258,7 +308,7 @@ public class TramoKernel implements RegSarimaProcessor {
         // Test for loglevel transformation
         testTransformation(modelling);
 
-        boolean adjust=modelling.getDescription().isAdjusted();
+        boolean adjust = modelling.getDescription().isAdjusted();
         regressionModule(adjust).test(modelling);
 
         initProcessing(modelling.getDescription().regarima().getActualObservationsCount());
@@ -698,6 +748,12 @@ public class TramoKernel implements RegSarimaProcessor {
     private void testTransformation(RegSarimaModelling modelling) {
         TransformSpec tspec = spec.getTransform();
         if (tspec.getFunction() == TransformationType.Auto) {
+            boolean toClean = false;
+            if (tspec.isOutliersCorrection()) {
+                OutliersDetectionModule outliers = robustOutliersModule();
+                ProcessingResult rslt = outliers.process(modelling, 5);
+                toClean = rslt == ProcessingResult.Changed;
+            }
             LogLevelModule module = LogLevelModule.builder()
                     .logPreference(Math.log(tspec.getFct()))
                     .estimationPrecision(options.intermediatePrecision)
@@ -706,14 +762,19 @@ public class TramoKernel implements RegSarimaProcessor {
             module.process(modelling);
             ModelDescription desc = modelling.getDescription();
             TradingDaysSpec td = spec.getRegression().getCalendar().getTradingDays();
-            if (desc.isLogTransformation() && 
-                    td.isAutoAdjust()){
+            if (desc.isLogTransformation()
+                    && td.isAutoAdjust()) {
                 desc.setPreadjustment(td.getLengthOfPeriodType());
                 desc.remove("lp");
                 modelling.clearEstimation();
             }
-        }else if (modelling.getDescription().isLogTransformation()){
-            if (modelling.getDescription().getSeries().getValues().anyMatch(x->x<=0)){
+            if (toClean) {
+                if (desc.removeVariable(var -> ModellingUtility.isOutlier(var, true))) {
+                    modelling.clearEstimation();
+                }
+            }
+        } else if (modelling.getDescription().isLogTransformation()) {
+            if (modelling.getDescription().getSeries().getValues().anyMatch(x -> x <= 0)) {
                 modelling.getLog().warning("logs changed to levels");
                 modelling.getDescription().setLogTransformation(false);
                 modelling.getDescription().setPreadjustment(LengthOfPeriodType.None);

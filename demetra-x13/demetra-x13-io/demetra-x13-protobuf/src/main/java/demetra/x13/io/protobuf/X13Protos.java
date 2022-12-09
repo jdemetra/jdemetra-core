@@ -3712,6 +3712,12 @@ public final class X13Protos {
        * @return The aicdiff.
        */
       double getAicdiff();
+
+      /**
+       * <code>bool outliersCorrection = 4;</code>
+       * @return The outliersCorrection.
+       */
+      boolean getOutliersCorrection();
     }
     /**
      * Protobuf type {@code x13.RegArimaSpec.TransformSpec}
@@ -3775,6 +3781,11 @@ public final class X13Protos {
               case 25: {
 
                 aicdiff_ = input.readDouble();
+                break;
+              }
+              case 32: {
+
+                outliersCorrection_ = input.readBool();
                 break;
               }
               default: {
@@ -3858,6 +3869,17 @@ public final class X13Protos {
         return aicdiff_;
       }
 
+      public static final int OUTLIERSCORRECTION_FIELD_NUMBER = 4;
+      private boolean outliersCorrection_;
+      /**
+       * <code>bool outliersCorrection = 4;</code>
+       * @return The outliersCorrection.
+       */
+      @java.lang.Override
+      public boolean getOutliersCorrection() {
+        return outliersCorrection_;
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -3881,6 +3903,9 @@ public final class X13Protos {
         if (aicdiff_ != 0D) {
           output.writeDouble(3, aicdiff_);
         }
+        if (outliersCorrection_ != false) {
+          output.writeBool(4, outliersCorrection_);
+        }
         unknownFields.writeTo(output);
       }
 
@@ -3902,6 +3927,10 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(3, aicdiff_);
         }
+        if (outliersCorrection_ != false) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(4, outliersCorrection_);
+        }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
@@ -3922,6 +3951,8 @@ public final class X13Protos {
         if (java.lang.Double.doubleToLongBits(getAicdiff())
             != java.lang.Double.doubleToLongBits(
                 other.getAicdiff())) return false;
+        if (getOutliersCorrection()
+            != other.getOutliersCorrection()) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -3940,6 +3971,9 @@ public final class X13Protos {
         hash = (37 * hash) + AICDIFF_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             java.lang.Double.doubleToLongBits(getAicdiff()));
+        hash = (37 * hash) + OUTLIERSCORRECTION_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getOutliersCorrection());
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -4079,6 +4113,8 @@ public final class X13Protos {
 
           aicdiff_ = 0D;
 
+          outliersCorrection_ = false;
+
           return this;
         }
 
@@ -4108,6 +4144,7 @@ public final class X13Protos {
           result.transformation_ = transformation_;
           result.adjust_ = adjust_;
           result.aicdiff_ = aicdiff_;
+          result.outliersCorrection_ = outliersCorrection_;
           onBuilt();
           return result;
         }
@@ -4164,6 +4201,9 @@ public final class X13Protos {
           }
           if (other.getAicdiff() != 0D) {
             setAicdiff(other.getAicdiff());
+          }
+          if (other.getOutliersCorrection() != false) {
+            setOutliersCorrection(other.getOutliersCorrection());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -4329,6 +4369,37 @@ public final class X13Protos {
         public Builder clearAicdiff() {
           
           aicdiff_ = 0D;
+          onChanged();
+          return this;
+        }
+
+        private boolean outliersCorrection_ ;
+        /**
+         * <code>bool outliersCorrection = 4;</code>
+         * @return The outliersCorrection.
+         */
+        @java.lang.Override
+        public boolean getOutliersCorrection() {
+          return outliersCorrection_;
+        }
+        /**
+         * <code>bool outliersCorrection = 4;</code>
+         * @param value The outliersCorrection to set.
+         * @return This builder for chaining.
+         */
+        public Builder setOutliersCorrection(boolean value) {
+          
+          outliersCorrection_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bool outliersCorrection = 4;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearOutliersCorrection() {
+          
+          outliersCorrection_ = false;
           onChanged();
           return this;
         }
@@ -36706,7 +36777,7 @@ public final class X13Protos {
       "\007 \001(\005\022\017\n\007nbcasts\030\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022." +
       "x13.CalendarSigma\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016ex" +
       "clude_fcasts\030\013 \001(\010\022!\n\004bias\030\014 \001(\0162\023.x13.B" +
-      "iasCorrection\"\236\016\n\014RegArimaSpec\022*\n\005basic\030" +
+      "iasCorrection\"\273\016\n\014RegArimaSpec\022*\n\005basic\030" +
       "\001 \001(\0132\033.x13.RegArimaSpec.BasicSpec\0222\n\ttr" +
       "ansform\030\002 \001(\0132\037.x13.RegArimaSpec.Transfo" +
       "rmSpec\022.\n\007outlier\030\003 \001(\0132\035.x13.RegArimaSp" +
@@ -36717,133 +36788,133 @@ public final class X13Protos {
       "\010estimate\030\007 \001(\0132\036.x13.RegArimaSpec.Estim" +
       "ateSpec\032^\n\tBasicSpec\022\037\n\004span\030\001 \001(\0132\021.jd3" +
       ".TimeSelector\022\025\n\rpreprocessing\030\002 \001(\010\022\031\n\021" +
-      "preliminary_check\030\003 \001(\010\032~\n\rTransformSpec" +
-      "\0221\n\016transformation\030\001 \001(\0162\031.modelling.Tra" +
-      "nsformation\022)\n\006adjust\030\002 \001(\0162\031.modelling." +
-      "LengthOfPeriod\022\017\n\007aicdiff\030\003 \001(\001\032\362\001\n\013Outl" +
-      "ierSpec\0224\n\010outliers\030\001 \003(\0132\".x13.RegArima" +
-      "Spec.OutlierSpec.Type\022\037\n\004span\030\002 \001(\0132\021.jd" +
-      "3.TimeSelector\022\r\n\005defva\030\003 \001(\001\022\"\n\006method\030" +
-      "\004 \001(\0162\022.x13.OutlierMethod\022\027\n\017monthly_tc_" +
-      "rate\030\005 \001(\001\022\017\n\007maxiter\030\006 \001(\005\022\r\n\005lsrun\030\007 \001" +
-      "(\005\032 \n\004Type\022\014\n\004code\030\001 \001(\t\022\n\n\002va\030\002 \001(\001\032\335\001\n" +
-      "\rAutoModelSpec\022\017\n\007enabled\030\001 \001(\010\022\020\n\010ljung" +
-      "box\030\002 \001(\001\022\014\n\004tsig\030\003 \001(\001\022\016\n\006predcv\030\004 \001(\001\022" +
-      "\017\n\007ubfinal\030\005 \001(\001\022\013\n\003ub1\030\006 \001(\001\022\013\n\003ub2\030\007 \001" +
-      "(\001\022\016\n\006cancel\030\010 \001(\001\022\013\n\003fct\030\t \001(\001\022\021\n\taccep" +
-      "tdef\030\n \001(\010\022\017\n\007checkmu\030\013 \001(\010\022\r\n\005mixed\030\014 \001" +
-      "(\010\022\020\n\010balanced\030\r \001(\010\032\205\001\n\nEasterSpec\022\035\n\004t" +
-      "ype\030\001 \001(\0162\017.x13.EasterType\022\020\n\010duration\030\002" +
-      " \001(\005\022!\n\004test\030\003 \001(\0162\023.x13.RegressionTest\022" +
-      "#\n\013coefficient\030\n \001(\0132\016.jd3.Parameter\032\217\002\n" +
-      "\017TradingDaysSpec\022\"\n\002td\030\001 \001(\0162\026.modelling" +
-      ".TradingDays\022%\n\002lp\030\002 \001(\0162\031.modelling.Len" +
-      "gthOfPeriod\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004" +
-      " \003(\t\022\t\n\001w\030\005 \001(\005\022!\n\004test\030\006 \001(\0162\023.x13.Regr" +
-      "essionTest\022\023\n\013auto_adjust\030\007 \001(\010\022&\n\016tdcoe" +
-      "fficients\030\n \003(\0132\016.jd3.Parameter\022%\n\rlpcoe" +
-      "fficient\030\013 \001(\0132\016.jd3.Parameter\032\257\002\n\016Regre" +
-      "ssionSpec\022\034\n\004mean\030\001 \001(\0132\016.jd3.Parameter\022" +
-      "-\n\002td\030\002 \001(\0132!.x13.RegArimaSpec.TradingDa" +
-      "ysSpec\022,\n\006easter\030\003 \001(\0132\034.x13.RegArimaSpe" +
-      "c.EasterSpec\022$\n\010outliers\030\004 \003(\0132\022.modelli" +
-      "ng.Outlier\022$\n\005users\030\005 \003(\0132\025.modelling.Ts" +
-      "Variable\0226\n\rinterventions\030\006 \003(\0132\037.modell" +
-      "ing.InterventionVariable\022\036\n\005ramps\030\007 \003(\0132" +
-      "\017.modelling.Ramp\032<\n\014EstimateSpec\022\037\n\004span" +
-      "\030\001 \001(\0132\021.jd3.TimeSelector\022\013\n\003tol\030\002 \001(\001\"r" +
-      "\n\004Spec\022#\n\010regarima\030\001 \001(\0132\021.x13.RegArimaS" +
-      "pec\022\031\n\003x11\030\002 \001(\0132\014.x13.X11Spec\022*\n\014benchm" +
-      "arking\030\003 \001(\0132\024.sa.BenchmarkingSpec\"\334\010\n\nX" +
-      "11Results\022$\n\004mode\030\001 \001(\0162\026.x13.Decomposit" +
-      "ionMode\022\027\n\002d1\030\002 \001(\0132\013.jd3.TsData\022\027\n\002d2\030\003" +
-      " \001(\0132\013.jd3.TsData\022\027\n\002d4\030\004 \001(\0132\013.jd3.TsDa" +
-      "ta\022\027\n\002d5\030\005 \001(\0132\013.jd3.TsData\022\027\n\002d6\030\006 \001(\0132" +
-      "\013.jd3.TsData\022\027\n\002d7\030\007 \001(\0132\013.jd3.TsData\022\027\n" +
-      "\002d8\030\010 \001(\0132\013.jd3.TsData\022\027\n\002d9\030\t \001(\0132\013.jd3" +
-      ".TsData\022\030\n\003d10\030\n \001(\0132\013.jd3.TsData\022\030\n\003d11" +
-      "\030\013 \001(\0132\013.jd3.TsData\022\030\n\003d12\030\014 \001(\0132\013.jd3.T" +
-      "sData\022\030\n\003d13\030\r \001(\0132\013.jd3.TsData\0223\n\026final" +
-      "_seasonal_filters\030\016 \003(\0162\023.x13.SeasonalFi" +
-      "lter\022\036\n\026final_henderson_filter\030\017 \001(\005\022\017\n\007" +
-      "icratio\030\020 \001(\001\022\027\n\002b1\030\024 \001(\0132\013.jd3.TsData\022\027" +
-      "\n\002b2\030\025 \001(\0132\013.jd3.TsData\022\027\n\002b3\030\026 \001(\0132\013.jd" +
-      "3.TsData\022\027\n\002b4\030\027 \001(\0132\013.jd3.TsData\022\027\n\002b5\030" +
-      "\030 \001(\0132\013.jd3.TsData\022\027\n\002b6\030\031 \001(\0132\013.jd3.TsD" +
-      "ata\022\027\n\002b7\030\032 \001(\0132\013.jd3.TsData\022\027\n\002b8\030\033 \001(\013" +
-      "2\013.jd3.TsData\022\027\n\002b9\030\034 \001(\0132\013.jd3.TsData\022\030" +
-      "\n\003b10\030\035 \001(\0132\013.jd3.TsData\022\030\n\003b11\030\036 \001(\0132\013." +
-      "jd3.TsData\022\030\n\003b13\030\037 \001(\0132\013.jd3.TsData\022\030\n\003" +
-      "b17\030  \001(\0132\013.jd3.TsData\022\030\n\003b20\030! \001(\0132\013.jd" +
-      "3.TsData\022\027\n\002c1\030( \001(\0132\013.jd3.TsData\022\027\n\002c2\030" +
-      ") \001(\0132\013.jd3.TsData\022\027\n\002c4\030* \001(\0132\013.jd3.TsD" +
-      "ata\022\027\n\002c5\030+ \001(\0132\013.jd3.TsData\022\027\n\002c6\030, \001(\013" +
-      "2\013.jd3.TsData\022\027\n\002c7\030- \001(\0132\013.jd3.TsData\022\027" +
-      "\n\002c9\030. \001(\0132\013.jd3.TsData\022\030\n\003c10\030/ \001(\0132\013.j" +
-      "d3.TsData\022\030\n\003c11\0300 \001(\0132\013.jd3.TsData\022\030\n\003c" +
-      "13\0301 \001(\0132\013.jd3.TsData\022\030\n\003c17\0302 \001(\0132\013.jd3" +
-      ".TsData\022\030\n\003c20\0303 \001(\0132\013.jd3.TsData\"\253\001\n\013MS" +
-      "tatistics\022\n\n\002m1\030\001 \001(\001\022\n\n\002m2\030\002 \001(\001\022\n\n\002m3\030" +
-      "\003 \001(\001\022\n\n\002m4\030\004 \001(\001\022\n\n\002m5\030\005 \001(\001\022\n\n\002m6\030\006 \001(" +
-      "\001\022\n\n\002m7\030\007 \001(\001\022\n\n\002m8\030\010 \001(\001\022\n\n\002m9\030\t \001(\001\022\013\n" +
-      "\003m10\030\n \001(\001\022\013\n\003m11\030\013 \001(\001\022\t\n\001q\030\014 \001(\001\022\013\n\003qm" +
-      "2\030\r \001(\001\"\303\001\n\020X13Preadjustment\022\027\n\002a1\030\001 \001(\013" +
-      "2\013.jd3.TsData\022\030\n\003a1a\030\002 \001(\0132\013.jd3.TsData\022" +
-      "\030\n\003a1b\030\003 \001(\0132\013.jd3.TsData\022\027\n\002a6\030\004 \001(\0132\013." +
-      "jd3.TsData\022\027\n\002a7\030\005 \001(\0132\013.jd3.TsData\022\027\n\002a" +
-      "8\030\006 \001(\0132\013.jd3.TsData\022\027\n\002a9\030\007 \001(\0132\013.jd3.T" +
-      "sData\"\355\002\n\tX13Finals\022\035\n\010d11final\030\001 \001(\0132\013." +
-      "jd3.TsData\022\035\n\010d12final\030\002 \001(\0132\013.jd3.TsDat" +
-      "a\022\035\n\010d13final\030\003 \001(\0132\013.jd3.TsData\022\030\n\003d16\030" +
-      "\004 \001(\0132\013.jd3.TsData\022\030\n\003d18\030\005 \001(\0132\013.jd3.Ts" +
-      "Data\022\031\n\004d11a\030\006 \001(\0132\013.jd3.TsData\022\031\n\004d12a\030" +
-      "\007 \001(\0132\013.jd3.TsData\022\031\n\004d16a\030\010 \001(\0132\013.jd3.T" +
-      "sData\022\031\n\004d18a\030\t \001(\0132\013.jd3.TsData\022\027\n\002e1\030\n" +
-      " \001(\0132\013.jd3.TsData\022\027\n\002e2\030\013 \001(\0132\013.jd3.TsDa" +
-      "ta\022\027\n\002e3\030\014 \001(\0132\013.jd3.TsData\022\030\n\003e11\030\r \001(\013" +
-      "2\013.jd3.TsData\"4\n\013Diagnostics\022%\n\013mstatist" +
-      "ics\030\001 \001(\0132\020.x13.MStatistics\"\205\002\n\nX13Resul" +
-      "ts\022,\n\rpreadjustment\030\001 \001(\0132\025.x13.X13Pread" +
-      "justment\022.\n\rpreprocessing\030\002 \001(\0132\027.regari" +
-      "ma.RegArimaModel\022&\n\rdecomposition\030\003 \001(\0132" +
-      "\017.x13.X11Results\022\035\n\005final\030\004 \001(\0132\016.x13.X1" +
-      "3Finals\022)\n\017diagnostics_x13\030\005 \001(\0132\020.x13.D" +
-      "iagnostics\022\'\n\016diagnostics_sa\030\006 \001(\0132\017.sa." +
-      "Diagnostics\"\251\002\n\016RegArimaOutput\022\'\n\006result" +
-      "\030\001 \001(\0132\027.regarima.RegArimaModel\022*\n\017estim" +
-      "ation_spec\030\002 \001(\0132\021.x13.RegArimaSpec\022&\n\013r" +
-      "esult_spec\030\003 \001(\0132\021.x13.RegArimaSpec\022 \n\003l" +
-      "og\030\004 \001(\0132\023.jd3.ProcessingLogs\0221\n\007details" +
-      "\030\005 \003(\0132 .x13.RegArimaOutput.DetailsEntry" +
-      "\032E\n\014DetailsEntry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002" +
-      " \001(\0132\025.jd3.ProcessingDetail:\0028\001\"\207\002\n\tX13O" +
-      "utput\022\037\n\006result\030\001 \001(\0132\017.x13.X13Results\022\"" +
-      "\n\017estimation_spec\030\002 \001(\0132\t.x13.Spec\022\036\n\013re" +
-      "sult_spec\030\003 \001(\0132\t.x13.Spec\022 \n\003log\030\004 \001(\0132" +
-      "\023.jd3.ProcessingLogs\022,\n\007details\030\005 \003(\0132\033." +
-      "x13.X13Output.DetailsEntry\032E\n\014DetailsEnt" +
-      "ry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.Pro" +
-      "cessingDetail:\0028\001*\200\001\n\021DecompositionMode\022" +
-      "\020\n\014MODE_UNKNOWN\020\000\022\021\n\rMODE_ADDITIVE\020\001\022\027\n\023" +
-      "MODE_MULTIPLICATIVE\020\002\022\024\n\020MODE_LOGADDITIV" +
-      "E\020\003\022\027\n\023MODE_PSEUDOADDITIVE\020\004*\350\001\n\016Seasona" +
-      "lFilter\022\027\n\023SEASONAL_FILTER_MSR\020\000\022\030\n\024SEAS" +
-      "ONAL_FILTER_S3X1\020\001\022\030\n\024SEASONAL_FILTER_S3" +
-      "X3\020\002\022\030\n\024SEASONAL_FILTER_S3X5\020\003\022\030\n\024SEASON" +
-      "AL_FILTER_S3X9\020\004\022\031\n\025SEASONAL_FILTER_S3X1" +
-      "5\020\005\022\032\n\026SEASONAL_FILTER_STABLE\020\006\022\036\n\032SEASO" +
-      "NAL_FILTER_X11DEFAULT\020\007*R\n\rCalendarSigma" +
-      "\022\016\n\nSIGMA_NONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022\r\n\tSI" +
-      "GMA_ALL\020\002\022\020\n\014SIGMA_SELECT\020\003*Q\n\016BiasCorre" +
-      "ction\022\r\n\tBIAS_NONE\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017\n" +
-      "\013BIAS_SMOOTH\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rOutlie" +
-      "rMethod\022\022\n\016OUTLIER_ADDONE\020\000\022\022\n\016OUTLIER_A" +
-      "DDALL\020\001*V\n\nEasterType\022\021\n\rEASTER_UNUSED\020\000" +
-      "\022\023\n\017EASTER_STANDARD\020\001\022\021\n\rEASTER_JULIAN\020\002" +
-      "\022\r\n\tEASTER_SC\020\003*<\n\016RegressionTest\022\013\n\007TES" +
-      "T_NO\020\000\022\014\n\010TEST_ADD\020\001\022\017\n\013TEST_REMOVE\020\002B$\n" +
-      "\027demetra.x13.io.protobufB\tX13ProtosP\000P\001P" +
-      "\002P\003b\006proto3"
+      "preliminary_check\030\003 \001(\010\032\232\001\n\rTransformSpe" +
+      "c\0221\n\016transformation\030\001 \001(\0162\031.modelling.Tr" +
+      "ansformation\022)\n\006adjust\030\002 \001(\0162\031.modelling" +
+      ".LengthOfPeriod\022\017\n\007aicdiff\030\003 \001(\001\022\032\n\022outl" +
+      "iersCorrection\030\004 \001(\010\032\362\001\n\013OutlierSpec\0224\n\010" +
+      "outliers\030\001 \003(\0132\".x13.RegArimaSpec.Outlie" +
+      "rSpec.Type\022\037\n\004span\030\002 \001(\0132\021.jd3.TimeSelec" +
+      "tor\022\r\n\005defva\030\003 \001(\001\022\"\n\006method\030\004 \001(\0162\022.x13" +
+      ".OutlierMethod\022\027\n\017monthly_tc_rate\030\005 \001(\001\022" +
+      "\017\n\007maxiter\030\006 \001(\005\022\r\n\005lsrun\030\007 \001(\005\032 \n\004Type\022" +
+      "\014\n\004code\030\001 \001(\t\022\n\n\002va\030\002 \001(\001\032\335\001\n\rAutoModelS" +
+      "pec\022\017\n\007enabled\030\001 \001(\010\022\020\n\010ljungbox\030\002 \001(\001\022\014" +
+      "\n\004tsig\030\003 \001(\001\022\016\n\006predcv\030\004 \001(\001\022\017\n\007ubfinal\030" +
+      "\005 \001(\001\022\013\n\003ub1\030\006 \001(\001\022\013\n\003ub2\030\007 \001(\001\022\016\n\006cance" +
+      "l\030\010 \001(\001\022\013\n\003fct\030\t \001(\001\022\021\n\tacceptdef\030\n \001(\010\022" +
+      "\017\n\007checkmu\030\013 \001(\010\022\r\n\005mixed\030\014 \001(\010\022\020\n\010balan" +
+      "ced\030\r \001(\010\032\205\001\n\nEasterSpec\022\035\n\004type\030\001 \001(\0162\017" +
+      ".x13.EasterType\022\020\n\010duration\030\002 \001(\005\022!\n\004tes" +
+      "t\030\003 \001(\0162\023.x13.RegressionTest\022#\n\013coeffici" +
+      "ent\030\n \001(\0132\016.jd3.Parameter\032\217\002\n\017TradingDay" +
+      "sSpec\022\"\n\002td\030\001 \001(\0162\026.modelling.TradingDay" +
+      "s\022%\n\002lp\030\002 \001(\0162\031.modelling.LengthOfPeriod" +
+      "\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022\t\n\001w\030\005" +
+      " \001(\005\022!\n\004test\030\006 \001(\0162\023.x13.RegressionTest\022" +
+      "\023\n\013auto_adjust\030\007 \001(\010\022&\n\016tdcoefficients\030\n" +
+      " \003(\0132\016.jd3.Parameter\022%\n\rlpcoefficient\030\013 " +
+      "\001(\0132\016.jd3.Parameter\032\257\002\n\016RegressionSpec\022\034" +
+      "\n\004mean\030\001 \001(\0132\016.jd3.Parameter\022-\n\002td\030\002 \001(\013" +
+      "2!.x13.RegArimaSpec.TradingDaysSpec\022,\n\006e" +
+      "aster\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpe" +
+      "c\022$\n\010outliers\030\004 \003(\0132\022.modelling.Outlier\022" +
+      "$\n\005users\030\005 \003(\0132\025.modelling.TsVariable\0226\n" +
+      "\rinterventions\030\006 \003(\0132\037.modelling.Interve" +
+      "ntionVariable\022\036\n\005ramps\030\007 \003(\0132\017.modelling" +
+      ".Ramp\032<\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd" +
+      "3.TimeSelector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010r" +
+      "egarima\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030" +
+      "\002 \001(\0132\014.x13.X11Spec\022*\n\014benchmarking\030\003 \001(" +
+      "\0132\024.sa.BenchmarkingSpec\"\334\010\n\nX11Results\022$" +
+      "\n\004mode\030\001 \001(\0162\026.x13.DecompositionMode\022\027\n\002" +
+      "d1\030\002 \001(\0132\013.jd3.TsData\022\027\n\002d2\030\003 \001(\0132\013.jd3." +
+      "TsData\022\027\n\002d4\030\004 \001(\0132\013.jd3.TsData\022\027\n\002d5\030\005 " +
+      "\001(\0132\013.jd3.TsData\022\027\n\002d6\030\006 \001(\0132\013.jd3.TsDat" +
+      "a\022\027\n\002d7\030\007 \001(\0132\013.jd3.TsData\022\027\n\002d8\030\010 \001(\0132\013" +
+      ".jd3.TsData\022\027\n\002d9\030\t \001(\0132\013.jd3.TsData\022\030\n\003" +
+      "d10\030\n \001(\0132\013.jd3.TsData\022\030\n\003d11\030\013 \001(\0132\013.jd" +
+      "3.TsData\022\030\n\003d12\030\014 \001(\0132\013.jd3.TsData\022\030\n\003d1" +
+      "3\030\r \001(\0132\013.jd3.TsData\0223\n\026final_seasonal_f" +
+      "ilters\030\016 \003(\0162\023.x13.SeasonalFilter\022\036\n\026fin" +
+      "al_henderson_filter\030\017 \001(\005\022\017\n\007icratio\030\020 \001" +
+      "(\001\022\027\n\002b1\030\024 \001(\0132\013.jd3.TsData\022\027\n\002b2\030\025 \001(\0132" +
+      "\013.jd3.TsData\022\027\n\002b3\030\026 \001(\0132\013.jd3.TsData\022\027\n" +
+      "\002b4\030\027 \001(\0132\013.jd3.TsData\022\027\n\002b5\030\030 \001(\0132\013.jd3" +
+      ".TsData\022\027\n\002b6\030\031 \001(\0132\013.jd3.TsData\022\027\n\002b7\030\032" +
+      " \001(\0132\013.jd3.TsData\022\027\n\002b8\030\033 \001(\0132\013.jd3.TsDa" +
+      "ta\022\027\n\002b9\030\034 \001(\0132\013.jd3.TsData\022\030\n\003b10\030\035 \001(\013" +
+      "2\013.jd3.TsData\022\030\n\003b11\030\036 \001(\0132\013.jd3.TsData\022" +
+      "\030\n\003b13\030\037 \001(\0132\013.jd3.TsData\022\030\n\003b17\030  \001(\0132\013" +
+      ".jd3.TsData\022\030\n\003b20\030! \001(\0132\013.jd3.TsData\022\027\n" +
+      "\002c1\030( \001(\0132\013.jd3.TsData\022\027\n\002c2\030) \001(\0132\013.jd3" +
+      ".TsData\022\027\n\002c4\030* \001(\0132\013.jd3.TsData\022\027\n\002c5\030+" +
+      " \001(\0132\013.jd3.TsData\022\027\n\002c6\030, \001(\0132\013.jd3.TsDa" +
+      "ta\022\027\n\002c7\030- \001(\0132\013.jd3.TsData\022\027\n\002c9\030. \001(\0132" +
+      "\013.jd3.TsData\022\030\n\003c10\030/ \001(\0132\013.jd3.TsData\022\030" +
+      "\n\003c11\0300 \001(\0132\013.jd3.TsData\022\030\n\003c13\0301 \001(\0132\013." +
+      "jd3.TsData\022\030\n\003c17\0302 \001(\0132\013.jd3.TsData\022\030\n\003" +
+      "c20\0303 \001(\0132\013.jd3.TsData\"\253\001\n\013MStatistics\022\n" +
+      "\n\002m1\030\001 \001(\001\022\n\n\002m2\030\002 \001(\001\022\n\n\002m3\030\003 \001(\001\022\n\n\002m4" +
+      "\030\004 \001(\001\022\n\n\002m5\030\005 \001(\001\022\n\n\002m6\030\006 \001(\001\022\n\n\002m7\030\007 \001" +
+      "(\001\022\n\n\002m8\030\010 \001(\001\022\n\n\002m9\030\t \001(\001\022\013\n\003m10\030\n \001(\001\022" +
+      "\013\n\003m11\030\013 \001(\001\022\t\n\001q\030\014 \001(\001\022\013\n\003qm2\030\r \001(\001\"\303\001\n" +
+      "\020X13Preadjustment\022\027\n\002a1\030\001 \001(\0132\013.jd3.TsDa" +
+      "ta\022\030\n\003a1a\030\002 \001(\0132\013.jd3.TsData\022\030\n\003a1b\030\003 \001(" +
+      "\0132\013.jd3.TsData\022\027\n\002a6\030\004 \001(\0132\013.jd3.TsData\022" +
+      "\027\n\002a7\030\005 \001(\0132\013.jd3.TsData\022\027\n\002a8\030\006 \001(\0132\013.j" +
+      "d3.TsData\022\027\n\002a9\030\007 \001(\0132\013.jd3.TsData\"\355\002\n\tX" +
+      "13Finals\022\035\n\010d11final\030\001 \001(\0132\013.jd3.TsData\022" +
+      "\035\n\010d12final\030\002 \001(\0132\013.jd3.TsData\022\035\n\010d13fin" +
+      "al\030\003 \001(\0132\013.jd3.TsData\022\030\n\003d16\030\004 \001(\0132\013.jd3" +
+      ".TsData\022\030\n\003d18\030\005 \001(\0132\013.jd3.TsData\022\031\n\004d11" +
+      "a\030\006 \001(\0132\013.jd3.TsData\022\031\n\004d12a\030\007 \001(\0132\013.jd3" +
+      ".TsData\022\031\n\004d16a\030\010 \001(\0132\013.jd3.TsData\022\031\n\004d1" +
+      "8a\030\t \001(\0132\013.jd3.TsData\022\027\n\002e1\030\n \001(\0132\013.jd3." +
+      "TsData\022\027\n\002e2\030\013 \001(\0132\013.jd3.TsData\022\027\n\002e3\030\014 " +
+      "\001(\0132\013.jd3.TsData\022\030\n\003e11\030\r \001(\0132\013.jd3.TsDa" +
+      "ta\"4\n\013Diagnostics\022%\n\013mstatistics\030\001 \001(\0132\020" +
+      ".x13.MStatistics\"\205\002\n\nX13Results\022,\n\rpread" +
+      "justment\030\001 \001(\0132\025.x13.X13Preadjustment\022.\n" +
+      "\rpreprocessing\030\002 \001(\0132\027.regarima.RegArima" +
+      "Model\022&\n\rdecomposition\030\003 \001(\0132\017.x13.X11Re" +
+      "sults\022\035\n\005final\030\004 \001(\0132\016.x13.X13Finals\022)\n\017" +
+      "diagnostics_x13\030\005 \001(\0132\020.x13.Diagnostics\022" +
+      "\'\n\016diagnostics_sa\030\006 \001(\0132\017.sa.Diagnostics" +
+      "\"\251\002\n\016RegArimaOutput\022\'\n\006result\030\001 \001(\0132\027.re" +
+      "garima.RegArimaModel\022*\n\017estimation_spec\030" +
+      "\002 \001(\0132\021.x13.RegArimaSpec\022&\n\013result_spec\030" +
+      "\003 \001(\0132\021.x13.RegArimaSpec\022 \n\003log\030\004 \001(\0132\023." +
+      "jd3.ProcessingLogs\0221\n\007details\030\005 \003(\0132 .x1" +
+      "3.RegArimaOutput.DetailsEntry\032E\n\014Details" +
+      "Entry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3." +
+      "ProcessingDetail:\0028\001\"\207\002\n\tX13Output\022\037\n\006re" +
+      "sult\030\001 \001(\0132\017.x13.X13Results\022\"\n\017estimatio" +
+      "n_spec\030\002 \001(\0132\t.x13.Spec\022\036\n\013result_spec\030\003" +
+      " \001(\0132\t.x13.Spec\022 \n\003log\030\004 \001(\0132\023.jd3.Proce" +
+      "ssingLogs\022,\n\007details\030\005 \003(\0132\033.x13.X13Outp" +
+      "ut.DetailsEntry\032E\n\014DetailsEntry\022\013\n\003key\030\001" +
+      " \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.ProcessingDeta" +
+      "il:\0028\001*\200\001\n\021DecompositionMode\022\020\n\014MODE_UNK" +
+      "NOWN\020\000\022\021\n\rMODE_ADDITIVE\020\001\022\027\n\023MODE_MULTIP" +
+      "LICATIVE\020\002\022\024\n\020MODE_LOGADDITIVE\020\003\022\027\n\023MODE" +
+      "_PSEUDOADDITIVE\020\004*\350\001\n\016SeasonalFilter\022\027\n\023" +
+      "SEASONAL_FILTER_MSR\020\000\022\030\n\024SEASONAL_FILTER" +
+      "_S3X1\020\001\022\030\n\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEA" +
+      "SONAL_FILTER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S" +
+      "3X9\020\004\022\031\n\025SEASONAL_FILTER_S3X15\020\005\022\032\n\026SEAS" +
+      "ONAL_FILTER_STABLE\020\006\022\036\n\032SEASONAL_FILTER_" +
+      "X11DEFAULT\020\007*R\n\rCalendarSigma\022\016\n\nSIGMA_N" +
+      "ONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022\r\n\tSIGMA_ALL\020\002\022\020" +
+      "\n\014SIGMA_SELECT\020\003*Q\n\016BiasCorrection\022\r\n\tBI" +
+      "AS_NONE\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017\n\013BIAS_SMOOT" +
+      "H\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rOutlierMethod\022\022\n\016" +
+      "OUTLIER_ADDONE\020\000\022\022\n\016OUTLIER_ADDALL\020\001*V\n\n" +
+      "EasterType\022\021\n\rEASTER_UNUSED\020\000\022\023\n\017EASTER_" +
+      "STANDARD\020\001\022\021\n\rEASTER_JULIAN\020\002\022\r\n\tEASTER_" +
+      "SC\020\003*<\n\016RegressionTest\022\013\n\007TEST_NO\020\000\022\014\n\010T" +
+      "EST_ADD\020\001\022\017\n\013TEST_REMOVE\020\002B$\n\027demetra.x1" +
+      "3.io.protobufB\tX13ProtosP\000P\001P\002P\003b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -36876,7 +36947,7 @@ public final class X13Protos {
     internal_static_x13_RegArimaSpec_TransformSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_RegArimaSpec_TransformSpec_descriptor,
-        new java.lang.String[] { "Transformation", "Adjust", "Aicdiff", });
+        new java.lang.String[] { "Transformation", "Adjust", "Aicdiff", "OutliersCorrection", });
     internal_static_x13_RegArimaSpec_OutlierSpec_descriptor =
       internal_static_x13_RegArimaSpec_descriptor.getNestedTypes().get(2);
     internal_static_x13_RegArimaSpec_OutlierSpec_fieldAccessorTable = new

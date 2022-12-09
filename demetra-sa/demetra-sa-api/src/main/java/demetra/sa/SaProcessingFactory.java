@@ -23,8 +23,8 @@ import nbbrd.service.Mutability;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import demetra.information.Explorable;
+import demetra.processing.AlgorithmDescriptor;
 import demetra.toolkit.dictionaries.Dictionary;
-import java.util.Map;
 
 /**
  *
@@ -35,6 +35,8 @@ import java.util.Map;
 @ServiceDefinition(quantifier = Quantifier.MULTIPLE, mutability = Mutability.NONE, singleton = true)
 public interface SaProcessingFactory<I extends SaSpecification, R extends Explorable> {
 
+    AlgorithmDescriptor descriptor();
+    
     /**
      * If a processor can handle a given specification, it should be able to
      * execute all the methods of the interface, starting from that

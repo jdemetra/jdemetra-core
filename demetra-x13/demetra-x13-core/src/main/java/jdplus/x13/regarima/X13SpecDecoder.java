@@ -17,7 +17,6 @@
 package jdplus.x13.regarima;
 
 import demetra.regarima.SingleOutlierSpec;
-import demetra.regarima.EstimateSpec;
 import demetra.regarima.OutlierSpec;
 import demetra.regarima.AutoModelSpec;
 import demetra.regarima.RegArimaSpec;
@@ -48,14 +47,14 @@ import java.util.List;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 final class X13SpecDecoder {
-
+    
     private final RegArimaKernel.Builder builder = RegArimaKernel.builder();
-
+    
     X13SpecDecoder(@NonNull RegArimaSpec spec, ModellingContext context) {
         if (context == null) {
             context = ModellingContext.getActiveContext();
         }
-
+        
         readTransformation(spec);
         if (spec.isUsingAutoModel()) {
             readAutoModel(spec);
@@ -65,11 +64,11 @@ final class X13SpecDecoder {
         readRegression(spec, context);
         readAmiOptions(spec);
     }
-
+    
     RegArimaKernel buildProcessor() {
         return builder.build();
     }
-
+    
     private void readTransformation(final RegArimaSpec spec) {
         TransformSpec tspec = spec.getTransform();
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
@@ -78,10 +77,11 @@ final class X13SpecDecoder {
                     .aiccLogCorrection(tspec.getAicDiff())
                     .estimationPrecision(RegArimaKernel.AmiOptions.DEF_IEPS)
                     .preadjust(tdspec.isAutoAdjust() ? tdspec.getLengthOfPeriodType() : LengthOfPeriodType.None)
+                    .outliersCorrection(tspec.isOutliersCorrection())
                     .build());
         }
     }
-
+    
     private void readAutoModel(final RegArimaSpec spec) {
         AutoModelSpec amiSpec = spec.getAutoModel();
         DifferencingModule diff = DifferencingModule.builder()
@@ -95,10 +95,10 @@ final class X13SpecDecoder {
                 .mixed(amiSpec.isMixed())
                 .estimationPrecision(RegArimaKernel.AmiOptions.DEF_IEPS)
                 .build();
-
+        
         builder.autoModelling(new AutoModellingModule(diff, arma));
     }
-
+    
     private void readOutliers(final RegArimaSpec spec) {
         OutlierSpec outliers = spec.getOutliers();
         if (!outliers.isUsed()) {
@@ -125,7 +125,7 @@ final class X13SpecDecoder {
                         .precision(RegArimaKernel.AmiOptions.DEF_IEPS)
                         .build());
     }
-
+    
     private void readRegression(final RegArimaSpec spec, ModellingContext context) {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         AICcComparator comparator = new AICcComparator(spec.getRegression().getAicDiff());
@@ -156,7 +156,7 @@ final class X13SpecDecoder {
                     .build();
             builder.easterTest(e);
         }
-
+        
         RegressionVariablesTest.Builder rbuilder = RegressionVariablesTest.builder();
         if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
             rbuilder.tdTest(RegressionVariablesTest.CVAL, true);
@@ -172,9 +172,9 @@ final class X13SpecDecoder {
             rbuilder.meanTest(RegressionVariablesTest.TSIG);
         }
         builder.finalRegressionTest(rbuilder.build());
-
+        
     }
-
+    
     private void readAmiOptions(RegArimaSpec spec) {
         AutoModelSpec ami = spec.getAutoModel();
         builder.options(
@@ -186,7 +186,7 @@ final class X13SpecDecoder {
                         .checkMu(spec.isUsingAutoModel())
                         .mixedModel(ami.isMixed())
                         .build());
-
+        
     }
-
+    
 }

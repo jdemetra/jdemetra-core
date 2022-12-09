@@ -34,6 +34,7 @@ public final class CsvMatrixOutputConfiguration implements Cloneable {
 
     public CsvMatrixOutputConfiguration() {
         fullName = true;
+        items = new String[0];
     }
 
     public File getFolder() {

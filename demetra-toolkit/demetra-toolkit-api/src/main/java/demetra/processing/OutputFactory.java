@@ -17,6 +17,7 @@
 
 package demetra.processing;
 
+import demetra.util.Customizable;
 import nbbrd.design.Development;
 
 
@@ -27,7 +28,7 @@ import nbbrd.design.Development;
  * @param <D> Document type
  */
 @Development(status = Development.Status.Alpha)
-public interface OutputFactory<D>{
+public interface OutputFactory<D> {
     
     /**
      * Gets the name of the factory

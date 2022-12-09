@@ -30,6 +30,7 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import demetra.data.DoubleSeq;
 import demetra.processing.ProcessingLog;
+import jdplus.math.matrices.FastMatrix;
 import jdplus.regarima.IRegArimaComputer;
 
 /**
@@ -165,12 +166,17 @@ public class LogLevelModule implements ILogLevelModule {
     /**
      * @param data
      * @param frequency
+     * @param variables
      * @param seas
      * @param log
      * @return
      */
-    public boolean process(DoubleSeq data, int frequency, boolean seas, ProcessingLog log) {
-        return process(RegArimaUtility.airlineModel(data, true, frequency, seas), log);
+    public boolean process(DoubleSeq data, int frequency, FastMatrix variables, boolean seas, ProcessingLog log) {
+        RegArimaModel<SarimaModel> regarima = RegArimaUtility.airlineModel(data, true, frequency, seas);
+        if (!variables.isEmpty()) {
+            regarima = regarima.toBuilder().addX(variables).build();
+        }
+        return process(regarima, log);
     }
 
     public boolean process(RegArimaModel<SarimaModel> model, ProcessingLog logs) {
@@ -213,15 +219,15 @@ public class LogLevelModule implements ILogLevelModule {
     public ProcessingResult process(RegSarimaModelling context) {
         ModelDescription desc = context.getDescription();
         DoubleSeq data = desc.getTransformedSeries().getValues();
-        if (data.anyMatch(x->x <= 0)){
+        if (data.anyMatch(x -> x <= 0)) {
             return ProcessingResult.Unchanged;
         }
-            
         ProcessingLog logs = context.getLog();
         if (logs != null) {
             logs.push(LL);
         }
-        if (!process(data, desc.getAnnualFrequency(), seasonal, logs)) {
+        FastMatrix variables = desc.regarima().variables();
+        if (!process(data, desc.getAnnualFrequency(), variables, seasonal, logs)) {
             if (logs != null) {
                 logs.warning("failed");
                 logs.pop();

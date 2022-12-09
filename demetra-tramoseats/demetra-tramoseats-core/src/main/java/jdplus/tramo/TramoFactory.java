@@ -219,12 +219,14 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             Variable v = ftd.get();
             if (tdspec.isAutomatic()) {
                 switch (v.getCore().dim()) {
-                    case 1:
+                    case 1 ->
                         td = TradingDaysType.TD2;
-                        break;
-                    case 6:
+                    case 2 ->
+                        td = TradingDaysType.TD3;
+                    case 3 ->
+                        td = TradingDaysType.TD4;
+                    case 6 ->
                         td = TradingDaysType.TD7;
-                        break;
                 }
             } else {
                 td = tdspec.getTradingDaysType();
@@ -439,17 +441,17 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         });
         if (frozenDomain != null) {
             // Current AO: Add IV (ao for the frozen period)
-                for (int i=0; i<frozenDomain.getLength(); ++i){
-                    TsPeriod period = frozenDomain.get(i);
-                    LocalDateTime day = period.start();
-                    InterventionVariable ao = InterventionVariable.builder()
-                            .sequence(Range.of(day, day))
-                            .build();
-                    niv.add(Variable.<InterventionVariable>builder()
-                            .name(EstimationPolicyType.IV_AO+period.display())
-                            .core(ao)
-                            .build());
-                }
+            for (int i = 0; i < frozenDomain.getLength(); ++i) {
+                TsPeriod period = frozenDomain.get(i);
+                LocalDateTime day = period.start();
+                InterventionVariable ao = InterventionVariable.builder()
+                        .sequence(Range.of(day, day))
+                        .build();
+                niv.add(Variable.<InterventionVariable>builder()
+                        .name(EstimationPolicyType.IV_AO + period.display())
+                        .core(ao)
+                        .build());
+            }
         }
 
         List<Variable<IOutlier>> o = reg.getOutliers();

@@ -33,11 +33,14 @@ import demetra.util.Validatable;
 public final class TransformSpec implements Validatable<TransformSpec> {
 
     public static final double DEF_FCT = 0.95;
+    public static final boolean DEF_OUTLIERS=false, DEF_CHECK=true;
+    public static final LengthOfPeriodType DEF_ADJUST=LengthOfPeriodType.None;
 
     @lombok.NonNull
     private TimeSelector span;
     private double fct;
     private boolean preliminaryCheck;
+    private boolean outliersCorrection;
     private TransformationType function;
     private LengthOfPeriodType adjust;
 
@@ -48,10 +51,10 @@ public final class TransformSpec implements Validatable<TransformSpec> {
         return new Builder()
                 .span(TimeSelector.all())
                 .fct(DEF_FCT)
-                .preliminaryCheck(true)
+                .preliminaryCheck(DEF_CHECK)
+                .outliersCorrection(DEF_OUTLIERS)
                 .function(TransformationType.None)
-                .adjust(LengthOfPeriodType.None)
-                ;
+                .adjust(DEF_ADJUST);
     }
 
     public boolean isDefault() {
