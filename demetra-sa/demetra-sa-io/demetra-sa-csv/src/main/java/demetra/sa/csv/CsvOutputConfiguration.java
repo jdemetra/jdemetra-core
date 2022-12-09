@@ -23,9 +23,9 @@ import java.util.List;
 
 /**
  *
- * @author Jean Palate & BAYENSK
+ * @author Jean Palate
  */
-public class CsvOutputConfiguration implements Cloneable {
+public final class CsvOutputConfiguration implements Cloneable {
     
     public static final String NAME="series";
 
@@ -69,7 +69,7 @@ public class CsvOutputConfiguration implements Cloneable {
     }
 
     public void setSeries(List<String> value) {
-        series =  value.toArray(new String[value.size()]);
+        series =  value.toArray(String[]::new);
     }
 
     public boolean isFullName() {

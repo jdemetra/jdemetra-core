@@ -18,9 +18,11 @@ public class TransformProto {
     
     public void fill(TransformSpec spec, TramoSeatsProtos.TramoSpec.TransformSpec.Builder builder) {
         builder.setTransformation(ModellingProtosUtility.convert(spec.getFunction()))
-                .setFct(spec.getFct());
+                .setFct(spec.getFct())
+                .setOutliersCorrection(spec.isOutliersCorrection());
+        
     }
-    
+    // TODO outliers
     public TramoSeatsProtos.TramoSpec.TransformSpec convert(TransformSpec spec) {
         TramoSeatsProtos.TramoSpec.TransformSpec.Builder builder = TramoSeatsProtos.TramoSpec.TransformSpec.newBuilder();
         fill(spec, builder);
@@ -33,6 +35,7 @@ public class TransformProto {
                 .preliminaryCheck(bspec.getPreliminaryCheck())
                 .function(ModellingProtosUtility.convert(tspec.getTransformation()))
                 .fct(tspec.getFct())
+                .outliersCorrection(tspec.getOutliersCorrection())
                 .build();
     }
     

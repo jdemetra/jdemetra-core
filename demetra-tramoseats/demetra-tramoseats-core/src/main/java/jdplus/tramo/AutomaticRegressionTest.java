@@ -37,15 +37,15 @@ import jdplus.regsarima.regular.TradingDaysRegressionComparator;
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
  * was not handled with auto-td
  */
-public class AutomaticWaldRegressionTest implements IRegressionModule {
+public class AutomaticRegressionTest implements IRegressionModule {
 
-    public static final double DEF_TMEAN = 1.96, DEF_TLP = 2, DEF_TEASTER = 2.2, DEF_FPVAL = 0.01, DEF_PCONSTRAINT = .10;
+    public static final double DEF_TMEAN = 1.96, DEF_TLP = 2, DEF_TEASTER = 2.2;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @BuilderPattern(AutomaticWaldRegressionTest.class)
+    @BuilderPattern(AutomaticRegressionTest.class)
     public static class Builder {
 
         /**
@@ -54,11 +54,11 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         private ITradingDaysVariable td[];
         private ILengthOfPeriodVariable lp;
         private IEasterVariable easter;
+        private boolean aic = true;
         private double tmean = DEF_TMEAN, tlp = DEF_TLP, teaster = DEF_TEASTER;
-        private double fpvalue = DEF_FPVAL, pconstraint = DEF_PCONSTRAINT;
         private boolean testMean = true;
         private double precision = 1e-5;
-        private boolean adjust=false;
+        private boolean adjust = false;
 
         public Builder tradingDays(ITradingDaysVariable[] td) {
             this.td = td.clone();
@@ -90,16 +90,6 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
             return this;
         }
 
-        public Builder pmodel(double p) {
-            this.fpvalue = p;
-            return this;
-        }
-
-        public Builder pconstraint(double p) {
-            this.pconstraint = p;
-            return this;
-        }
-
         public Builder testMean(boolean test) {
             this.testMean = test;
             return this;
@@ -110,13 +100,23 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
             return this;
         }
 
+        public Builder aic() {
+            aic = true;
+            return this;
+        }
+
+        public Builder bic() {
+            aic = false;
+            return this;
+        }
+
         public Builder adjust(boolean adjust) {
             this.adjust = adjust;
             return this;
         }
 
-        public AutomaticWaldRegressionTest build() {
-            return new AutomaticWaldRegressionTest(this);
+        public AutomaticRegressionTest build() {
+            return new AutomaticRegressionTest(this);
         }
     }
 
@@ -124,22 +124,21 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
     private final ILengthOfPeriodVariable lp;
     private final IEasterVariable easter;
     private final double tmean, teaster, tlp;
-    private final double fpvalue, pconstraint;
     private final boolean testMean;
     private final double precision;
+    private final boolean aic;
     private final boolean adjust;
 
-    private AutomaticWaldRegressionTest(Builder builder) {
+    private AutomaticRegressionTest(Builder builder) {
         this.td = builder.td;
         this.lp = builder.lp;
         this.easter = builder.easter;
-        this.fpvalue = builder.fpvalue;
-        this.pconstraint = builder.pconstraint;
         this.tmean = builder.tmean;
         this.teaster = builder.teaster;
         this.tlp = builder.tlp;
         this.testMean = builder.testMean;
         this.precision = builder.precision;
+        this.aic = builder.aic;
         this.adjust = builder.adjust;
     }
 
@@ -149,7 +148,8 @@ public class AutomaticWaldRegressionTest implements IRegressionModule {
         // first step: test all trading days
         ModelDescription current = context.getDescription();
         RegArimaEstimation<SarimaModel>[] estimations = TradingDaysRegressionComparator.test(current, td, lp, precision);
-        int best = TradingDaysRegressionComparator.waldTest(estimations, fpvalue, pconstraint);
+        int best = aic ? TradingDaysRegressionComparator.bestModel(estimations, TradingDaysRegressionComparator.aiccComparator())
+                : TradingDaysRegressionComparator.bestModel(estimations, TradingDaysRegressionComparator.aiccComparator());
 
         ITradingDaysVariable tdsel = best < 2 ? null : td[best - 2];
         ILengthOfPeriodVariable lpsel = best < 1 ? null : lp;

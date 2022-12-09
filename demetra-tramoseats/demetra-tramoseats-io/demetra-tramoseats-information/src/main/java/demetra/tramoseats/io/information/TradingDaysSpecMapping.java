@@ -167,7 +167,7 @@ class TradingDaysSpecMapping {
         if (verbose || spec.isTest()) {
             tdInfo.set(TESTTYPE, spec.getRegressionTestType().name());
         }
-        if (verbose || !spec.isAutoAdjust()) {
+        if (verbose || spec.isAutoAdjust() != TradingDaysSpec.DEF_ADJUST) {
             tdInfo.add(ADJUST, spec.isAutoAdjust());
         }
     }
@@ -205,11 +205,11 @@ class TradingDaysSpecMapping {
         } else {
             lcoef = null;
         }
-        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.Unused;
+        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.UNUSED;
         if ((auto != null && auto) || mauto != null) {
-            method = mauto == null ? TradingDaysSpec.AutoMethod.FTest : TradingDaysSpec.AutoMethod.valueOf(mauto);
+            method = mauto == null ? TradingDaysSpec.AutoMethod.FTEST : TradingDaysSpec.AutoMethod.valueOf(mauto);
         }
-        if (method != TradingDaysSpec.AutoMethod.Unused) {
+        if (method != TradingDaysSpec.AutoMethod.UNUSED) {
             if (holidays != null) {
                 return TradingDaysSpec.automaticHolidays(holidays, lpo, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd, false);
             } else {
@@ -300,11 +300,11 @@ class TradingDaysSpecMapping {
         if (lpt != null) {
             lpo = LengthOfPeriodType.valueOf(lpt);
         }
-        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.Unused;
+        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.UNUSED;
         if ((auto != null && auto) || mauto != null) {
-            method = mauto == null ? TradingDaysSpec.AutoMethod.FTest : TradingDaysSpec.AutoMethod.valueOf(mauto);
+            method = mauto == null ? TradingDaysSpec.AutoMethod.FTEST : TradingDaysSpec.AutoMethod.valueOf(mauto);
         }
-        if (method != TradingDaysSpec.AutoMethod.Unused) {
+        if (method != TradingDaysSpec.AutoMethod.UNUSED) {
             if (holidays != null) {
                 return TradingDaysSpec.automaticHolidays(holidays, lpo, method, pftd == null ? TradingDaysSpec.DEF_PFTD : pftd, adjust);
             } else {

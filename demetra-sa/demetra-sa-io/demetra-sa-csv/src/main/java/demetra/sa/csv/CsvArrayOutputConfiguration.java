@@ -36,6 +36,7 @@ public final class CsvArrayOutputConfiguration implements Cloneable {
 
     public CsvArrayOutputConfiguration() {
         fullName = true;
+        arrays = new String[0];
     }
 
     public CsvLayout getPresentation() {

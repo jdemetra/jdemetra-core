@@ -29,7 +29,8 @@ public class TransformProto {
     public void fill(TransformSpec spec, X13Protos.RegArimaSpec.TransformSpec.Builder builder) {
         builder.setTransformation(ModellingProtosUtility.convert(spec.getFunction()))
                 .setAdjust(ModellingProtosUtility.convert(spec.getAdjust()))
-                .setAicdiff(spec.getAicDiff());
+                .setAicdiff(spec.getAicDiff())
+                .setOutliersCorrection(spec.isOutliersCorrection());
     }
 
     public X13Protos.RegArimaSpec.TransformSpec convert(TransformSpec spec) {
@@ -43,6 +44,7 @@ public class TransformProto {
                 .function(ModellingProtosUtility.convert(spec.getTransformation()))
                 .adjust(ModellingProtosUtility.convert(spec.getAdjust()))
                 .aicDiff(spec.getAicdiff())
+                .outliersCorrection(spec.getOutliersCorrection())
                 .build();
 
     }

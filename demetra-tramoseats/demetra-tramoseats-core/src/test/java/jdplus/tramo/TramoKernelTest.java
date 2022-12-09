@@ -199,7 +199,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = spec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("belgium", LengthOfPeriodType.LeapYear, AutoMethod.FTest, TradingDaysSpec.DEF_PFTD, false);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("belgium", LengthOfPeriodType.LeapYear, AutoMethod.FTEST, TradingDaysSpec.DEF_PFTD, false);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()
@@ -246,7 +246,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = spec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("france", LengthOfPeriodType.LeapYear, AutoMethod.FTest, TradingDaysSpec.DEF_PFTD, false);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automaticHolidays("france", LengthOfPeriodType.LeapYear, AutoMethod.FTEST, TradingDaysSpec.DEF_PFTD, false);
         spec = spec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()
@@ -495,7 +495,7 @@ public class TramoKernelTest {
 
         RegressionSpec regSpec = nspec.getRegression();
         CalendarSpec calSpec = regSpec.getCalendar();
-        TradingDaysSpec tdSpec = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, AutoMethod.WaldTest, TradingDaysSpec.DEF_PFTD, false);
+        TradingDaysSpec tdSpec = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, AutoMethod.WALD, TradingDaysSpec.DEF_PFTD, false);
         nspec = nspec.toBuilder()
                 .regression(regSpec.toBuilder()
                         .calendar(calSpec.toBuilder()

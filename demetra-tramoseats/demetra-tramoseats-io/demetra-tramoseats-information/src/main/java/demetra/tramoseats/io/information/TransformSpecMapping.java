@@ -19,6 +19,7 @@ package demetra.tramoseats.io.information;
 import demetra.information.InformationSet;
 import demetra.modelling.TransformationType;
 import demetra.timeseries.TimeSelector;
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.tramo.TransformSpec;
 import java.util.Map;
 
@@ -31,16 +32,10 @@ class TransformSpecMapping {
 
     final String SPAN = "span",
             FN = "function",
+            ADJUST = "adjust",
             FCT = "fct",
-            UNITS = "units",
+            OUTLIERS="outliers",
             PRELIMINARYCHECK = "preliminarycheck";
-
-    void fillDictionary(String prefix, Map<String, Class> dic) {
-        dic.put(InformationSet.item(prefix, FN), String.class);
-        dic.put(InformationSet.item(prefix, FCT), Double.class);
-        dic.put(InformationSet.item(prefix, UNITS), Boolean.class);
-        dic.put(InformationSet.item(prefix, SPAN), TimeSelector.class);
-    }
 
     InformationSet write(TransformSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
@@ -56,8 +51,14 @@ class TransformSpecMapping {
         if (verbose || spec.getFct() != TransformSpec.DEF_FCT) {
             info.add(FCT, spec.getFct());
         }
-        if (verbose || !spec.isPreliminaryCheck()) {
+        if (verbose || spec.getAdjust() != TransformSpec.DEF_ADJUST) {
+            info.add(ADJUST, spec.getAdjust().name());
+        }
+        if (verbose || spec.isPreliminaryCheck() != TransformSpec.DEF_CHECK) {
             info.add(PRELIMINARYCHECK, spec.isPreliminaryCheck());
+        }
+        if (verbose || spec.isOutliersCorrection() != TransformSpec.DEF_OUTLIERS) {
+            info.add(OUTLIERS, spec.isOutliersCorrection());
         }
         return info;
     }
@@ -79,9 +80,17 @@ class TransformSpecMapping {
         if (fct != null) {
             builder = builder.fct(fct);
         }
+        String adjust = info.get(ADJUST, String.class);
+        if (adjust != null) {
+            builder.adjust(LengthOfPeriodType.valueOf(adjust));
+        }
         Boolean preliminaryChecks = info.get(PRELIMINARYCHECK, Boolean.class);
         if (preliminaryChecks != null) {
             builder = builder.preliminaryCheck(preliminaryChecks);
+        }
+        Boolean outliers = info.get(OUTLIERS, Boolean.class);
+        if (outliers != null) {
+            builder = builder.outliersCorrection(outliers);
         }
         return builder.build();
     }

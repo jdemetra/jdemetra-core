@@ -60,6 +60,15 @@ public class TradingDaysRegressionComparator {
         new GenericTradingDaysVariable(DayClustering.TD2, GenericTradingDays.Type.CONTRAST),
         new GenericTradingDaysVariable(DayClustering.TD7, GenericTradingDays.Type.CONTRAST)};
 
+    /**
+     *
+     * @param description
+     * @param td Set of td variables to be tested
+     * @param lp Leap year variable. Will not be taken into account if the model
+     * is pre-adjusted. could be null
+     * @param eps
+     * @return
+     */
     public RegArimaEstimation<SarimaModel>[] test(ModelDescription description, ITradingDaysVariable[] td, ILengthOfPeriodVariable lp, double eps) {
 
         RegArimaEstimation<SarimaModel>[] rslt = new RegArimaEstimation[td.length + 2];
@@ -70,11 +79,14 @@ public class TradingDaysRegressionComparator {
         refdesc.setAirline(true);
         refdesc.setMean(true);
 
+        boolean useLp = lp != null && !refdesc.isAdjusted();
+
         IRegArimaComputer<SarimaModel> processor = RegArimaUtility.processor(true, eps);
         rslt[0] = refdesc.estimate(processor);
-        refdesc.addVariable(Variable.variable("lp", lp));
-        rslt[1] = refdesc.estimate(processor);
-
+        if (useLp) {
+            refdesc.addVariable(Variable.variable("lp", lp));
+            rslt[1] = refdesc.estimate(processor);
+        }
         for (int i = 0; i < td.length; ++i) {
             ModelDescription cdesc = ModelDescription.copyOf(refdesc);
             cdesc.addVariable(Variable.variable("td", td[i]));
@@ -84,6 +96,15 @@ public class TradingDaysRegressionComparator {
         return rslt;
     }
 
+    /**
+     *
+     * @param description
+     * @param td Set of td variables to be tested
+     * @param lp Leap year variable. Will not be taken into account if the model
+     * is pre-adjusted. could be null
+     * @param eps
+     * @return
+     */
     public RegArimaEstimation<SarimaModel>[] testRestrictions(ModelDescription description, ITradingDaysVariable[] td, ILengthOfPeriodVariable lp, double eps) {
         RegArimaEstimation<SarimaModel>[] rslt = new RegArimaEstimation[td.length + 2];
         int lastModel = td.length - 1;
@@ -93,24 +114,28 @@ public class TradingDaysRegressionComparator {
         refdesc.remove("lp");
         refdesc.setAirline(true);
         refdesc.setMean(true);
-        refdesc.addVariable(Variable.variable("lp", lp));
-
+        boolean useLp = lp != null && !refdesc.isAdjusted();
+        if (useLp) {
+            refdesc.addVariable(Variable.variable("lp", lp));
+        }
         ModelDescription cdesc = ModelDescription.copyOf(refdesc);
         cdesc.addVariable(Variable.variable("td", td[lastModel]));
         IRegArimaComputer<SarimaModel> processor = RegArimaUtility.processor(true, eps);
         RegArimaEstimation<SarimaModel> fullEstimation = cdesc.estimate(processor);
         rslt[lastModel + 2] = fullEstimation;
         double llcorr = fullEstimation.getLlAdjustment();
-
+        RegArimaModel<SarimaModel> reg;
         for (int i = 0; i < lastModel; ++i) {
             cdesc = ModelDescription.copyOf(refdesc);
             cdesc.addVariable(Variable.variable("td", td[i]));
-            RegArimaModel<SarimaModel> reg = RegArimaModel.of(cdesc.regarima(), fullEstimation.getModel().arima());
+            reg = RegArimaModel.of(cdesc.regarima(), fullEstimation.getModel().arima());
             rslt[i + 2] = RegArimaEstimation.of(reg, llcorr, 2);
         }
-        RegArimaModel<SarimaModel> reg = RegArimaModel.of(refdesc.regarima(), fullEstimation.getModel().arima());
-        rslt[1] = RegArimaEstimation.of(reg, llcorr, 2);
-        refdesc.remove("lp");
+        if (useLp) {
+            reg = RegArimaModel.of(refdesc.regarima(), fullEstimation.getModel().arima());
+            rslt[1] = RegArimaEstimation.of(reg, llcorr, 2);
+            refdesc.remove("lp");
+        }
         reg = RegArimaModel.of(refdesc.regarima(), fullEstimation.getModel().arima());
         rslt[0] = RegArimaEstimation.of(reg, llcorr, 2);
         return rslt;
@@ -149,19 +174,25 @@ public class TradingDaysRegressionComparator {
         ssq[0] = ll0.ssq();
         ssq[best] = ll.ssq();
         for (int i = 1; i < best; ++i) {
-            ConcentratedLikelihoodWithMissing lli = rslt[i].getConcentratedLikelihood();
-            nx[i] = lli.nx();
-            ssq[i] = lli.ssq();
+            if (rslt[i] != null) {
+                ConcentratedLikelihoodWithMissing lli = rslt[i].getConcentratedLikelihood();
+                nx[i] = lli.nx();
+                ssq[i] = lli.ssq();
+            }
         }
 
         for (int i = 1; i <= best; ++i) {
             int n = nx[i] - nx[0];
-            double f = (ssq[0] - ssq[i]) / (n * sigma);
-            if (f > 0) {
-                F fdist = new F(n, df);
-                pvals[i] = fdist.getProbability(f, ProbabilityType.Upper);
-            } else {
+            if (n == 0) {
                 pvals[i] = 1;
+            } else {
+                double f = (ssq[0] - ssq[i]) / (n * sigma);
+                if (f > 0) {
+                    F fdist = new F(n, df);
+                    pvals[i] = fdist.getProbability(f, ProbabilityType.Upper);
+                } else {
+                    pvals[i] = 1;
+                }
             }
         }
 

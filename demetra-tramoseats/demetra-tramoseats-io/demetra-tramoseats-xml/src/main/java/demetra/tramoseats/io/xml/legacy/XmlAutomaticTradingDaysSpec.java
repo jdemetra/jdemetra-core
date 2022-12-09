@@ -318,7 +318,7 @@ public class XmlAutomaticTradingDaysSpec {
         if (!v.isAutomatic()) {
             return false;
         }
-        if (v.getAutomaticMethod() == TradingDaysSpec.AutoMethod.FTest) {
+        if (v.getAutomaticMethod() == TradingDaysSpec.AutoMethod.FTEST) {
             FSelection f = new FSelection();
             f.setFtest(v.getProbabilityForFTest());
             xml.setFTest(f);
@@ -336,12 +336,12 @@ public class XmlAutomaticTradingDaysSpec {
         TradingDaysSpec.AutoMethod method;
         double pf = TradingDaysSpec.DEF_PFTD;
         if (xml.fTest != null) {
-            method = TradingDaysSpec.AutoMethod.FTest;
+            method = TradingDaysSpec.AutoMethod.FTEST;
             if (xml.fTest.ftest != null) {
                 pf = xml.fTest.ftest;
             }
         } else {
-            method = TradingDaysSpec.AutoMethod.WaldTest;
+            method = TradingDaysSpec.AutoMethod.WALD;
         }
 
         if (xml.calendar != null) {

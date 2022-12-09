@@ -16,15 +16,26 @@
  */
 package jdplus.x13.regarima;
 
+import demetra.data.DoubleSeq;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.LengthOfPeriodType;
+import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.ModellingUtility;
+import demetra.timeseries.regression.Variable;
+import jdplus.math.matrices.FastMatrix;
+import jdplus.modelling.regression.AdditiveOutlierFactory;
+import jdplus.modelling.regression.IOutlierFactory;
+import jdplus.modelling.regression.LevelShiftFactory;
 import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regsarima.regular.ILogLevelModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
+import jdplus.regsarima.regular.RobustOutliersDetector;
 import jdplus.sarima.SarimaModel;
 import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
@@ -49,15 +60,14 @@ public class LogLevelModule implements ILogLevelModule {
         private double aiccdiff = -2;
         private double precision = 1e-7;
         private LengthOfPeriodType preadjust = LengthOfPeriodType.None;
+        private boolean outliersCorrection = false;
 
         /**
          * When a pre-adjustment is specified, the model in logs is computed as
-         * follows:
-         * - if the regression variables contain a length of period/leap year,
-         * this variable (which must be named "lp") is removed and the specified
-         * pre-adjustment is used instead.
-         * - otherwise, the model is not modified (same model for logs and
-         * levels)
+         * follows: - if the regression variables contain a length of
+         * period/leap year, this variable (which must be named "lp") is removed
+         * and the specified pre-adjustment is used instead. - otherwise, the
+         * model is not modified (same model for logs and levels)
          *
          * The likelihood is automatically adjusted to take into account
          * possible transformations
@@ -74,9 +84,9 @@ public class LogLevelModule implements ILogLevelModule {
         }
 
         /**
-         * Precision used in the estimation of the models (1e-5 by default).
-         * In most cases, the precision can be smaller than for the estimation
-         * of the final model.
+         * Precision used in the estimation of the models (1e-5 by default). In
+         * most cases, the precision can be smaller than for the estimation of
+         * the final model.
          *
          * @param eps
          * @return
@@ -87,9 +97,9 @@ public class LogLevelModule implements ILogLevelModule {
         }
 
         /**
-         * Correction on the AICc of the model in logs.
-         * Negative corrections will favour logs (-2 by default)
-         * Same as aiccdiff in the original fortran program
+         * Correction on the AICc of the model in logs. Negative corrections
+         * will favour logs (-2 by default) Same as aiccdiff in the original
+         * fortran program
          *
          * @param aiccdiff
          * @return
@@ -99,8 +109,13 @@ public class LogLevelModule implements ILogLevelModule {
             return this;
         }
 
+        public Builder outliersCorrection(boolean outliers) {
+            this.outliersCorrection = outliers;
+            return this;
+        }
+
         public LogLevelModule build() {
-            return new LogLevelModule(aiccdiff, precision, preadjust);
+            return new LogLevelModule(aiccdiff, precision, preadjust, outliersCorrection);
         }
 
     }
@@ -108,13 +123,15 @@ public class LogLevelModule implements ILogLevelModule {
     private final double aiccDiff;
     private final double precision;
     private final LengthOfPeriodType preadjust;
+    private final boolean outliersCorrection;
     private RegArimaEstimation<SarimaModel> level, log;
     private double aiccLevel, aiccLog;
 
-    private LogLevelModule(double aiccdiff, final double precision, final LengthOfPeriodType preadjust) {
+    private LogLevelModule(double aiccdiff, final double precision, final LengthOfPeriodType preadjust, final boolean outliersCorrection) {
         this.aiccDiff = aiccdiff;
         this.precision = precision;
         this.preadjust = preadjust;
+        this.outliersCorrection = outliersCorrection;
     }
 
     public double getEpsilon() {
@@ -140,11 +157,15 @@ public class LogLevelModule implements ILogLevelModule {
     public ProcessingResult process(RegSarimaModelling modelling) {
         clear();
         ProcessingLog logs = modelling.getLog();
+        boolean toClean = false;
         try {
             logs.push(LL);
             ModelDescription model = modelling.getDescription();
             if (model.getSeries().getValues().anyMatch(z -> z <= 0)) {
                 return ProcessingResult.Unchanged;
+            }
+            if (outliersCorrection) {
+                toClean = outliers(modelling);
             }
             IRegArimaComputer processor = X13Utility.processor(true, precision);
             level = model.estimate(processor);
@@ -163,9 +184,10 @@ public class LogLevelModule implements ILogLevelModule {
                 aiccLog = log.statistics().getAICC();
                 logs.info("Log", log.statistics());
             }
-            if (level == null && log == null)
+            if (level == null && log == null) {
                 return ProcessingResult.Failed;
-            
+            }
+
             if (isChoosingLog()) {
                 modelling.set(logmodel, log);
                 return ProcessingResult.Changed;
@@ -173,7 +195,40 @@ public class LogLevelModule implements ILogLevelModule {
                 return ProcessingResult.Unchanged;
             }
         } finally {
+            if (toClean) {
+                modelling.getDescription().removeVariable(var -> ModellingUtility.isOutlier(var, true));
+                modelling.clearEstimation();
+            }
             logs.pop();
+        }
+    }
+
+    private static final IOutlierFactory[] FAC = new IOutlierFactory[]{AdditiveOutlierFactory.FACTORY, LevelShiftFactory.FACTORY_ZEROENDED};
+
+    private boolean outliers(RegSarimaModelling modelling) {
+        RobustOutliersDetector detector = RobustOutliersDetector.builder()
+                .criticalValue(5)
+                .precision(1e-3)
+                .build();
+        ModelDescription desc = modelling.getDescription();
+        TsData data = desc.getTransformedSeries();
+        FastMatrix regs = desc.regarima().variables();
+        try {
+            detector.process(data.getValues(), data.getAnnualFrequency(), regs);
+            int[][] outliers = detector.getOutliers();
+            if (outliers.length == 0) {
+                return false;
+            } else {
+                for (int i = 0; i < outliers.length; ++i) {
+                    int[] cur = outliers[i];
+                    TsPeriod pos = data.getPeriod(cur[0]);
+                    IOutlier o = FAC[cur[1]].make(pos.start());
+                    desc.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, OutliersDetectionModule.attributes(o)));
+                }
+                return true;
+            }
+        } catch (Exception err) {
+            return false;
         }
     }
 
@@ -192,8 +247,8 @@ public class LogLevelModule implements ILogLevelModule {
     private void clear() {
         log = null;
         level = null;
-        aiccLevel=0;
-        aiccLog=0;
+        aiccLevel = 0;
+        aiccLog = 0;
     }
 
     /**

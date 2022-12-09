@@ -32,9 +32,12 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
 public final class TransformSpec implements Validatable<TransformSpec> {
 
+    public static final boolean DEF_OUTLIERS=false;
+    public static final LengthOfPeriodType DEF_ADJUST=LengthOfPeriodType.None;
     public static final TransformSpec DEFAULT = TransformSpec.builder().build();
     
     private TransformationType function;
+    private boolean outliersCorrection;
     private LengthOfPeriodType adjust;
     private double aicDiff;
     private double constant;
@@ -44,7 +47,8 @@ public final class TransformSpec implements Validatable<TransformSpec> {
     public static Builder builder() {
         return new Builder()
                 .function(TransformationType.None)
-                .adjust(LengthOfPeriodType.None)
+                .outliersCorrection(DEF_OUTLIERS)
+                .adjust(DEF_ADJUST)
                 .aicDiff(DEF_AICDIFF);
     }
 

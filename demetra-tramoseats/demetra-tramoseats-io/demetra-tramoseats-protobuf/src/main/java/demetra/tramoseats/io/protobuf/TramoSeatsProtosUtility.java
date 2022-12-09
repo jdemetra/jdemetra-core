@@ -77,12 +77,12 @@ public class TramoSeatsProtosUtility {
 
     public TramoSeatsProtos.AutomaticTradingDays convert(TradingDaysSpec.AutoMethod auto) {
         switch (auto) {
-            case FTest:
+            case FTEST:
                 return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_FTEST;
-            case WaldTest:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALDTEST;
-            case NESTED:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NESTED;
+            case WALD:
+                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALD;
+            case BIC:
+                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_BIC;
             case AIC:
                 return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_AIC;
             default:
@@ -91,17 +91,12 @@ public class TramoSeatsProtosUtility {
     }
 
     public TradingDaysSpec.AutoMethod convert(TramoSeatsProtos.AutomaticTradingDays  auto) {
-        switch (auto) {
-            case TD_AUTO_FTEST:
-                return TradingDaysSpec.AutoMethod.FTest;
-            case TD_AUTO_WALDTEST:
-                return TradingDaysSpec.AutoMethod.WaldTest;
-            case TD_AUTO_NESTED:
-                return TradingDaysSpec.AutoMethod.NESTED;
-            case TD_AUTO_AIC:
-                return TradingDaysSpec.AutoMethod.AIC;
-            default:
-                return TradingDaysSpec.AutoMethod.Unused;
-        }
+        return switch (auto) {
+            case TD_AUTO_FTEST -> TradingDaysSpec.AutoMethod.FTEST;
+            case TD_AUTO_WALD -> TradingDaysSpec.AutoMethod.WALD;
+            case TD_AUTO_BIC -> TradingDaysSpec.AutoMethod.BIC;
+            case TD_AUTO_AIC -> TradingDaysSpec.AutoMethod.AIC;
+            default -> TradingDaysSpec.AutoMethod.UNUSED;
+        };
     }
 }

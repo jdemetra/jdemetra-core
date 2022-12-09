@@ -226,7 +226,7 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         }
     }
 
-    private Map<String, String> attributes(IOutlier o){
+    static Map<String, String> attributes(IOutlier o){
         HashMap<String, String> attributes=new HashMap<>();
         attributes.put(ModellingUtility.AMI, "x13");
         attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());

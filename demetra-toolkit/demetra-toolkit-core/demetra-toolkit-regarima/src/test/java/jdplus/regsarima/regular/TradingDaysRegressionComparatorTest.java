@@ -36,6 +36,22 @@ public class TradingDaysRegressionComparatorTest {
         assertTrue(bestModel == 4);
     }
 
+   @Test
+    public void testRetailNoLp() {
+        TsData s = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES);
+        ModelDescription model = new ModelDescription(s, null);
+        model.setLogTransformation(true);
+
+        RegArimaEstimation<SarimaModel>[] test = TradingDaysRegressionComparator
+                .test(model, TradingDaysRegressionComparator.ALL, 
+                        null, 1e-5);
+//        for (int i=0; i<test.length; ++i){
+//            System.out.println(test[i].statistics().getAIC());
+//        }
+        int bestModel = TradingDaysRegressionComparator.bestModel(test, TradingDaysRegressionComparator.bicComparator());
+        assertTrue(bestModel == 4);
+    }
+
     @Test
     public void testWaldRetail() {
         TsData s = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES);
@@ -50,6 +66,20 @@ public class TradingDaysRegressionComparatorTest {
         assertTrue(waldTest == 4);
     }
     
+    @Test
+    public void testWaldRetailNoLp() {
+        TsData s = TsData.ofInternal(TsPeriod.monthly(1992, 1), Data.RETAIL_BOOKSTORES);
+        ModelDescription model = new ModelDescription(s, null);
+        model.setLogTransformation(true);
+
+        RegArimaEstimation<SarimaModel>[] test = TradingDaysRegressionComparator
+                .testRestrictions(model, TradingDaysRegressionComparator.ALL_NESTED, 
+                        null, 1e-5);
+        
+        int waldTest = TradingDaysRegressionComparator.waldTest(test, 0.01, 0.1);
+        assertTrue(waldTest == 4);
+    }
+
     @Test
     public void testWaldProd() {
         TsData s = Data.TS_PROD;

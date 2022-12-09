@@ -33,6 +33,7 @@ class TransformSpecMapping {
             ADJUST = "adjust",
             //            UNITS = "units",
             AICDIFF = "aicdiff",
+            OUTLIERS="outliers",
             //POWER = "power",
             CONST = "const";
 
@@ -51,11 +52,14 @@ class TransformSpecMapping {
         if (verbose || spec.getFunction() != TransformationType.None) {
             info.add(FN, spec.getFunction().name());
         }
-        if (verbose || spec.getAdjust() != LengthOfPeriodType.None) {
+        if (verbose || spec.getAdjust() != TransformSpec.DEF_ADJUST) {
             info.add(ADJUST, spec.getAdjust().name());
         }
         if (verbose || spec.getAicDiff() != TransformSpec.DEF_AICDIFF) {
             info.add(AICDIFF, spec.getAicDiff());
+        }
+        if (verbose || spec.isOutliersCorrection() != TransformSpec.DEF_OUTLIERS) {
+            info.add(OUTLIERS, spec.isOutliersCorrection());
         }
         if (verbose || spec.getConstant() != 0) {
             info.add(CONST, spec.getConstant());
@@ -79,6 +83,10 @@ class TransformSpecMapping {
         Double aic = info.get(AICDIFF, Double.class);
         if (aic != null) {
             builder.aicDiff(aic);
+        }
+        Boolean outliers = info.get(OUTLIERS, Boolean.class);
+        if (outliers != null) {
+            builder = builder.outliersCorrection(outliers);
         }
         Double cnt = info.get(CONST, Double.class);
         if (cnt != null) {
