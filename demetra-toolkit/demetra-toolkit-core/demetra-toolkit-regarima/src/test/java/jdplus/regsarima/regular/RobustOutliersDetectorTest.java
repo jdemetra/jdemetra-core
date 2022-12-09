@@ -4,10 +4,6 @@ import demetra.data.Data;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import jdplus.math.matrices.FastMatrix;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 /**
@@ -28,7 +24,7 @@ public class RobustOutliersDetectorTest {
         
         RobustOutliersDetector tool = RobustOutliersDetector.builder()
                 .build();
-        DoubleSeq sc=tool.process(s.getValues(), s.getAnnualFrequency(), FastMatrix.EMPTY);
+        DoubleSeq sc=tool.process(s.getValues(), s.getAnnualFrequency(), null);
         System.out.println(sc);
     }
     

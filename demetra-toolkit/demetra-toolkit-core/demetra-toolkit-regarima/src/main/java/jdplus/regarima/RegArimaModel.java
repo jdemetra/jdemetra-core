@@ -17,6 +17,7 @@
 package jdplus.regarima;
 
 import demetra.data.DoubleSeq;
+import demetra.math.matrices.Matrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +29,6 @@ import nbbrd.design.BuilderPattern;
 import nbbrd.design.Development;
 import nbbrd.design.Immutable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import demetra.math.matrices.Matrix;
 
 /**
  * Description of a generic regarima model
@@ -68,7 +68,7 @@ public final class RegArimaModel<M extends IArimaModel> {
         }
 
         public Builder addX(FastMatrix X) {
-            if (X != null) {
+            if (X != null && ! X.isEmpty()) {
                 if (y.length() != X.getRowsCount()) {
                     throw new RuntimeException("Incompatible dimensions");
                 }
