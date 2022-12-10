@@ -17,21 +17,21 @@
 package jdplus.tramo;
 
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import nbbrd.design.BuilderPattern;
-import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import demetra.timeseries.regression.IEasterVariable;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.Variable;
+import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regarima.RegArimaUtility;
-import jdplus.sarima.SarimaModel;
-import demetra.timeseries.regression.ILengthOfPeriodVariable;
-import demetra.timeseries.regression.ITradingDaysVariable;
-import demetra.timeseries.regression.IEasterVariable;
-import jdplus.regarima.IRegArimaComputer;
 import jdplus.regsarima.regular.TradingDaysRegressionComparator;
+import jdplus.sarima.SarimaModel;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
+import nbbrd.design.BuilderPattern;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
@@ -190,8 +190,9 @@ public class AutomaticRegressionTest implements IRegressionModule {
         }
         if (aTd != null && lp != null) {
             int pos = test.findPosition(lp);
-            if (Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
-                if (adjust) {
+            double tstat = ll.tstat(pos, nhp, true);
+            if (Math.abs(tstat) > tlp) {
+                if (adjust && tstat > 0) {
                     current.setPreadjustment(LengthOfPeriodType.LeapYear);
                 } else {
                     current.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));

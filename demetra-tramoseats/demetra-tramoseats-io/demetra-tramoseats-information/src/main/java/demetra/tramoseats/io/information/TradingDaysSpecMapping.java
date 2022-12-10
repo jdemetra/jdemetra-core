@@ -19,8 +19,8 @@ package demetra.tramoseats.io.information;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.tramo.RegressionTestType;
 import demetra.timeseries.calendars.TradingDaysType;
+import demetra.tramo.RegressionTestType;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramoseats.TramoSeatsException;
 
@@ -117,6 +117,16 @@ class TradingDaysSpecMapping {
             }
         }
     }
+    
+    TradingDaysSpec.AutoMethod methodOf(String method){
+        method=method.toUpperCase();
+        try{
+            return TradingDaysSpec.AutoMethod.valueOf(method);
+        }
+        catch(Exception ex){
+            return TradingDaysSpec.AutoMethod.FTEST;
+        }
+    }
 
     InformationSet write(TradingDaysSpec spec, boolean verbose) {
         if (!verbose && spec.isDefault()) {
@@ -207,7 +217,7 @@ class TradingDaysSpecMapping {
         }
         TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.UNUSED;
         if ((auto != null && auto) || mauto != null) {
-            method = mauto == null ? TradingDaysSpec.AutoMethod.FTEST : TradingDaysSpec.AutoMethod.valueOf(mauto);
+            method = mauto == null ? TradingDaysSpec.AutoMethod.FTEST : methodOf(mauto);
         }
         if (method != TradingDaysSpec.AutoMethod.UNUSED) {
             if (holidays != null) {
@@ -302,7 +312,7 @@ class TradingDaysSpecMapping {
         }
         TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.UNUSED;
         if ((auto != null && auto) || mauto != null) {
-            method = mauto == null ? TradingDaysSpec.AutoMethod.FTEST : TradingDaysSpec.AutoMethod.valueOf(mauto);
+            method = mauto == null ? TradingDaysSpec.AutoMethod.FTEST : methodOf(mauto);
         }
         if (method != TradingDaysSpec.AutoMethod.UNUSED) {
             if (holidays != null) {
