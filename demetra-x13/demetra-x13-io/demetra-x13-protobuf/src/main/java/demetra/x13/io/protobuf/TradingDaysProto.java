@@ -38,6 +38,7 @@ public class TradingDaysProto {
             builder.setHolidays(holidays)
                     .setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
                     .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
+                    .setAuto(X13ProtosUtility.convert(spec.getAutomaticMethod()))
                     .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()))
                     .setAutoAdjust(spec.isAutoAdjust());
             return;
@@ -57,10 +58,18 @@ public class TradingDaysProto {
                     .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()));
             return;
         }
-        builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
-                .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
-                .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()))
-                .setAutoAdjust(spec.isAutoAdjust());
+        if (spec.isAutomatic()) {
+            builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
+                    .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()))
+                    .setAuto(X13ProtosUtility.convert(spec.getAutomaticMethod()))
+                    .setPtest1(spec.getAutoPvalue1())
+                    .setPtest2(spec.getAutoPvalue2());
+        } else {
+            builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
+                    .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()));
+        }
     }
 
     public X13Protos.RegArimaSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
@@ -76,7 +85,9 @@ public class TradingDaysProto {
     }
 
     private boolean isTest(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
-        return spec.getTest() == X13Protos.RegressionTest.TEST_ADD
+        return 
+                spec.getAuto() != X13Protos.AutomaticTradingDays.TD_AUTO_NO
+                || spec.getTest() == X13Protos.RegressionTest.TEST_ADD
                 || spec.getTest() == X13Protos.RegressionTest.TEST_REMOVE;
     }
 
@@ -88,6 +99,10 @@ public class TradingDaysProto {
         boolean test = isTest(spec);
         String holidays = spec.getHolidays();
         if (holidays != null && holidays.length() > 0) {
+            TradingDaysSpec.AutoMethod auto = X13ProtosUtility.convert(spec.getAuto());
+            if (auto != TradingDaysSpec.AutoMethod.UNUSED) {
+                return TradingDaysSpec.automaticHolidays(holidays, lp, auto, spec.getPtest1(), spec.getPtest2(), spec.getAutoAdjust());
+            }
             if (test) {
                 return TradingDaysSpec.holidays(holidays, td, lp,
                         X13ProtosUtility.convert(spec.getTest()),
@@ -117,7 +132,10 @@ public class TradingDaysProto {
                 return TradingDaysSpec.stockTradingDays(w, tdc);
             }
         }
-        if (td == TradingDaysType.NONE) {
+        TradingDaysSpec.AutoMethod auto = X13ProtosUtility.convert(spec.getAuto());
+        if (auto != TradingDaysSpec.AutoMethod.UNUSED) {
+            return TradingDaysSpec.automatic(lp, auto, spec.getPtest1(), spec.getPtest2(), spec.getAutoAdjust());
+        } else if (td == TradingDaysType.NONE) {
             return TradingDaysSpec.none();
         } else {
             if (test) {

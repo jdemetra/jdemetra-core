@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.calendars.TradingDaysType;
 import nbbrd.design.Development;
 
 /**
@@ -33,5 +34,7 @@ public interface ITradingDaysVariable extends ICalendarVariable {
 //        else 
 //            return NAME+'#'+dim;
     }
+    
+    TradingDaysType getTradingDaysType();
 
 }

@@ -259,7 +259,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         for (int i = 0; i < 7; ++i) {
             days.column(i).apply(corr.column(i), (a, b) -> a + b);
         }
-        if (var.getType() == GenericTradingDays.Type.CONTRAST) {
+        if (var.getVariableType() == GenericTradingDays.Type.CONTRAST) {
             double[] weights = null;
             if (var.isWeighted()) {
                 DoubleSeq dc = var.getCorrector().longTermYearlyCorrection();
@@ -271,7 +271,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             GenericTradingDaysFactory.fillContrasts(var.getClustering(), days, buffer, weights);
         } else {
             GenericTradingDaysFactory.fillNoContrasts(var.getClustering(),
-                    var.getType() == GenericTradingDays.Type.MEANCORRECTED ? start : null, days, buffer);
+                    var.getVariableType() == GenericTradingDays.Type.MEANCORRECTED ? start : null, days, buffer);
         }
         return true;
     }

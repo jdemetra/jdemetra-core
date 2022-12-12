@@ -22,6 +22,7 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.math.matrices.Matrix;
+import demetra.timeseries.calendars.TradingDaysType;
 
 /**
  *
@@ -54,20 +55,20 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     }
 
     private DayClustering clustering;
-    private GenericTradingDays.Type type;
+    private GenericTradingDays.Type variableType;
     private boolean weighted;
     private HolidaysCorrector corrector;
 
     public HolidaysCorrectedTradingDays(GenericTradingDays td, boolean weighted, HolidaysCorrector corrector ) {
         this.clustering = td.getClustering();
-        this.type=td.getType();
+        this.variableType=td.getType();
         this.corrector = corrector;
         this.weighted=weighted;
     }
 
     public HolidaysCorrectedTradingDays(GenericTradingDays td, HolidaysCorrector corrector) {
         this.clustering = td.getClustering();
-        this.type=td.getType();
+        this.variableType=td.getType();
         this.corrector = corrector;
         this.weighted=false;
     }
@@ -75,7 +76,12 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     @Override
     public int dim() {
         int n = clustering.getGroupsCount();
-        return type == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
+        return variableType == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
+    }
+    
+    @Override
+    public TradingDaysType getTradingDaysType(){
+        return clustering.getType();
     }
     
     @Override

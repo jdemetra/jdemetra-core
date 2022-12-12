@@ -92,7 +92,7 @@ public class XmlGenericTradingDays extends XmlModifiableRegressionVariable {
                 return null;
 
             XmlGenericTradingDays xml = new XmlGenericTradingDays();
-            xml.contrasts = td.getType() == GenericTradingDays.Type.CONTRAST;
+            xml.contrasts = td.getVariableType()== GenericTradingDays.Type.CONTRAST;
             xml.dayClustering = td.getClustering().getGroupsDefinition();
             if (mv != null){
                 List<XmlRegressionVariableModifier> xm = TsModifierAdapters.marshal(mv.getModifiers());

@@ -128,11 +128,11 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     public boolean fill(GenericTradingDaysVariable var, TsPeriod start, FastMatrix buffer) {
 //        if (start.annualFrequency() == 1)
 //            return false;
-        if (var.getType() == GenericTradingDays.Type.CONTRAST) {
+        if (var.getVariableType() == GenericTradingDays.Type.CONTRAST) {
             dataContrast(var.getClustering(), start, buffer);
         } else {
             dataNoContrast(var.getClustering(),
-                    var.getType() == GenericTradingDays.Type.MEANCORRECTED, start, buffer);
+                    var.getVariableType() == GenericTradingDays.Type.MEANCORRECTED, start, buffer);
         }
         return true;
     }

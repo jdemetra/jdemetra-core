@@ -914,6 +914,132 @@ public final class X13Protos {
     // @@protoc_insertion_point(enum_scope:x13.RegressionTest)
   }
 
+  /**
+   * Protobuf enum {@code x13.AutomaticTradingDays}
+   */
+  public enum AutomaticTradingDays
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>TD_AUTO_NO = 0;</code>
+     */
+    TD_AUTO_NO(0),
+    /**
+     * <code>TD_AUTO_WALD = 1;</code>
+     */
+    TD_AUTO_WALD(1),
+    /**
+     * <code>TD_AUTO_AIC = 2;</code>
+     */
+    TD_AUTO_AIC(2),
+    /**
+     * <code>TD_AUTO_BIC = 3;</code>
+     */
+    TD_AUTO_BIC(3),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>TD_AUTO_NO = 0;</code>
+     */
+    public static final int TD_AUTO_NO_VALUE = 0;
+    /**
+     * <code>TD_AUTO_WALD = 1;</code>
+     */
+    public static final int TD_AUTO_WALD_VALUE = 1;
+    /**
+     * <code>TD_AUTO_AIC = 2;</code>
+     */
+    public static final int TD_AUTO_AIC_VALUE = 2;
+    /**
+     * <code>TD_AUTO_BIC = 3;</code>
+     */
+    public static final int TD_AUTO_BIC_VALUE = 3;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static AutomaticTradingDays valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static AutomaticTradingDays forNumber(int value) {
+      switch (value) {
+        case 0: return TD_AUTO_NO;
+        case 1: return TD_AUTO_WALD;
+        case 2: return TD_AUTO_AIC;
+        case 3: return TD_AUTO_BIC;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<AutomaticTradingDays>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        AutomaticTradingDays> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<AutomaticTradingDays>() {
+            public AutomaticTradingDays findValueByNumber(int number) {
+              return AutomaticTradingDays.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return demetra.x13.io.protobuf.X13Protos.getDescriptor().getEnumTypes().get(7);
+    }
+
+    private static final AutomaticTradingDays[] VALUES = values();
+
+    public static AutomaticTradingDays valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private AutomaticTradingDays(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:x13.AutomaticTradingDays)
+  }
+
   public interface X11SpecOrBuilder extends
       // @@protoc_insertion_point(interface_extends:x13.X11Spec)
       com.google.protobuf.MessageOrBuilder {
@@ -8818,47 +8944,70 @@ public final class X13Protos {
       demetra.x13.io.protobuf.X13Protos.RegressionTest getTest();
 
       /**
-       * <code>bool auto_adjust = 7;</code>
+       * <code>.x13.AutomaticTradingDays auto = 7;</code>
+       * @return The enum numeric value on the wire for auto.
+       */
+      int getAutoValue();
+      /**
+       * <code>.x13.AutomaticTradingDays auto = 7;</code>
+       * @return The auto.
+       */
+      demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays getAuto();
+
+      /**
+       * <code>double ptest1 = 8;</code>
+       * @return The ptest1.
+       */
+      double getPtest1();
+
+      /**
+       * <code>double ptest2 = 9;</code>
+       * @return The ptest2.
+       */
+      double getPtest2();
+
+      /**
+       * <code>bool auto_adjust = 10;</code>
        * @return The autoAdjust.
        */
       boolean getAutoAdjust();
 
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> 
           getTdcoefficientsList();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index);
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       int getTdcoefficientsCount();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
           getTdcoefficientsOrBuilderList();
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
           int index);
 
       /**
-       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * <code>.jd3.Parameter lpcoefficient = 12;</code>
        * @return Whether the lpcoefficient field is set.
        */
       boolean hasLpcoefficient();
       /**
-       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * <code>.jd3.Parameter lpcoefficient = 12;</code>
        * @return The lpcoefficient.
        */
       demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLpcoefficient();
       /**
-       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * <code>.jd3.Parameter lpcoefficient = 12;</code>
        */
       demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLpcoefficientOrBuilder();
     }
@@ -8880,6 +9029,7 @@ public final class X13Protos {
         holidays_ = "";
         users_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         test_ = 0;
+        auto_ = 0;
         tdcoefficients_ = java.util.Collections.emptyList();
       }
 
@@ -8953,11 +9103,27 @@ public final class X13Protos {
                 break;
               }
               case 56: {
+                int rawValue = input.readEnum();
+
+                auto_ = rawValue;
+                break;
+              }
+              case 65: {
+
+                ptest1_ = input.readDouble();
+                break;
+              }
+              case 73: {
+
+                ptest2_ = input.readDouble();
+                break;
+              }
+              case 80: {
 
                 autoAdjust_ = input.readBool();
                 break;
               }
-              case 82: {
+              case 90: {
                 if (!((mutable_bitField0_ & 0x00000002) != 0)) {
                   tdcoefficients_ = new java.util.ArrayList<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter>();
                   mutable_bitField0_ |= 0x00000002;
@@ -8966,7 +9132,7 @@ public final class X13Protos {
                     input.readMessage(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.parser(), extensionRegistry));
                 break;
               }
-              case 90: {
+              case 98: {
                 demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder subBuilder = null;
                 if (lpcoefficient_ != null) {
                   subBuilder = lpcoefficient_.toBuilder();
@@ -9158,10 +9324,51 @@ public final class X13Protos {
         return result == null ? demetra.x13.io.protobuf.X13Protos.RegressionTest.UNRECOGNIZED : result;
       }
 
-      public static final int AUTO_ADJUST_FIELD_NUMBER = 7;
+      public static final int AUTO_FIELD_NUMBER = 7;
+      private int auto_;
+      /**
+       * <code>.x13.AutomaticTradingDays auto = 7;</code>
+       * @return The enum numeric value on the wire for auto.
+       */
+      @java.lang.Override public int getAutoValue() {
+        return auto_;
+      }
+      /**
+       * <code>.x13.AutomaticTradingDays auto = 7;</code>
+       * @return The auto.
+       */
+      @java.lang.Override public demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays getAuto() {
+        @SuppressWarnings("deprecation")
+        demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays result = demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays.valueOf(auto_);
+        return result == null ? demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays.UNRECOGNIZED : result;
+      }
+
+      public static final int PTEST1_FIELD_NUMBER = 8;
+      private double ptest1_;
+      /**
+       * <code>double ptest1 = 8;</code>
+       * @return The ptest1.
+       */
+      @java.lang.Override
+      public double getPtest1() {
+        return ptest1_;
+      }
+
+      public static final int PTEST2_FIELD_NUMBER = 9;
+      private double ptest2_;
+      /**
+       * <code>double ptest2 = 9;</code>
+       * @return The ptest2.
+       */
+      @java.lang.Override
+      public double getPtest2() {
+        return ptest2_;
+      }
+
+      public static final int AUTO_ADJUST_FIELD_NUMBER = 10;
       private boolean autoAdjust_;
       /**
-       * <code>bool auto_adjust = 7;</code>
+       * <code>bool auto_adjust = 10;</code>
        * @return The autoAdjust.
        */
       @java.lang.Override
@@ -9169,17 +9376,17 @@ public final class X13Protos {
         return autoAdjust_;
       }
 
-      public static final int TDCOEFFICIENTS_FIELD_NUMBER = 10;
+      public static final int TDCOEFFICIENTS_FIELD_NUMBER = 11;
       private java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> tdcoefficients_;
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       @java.lang.Override
       public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientsList() {
         return tdcoefficients_;
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       @java.lang.Override
       public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -9187,21 +9394,21 @@ public final class X13Protos {
         return tdcoefficients_;
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       @java.lang.Override
       public int getTdcoefficientsCount() {
         return tdcoefficients_.size();
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index) {
         return tdcoefficients_.get(index);
       }
       /**
-       * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+       * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
        */
       @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
@@ -9209,10 +9416,10 @@ public final class X13Protos {
         return tdcoefficients_.get(index);
       }
 
-      public static final int LPCOEFFICIENT_FIELD_NUMBER = 11;
+      public static final int LPCOEFFICIENT_FIELD_NUMBER = 12;
       private demetra.toolkit.io.protobuf.ToolkitProtos.Parameter lpcoefficient_;
       /**
-       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * <code>.jd3.Parameter lpcoefficient = 12;</code>
        * @return Whether the lpcoefficient field is set.
        */
       @java.lang.Override
@@ -9220,7 +9427,7 @@ public final class X13Protos {
         return lpcoefficient_ != null;
       }
       /**
-       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * <code>.jd3.Parameter lpcoefficient = 12;</code>
        * @return The lpcoefficient.
        */
       @java.lang.Override
@@ -9228,7 +9435,7 @@ public final class X13Protos {
         return lpcoefficient_ == null ? demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance() : lpcoefficient_;
       }
       /**
-       * <code>.jd3.Parameter lpcoefficient = 11;</code>
+       * <code>.jd3.Parameter lpcoefficient = 12;</code>
        */
       @java.lang.Override
       public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLpcoefficientOrBuilder() {
@@ -9267,14 +9474,23 @@ public final class X13Protos {
         if (test_ != demetra.x13.io.protobuf.X13Protos.RegressionTest.TEST_NO.getNumber()) {
           output.writeEnum(6, test_);
         }
+        if (auto_ != demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays.TD_AUTO_NO.getNumber()) {
+          output.writeEnum(7, auto_);
+        }
+        if (ptest1_ != 0D) {
+          output.writeDouble(8, ptest1_);
+        }
+        if (ptest2_ != 0D) {
+          output.writeDouble(9, ptest2_);
+        }
         if (autoAdjust_ != false) {
-          output.writeBool(7, autoAdjust_);
+          output.writeBool(10, autoAdjust_);
         }
         for (int i = 0; i < tdcoefficients_.size(); i++) {
-          output.writeMessage(10, tdcoefficients_.get(i));
+          output.writeMessage(11, tdcoefficients_.get(i));
         }
         if (lpcoefficient_ != null) {
-          output.writeMessage(11, getLpcoefficient());
+          output.writeMessage(12, getLpcoefficient());
         }
         unknownFields.writeTo(output);
       }
@@ -9312,17 +9528,29 @@ public final class X13Protos {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(6, test_);
         }
+        if (auto_ != demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays.TD_AUTO_NO.getNumber()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(7, auto_);
+        }
+        if (ptest1_ != 0D) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeDoubleSize(8, ptest1_);
+        }
+        if (ptest2_ != 0D) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeDoubleSize(9, ptest2_);
+        }
         if (autoAdjust_ != false) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(7, autoAdjust_);
+            .computeBoolSize(10, autoAdjust_);
         }
         for (int i = 0; i < tdcoefficients_.size(); i++) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(10, tdcoefficients_.get(i));
+            .computeMessageSize(11, tdcoefficients_.get(i));
         }
         if (lpcoefficient_ != null) {
           size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(11, getLpcoefficient());
+            .computeMessageSize(12, getLpcoefficient());
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -9348,6 +9576,13 @@ public final class X13Protos {
         if (getW()
             != other.getW()) return false;
         if (test_ != other.test_) return false;
+        if (auto_ != other.auto_) return false;
+        if (java.lang.Double.doubleToLongBits(getPtest1())
+            != java.lang.Double.doubleToLongBits(
+                other.getPtest1())) return false;
+        if (java.lang.Double.doubleToLongBits(getPtest2())
+            != java.lang.Double.doubleToLongBits(
+                other.getPtest2())) return false;
         if (getAutoAdjust()
             != other.getAutoAdjust()) return false;
         if (!getTdcoefficientsList()
@@ -9382,6 +9617,14 @@ public final class X13Protos {
         hash = (53 * hash) + getW();
         hash = (37 * hash) + TEST_FIELD_NUMBER;
         hash = (53 * hash) + test_;
+        hash = (37 * hash) + AUTO_FIELD_NUMBER;
+        hash = (53 * hash) + auto_;
+        hash = (37 * hash) + PTEST1_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getPtest1()));
+        hash = (37 * hash) + PTEST2_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getPtest2()));
         hash = (37 * hash) + AUTO_ADJUST_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getAutoAdjust());
@@ -9539,6 +9782,12 @@ public final class X13Protos {
 
           test_ = 0;
 
+          auto_ = 0;
+
+          ptest1_ = 0D;
+
+          ptest2_ = 0D;
+
           autoAdjust_ = false;
 
           if (tdcoefficientsBuilder_ == null) {
@@ -9590,6 +9839,9 @@ public final class X13Protos {
           result.users_ = users_;
           result.w_ = w_;
           result.test_ = test_;
+          result.auto_ = auto_;
+          result.ptest1_ = ptest1_;
+          result.ptest2_ = ptest2_;
           result.autoAdjust_ = autoAdjust_;
           if (tdcoefficientsBuilder_ == null) {
             if (((bitField0_ & 0x00000002) != 0)) {
@@ -9678,6 +9930,15 @@ public final class X13Protos {
           }
           if (other.test_ != 0) {
             setTestValue(other.getTestValue());
+          }
+          if (other.auto_ != 0) {
+            setAutoValue(other.getAutoValue());
+          }
+          if (other.getPtest1() != 0D) {
+            setPtest1(other.getPtest1());
+          }
+          if (other.getPtest2() != 0D) {
+            setPtest2(other.getPtest2());
           }
           if (other.getAutoAdjust() != false) {
             setAutoAdjust(other.getAutoAdjust());
@@ -10120,9 +10381,125 @@ public final class X13Protos {
           return this;
         }
 
+        private int auto_ = 0;
+        /**
+         * <code>.x13.AutomaticTradingDays auto = 7;</code>
+         * @return The enum numeric value on the wire for auto.
+         */
+        @java.lang.Override public int getAutoValue() {
+          return auto_;
+        }
+        /**
+         * <code>.x13.AutomaticTradingDays auto = 7;</code>
+         * @param value The enum numeric value on the wire for auto to set.
+         * @return This builder for chaining.
+         */
+        public Builder setAutoValue(int value) {
+          
+          auto_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.x13.AutomaticTradingDays auto = 7;</code>
+         * @return The auto.
+         */
+        @java.lang.Override
+        public demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays getAuto() {
+          @SuppressWarnings("deprecation")
+          demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays result = demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays.valueOf(auto_);
+          return result == null ? demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays.UNRECOGNIZED : result;
+        }
+        /**
+         * <code>.x13.AutomaticTradingDays auto = 7;</code>
+         * @param value The auto to set.
+         * @return This builder for chaining.
+         */
+        public Builder setAuto(demetra.x13.io.protobuf.X13Protos.AutomaticTradingDays value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          
+          auto_ = value.getNumber();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.x13.AutomaticTradingDays auto = 7;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearAuto() {
+          
+          auto_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private double ptest1_ ;
+        /**
+         * <code>double ptest1 = 8;</code>
+         * @return The ptest1.
+         */
+        @java.lang.Override
+        public double getPtest1() {
+          return ptest1_;
+        }
+        /**
+         * <code>double ptest1 = 8;</code>
+         * @param value The ptest1 to set.
+         * @return This builder for chaining.
+         */
+        public Builder setPtest1(double value) {
+          
+          ptest1_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>double ptest1 = 8;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearPtest1() {
+          
+          ptest1_ = 0D;
+          onChanged();
+          return this;
+        }
+
+        private double ptest2_ ;
+        /**
+         * <code>double ptest2 = 9;</code>
+         * @return The ptest2.
+         */
+        @java.lang.Override
+        public double getPtest2() {
+          return ptest2_;
+        }
+        /**
+         * <code>double ptest2 = 9;</code>
+         * @param value The ptest2 to set.
+         * @return This builder for chaining.
+         */
+        public Builder setPtest2(double value) {
+          
+          ptest2_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>double ptest2 = 9;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearPtest2() {
+          
+          ptest2_ = 0D;
+          onChanged();
+          return this;
+        }
+
         private boolean autoAdjust_ ;
         /**
-         * <code>bool auto_adjust = 7;</code>
+         * <code>bool auto_adjust = 10;</code>
          * @return The autoAdjust.
          */
         @java.lang.Override
@@ -10130,7 +10507,7 @@ public final class X13Protos {
           return autoAdjust_;
         }
         /**
-         * <code>bool auto_adjust = 7;</code>
+         * <code>bool auto_adjust = 10;</code>
          * @param value The autoAdjust to set.
          * @return This builder for chaining.
          */
@@ -10141,7 +10518,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>bool auto_adjust = 7;</code>
+         * <code>bool auto_adjust = 10;</code>
          * @return This builder for chaining.
          */
         public Builder clearAutoAdjust() {
@@ -10164,7 +10541,7 @@ public final class X13Protos {
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> tdcoefficientsBuilder_;
 
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> getTdcoefficientsList() {
           if (tdcoefficientsBuilder_ == null) {
@@ -10174,7 +10551,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public int getTdcoefficientsCount() {
           if (tdcoefficientsBuilder_ == null) {
@@ -10184,7 +10561,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getTdcoefficients(int index) {
           if (tdcoefficientsBuilder_ == null) {
@@ -10194,7 +10571,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder setTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -10211,7 +10588,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder setTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -10225,7 +10602,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder addTdcoefficients(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (tdcoefficientsBuilder_ == null) {
@@ -10241,7 +10618,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder addTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
@@ -10258,7 +10635,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder addTdcoefficients(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -10272,7 +10649,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder addTdcoefficients(
             int index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -10286,7 +10663,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder addAllTdcoefficients(
             java.lang.Iterable<? extends demetra.toolkit.io.protobuf.ToolkitProtos.Parameter> values) {
@@ -10301,7 +10678,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder clearTdcoefficients() {
           if (tdcoefficientsBuilder_ == null) {
@@ -10314,7 +10691,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public Builder removeTdcoefficients(int index) {
           if (tdcoefficientsBuilder_ == null) {
@@ -10327,14 +10704,14 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getTdcoefficientsBuilder(
             int index) {
           return getTdcoefficientsFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getTdcoefficientsOrBuilder(
             int index) {
@@ -10344,7 +10721,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public java.util.List<? extends demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
              getTdcoefficientsOrBuilderList() {
@@ -10355,14 +10732,14 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientsBuilder() {
           return getTdcoefficientsFieldBuilder().addBuilder(
               demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder addTdcoefficientsBuilder(
             int index) {
@@ -10370,7 +10747,7 @@ public final class X13Protos {
               index, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.getDefaultInstance());
         }
         /**
-         * <code>repeated .jd3.Parameter tdcoefficients = 10;</code>
+         * <code>repeated .jd3.Parameter tdcoefficients = 11;</code>
          */
         public java.util.List<demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder> 
              getTdcoefficientsBuilderList() {
@@ -10395,14 +10772,14 @@ public final class X13Protos {
         private com.google.protobuf.SingleFieldBuilderV3<
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> lpcoefficientBuilder_;
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          * @return Whether the lpcoefficient field is set.
          */
         public boolean hasLpcoefficient() {
           return lpcoefficientBuilder_ != null || lpcoefficient_ != null;
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          * @return The lpcoefficient.
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter getLpcoefficient() {
@@ -10413,7 +10790,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         public Builder setLpcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (lpcoefficientBuilder_ == null) {
@@ -10429,7 +10806,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         public Builder setLpcoefficient(
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder builderForValue) {
@@ -10443,7 +10820,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         public Builder mergeLpcoefficient(demetra.toolkit.io.protobuf.ToolkitProtos.Parameter value) {
           if (lpcoefficientBuilder_ == null) {
@@ -10461,7 +10838,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         public Builder clearLpcoefficient() {
           if (lpcoefficientBuilder_ == null) {
@@ -10475,7 +10852,7 @@ public final class X13Protos {
           return this;
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder getLpcoefficientBuilder() {
           
@@ -10483,7 +10860,7 @@ public final class X13Protos {
           return getLpcoefficientFieldBuilder().getBuilder();
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         public demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getLpcoefficientOrBuilder() {
           if (lpcoefficientBuilder_ != null) {
@@ -10494,7 +10871,7 @@ public final class X13Protos {
           }
         }
         /**
-         * <code>.jd3.Parameter lpcoefficient = 11;</code>
+         * <code>.jd3.Parameter lpcoefficient = 12;</code>
          */
         private com.google.protobuf.SingleFieldBuilderV3<
             demetra.toolkit.io.protobuf.ToolkitProtos.Parameter, demetra.toolkit.io.protobuf.ToolkitProtos.Parameter.Builder, demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder> 
@@ -36777,7 +37154,7 @@ public final class X13Protos {
       "\007 \001(\005\022\017\n\007nbcasts\030\010 \001(\005\022!\n\005sigma\030\t \001(\0162\022." +
       "x13.CalendarSigma\022\017\n\007vsigmas\030\n \003(\005\022\026\n\016ex" +
       "clude_fcasts\030\013 \001(\010\022!\n\004bias\030\014 \001(\0162\023.x13.B" +
-      "iasCorrection\"\273\016\n\014RegArimaSpec\022*\n\005basic\030" +
+      "iasCorrection\"\204\017\n\014RegArimaSpec\022*\n\005basic\030" +
       "\001 \001(\0132\033.x13.RegArimaSpec.BasicSpec\0222\n\ttr" +
       "ansform\030\002 \001(\0132\037.x13.RegArimaSpec.Transfo" +
       "rmSpec\022.\n\007outlier\030\003 \001(\0132\035.x13.RegArimaSp" +
@@ -36807,114 +37184,119 @@ public final class X13Protos {
       "ced\030\r \001(\010\032\205\001\n\nEasterSpec\022\035\n\004type\030\001 \001(\0162\017" +
       ".x13.EasterType\022\020\n\010duration\030\002 \001(\005\022!\n\004tes" +
       "t\030\003 \001(\0162\023.x13.RegressionTest\022#\n\013coeffici" +
-      "ent\030\n \001(\0132\016.jd3.Parameter\032\217\002\n\017TradingDay" +
+      "ent\030\n \001(\0132\016.jd3.Parameter\032\330\002\n\017TradingDay" +
       "sSpec\022\"\n\002td\030\001 \001(\0162\026.modelling.TradingDay" +
       "s\022%\n\002lp\030\002 \001(\0162\031.modelling.LengthOfPeriod" +
       "\022\020\n\010holidays\030\003 \001(\t\022\r\n\005users\030\004 \003(\t\022\t\n\001w\030\005" +
       " \001(\005\022!\n\004test\030\006 \001(\0162\023.x13.RegressionTest\022" +
-      "\023\n\013auto_adjust\030\007 \001(\010\022&\n\016tdcoefficients\030\n" +
-      " \003(\0132\016.jd3.Parameter\022%\n\rlpcoefficient\030\013 " +
-      "\001(\0132\016.jd3.Parameter\032\257\002\n\016RegressionSpec\022\034" +
-      "\n\004mean\030\001 \001(\0132\016.jd3.Parameter\022-\n\002td\030\002 \001(\013" +
-      "2!.x13.RegArimaSpec.TradingDaysSpec\022,\n\006e" +
-      "aster\030\003 \001(\0132\034.x13.RegArimaSpec.EasterSpe" +
-      "c\022$\n\010outliers\030\004 \003(\0132\022.modelling.Outlier\022" +
-      "$\n\005users\030\005 \003(\0132\025.modelling.TsVariable\0226\n" +
-      "\rinterventions\030\006 \003(\0132\037.modelling.Interve" +
-      "ntionVariable\022\036\n\005ramps\030\007 \003(\0132\017.modelling" +
-      ".Ramp\032<\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd" +
-      "3.TimeSelector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010r" +
-      "egarima\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030" +
-      "\002 \001(\0132\014.x13.X11Spec\022*\n\014benchmarking\030\003 \001(" +
-      "\0132\024.sa.BenchmarkingSpec\"\334\010\n\nX11Results\022$" +
-      "\n\004mode\030\001 \001(\0162\026.x13.DecompositionMode\022\027\n\002" +
-      "d1\030\002 \001(\0132\013.jd3.TsData\022\027\n\002d2\030\003 \001(\0132\013.jd3." +
-      "TsData\022\027\n\002d4\030\004 \001(\0132\013.jd3.TsData\022\027\n\002d5\030\005 " +
-      "\001(\0132\013.jd3.TsData\022\027\n\002d6\030\006 \001(\0132\013.jd3.TsDat" +
-      "a\022\027\n\002d7\030\007 \001(\0132\013.jd3.TsData\022\027\n\002d8\030\010 \001(\0132\013" +
-      ".jd3.TsData\022\027\n\002d9\030\t \001(\0132\013.jd3.TsData\022\030\n\003" +
-      "d10\030\n \001(\0132\013.jd3.TsData\022\030\n\003d11\030\013 \001(\0132\013.jd" +
-      "3.TsData\022\030\n\003d12\030\014 \001(\0132\013.jd3.TsData\022\030\n\003d1" +
-      "3\030\r \001(\0132\013.jd3.TsData\0223\n\026final_seasonal_f" +
-      "ilters\030\016 \003(\0162\023.x13.SeasonalFilter\022\036\n\026fin" +
-      "al_henderson_filter\030\017 \001(\005\022\017\n\007icratio\030\020 \001" +
-      "(\001\022\027\n\002b1\030\024 \001(\0132\013.jd3.TsData\022\027\n\002b2\030\025 \001(\0132" +
-      "\013.jd3.TsData\022\027\n\002b3\030\026 \001(\0132\013.jd3.TsData\022\027\n" +
-      "\002b4\030\027 \001(\0132\013.jd3.TsData\022\027\n\002b5\030\030 \001(\0132\013.jd3" +
-      ".TsData\022\027\n\002b6\030\031 \001(\0132\013.jd3.TsData\022\027\n\002b7\030\032" +
-      " \001(\0132\013.jd3.TsData\022\027\n\002b8\030\033 \001(\0132\013.jd3.TsDa" +
-      "ta\022\027\n\002b9\030\034 \001(\0132\013.jd3.TsData\022\030\n\003b10\030\035 \001(\013" +
-      "2\013.jd3.TsData\022\030\n\003b11\030\036 \001(\0132\013.jd3.TsData\022" +
-      "\030\n\003b13\030\037 \001(\0132\013.jd3.TsData\022\030\n\003b17\030  \001(\0132\013" +
-      ".jd3.TsData\022\030\n\003b20\030! \001(\0132\013.jd3.TsData\022\027\n" +
-      "\002c1\030( \001(\0132\013.jd3.TsData\022\027\n\002c2\030) \001(\0132\013.jd3" +
-      ".TsData\022\027\n\002c4\030* \001(\0132\013.jd3.TsData\022\027\n\002c5\030+" +
-      " \001(\0132\013.jd3.TsData\022\027\n\002c6\030, \001(\0132\013.jd3.TsDa" +
-      "ta\022\027\n\002c7\030- \001(\0132\013.jd3.TsData\022\027\n\002c9\030. \001(\0132" +
-      "\013.jd3.TsData\022\030\n\003c10\030/ \001(\0132\013.jd3.TsData\022\030" +
-      "\n\003c11\0300 \001(\0132\013.jd3.TsData\022\030\n\003c13\0301 \001(\0132\013." +
-      "jd3.TsData\022\030\n\003c17\0302 \001(\0132\013.jd3.TsData\022\030\n\003" +
-      "c20\0303 \001(\0132\013.jd3.TsData\"\253\001\n\013MStatistics\022\n" +
-      "\n\002m1\030\001 \001(\001\022\n\n\002m2\030\002 \001(\001\022\n\n\002m3\030\003 \001(\001\022\n\n\002m4" +
-      "\030\004 \001(\001\022\n\n\002m5\030\005 \001(\001\022\n\n\002m6\030\006 \001(\001\022\n\n\002m7\030\007 \001" +
-      "(\001\022\n\n\002m8\030\010 \001(\001\022\n\n\002m9\030\t \001(\001\022\013\n\003m10\030\n \001(\001\022" +
-      "\013\n\003m11\030\013 \001(\001\022\t\n\001q\030\014 \001(\001\022\013\n\003qm2\030\r \001(\001\"\303\001\n" +
-      "\020X13Preadjustment\022\027\n\002a1\030\001 \001(\0132\013.jd3.TsDa" +
-      "ta\022\030\n\003a1a\030\002 \001(\0132\013.jd3.TsData\022\030\n\003a1b\030\003 \001(" +
-      "\0132\013.jd3.TsData\022\027\n\002a6\030\004 \001(\0132\013.jd3.TsData\022" +
-      "\027\n\002a7\030\005 \001(\0132\013.jd3.TsData\022\027\n\002a8\030\006 \001(\0132\013.j" +
-      "d3.TsData\022\027\n\002a9\030\007 \001(\0132\013.jd3.TsData\"\355\002\n\tX" +
-      "13Finals\022\035\n\010d11final\030\001 \001(\0132\013.jd3.TsData\022" +
-      "\035\n\010d12final\030\002 \001(\0132\013.jd3.TsData\022\035\n\010d13fin" +
-      "al\030\003 \001(\0132\013.jd3.TsData\022\030\n\003d16\030\004 \001(\0132\013.jd3" +
-      ".TsData\022\030\n\003d18\030\005 \001(\0132\013.jd3.TsData\022\031\n\004d11" +
-      "a\030\006 \001(\0132\013.jd3.TsData\022\031\n\004d12a\030\007 \001(\0132\013.jd3" +
-      ".TsData\022\031\n\004d16a\030\010 \001(\0132\013.jd3.TsData\022\031\n\004d1" +
-      "8a\030\t \001(\0132\013.jd3.TsData\022\027\n\002e1\030\n \001(\0132\013.jd3." +
-      "TsData\022\027\n\002e2\030\013 \001(\0132\013.jd3.TsData\022\027\n\002e3\030\014 " +
-      "\001(\0132\013.jd3.TsData\022\030\n\003e11\030\r \001(\0132\013.jd3.TsDa" +
-      "ta\"4\n\013Diagnostics\022%\n\013mstatistics\030\001 \001(\0132\020" +
-      ".x13.MStatistics\"\205\002\n\nX13Results\022,\n\rpread" +
-      "justment\030\001 \001(\0132\025.x13.X13Preadjustment\022.\n" +
-      "\rpreprocessing\030\002 \001(\0132\027.regarima.RegArima" +
-      "Model\022&\n\rdecomposition\030\003 \001(\0132\017.x13.X11Re" +
-      "sults\022\035\n\005final\030\004 \001(\0132\016.x13.X13Finals\022)\n\017" +
-      "diagnostics_x13\030\005 \001(\0132\020.x13.Diagnostics\022" +
-      "\'\n\016diagnostics_sa\030\006 \001(\0132\017.sa.Diagnostics" +
-      "\"\251\002\n\016RegArimaOutput\022\'\n\006result\030\001 \001(\0132\027.re" +
-      "garima.RegArimaModel\022*\n\017estimation_spec\030" +
-      "\002 \001(\0132\021.x13.RegArimaSpec\022&\n\013result_spec\030" +
-      "\003 \001(\0132\021.x13.RegArimaSpec\022 \n\003log\030\004 \001(\0132\023." +
-      "jd3.ProcessingLogs\0221\n\007details\030\005 \003(\0132 .x1" +
-      "3.RegArimaOutput.DetailsEntry\032E\n\014Details" +
-      "Entry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3." +
-      "ProcessingDetail:\0028\001\"\207\002\n\tX13Output\022\037\n\006re" +
-      "sult\030\001 \001(\0132\017.x13.X13Results\022\"\n\017estimatio" +
-      "n_spec\030\002 \001(\0132\t.x13.Spec\022\036\n\013result_spec\030\003" +
-      " \001(\0132\t.x13.Spec\022 \n\003log\030\004 \001(\0132\023.jd3.Proce" +
-      "ssingLogs\022,\n\007details\030\005 \003(\0132\033.x13.X13Outp" +
-      "ut.DetailsEntry\032E\n\014DetailsEntry\022\013\n\003key\030\001" +
-      " \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.ProcessingDeta" +
-      "il:\0028\001*\200\001\n\021DecompositionMode\022\020\n\014MODE_UNK" +
-      "NOWN\020\000\022\021\n\rMODE_ADDITIVE\020\001\022\027\n\023MODE_MULTIP" +
-      "LICATIVE\020\002\022\024\n\020MODE_LOGADDITIVE\020\003\022\027\n\023MODE" +
-      "_PSEUDOADDITIVE\020\004*\350\001\n\016SeasonalFilter\022\027\n\023" +
-      "SEASONAL_FILTER_MSR\020\000\022\030\n\024SEASONAL_FILTER" +
-      "_S3X1\020\001\022\030\n\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEA" +
-      "SONAL_FILTER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S" +
-      "3X9\020\004\022\031\n\025SEASONAL_FILTER_S3X15\020\005\022\032\n\026SEAS" +
-      "ONAL_FILTER_STABLE\020\006\022\036\n\032SEASONAL_FILTER_" +
-      "X11DEFAULT\020\007*R\n\rCalendarSigma\022\016\n\nSIGMA_N" +
-      "ONE\020\000\022\020\n\014SIGMA_SIGNIF\020\001\022\r\n\tSIGMA_ALL\020\002\022\020" +
-      "\n\014SIGMA_SELECT\020\003*Q\n\016BiasCorrection\022\r\n\tBI" +
-      "AS_NONE\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017\n\013BIAS_SMOOT" +
-      "H\020\002\022\016\n\nBIAS_RATIO\020\003*7\n\rOutlierMethod\022\022\n\016" +
-      "OUTLIER_ADDONE\020\000\022\022\n\016OUTLIER_ADDALL\020\001*V\n\n" +
-      "EasterType\022\021\n\rEASTER_UNUSED\020\000\022\023\n\017EASTER_" +
-      "STANDARD\020\001\022\021\n\rEASTER_JULIAN\020\002\022\r\n\tEASTER_" +
-      "SC\020\003*<\n\016RegressionTest\022\013\n\007TEST_NO\020\000\022\014\n\010T" +
-      "EST_ADD\020\001\022\017\n\013TEST_REMOVE\020\002B$\n\027demetra.x1" +
-      "3.io.protobufB\tX13ProtosP\000P\001P\002P\003b\006proto3"
+      "\'\n\004auto\030\007 \001(\0162\031.x13.AutomaticTradingDays" +
+      "\022\016\n\006ptest1\030\010 \001(\001\022\016\n\006ptest2\030\t \001(\001\022\023\n\013auto" +
+      "_adjust\030\n \001(\010\022&\n\016tdcoefficients\030\013 \003(\0132\016." +
+      "jd3.Parameter\022%\n\rlpcoefficient\030\014 \001(\0132\016.j" +
+      "d3.Parameter\032\257\002\n\016RegressionSpec\022\034\n\004mean\030" +
+      "\001 \001(\0132\016.jd3.Parameter\022-\n\002td\030\002 \001(\0132!.x13." +
+      "RegArimaSpec.TradingDaysSpec\022,\n\006easter\030\003" +
+      " \001(\0132\034.x13.RegArimaSpec.EasterSpec\022$\n\010ou" +
+      "tliers\030\004 \003(\0132\022.modelling.Outlier\022$\n\005user" +
+      "s\030\005 \003(\0132\025.modelling.TsVariable\0226\n\rinterv" +
+      "entions\030\006 \003(\0132\037.modelling.InterventionVa" +
+      "riable\022\036\n\005ramps\030\007 \003(\0132\017.modelling.Ramp\032<" +
+      "\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.TimeS" +
+      "elector\022\013\n\003tol\030\002 \001(\001\"r\n\004Spec\022#\n\010regarima" +
+      "\030\001 \001(\0132\021.x13.RegArimaSpec\022\031\n\003x11\030\002 \001(\0132\014" +
+      ".x13.X11Spec\022*\n\014benchmarking\030\003 \001(\0132\024.sa." +
+      "BenchmarkingSpec\"\334\010\n\nX11Results\022$\n\004mode\030" +
+      "\001 \001(\0162\026.x13.DecompositionMode\022\027\n\002d1\030\002 \001(" +
+      "\0132\013.jd3.TsData\022\027\n\002d2\030\003 \001(\0132\013.jd3.TsData\022" +
+      "\027\n\002d4\030\004 \001(\0132\013.jd3.TsData\022\027\n\002d5\030\005 \001(\0132\013.j" +
+      "d3.TsData\022\027\n\002d6\030\006 \001(\0132\013.jd3.TsData\022\027\n\002d7" +
+      "\030\007 \001(\0132\013.jd3.TsData\022\027\n\002d8\030\010 \001(\0132\013.jd3.Ts" +
+      "Data\022\027\n\002d9\030\t \001(\0132\013.jd3.TsData\022\030\n\003d10\030\n \001" +
+      "(\0132\013.jd3.TsData\022\030\n\003d11\030\013 \001(\0132\013.jd3.TsDat" +
+      "a\022\030\n\003d12\030\014 \001(\0132\013.jd3.TsData\022\030\n\003d13\030\r \001(\013" +
+      "2\013.jd3.TsData\0223\n\026final_seasonal_filters\030" +
+      "\016 \003(\0162\023.x13.SeasonalFilter\022\036\n\026final_hend" +
+      "erson_filter\030\017 \001(\005\022\017\n\007icratio\030\020 \001(\001\022\027\n\002b" +
+      "1\030\024 \001(\0132\013.jd3.TsData\022\027\n\002b2\030\025 \001(\0132\013.jd3.T" +
+      "sData\022\027\n\002b3\030\026 \001(\0132\013.jd3.TsData\022\027\n\002b4\030\027 \001" +
+      "(\0132\013.jd3.TsData\022\027\n\002b5\030\030 \001(\0132\013.jd3.TsData" +
+      "\022\027\n\002b6\030\031 \001(\0132\013.jd3.TsData\022\027\n\002b7\030\032 \001(\0132\013." +
+      "jd3.TsData\022\027\n\002b8\030\033 \001(\0132\013.jd3.TsData\022\027\n\002b" +
+      "9\030\034 \001(\0132\013.jd3.TsData\022\030\n\003b10\030\035 \001(\0132\013.jd3." +
+      "TsData\022\030\n\003b11\030\036 \001(\0132\013.jd3.TsData\022\030\n\003b13\030" +
+      "\037 \001(\0132\013.jd3.TsData\022\030\n\003b17\030  \001(\0132\013.jd3.Ts" +
+      "Data\022\030\n\003b20\030! \001(\0132\013.jd3.TsData\022\027\n\002c1\030( \001" +
+      "(\0132\013.jd3.TsData\022\027\n\002c2\030) \001(\0132\013.jd3.TsData" +
+      "\022\027\n\002c4\030* \001(\0132\013.jd3.TsData\022\027\n\002c5\030+ \001(\0132\013." +
+      "jd3.TsData\022\027\n\002c6\030, \001(\0132\013.jd3.TsData\022\027\n\002c" +
+      "7\030- \001(\0132\013.jd3.TsData\022\027\n\002c9\030. \001(\0132\013.jd3.T" +
+      "sData\022\030\n\003c10\030/ \001(\0132\013.jd3.TsData\022\030\n\003c11\0300" +
+      " \001(\0132\013.jd3.TsData\022\030\n\003c13\0301 \001(\0132\013.jd3.TsD" +
+      "ata\022\030\n\003c17\0302 \001(\0132\013.jd3.TsData\022\030\n\003c20\0303 \001" +
+      "(\0132\013.jd3.TsData\"\253\001\n\013MStatistics\022\n\n\002m1\030\001 " +
+      "\001(\001\022\n\n\002m2\030\002 \001(\001\022\n\n\002m3\030\003 \001(\001\022\n\n\002m4\030\004 \001(\001\022" +
+      "\n\n\002m5\030\005 \001(\001\022\n\n\002m6\030\006 \001(\001\022\n\n\002m7\030\007 \001(\001\022\n\n\002m" +
+      "8\030\010 \001(\001\022\n\n\002m9\030\t \001(\001\022\013\n\003m10\030\n \001(\001\022\013\n\003m11\030" +
+      "\013 \001(\001\022\t\n\001q\030\014 \001(\001\022\013\n\003qm2\030\r \001(\001\"\303\001\n\020X13Pre" +
+      "adjustment\022\027\n\002a1\030\001 \001(\0132\013.jd3.TsData\022\030\n\003a" +
+      "1a\030\002 \001(\0132\013.jd3.TsData\022\030\n\003a1b\030\003 \001(\0132\013.jd3" +
+      ".TsData\022\027\n\002a6\030\004 \001(\0132\013.jd3.TsData\022\027\n\002a7\030\005" +
+      " \001(\0132\013.jd3.TsData\022\027\n\002a8\030\006 \001(\0132\013.jd3.TsDa" +
+      "ta\022\027\n\002a9\030\007 \001(\0132\013.jd3.TsData\"\355\002\n\tX13Final" +
+      "s\022\035\n\010d11final\030\001 \001(\0132\013.jd3.TsData\022\035\n\010d12f" +
+      "inal\030\002 \001(\0132\013.jd3.TsData\022\035\n\010d13final\030\003 \001(" +
+      "\0132\013.jd3.TsData\022\030\n\003d16\030\004 \001(\0132\013.jd3.TsData" +
+      "\022\030\n\003d18\030\005 \001(\0132\013.jd3.TsData\022\031\n\004d11a\030\006 \001(\013" +
+      "2\013.jd3.TsData\022\031\n\004d12a\030\007 \001(\0132\013.jd3.TsData" +
+      "\022\031\n\004d16a\030\010 \001(\0132\013.jd3.TsData\022\031\n\004d18a\030\t \001(" +
+      "\0132\013.jd3.TsData\022\027\n\002e1\030\n \001(\0132\013.jd3.TsData\022" +
+      "\027\n\002e2\030\013 \001(\0132\013.jd3.TsData\022\027\n\002e3\030\014 \001(\0132\013.j" +
+      "d3.TsData\022\030\n\003e11\030\r \001(\0132\013.jd3.TsData\"4\n\013D" +
+      "iagnostics\022%\n\013mstatistics\030\001 \001(\0132\020.x13.MS" +
+      "tatistics\"\205\002\n\nX13Results\022,\n\rpreadjustmen" +
+      "t\030\001 \001(\0132\025.x13.X13Preadjustment\022.\n\rprepro" +
+      "cessing\030\002 \001(\0132\027.regarima.RegArimaModel\022&" +
+      "\n\rdecomposition\030\003 \001(\0132\017.x13.X11Results\022\035" +
+      "\n\005final\030\004 \001(\0132\016.x13.X13Finals\022)\n\017diagnos" +
+      "tics_x13\030\005 \001(\0132\020.x13.Diagnostics\022\'\n\016diag" +
+      "nostics_sa\030\006 \001(\0132\017.sa.Diagnostics\"\251\002\n\016Re" +
+      "gArimaOutput\022\'\n\006result\030\001 \001(\0132\027.regarima." +
+      "RegArimaModel\022*\n\017estimation_spec\030\002 \001(\0132\021" +
+      ".x13.RegArimaSpec\022&\n\013result_spec\030\003 \001(\0132\021" +
+      ".x13.RegArimaSpec\022 \n\003log\030\004 \001(\0132\023.jd3.Pro" +
+      "cessingLogs\0221\n\007details\030\005 \003(\0132 .x13.RegAr" +
+      "imaOutput.DetailsEntry\032E\n\014DetailsEntry\022\013" +
+      "\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.Process" +
+      "ingDetail:\0028\001\"\207\002\n\tX13Output\022\037\n\006result\030\001 " +
+      "\001(\0132\017.x13.X13Results\022\"\n\017estimation_spec\030" +
+      "\002 \001(\0132\t.x13.Spec\022\036\n\013result_spec\030\003 \001(\0132\t." +
+      "x13.Spec\022 \n\003log\030\004 \001(\0132\023.jd3.ProcessingLo" +
+      "gs\022,\n\007details\030\005 \003(\0132\033.x13.X13Output.Deta" +
+      "ilsEntry\032E\n\014DetailsEntry\022\013\n\003key\030\001 \001(\t\022$\n" +
+      "\005value\030\002 \001(\0132\025.jd3.ProcessingDetail:\0028\001*" +
+      "\200\001\n\021DecompositionMode\022\020\n\014MODE_UNKNOWN\020\000\022" +
+      "\021\n\rMODE_ADDITIVE\020\001\022\027\n\023MODE_MULTIPLICATIV" +
+      "E\020\002\022\024\n\020MODE_LOGADDITIVE\020\003\022\027\n\023MODE_PSEUDO" +
+      "ADDITIVE\020\004*\350\001\n\016SeasonalFilter\022\027\n\023SEASONA" +
+      "L_FILTER_MSR\020\000\022\030\n\024SEASONAL_FILTER_S3X1\020\001" +
+      "\022\030\n\024SEASONAL_FILTER_S3X3\020\002\022\030\n\024SEASONAL_F" +
+      "ILTER_S3X5\020\003\022\030\n\024SEASONAL_FILTER_S3X9\020\004\022\031" +
+      "\n\025SEASONAL_FILTER_S3X15\020\005\022\032\n\026SEASONAL_FI" +
+      "LTER_STABLE\020\006\022\036\n\032SEASONAL_FILTER_X11DEFA" +
+      "ULT\020\007*R\n\rCalendarSigma\022\016\n\nSIGMA_NONE\020\000\022\020" +
+      "\n\014SIGMA_SIGNIF\020\001\022\r\n\tSIGMA_ALL\020\002\022\020\n\014SIGMA" +
+      "_SELECT\020\003*Q\n\016BiasCorrection\022\r\n\tBIAS_NONE" +
+      "\020\000\022\017\n\013BIAS_LEGACY\020\001\022\017\n\013BIAS_SMOOTH\020\002\022\016\n\n" +
+      "BIAS_RATIO\020\003*7\n\rOutlierMethod\022\022\n\016OUTLIER" +
+      "_ADDONE\020\000\022\022\n\016OUTLIER_ADDALL\020\001*V\n\nEasterT" +
+      "ype\022\021\n\rEASTER_UNUSED\020\000\022\023\n\017EASTER_STANDAR" +
+      "D\020\001\022\021\n\rEASTER_JULIAN\020\002\022\r\n\tEASTER_SC\020\003*<\n" +
+      "\016RegressionTest\022\013\n\007TEST_NO\020\000\022\014\n\010TEST_ADD" +
+      "\020\001\022\017\n\013TEST_REMOVE\020\002*Z\n\024AutomaticTradingD" +
+      "ays\022\016\n\nTD_AUTO_NO\020\000\022\020\n\014TD_AUTO_WALD\020\001\022\017\n" +
+      "\013TD_AUTO_AIC\020\002\022\017\n\013TD_AUTO_BIC\020\003B$\n\027demet" +
+      "ra.x13.io.protobufB\tX13ProtosP\000P\001P\002P\003b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -36977,7 +37359,7 @@ public final class X13Protos {
     internal_static_x13_RegArimaSpec_TradingDaysSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_x13_RegArimaSpec_TradingDaysSpec_descriptor,
-        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "AutoAdjust", "Tdcoefficients", "Lpcoefficient", });
+        new java.lang.String[] { "Td", "Lp", "Holidays", "Users", "W", "Test", "Auto", "Ptest1", "Ptest2", "AutoAdjust", "Tdcoefficients", "Lpcoefficient", });
     internal_static_x13_RegArimaSpec_RegressionSpec_descriptor =
       internal_static_x13_RegArimaSpec_descriptor.getNestedTypes().get(6);
     internal_static_x13_RegArimaSpec_RegressionSpec_fieldAccessorTable = new

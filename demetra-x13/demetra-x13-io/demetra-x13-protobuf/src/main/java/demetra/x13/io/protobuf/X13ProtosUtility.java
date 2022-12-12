@@ -18,6 +18,7 @@ package demetra.x13.io.protobuf;
 
 import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.EasterSpec;
+import demetra.regarima.TradingDaysSpec;
 import demetra.sa.DecompositionMode;
 import demetra.x11.BiasCorrection;
 import demetra.x11.CalendarSigmaOption;
@@ -201,4 +202,27 @@ public class X13ProtosUtility {
                 return X13Protos.EasterType.EASTER_UNUSED;
         }
     }
+    
+        public X13Protos.AutomaticTradingDays convert(TradingDaysSpec.AutoMethod auto) {
+        switch (auto) {
+             case WALD:
+                return X13Protos.AutomaticTradingDays.TD_AUTO_WALD;
+            case BIC:
+                return X13Protos.AutomaticTradingDays.TD_AUTO_BIC;
+            case AIC:
+                return X13Protos.AutomaticTradingDays.TD_AUTO_AIC;
+            default:
+                return X13Protos.AutomaticTradingDays.TD_AUTO_NO;
+        }
+    }
+
+    public TradingDaysSpec.AutoMethod convert(X13Protos.AutomaticTradingDays  auto) {
+        return switch (auto) {
+             case TD_AUTO_WALD -> TradingDaysSpec.AutoMethod.WALD;
+            case TD_AUTO_BIC -> TradingDaysSpec.AutoMethod.BIC;
+            case TD_AUTO_AIC -> TradingDaysSpec.AutoMethod.AIC;
+            default -> TradingDaysSpec.AutoMethod.UNUSED;
+        };
+    }
+
 }

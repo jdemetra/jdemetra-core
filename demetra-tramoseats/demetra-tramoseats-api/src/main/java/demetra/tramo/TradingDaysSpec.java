@@ -179,9 +179,9 @@ public class TradingDaysSpec {
         if (regressionTestType.isUsed()) {
             return tradingDaysType != TradingDaysType.NONE && lengthOfPeriodType != LengthOfPeriodType.None;
         }
-        if (tradingDaysType == TradingDaysType.NONE) {
-            return lengthOfPeriodType == LengthOfPeriodType.None;
-        }
+//        if (tradingDaysType == TradingDaysType.NONE) {
+//            return lengthOfPeriodType == LengthOfPeriodType.None;
+//        }
         return true;
     }
 
