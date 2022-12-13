@@ -18,6 +18,7 @@ package demetra.timeseries.regression;
 
 import demetra.timeseries.TimeSeriesDomain;
 import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.calendars.TradingDaysType;
 import nbbrd.design.Development;
 
 /**
@@ -37,6 +38,11 @@ public class StockTradingDays implements ITradingDaysVariable, ISystemVariable{
     @Override
     public int dim() {
         return 6;
+    }
+
+    @Override
+    public TradingDaysType getTradingDaysType() {
+        return TradingDaysType.TD7;
     }
 
     @Override

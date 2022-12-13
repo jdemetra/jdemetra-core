@@ -36,6 +36,8 @@ import jdplus.x13.regarima.RegArimaKernel.AmiOptions;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.regarima.EasterSpec;
+import demetra.timeseries.calendars.DayClustering;
+import demetra.timeseries.regression.ITradingDaysVariable;
 import java.util.List;
 
 /**
@@ -47,14 +49,14 @@ import java.util.List;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 final class X13SpecDecoder {
-    
+
     private final RegArimaKernel.Builder builder = RegArimaKernel.builder();
-    
+
     X13SpecDecoder(@NonNull RegArimaSpec spec, ModellingContext context) {
         if (context == null) {
             context = ModellingContext.getActiveContext();
         }
-        
+
         readTransformation(spec);
         if (spec.isUsingAutoModel()) {
             readAutoModel(spec);
@@ -64,11 +66,11 @@ final class X13SpecDecoder {
         readRegression(spec, context);
         readAmiOptions(spec);
     }
-    
+
     RegArimaKernel buildProcessor() {
         return builder.build();
     }
-    
+
     private void readTransformation(final RegArimaSpec spec) {
         TransformSpec tspec = spec.getTransform();
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
@@ -81,7 +83,7 @@ final class X13SpecDecoder {
                     .build());
         }
     }
-    
+
     private void readAutoModel(final RegArimaSpec spec) {
         AutoModelSpec amiSpec = spec.getAutoModel();
         DifferencingModule diff = DifferencingModule.builder()
@@ -95,10 +97,10 @@ final class X13SpecDecoder {
                 .mixed(amiSpec.isMixed())
                 .estimationPrecision(RegArimaKernel.AmiOptions.DEF_IEPS)
                 .build();
-        
+
         builder.autoModelling(new AutoModellingModule(diff, arma));
     }
-    
+
     private void readOutliers(final RegArimaSpec spec) {
         OutlierSpec outliers = spec.getOutliers();
         if (!outliers.isUsed()) {
@@ -125,11 +127,60 @@ final class X13SpecDecoder {
                         .precision(RegArimaKernel.AmiOptions.DEF_IEPS)
                         .build());
     }
-    
+
+    private ITradingDaysVariable[] nestedtd(final RegArimaSpec spec, ModellingContext context) {
+        return new ITradingDaysVariable[]{
+            X13ModelBuilder.td(spec, DayClustering.TD2, context),
+            X13ModelBuilder.td(spec, DayClustering.TD3, context),
+            X13ModelBuilder.td(spec, DayClustering.TD4, context),
+            X13ModelBuilder.td(spec, DayClustering.TD7, context)
+        };
+    }
+
+    private ITradingDaysVariable[] alltd(final RegArimaSpec spec, ModellingContext context) {
+        return new ITradingDaysVariable[]{
+            X13ModelBuilder.td(spec, DayClustering.TD2c, context),
+            X13ModelBuilder.td(spec, DayClustering.TD2, context),
+            X13ModelBuilder.td(spec, DayClustering.TD3, context),
+            X13ModelBuilder.td(spec, DayClustering.TD3c, context),
+            X13ModelBuilder.td(spec, DayClustering.TD4, context),
+            X13ModelBuilder.td(spec, DayClustering.TD7, context)
+        };
+    }
+
     private void readRegression(final RegArimaSpec spec, ModellingContext context) {
         TradingDaysSpec tdspec = spec.getRegression().getTradingDays();
         AICcComparator comparator = new AICcComparator(spec.getRegression().getAicDiff());
-        if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
+        if (tdspec.isAutomatic()) {
+            switch (tdspec.getAutomaticMethod()) {
+                case AIC:
+                    builder.calendarTest(AutomaticTradingDaysRegressionTest.builder()
+                            .leapYear(X13ModelBuilder.leapYear(tdspec))
+                            .tradingDays(alltd(spec, context))
+                            .adjust(tdspec.isAutoAdjust())
+                            .aic()
+                            .build());
+                    break;
+                case BIC:
+                    builder.calendarTest(AutomaticTradingDaysRegressionTest.builder()
+                            .leapYear(X13ModelBuilder.leapYear(tdspec))
+                            .tradingDays(alltd(spec, context))
+                            .adjust(tdspec.isAutoAdjust())
+                            .bic()
+                            .build());
+                    break;
+                case WALD:
+                    builder.calendarTest(TradingDaysWaldTest.builder()
+                            .leapYear(X13ModelBuilder.leapYear(tdspec))
+                            .tradingDays(nestedtd(spec, context))
+                            .adjust(tdspec.isAutoAdjust())
+                            .pmodel(tdspec.getAutoPvalue1())
+                            .pconstraint(tdspec.getAutoPvalue2())
+                            .build());
+                    break;
+
+            }
+        } else if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
             CalendarEffectsDetectionModule cal = CalendarEffectsDetectionModule.builder()
                     .tradingDays(X13ModelBuilder.tradingDays(spec, context))
                     .leapYear(X13ModelBuilder.leapYear(tdspec))
@@ -156,7 +207,7 @@ final class X13SpecDecoder {
                     .build();
             builder.easterTest(e);
         }
-        
+
         RegressionVariablesTest.Builder rbuilder = RegressionVariablesTest.builder();
         if (tdspec.getRegressionTestType() != RegressionTestSpec.None) {
             rbuilder.tdTest(RegressionVariablesTest.CVAL, true);
@@ -172,9 +223,9 @@ final class X13SpecDecoder {
             rbuilder.meanTest(RegressionVariablesTest.TSIG);
         }
         builder.finalRegressionTest(rbuilder.build());
-        
+
     }
-    
+
     private void readAmiOptions(RegArimaSpec spec) {
         AutoModelSpec ami = spec.getAutoModel();
         builder.options(
@@ -186,7 +237,7 @@ final class X13SpecDecoder {
                         .checkMu(spec.isUsingAutoModel())
                         .mixedModel(ami.isMixed())
                         .build());
-        
+
     }
-    
+
 }

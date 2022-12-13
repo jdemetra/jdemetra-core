@@ -192,14 +192,10 @@ public class RegArimaKernel implements RegSarimaProcessor {
         this.autoModel = builder.autoModel;
         this.regressionTest0 = builder.regressionTest0;
         this.regressionTest1 = builder.regressionTest1;
-        if (autoModel != null) {
-            finalEstimator = FinalEstimator.builder()
-                    .ami(true)
-                    .precision(options.precision)
-                    .build();
-        } else {
-            finalEstimator = null;
-        }
+        finalEstimator = FinalEstimator.builder()
+                .ami(autoModel != null)
+                .precision(options.precision)
+                .build();
     }
 
     private void clear() {
@@ -252,11 +248,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
                     context.clearEstimation();
                 }
             }
-
             regAIC(context);
-
             checkMu(context, MeanController.CVAL0);
-
             if (needOutliers && ProcessingResult.Changed == outliers.process(context, curva)) {
                 if (context.needEstimation()) {
                     context.estimate(options.precision);
@@ -356,7 +349,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
                     } while (round++ < 5);
                 }
             } else {
-                context.estimate(options.precision);
+                finalEstimator.estimate(context);
             }
 
             return context.build();

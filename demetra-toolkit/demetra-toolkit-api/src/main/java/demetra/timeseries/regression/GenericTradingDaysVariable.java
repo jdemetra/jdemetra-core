@@ -20,6 +20,7 @@ import demetra.timeseries.TimeSeriesDomain;
 import nbbrd.design.Development;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
+import demetra.timeseries.calendars.TradingDaysType;
 
 /**
  *
@@ -31,17 +32,22 @@ import demetra.timeseries.calendars.GenericTradingDays;
 public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystemVariable {
 
     private DayClustering clustering;
-    private GenericTradingDays.Type type;
+    private GenericTradingDays.Type variableType;
 
     public GenericTradingDaysVariable(GenericTradingDays td) {
         this.clustering = td.getClustering();
-        this.type=td.getType();
+        this.variableType=td.getType();
     }
 
     @Override
     public int dim() {
         int n = clustering.getGroupsCount();
-        return type == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
+        return variableType == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
+    }
+    
+    @Override
+    public TradingDaysType getTradingDaysType(){
+        return clustering.getType();
     }
 
     @Override
@@ -55,6 +61,7 @@ public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystem
     }
 
     static final String[] TD2 = new String[]{"week", "week-end"};
+    static final String[] TD2c = new String[]{"mon-sat", "sunday"};
     static final String[] TD7 = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
     static final String[] TD3 = new String[]{"week", "saturday", "sunday"};
     static final String[] TD3c = new String[]{"mon-thu", "fri-sat", "sunday"};
@@ -67,6 +74,8 @@ public class GenericTradingDaysVariable implements ITradingDaysVariable, ISystem
             return TD7[idx];
         } else if (dc.equals(DayClustering.TD3)) {
             return TD3[idx];
+        } else if (dc.equals(DayClustering.TD2c)) {
+            return TD2c[idx];
         } else if (dc.equals(DayClustering.TD3c)) {
             return TD3c[idx];
         } else if (dc.equals(DayClustering.TD4)) {

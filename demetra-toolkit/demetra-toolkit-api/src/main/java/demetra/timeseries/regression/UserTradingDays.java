@@ -18,6 +18,7 @@ package demetra.timeseries.regression;
 
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
+import demetra.timeseries.calendars.TradingDaysType;
 
 /**
  *
@@ -45,6 +46,11 @@ public class UserTradingDays extends TsVariables implements ITradingDaysVariable
 
     public UserTradingDays(String[] id, TsData[] data, String[] desc) {
         super("td", id, data, desc);
+    }
+
+    @Override
+    public TradingDaysType getTradingDaysType() {
+        return TradingDaysType.TDuser;
     }
 
     @Override

@@ -141,15 +141,16 @@ public class TramoKernel implements RegSarimaProcessor {
                 .build();
     }
     
-//    private ITradingDaysVariable[] alltd(){
-//        return new ITradingDaysVariable[]{
-//                        TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext),
-//                        TramoModelBuilder.td(spec, DayClustering.TD3, modellingContext),
-//                        TramoModelBuilder.td(spec, DayClustering.TD3c, modellingContext),
-//                        TramoModelBuilder.td(spec, DayClustering.TD4, modellingContext),
-//                        TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext)
-//                    };
-//    }
+    private ITradingDaysVariable[] alltd(){
+        return new ITradingDaysVariable[]{
+                        TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD2c, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD3, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD3c, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD4, modellingContext),
+                        TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext)
+                    };
+    }
 
     private ITradingDaysVariable[] nestedtd(){
         return new ITradingDaysVariable[]{
@@ -181,7 +182,7 @@ public class TramoKernel implements RegSarimaProcessor {
                     return AutomaticRegressionTest.builder()
                             .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                             .leapYear(lp)
-                            .tradingDays(nestedtd())
+                            .tradingDays(alltd())
                             .testMean(spec.isUsingAutoModel())
                             .estimationPrecision(options.intermediatePrecision)
                             .aic()
@@ -192,7 +193,7 @@ public class TramoKernel implements RegSarimaProcessor {
                     return AutomaticRegressionTest.builder()
                             .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                             .leapYear(lp)
-                            .tradingDays(nestedtd())
+                            .tradingDays(alltd())
                             .testMean(spec.isUsingAutoModel())
                             .estimationPrecision(options.intermediatePrecision)
                             .bic()

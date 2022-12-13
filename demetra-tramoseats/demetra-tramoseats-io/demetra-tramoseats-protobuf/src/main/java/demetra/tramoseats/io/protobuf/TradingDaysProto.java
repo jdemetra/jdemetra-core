@@ -28,7 +28,8 @@ public class TradingDaysProto {
                     .setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
                     .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                     .setAuto(TramoSeatsProtosUtility.convert(spec.getAutomaticMethod()))
-                    .setTest(TramoSeatsProtosUtility.convert(spec.getRegressionTestType()));
+                    .setTest(TramoSeatsProtosUtility.convert(spec.getRegressionTestType()))
+                    .setAutoAdjust(spec.isAutoAdjust());
             return;
         }
 
@@ -74,8 +75,7 @@ public class TradingDaysProto {
     }
 
     private boolean isTest(TramoSeatsProtos.TramoSpec.TradingDaysSpec spec) {
-        return spec.getAuto() == TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALD
-                || spec.getAuto() == TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_FTEST
+        return spec.getAuto() != TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NO
                 || spec.getTest() == TramoSeatsProtos.TradingDaysTest.TD_TEST_JOINT_F
                 || spec.getTest() == TramoSeatsProtos.TradingDaysTest.TD_TEST_SEPARATE_T;
     }

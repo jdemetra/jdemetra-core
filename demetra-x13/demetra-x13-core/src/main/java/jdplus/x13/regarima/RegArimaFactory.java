@@ -25,6 +25,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.calendars.TradingDaysType;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.IOutlier;
+import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
@@ -180,7 +181,12 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         Parameter[] ctd = null;
         if (ftd.isPresent()) {
             Variable v = ftd.get();
-            td = tdspec.getTradingDaysType();
+            if (tdspec.isAutomatic()) {
+                ITradingDaysVariable  tdv=(ITradingDaysVariable) v.getCore();
+                td=tdv.getTradingDaysType();
+            } else {
+                td = tdspec.getTradingDaysType();
+            }
             ctd = v.getCoefficients();
         }
 

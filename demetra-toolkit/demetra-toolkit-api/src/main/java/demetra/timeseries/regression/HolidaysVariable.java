@@ -9,6 +9,7 @@ import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.CalendarDefinition;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.HolidaysOption;
+import demetra.timeseries.calendars.TradingDaysType;
 import nbbrd.design.Development;
 
 /**
@@ -39,6 +40,12 @@ public class HolidaysVariable implements ITradingDaysVariable {
     public int dim() {
         return single ? 1 : holidays.length;
     }
+    
+    @Override
+    public TradingDaysType getTradingDaysType(){
+        return TradingDaysType.TDuser;
+    }
+    
 
     @Override
     public <D extends TimeSeriesDomain<?>> String description(D context) {

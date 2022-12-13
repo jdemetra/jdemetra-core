@@ -47,7 +47,15 @@ public enum TradingDaysType {
     /**
      * Mon-Fri, Sat-Sun
      */
-    TD2(2);
+    TD2(2),
+    /**
+     * Mon-Fri, Sat-Sun
+     */
+    TD2c(2),
+    /**
+     * User-defined implementation. not supported yet
+     */
+    TDuser(-1);
     //
     final int variablesCount;
 
@@ -61,6 +69,7 @@ public enum TradingDaysType {
     
     public String[] contrastNames(){
         return switch (this){
+            case TD2c ->new String[]{"Mon-Sat"};
             case TD2 ->new String[]{"Week days"};
             case TD3 ->new String[]{"Mon-Fri", "Sat"};
             case TD3c ->new String[]{"Mon-Thu", "Fri-Sat"};
@@ -72,6 +81,7 @@ public enum TradingDaysType {
     
     public String[] names(){
         return switch (this){
+            case TD2c ->new String[]{"Mon-Sat", "Sun"};
             case TD2 ->new String[]{"Week days", "Week-end"};
             case TD3 ->new String[]{"Mon-Fri", "Sat", "Sun"};
             case TD3c ->new String[]{"Mon-Thu", "Fri-Sat", "Sun"};

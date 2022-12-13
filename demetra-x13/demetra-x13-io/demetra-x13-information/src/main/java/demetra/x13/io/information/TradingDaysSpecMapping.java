@@ -32,7 +32,7 @@ import java.util.Map;
 @lombok.experimental.UtilityClass
 class TradingDaysSpecMapping {
 
-    final String TDOPTION = "option", LPOPTION = "leapyear",
+    final String MAUTO = "mauto", AUTOPVAL1 = "autopval1", AUTOPVAL2= "autopval2", TDOPTION = "option", LPOPTION = "leapyear",
             ADJUST = "autoadjust", HOLIDAYS = "holidays", USER = "user",
             TEST = "test", W = "stocktd",
             LPCOEF = "lpcoef", TDCOEF = "tdcoef", CHANGEOFREGIME = "changeofregime";
@@ -136,6 +136,15 @@ class TradingDaysSpecMapping {
     }
 
     void writeProperties(InformationSet tdInfo, TradingDaysSpec spec, boolean verbose, boolean v3) {
+        if (verbose || spec.isAutomatic()) {
+            tdInfo.set(MAUTO, spec.getAutomaticMethod().name());
+        }
+        if (verbose || spec.getAutoPvalue1()!= TradingDaysSpec.DEF_AUTO_PVALUE1) {
+            tdInfo.set(AUTOPVAL1, spec.getAutoPvalue1());
+        }
+        if (verbose || spec.getAutoPvalue2()!= TradingDaysSpec.DEF_AUTO_PVALUE2) {
+            tdInfo.set(AUTOPVAL2, spec.getAutoPvalue2());
+        }
         if (verbose || spec.getTradingDaysType() != TradingDaysType.NONE) {
             if (v3) {
                 tdInfo.add(TDOPTION, spec.getTradingDaysType().name());
@@ -256,6 +265,9 @@ class TradingDaysSpecMapping {
         Parameter lcoef = tdInfo.get(LPCOEF, Parameter.class);
         Parameter[] tdcoef = tdInfo.get(TDCOEF, Parameter[].class);
 
+        String mauto = tdInfo.get(MAUTO, String.class);
+        Double pval1 = tdInfo.get(AUTOPVAL1, Double.class);
+        Double pval2 = tdInfo.get(AUTOPVAL2, Double.class);
         TradingDaysType tdtype = TradingDaysType.NONE;
         LengthOfPeriodType lptype = LengthOfPeriodType.None;
         String td = tdInfo.get(TDOPTION, String.class);
@@ -266,12 +278,29 @@ class TradingDaysSpecMapping {
         if (lp != null) {
             lptype = LengthOfPeriodType.valueOf(lp);
         }
-        boolean auto = true;
+        String holidays = tdInfo.get(HOLIDAYS, String.class);
+        boolean adjust = TradingDaysSpec.DEF_ADJUST;
         Boolean adj = tdInfo.get(ADJUST, Boolean.class);
         if (adj != null) {
-            auto = adj;
+            adjust = adj;
         }
-        String holidays = tdInfo.get(HOLIDAYS, String.class);
+        TradingDaysSpec.AutoMethod method = TradingDaysSpec.AutoMethod.UNUSED;
+        if (mauto != null) {
+            method = TradingDaysSpec.AutoMethod.valueOf(mauto);
+        }
+        if (method != TradingDaysSpec.AutoMethod.UNUSED) {
+            if (holidays != null) {
+                return TradingDaysSpec.automaticHolidays(holidays, lptype, method, 
+                        pval1 == null ? TradingDaysSpec.DEF_AUTO_PVALUE1 : pval1, 
+                        pval2 == null ? TradingDaysSpec.DEF_AUTO_PVALUE2 : pval2, 
+                        adjust);
+            } else {
+                return TradingDaysSpec.automatic(lptype, method, 
+                        pval1 == null ? TradingDaysSpec.DEF_AUTO_PVALUE1 : pval1, 
+                        pval2 == null ? TradingDaysSpec.DEF_AUTO_PVALUE2 : pval2, 
+                        adjust);
+            }
+        }
         String[] users = tdInfo.get(USER, String[].class);
         Integer w = tdInfo.get(W, Integer.class);
         RegressionTestSpec rtest = RegressionTestSpec.None;
@@ -298,13 +327,13 @@ class TradingDaysSpecMapping {
             if (tdcoef != null || lcoef != null) {
                 return TradingDaysSpec.holidays(holidays, tdtype, lptype, tdcoef, lcoef);
             } else {
-                return TradingDaysSpec.holidays(holidays, tdtype, lptype, rtest, auto);
+                return TradingDaysSpec.holidays(holidays, tdtype, lptype, rtest, adjust);
             }
         } else {
             if (tdcoef != null || lcoef != null) {
                 return TradingDaysSpec.td(tdtype, lptype, tdcoef, lcoef);
             } else {
-                return TradingDaysSpec.td(tdtype, lptype, rtest, auto);
+                return TradingDaysSpec.td(tdtype, lptype, rtest, adjust);
             }
         }
     }

@@ -32,6 +32,16 @@ import lombok.NonNull;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
+    public static enum AutoMethod {
+        UNUSED,
+        WALD,
+        BIC,
+        AIC
+    }
+    
+    public static final double DEF_AUTO_PVALUE1 = .01, DEF_AUTO_PVALUE2 = 0.1;
+    public static final boolean DEF_ADJUST = true;
+    
     private String holidays;
     private String[] userVariables;
     private TradingDaysType tradingDaysType;
@@ -39,20 +49,22 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     private RegressionTestSpec regressionTestType;
    private boolean autoAdjust;
      private int stockTradingDays;
+    private AutoMethod automaticMethod;
+    private double autoPvalue1, autoPvalue2;
     private Parameter[] tdCoefficients;
     private Parameter lpCoefficient;
 
     private static final TradingDaysSpec NONE = new TradingDaysSpec(null, null, TradingDaysType.NONE,
-            LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, null, null);
+            LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, AutoMethod.UNUSED, 0, 0, null, null);
 
     public static TradingDaysSpec stockTradingDays(int w, RegressionTestSpec test) {
         return new TradingDaysSpec(null, null, TradingDaysType.NONE,
-                LengthOfPeriodType.None, test, false, w, null, null);
+                LengthOfPeriodType.None, test, false, w, AutoMethod.UNUSED, 0, 0, null, null);
     }
 
     public static TradingDaysSpec stockTradingDays(int w, @NonNull Parameter[] tdc) {
         return new TradingDaysSpec(null, null, TradingDaysType.NONE,
-                LengthOfPeriodType.None, RegressionTestSpec.None, false, w, tdc, null);
+                LengthOfPeriodType.None, RegressionTestSpec.None, false, w, AutoMethod.UNUSED, 0, 0, tdc, null);
     }
 
     public static TradingDaysSpec none() {
@@ -61,12 +73,12 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, RegressionTestSpec test) {
         return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
-                LengthOfPeriodType.None, test, false, 0, null, null);
+                LengthOfPeriodType.None, test, false, 0, AutoMethod.UNUSED, 0, 0, null, null);
     }
 
     public static TradingDaysSpec userDefined(@NonNull String[] vars, @NonNull Parameter[] tdcoeff) {
         return new TradingDaysSpec(null, vars, TradingDaysType.NONE,
-                LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, tdcoeff, null);
+                LengthOfPeriodType.None, RegressionTestSpec.None, false, 0, AutoMethod.UNUSED, 0, 0, tdcoeff, null);
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
@@ -74,7 +86,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
-                lp, test, autoAdjust, 0, null, null);
+                lp, test, autoAdjust, 0, AutoMethod.UNUSED, 0, 0, null, null);
     }
 
     public static TradingDaysSpec holidays(String holidays, TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
@@ -82,7 +94,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(holidays, null, type,
-                lp, RegressionTestSpec.None, false, 0, tdcoeff, lpcoeff);
+                lp, RegressionTestSpec.None, false, 0, AutoMethod.UNUSED, 0, 0, tdcoeff, lpcoeff);
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
@@ -90,7 +102,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
-                lp, test, autoAdjust, 0, null, null);
+                lp, test, autoAdjust, 0, AutoMethod.UNUSED, 0, 0, null, null);
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
@@ -98,12 +110,28 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
-                lp, RegressionTestSpec.None, false, 0, tdcoeff, lpcoeff);
+                lp, RegressionTestSpec.None, false, 0, AutoMethod.UNUSED, 0, 0, tdcoeff, lpcoeff);
+    }
+
+    public static TradingDaysSpec automaticHolidays(String holidays, LengthOfPeriodType lp, AutoMethod automaticMethod, double pval1, double pval2, boolean autoadjust) {
+        if (automaticMethod == AutoMethod.UNUSED) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(holidays, null, TradingDaysType.TD7,
+                lp, RegressionTestSpec.None, autoadjust, 0, automaticMethod, pval1, pval2, null, null);
+    }
+
+    public static TradingDaysSpec automatic(LengthOfPeriodType lp, AutoMethod automaticMethod, double pval1, double pval2, boolean autoadjust) {
+        if (automaticMethod == AutoMethod.UNUSED) {
+            throw new IllegalArgumentException();
+        }
+        return new TradingDaysSpec(null, null, TradingDaysType.TD7,
+                lp, RegressionTestSpec.None, autoadjust, 0, automaticMethod, pval1, pval2, null, null);
     }
 
     public TradingDaysSpec withCoefficients(Parameter[] tdc, Parameter lpc) {
         return new TradingDaysSpec(holidays, userVariables, tradingDaysType, lengthOfPeriodType,
-                RegressionTestSpec.None, false, stockTradingDays, tdc, lpc);
+                RegressionTestSpec.None, false, stockTradingDays, automaticMethod, autoPvalue1, autoPvalue2, tdc, lpc);
     }
 
     public boolean isUsed() {
@@ -111,9 +139,12 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public boolean isDefined() {
-        return isUsed() && regressionTestType == RegressionTestSpec.None;
+        return isUsed() && regressionTestType == RegressionTestSpec.None && automaticMethod == AutoMethod.UNUSED;
     }
 
+    public boolean isAutomatic() {
+        return automaticMethod != AutoMethod.UNUSED;
+    }
     public boolean isStockTradingDays() {
         return stockTradingDays != 0;
     }
@@ -138,9 +169,9 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
         if (regressionTestType != RegressionTestSpec.None) {
             return tradingDaysType != TradingDaysType.NONE && lengthOfPeriodType != LengthOfPeriodType.None;
         }
-        if (tradingDaysType == TradingDaysType.NONE) {
-            return lengthOfPeriodType == LengthOfPeriodType.None;
-        }
+//        if (tradingDaysType == TradingDaysType.NONE) {
+//            return lengthOfPeriodType == LengthOfPeriodType.None;
+//        }
         return true;
     }
 

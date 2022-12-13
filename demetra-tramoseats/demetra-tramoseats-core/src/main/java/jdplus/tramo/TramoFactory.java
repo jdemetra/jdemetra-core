@@ -29,6 +29,7 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.EasterVariable;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.ITsVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
 import demetra.timeseries.regression.InterventionVariable;
 import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TrendConstant;
@@ -218,17 +219,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         if (ftd.isPresent()) {
             Variable v = ftd.get();
             if (tdspec.isAutomatic()) {
-                switch (v.getCore().dim()) {
-                    case 1 ->
-                        td = TradingDaysType.TD2;
-                    case 2 ->
-                        td = TradingDaysType.TD3;
-                    case 3 ->
-                        td = TradingDaysType.TD4;
-                    case 6 ->
-                        td = TradingDaysType.TD7;
-                }
-            } else {
+                ITradingDaysVariable  tdv=(ITradingDaysVariable) v.getCore();
+                td=tdv.getTradingDaysType();
+             } else {
                 td = tdspec.getTradingDaysType();
             }
             ctd = v.getCoefficients();
