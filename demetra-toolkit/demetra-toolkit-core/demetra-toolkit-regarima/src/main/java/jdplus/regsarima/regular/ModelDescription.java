@@ -741,7 +741,7 @@ public final class ModelDescription {
     }
 
     public void freeArimaParameters() {
-        arima = arima.resetParameters(null);
+        arima = arima.resetParameters(arima);
     }
 
     public void setFreeParameters(DoubleSeq p) {

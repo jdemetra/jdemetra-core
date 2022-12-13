@@ -44,7 +44,7 @@ public class RampTest {
         data = Regression.x(domain, ramp);
         assertTrue(data.allMatch(x -> x != 0 && x != -1));
 
-        // across the beginning
+        // across the end
         domain = TsDomain.of(TsPeriod.monthly(2017, 1), 10);
         data = Regression.x(domain, ramp);
         assertTrue(data.count(x -> x == -1) == 3);
