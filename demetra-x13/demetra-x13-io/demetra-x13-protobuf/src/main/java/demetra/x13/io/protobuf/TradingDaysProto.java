@@ -58,16 +58,14 @@ public class TradingDaysProto {
                     .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()));
             return;
         }
+        builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
+                .setAutoAdjust(spec.isAutoAdjust());
         if (spec.isAutomatic()) {
-            builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
-                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
-                    .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()))
-                    .setAuto(X13ProtosUtility.convert(spec.getAutomaticMethod()))
+            builder.setAuto(X13ProtosUtility.convert(spec.getAutomaticMethod()))
                     .setPtest1(spec.getAutoPvalue1())
                     .setPtest2(spec.getAutoPvalue2());
         } else {
-            builder.setLp(ModellingProtosUtility.convert(spec.getLengthOfPeriodType()))
-                    .setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
+            builder.setTd(ModellingProtosUtility.convert(spec.getTradingDaysType()))
                     .setTest(X13ProtosUtility.convert(spec.getRegressionTestType()));
         }
     }
@@ -85,8 +83,7 @@ public class TradingDaysProto {
     }
 
     private boolean isTest(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
-        return 
-                spec.getAuto() != X13Protos.AutomaticTradingDays.TD_AUTO_NO
+        return spec.getAuto() != X13Protos.AutomaticTradingDays.TD_AUTO_NO
                 || spec.getTest() == X13Protos.RegressionTest.TEST_ADD
                 || spec.getTest() == X13Protos.RegressionTest.TEST_REMOVE;
     }

@@ -30,20 +30,21 @@ import demetra.timeseries.calendars.TradingDaysType;
  */
 @lombok.Value
 @lombok.AllArgsConstructor
+@lombok.Builder(builderClassName="Builder", toBuilder=true)
 public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISystemVariable {
 
     public static interface HolidaysCorrector {
 
         /**
-         * Gets the corrections (in days) to be applied on normal calendars. 
-         * For each period, the sum of the correction should be 0.
+         * Gets the corrections (in days) to be applied on normal calendars.For each period, the sum of the correction should be 0.
          *
          * @param domain
+         * @param meanCorrected
          * @return The corrections for each period of the
          * domain. The different columns of the matrix correspond to
          * Mondays...Sundays. The dimensions of the matrix are (domain.length() x 7)
          */
-        Matrix holidaysCorrection(TsDomain domain);
+        Matrix holidaysCorrection(TsDomain domain, boolean meanCorrected);
         
         /**
          * Gets the average annual corrections (in days) to be applied on Mondays...Sundays
@@ -55,20 +56,15 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     }
 
     private DayClustering clustering;
-    private GenericTradingDays.Type variableType;
+    private boolean contrast;
+    private boolean meanCorrection;
     private boolean weighted;
     private HolidaysCorrector corrector;
 
-    public HolidaysCorrectedTradingDays(GenericTradingDays td, boolean weighted, HolidaysCorrector corrector ) {
-        this.clustering = td.getClustering();
-        this.variableType=td.getType();
-        this.corrector = corrector;
-        this.weighted=weighted;
-    }
-
     public HolidaysCorrectedTradingDays(GenericTradingDays td, HolidaysCorrector corrector) {
         this.clustering = td.getClustering();
-        this.variableType=td.getType();
+        this.contrast=td.getType() == GenericTradingDays.Type.CONTRAST;
+        this.meanCorrection=contrast ? true : td.getType() == GenericTradingDays.Type.MEANCORRECTED;
         this.corrector = corrector;
         this.weighted=false;
     }
@@ -76,7 +72,7 @@ public class HolidaysCorrectedTradingDays implements ITradingDaysVariable, ISyst
     @Override
     public int dim() {
         int n = clustering.getGroupsCount();
-        return variableType == GenericTradingDays.Type.CONTRAST ? n - 1 : n;
+        return contrast ? n - 1 : n;
     }
     
     @Override

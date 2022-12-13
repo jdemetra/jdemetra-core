@@ -73,6 +73,8 @@ public class ModellingProtosUtility {
                 return ModellingProtos.TradingDays.TD3C;
             case TD3:
                 return ModellingProtos.TradingDays.TD3;
+            case TD2c:
+                return ModellingProtos.TradingDays.TD2C;
             case TD2:
                 return ModellingProtos.TradingDays.TD2;
             default:
@@ -90,6 +92,8 @@ public class ModellingProtosUtility {
                 return TradingDaysType.TD3;
             case TD3C:
                 return TradingDaysType.TD3c;
+            case TD2C:
+                return TradingDaysType.TD2c;
             case TD2:
                 return TradingDaysType.TD2;
             default:

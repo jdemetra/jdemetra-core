@@ -82,12 +82,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 class TramoModelBuilder implements IModelBuilder {
 
     public static final Map<String, String> calendarAMI;
-    
-    static{
-        HashMap<String, String> map=new HashMap<>();
+
+    static {
+        HashMap<String, String> map = new HashMap<>();
         map.put(ModellingUtility.AMI, "tramo");
         map.put(SaVariable.REGEFFECT, ComponentType.CalendarEffect.name());
-        calendarAMI=Collections.unmodifiableMap(map);
+        calendarAMI = Collections.unmodifiableMap(map);
     }
 
     private final TramoSpec spec;
@@ -150,15 +150,15 @@ class TramoModelBuilder implements IModelBuilder {
         }
         model.setPreadjustment(fnSpec.getAdjust());
     }
-    
+
     private void initializeMean(ModelDescription model, Parameter mu) {
-        if (mu == null)
+        if (mu == null) {
             model.setMean(false);
-        else if (mu.isFixed()){
-            int d = spec.getArima().getD(), bd=spec.getArima().getBd();
-            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu});   
+        } else if (mu.isFixed()) {
+            int d = spec.getArima().getD(), bd = spec.getArima().getBd();
+            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu});
             model.setMean(false);
-        }else{
+        } else {
             model.setMean(true);
         }
     }
@@ -187,7 +187,7 @@ class TramoModelBuilder implements IModelBuilder {
         if (!easter.isUsed() || easter.isTest()) {
             return;
         }
-        add(model, easter(spec), "easter", ComponentType.CalendarEffect, easter.getCoefficient() );
+        add(model, easter(spec), "easter", ComponentType.CalendarEffect, easter.getCoefficient());
     }
 
     private void initializeOutliers(ModelDescription model, List<Variable<IOutlier>> outliers) {
@@ -195,7 +195,7 @@ class TramoModelBuilder implements IModelBuilder {
         TransitoryChangeFactory tc = new TransitoryChangeFactory(spec.getOutliers().getDeltaTC());
         PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, true);
         for (Variable<IOutlier> outlier : outliers) {
-            IOutlier cur=outlier.getCore();
+            IOutlier cur = outlier.getCore();
             String code = cur.getCode();
             LocalDateTime pos = cur.getPosition();
             IOutlier v;
@@ -221,9 +221,9 @@ class TramoModelBuilder implements IModelBuilder {
                     v = null;
             }
             if (v != null) {
-                Variable nvar=outlier.withCore(v);
-                if (! nvar.hasAttribute(SaVariable.REGEFFECT)){
-                    nvar=nvar.setAttribute(SaVariable.REGEFFECT, cmp.name());
+                Variable nvar = outlier.withCore(v);
+                if (!nvar.hasAttribute(SaVariable.REGEFFECT)) {
+                    nvar = nvar.setAttribute(SaVariable.REGEFFECT, cmp.name());
                 }
                 model.addVariable(nvar);
             }
@@ -233,7 +233,7 @@ class TramoModelBuilder implements IModelBuilder {
     private void initializeUsers(ModelDescription model, List< Variable<TsContextVariable>> uvars) {
         for (Variable<TsContextVariable> user : uvars) {
             String name = user.getName();
-            ITsVariable var=user.getCore().instantiateFrom(context, name);
+            ITsVariable var = user.getCore().instantiateFrom(context, name);
             model.addVariable(user.withCore(var));
         }
     }
@@ -274,15 +274,17 @@ class TramoModelBuilder implements IModelBuilder {
 
     /**
      * Add pre-specified variables (not automatically identified)
+     *
      * @param model
      * @param v
      * @param name
      * @param cmp
-     * @param c 
+     * @param c
      */
     private void add(@NonNull ModelDescription model, ITsVariable v, @NonNull String name, @NonNull ComponentType cmp, Parameter[] c) {
-        if (v == null)
+        if (v == null) {
             return;
+        }
         Variable var = Variable.builder()
                 .name(name)
                 .core(v)
@@ -294,15 +296,17 @@ class TramoModelBuilder implements IModelBuilder {
 
     /**
      * Add pre-specified variables (not automatically identified)
+     *
      * @param model
      * @param v
      * @param name
      * @param cmp
-     * @param c 
+     * @param c
      */
     private void add(@NonNull ModelDescription model, ITsVariable v, @NonNull String name, @NonNull ComponentType cmp, Parameter c) {
-        if (v == null)
+        if (v == null) {
             return;
+        }
         Variable var = Variable.builder()
                 .name(name)
                 .core(v)
@@ -337,7 +341,7 @@ class TramoModelBuilder implements IModelBuilder {
             return null;
         } else if (tdspec.getHolidays() != null) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY);
             return new HolidaysCorrectedTradingDays(gtd, corrector);
         } else if (tdspec.getUserVariables() != null) {
             return null;
@@ -370,7 +374,7 @@ class TramoModelBuilder implements IModelBuilder {
         }
         DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY);
         return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 

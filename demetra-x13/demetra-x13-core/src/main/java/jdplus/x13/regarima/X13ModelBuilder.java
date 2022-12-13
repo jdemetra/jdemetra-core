@@ -388,7 +388,7 @@ class X13ModelBuilder implements IModelBuilder {
             return null;
         } else if (tdspec.getHolidays() != null) {
             GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
+            HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(tdspec.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY);
             return new HolidaysCorrectedTradingDays(gtd, corrector);
         } else if (tdspec.getUserVariables() != null) {
             return null;
@@ -415,7 +415,7 @@ class X13ModelBuilder implements IModelBuilder {
         TradingDaysType tdType = td.getTradingDaysType();
         DayClustering dc = DayClustering.of(tdType);
         GenericTradingDays gtd = GenericTradingDays.contrasts(dc);
-        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY, true);
+        HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(td.getHolidays(), context.getCalendars(), DayOfWeek.SUNDAY);
         return new HolidaysCorrectedTradingDays(gtd, corrector);
     }
 
