@@ -159,7 +159,11 @@ public class BurmanEstimates {
             // 2. no unit root in the AR polynomial of the trend. 
             // correction when the meancorrectedcmp doesn't contain unit
             if (isTrendConstant()) {
-                double c = mean;
+                // The trend is the average of the series. We remove it from the series
+                double c = data.average();
+                for (int i = 0; i < z.length; ++i) {
+                    z[i] -= c;
+                }
                 estimates[cmp] = DoubleSeq.onMapping(n, i -> c);
                 forecasts[cmp] = DoubleSeq.onMapping(nfcasts, i -> c);
                 backcasts[cmp] = DoubleSeq.onMapping(nbcasts, i -> c);
