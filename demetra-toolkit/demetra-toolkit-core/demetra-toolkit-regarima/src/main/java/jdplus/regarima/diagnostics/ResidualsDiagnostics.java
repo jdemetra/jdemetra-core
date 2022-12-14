@@ -125,7 +125,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                     return ProcQuality.Uncertain;
                 }
             case ResidualsDiagnosticsFactory.TD_PEAK: {
-                if (periodogram == null) {
+                if (periodogram == null || period == 4) {
                     return ProcQuality.Undefined;
                 }
                 double[] tdfreqs = Periodogram.getTradingDaysFrequencies(period);
@@ -215,7 +215,7 @@ public class ResidualsDiagnostics implements Diagnostics {
                     }
                     break;
                 case ResidualsDiagnosticsFactory.TD_PEAK:
-                    if (periodogram != null) {
+                    if (periodogram != null && period != 4) {
                         double[] tdfreqs = Periodogram.getTradingDaysFrequencies(period);
                         double[] p = periodogram.getP();
                         double xmax = 0;
