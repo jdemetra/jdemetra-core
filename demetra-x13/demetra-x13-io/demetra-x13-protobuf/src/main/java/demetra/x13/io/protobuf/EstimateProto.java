@@ -26,18 +26,18 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
  */
 @lombok.experimental.UtilityClass
 public class EstimateProto {
-    public void fill(EstimateSpec spec, X13Protos.RegArimaSpec.EstimateSpec.Builder builder) {
+    public void fill(EstimateSpec spec, RegArimaSpec.EstimateSpec.Builder builder) {
         builder.setSpan(ToolkitProtosUtility.convert(spec.getSpan()))
                 .setTol(spec.getTol());
     }
 
-    public X13Protos.RegArimaSpec.EstimateSpec convert(EstimateSpec spec) {
-        X13Protos.RegArimaSpec.EstimateSpec.Builder builder = X13Protos.RegArimaSpec.EstimateSpec.newBuilder();
+    public RegArimaSpec.EstimateSpec convert(EstimateSpec spec) {
+        RegArimaSpec.EstimateSpec.Builder builder = RegArimaSpec.EstimateSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public EstimateSpec convert(X13Protos.RegArimaSpec.EstimateSpec spec) {
+    public EstimateSpec convert(RegArimaSpec.EstimateSpec spec) {
         return EstimateSpec.builder()
                 .span(ToolkitProtosUtility.convert(spec.getSpan()))
                 .tol(spec.getTol())

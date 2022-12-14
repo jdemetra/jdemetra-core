@@ -28,7 +28,6 @@ import demetra.timeseries.regression.ModellingContext;
 import demetra.tramo.TramoSpec;
 import jdplus.tramo.TramoOutput;
 import demetra.tramoseats.io.protobuf.TramoProto;
-import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.regsarima.regular.Forecast;
 import jdplus.regsarima.regular.RegSarimaModel;
@@ -103,7 +102,7 @@ public class Tramo {
 
     public TramoSpec specOf(byte[] buffer) {
         try {
-            TramoSeatsProtos.TramoSpec spec = TramoSeatsProtos.TramoSpec.parseFrom(buffer);
+            demetra.tramoseats.io.protobuf.TramoSpec spec = demetra.tramoseats.io.protobuf.TramoSpec.parseFrom(buffer);
             return TramoProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
             return null;

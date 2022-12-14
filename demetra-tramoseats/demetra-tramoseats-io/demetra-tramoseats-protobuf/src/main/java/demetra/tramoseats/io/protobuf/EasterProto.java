@@ -16,15 +16,15 @@ import demetra.tramo.EasterSpec;
 @lombok.experimental.UtilityClass
 public class EasterProto {
 
-    public void fill(EasterSpec spec, TramoSeatsProtos.TramoSpec.EasterSpec.Builder builder) {
+    public void fill(EasterSpec spec, TramoSpec.EasterSpec.Builder builder) {
         builder.setType(TramoSeatsProtosUtility.convert(spec.getType()))
                 .setDuration(spec.getDuration())
                 .setJulian(spec.isJulian())
                 .setTest(spec.isTest());
     }
 
-    public TramoSeatsProtos.TramoSpec.EasterSpec convert(EasterSpec spec) {
-        TramoSeatsProtos.TramoSpec.EasterSpec.Builder builder = TramoSeatsProtos.TramoSpec.EasterSpec.newBuilder();
+    public TramoSpec.EasterSpec convert(EasterSpec spec) {
+        TramoSpec.EasterSpec.Builder builder = TramoSpec.EasterSpec.newBuilder();
         fill(spec, builder);
         Parameter c = spec.getCoefficient();
         if (c != null)
@@ -32,7 +32,7 @@ public class EasterProto {
         return builder.build();
     }
 
-    public EasterSpec convert(TramoSeatsProtos.TramoSpec.EasterSpec spec) {
+    public EasterSpec convert(TramoSpec.EasterSpec spec) {
         EasterSpec.Builder builder=EasterSpec.builder()
                 .duration(spec.getDuration())
                 .type(TramoSeatsProtosUtility.convert(spec.getType()))

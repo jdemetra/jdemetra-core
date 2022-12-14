@@ -20,7 +20,7 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 @lombok.experimental.UtilityClass
 public class TradingDaysProto {
 
-    public void fill(TradingDaysSpec spec, TramoSeatsProtos.TramoSpec.TradingDaysSpec.Builder builder) {
+    public void fill(TradingDaysSpec spec, TramoSpec.TradingDaysSpec.Builder builder) {
 
         String holidays = spec.getHolidays();
         if (holidays != null) {
@@ -61,8 +61,8 @@ public class TradingDaysProto {
         }
     }
 
-    public TramoSeatsProtos.TramoSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
-        TramoSeatsProtos.TramoSpec.TradingDaysSpec.Builder builder = TramoSeatsProtos.TramoSpec.TradingDaysSpec.newBuilder();
+    public TramoSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
+        TramoSpec.TradingDaysSpec.Builder builder = TramoSpec.TradingDaysSpec.newBuilder();
         fill(spec, builder);
         return builder
                 .setLpcoefficient(ToolkitProtosUtility.convert(spec.getLpCoefficient()))
@@ -74,13 +74,13 @@ public class TradingDaysProto {
         return convert(spec).toByteArray();
     }
 
-    private boolean isTest(TramoSeatsProtos.TramoSpec.TradingDaysSpec spec) {
-        return spec.getAuto() != TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NO
-                || spec.getTest() == TramoSeatsProtos.TradingDaysTest.TD_TEST_JOINT_F
-                || spec.getTest() == TramoSeatsProtos.TradingDaysTest.TD_TEST_SEPARATE_T;
+    private boolean isTest(TramoSpec.TradingDaysSpec spec) {
+        return spec.getAuto() != AutomaticTradingDays.TD_AUTO_NO
+                || spec.getTest() == TradingDaysTest.TD_TEST_JOINT_F
+                || spec.getTest() == TradingDaysTest.TD_TEST_SEPARATE_T;
     }
 
-    public TradingDaysSpec convert(TramoSeatsProtos.TramoSpec.TradingDaysSpec spec) {
+    public TradingDaysSpec convert(TramoSpec.TradingDaysSpec spec) {
         String holidays = spec.getHolidays();
         TradingDaysType td = ModellingProtosUtility.convert(spec.getTd());
         LengthOfPeriodType lp = ModellingProtosUtility.convert(spec.getLp());
@@ -133,7 +133,7 @@ public class TradingDaysProto {
     }
 
     public TradingDaysSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        TramoSeatsProtos.TramoSpec.TradingDaysSpec spec = TramoSeatsProtos.TramoSpec.TradingDaysSpec.parseFrom(bytes);
+        TramoSpec.TradingDaysSpec spec = TramoSpec.TradingDaysSpec.parseFrom(bytes);
         return convert(spec);
     }
 

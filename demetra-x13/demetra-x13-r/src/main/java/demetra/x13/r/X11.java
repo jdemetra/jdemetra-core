@@ -22,7 +22,6 @@ import jdplus.x11.X11Results;
 import demetra.x11.X11Spec;
 import demetra.x13.io.protobuf.X11Proto;
 import demetra.x13.io.protobuf.X11ResultsProto;
-import demetra.x13.io.protobuf.X13Protos;
 import jdplus.x11.X11Kernel;
 
 /**
@@ -47,7 +46,7 @@ public class X11 {
 
     public X11Spec of(byte[] buffer) {
         try {
-            X13Protos.X11Spec spec = X13Protos.X11Spec.parseFrom(buffer);
+            demetra.x13.io.protobuf.X11Spec spec = demetra.x13.io.protobuf.X11Spec.parseFrom(buffer);
             return X11Proto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
             return null;

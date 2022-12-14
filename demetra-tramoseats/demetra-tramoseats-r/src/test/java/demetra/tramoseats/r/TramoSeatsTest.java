@@ -10,7 +10,7 @@ import demetra.data.Parameter;
 import demetra.arima.SarimaSpec;
 import demetra.tramo.TramoSpec;
 import demetra.tramoseats.TramoSeatsSpec;
-import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
+import jdplus.tramoseats.TramoSeatsOutput;
 import jdplus.tramoseats.TramoSeatsResults;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

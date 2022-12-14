@@ -17,7 +17,7 @@ import java.util.List;
 @lombok.experimental.UtilityClass
 public class OutlierProto {
 
-    public void fill(OutlierSpec spec, TramoSeatsProtos.TramoSpec.OutlierSpec.Builder builder) {
+    public void fill(OutlierSpec spec, TramoSpec.OutlierSpec.Builder builder) {
         builder.setSpan(ToolkitProtosUtility.convert(spec.getSpan()))
                 .setEnabled(spec.isUsed())
                 .setVa(spec.getCriticalValue())
@@ -29,13 +29,13 @@ public class OutlierProto {
                 .setMl(spec.isMaximumLikelihood());
     }
 
-    public TramoSeatsProtos.TramoSpec.OutlierSpec convert(OutlierSpec spec) {
-        TramoSeatsProtos.TramoSpec.OutlierSpec.Builder builder = TramoSeatsProtos.TramoSpec.OutlierSpec.newBuilder();
+    public TramoSpec.OutlierSpec convert(OutlierSpec spec) {
+        TramoSpec.OutlierSpec.Builder builder = TramoSpec.OutlierSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public OutlierSpec convert(TramoSeatsProtos.TramoSpec.OutlierSpec spec) {
+    public OutlierSpec convert(TramoSpec.OutlierSpec spec) {
         if (!spec.getEnabled()) {
             return OutlierSpec.DEFAULT_DISABLED;
         }

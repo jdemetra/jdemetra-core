@@ -22,12 +22,14 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.tramoseats.TramoSeatsSpec;
+import demetra.tramoseats.io.protobuf.Spec;
 import demetra.tramoseats.io.protobuf.SpecProto;
-import demetra.tramoseats.io.protobuf.TramoSeatsOutput;
 import demetra.tramoseats.io.protobuf.TramoSeatsProtos;
+import demetra.tramoseats.io.protobuf.TramoSeatsProtosUtility;
 import demetra.tramoseats.io.protobuf.TramoSeatsResultsProto;
 import jdplus.tramoseats.TramoSeatsFactory;
 import jdplus.tramoseats.TramoSeatsKernel;
+import jdplus.tramoseats.TramoSeatsOutput;
 import jdplus.tramoseats.TramoSeatsResults;
 
 /**
@@ -62,7 +64,7 @@ public class TramoSeats {
 
     public TramoSeatsSpec specOf(byte[] buffer) {
         try {
-            TramoSeatsProtos.Spec spec = TramoSeatsProtos.Spec.parseFrom(buffer);
+            Spec spec = Spec.parseFrom(buffer);
             return SpecProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
             System.out.println(ex.getMessage());
@@ -87,7 +89,7 @@ public class TramoSeats {
     }
 
     public byte[] toBuffer(TramoSeatsOutput output) {
-        return output.convert().toByteArray();
+        return TramoSeatsProtosUtility.convert(output).toByteArray();
     }
 
 }

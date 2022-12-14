@@ -16,20 +16,20 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 @lombok.experimental.UtilityClass
 public class TransformProto {
     
-    public void fill(TransformSpec spec, TramoSeatsProtos.TramoSpec.TransformSpec.Builder builder) {
+    public void fill(TransformSpec spec, TramoSpec.TransformSpec.Builder builder) {
         builder.setTransformation(ModellingProtosUtility.convert(spec.getFunction()))
                 .setFct(spec.getFct())
                 .setOutliersCorrection(spec.isOutliersCorrection());
         
     }
     // TODO outliers
-    public TramoSeatsProtos.TramoSpec.TransformSpec convert(TransformSpec spec) {
-        TramoSeatsProtos.TramoSpec.TransformSpec.Builder builder = TramoSeatsProtos.TramoSpec.TransformSpec.newBuilder();
+    public TramoSpec.TransformSpec convert(TransformSpec spec) {
+        TramoSpec.TransformSpec.Builder builder = TramoSpec.TransformSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
     
-    public TransformSpec convert(TramoSeatsProtos.TramoSpec.BasicSpec bspec, TramoSeatsProtos.TramoSpec.TransformSpec tspec) {
+    public TransformSpec convert(TramoSpec.BasicSpec bspec, TramoSpec.TransformSpec tspec) {
         return TransformSpec.builder()
                 .span(ToolkitProtosUtility.convert(bspec.getSpan()))
                 .preliminaryCheck(bspec.getPreliminaryCheck())

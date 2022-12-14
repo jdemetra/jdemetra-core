@@ -22,13 +22,13 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.X13Spec;
+import demetra.x13.io.protobuf.Spec;
 import demetra.x13.io.protobuf.SpecProto;
-import demetra.x13.io.protobuf.X13Output;
-import demetra.x13.io.protobuf.X13Protos;
 import demetra.x13.io.protobuf.X13ResultsProto;
 import jdplus.x13.X13Factory;
 import jdplus.x13.X13Kernel;
 import jdplus.x13.X13Results;
+import jdplus.x13.X13Output;
 
 /**
  *
@@ -62,7 +62,7 @@ public class X13 {
 
     public X13Spec specOf(byte[] buffer) {
         try {
-            X13Protos.Spec spec = X13Protos.Spec.parseFrom(buffer);
+            Spec spec = Spec.parseFrom(buffer);
             return SpecProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
             return null;
@@ -86,7 +86,7 @@ public class X13 {
     }
 
     public byte[] toBuffer(X13Output output) {
-        return output.convert().toByteArray();
+        return demetra.x13.io.protobuf.X13ProtosUtility.convert(output).toByteArray();
     }
 
 }

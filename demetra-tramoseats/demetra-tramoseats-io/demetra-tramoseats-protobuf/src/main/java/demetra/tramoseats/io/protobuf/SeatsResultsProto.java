@@ -20,7 +20,6 @@ import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import jdplus.seats.SeatsResults;
 import jdplus.ucarima.UcarimaModel;
 
 /**
@@ -53,9 +52,9 @@ public class SeatsResultsProto {
         }
     }
 
-    public TramoSeatsProtos.SeatsResults convert(SeatsResults seats) {
+    public SeatsResults convert(jdplus.seats.SeatsResults seats) {
 
-        return TramoSeatsProtos.SeatsResults.newBuilder()
+        return SeatsResults.newBuilder()
                 .setSeatsArima(ModellingProtosUtility.convert(seats.getFinalModel(), "seatsmodel"))
                 .setMean(seats.isMeanCorrection())
                 .setCanonicalDecomposition(convert(seats.getUcarimaModel()))

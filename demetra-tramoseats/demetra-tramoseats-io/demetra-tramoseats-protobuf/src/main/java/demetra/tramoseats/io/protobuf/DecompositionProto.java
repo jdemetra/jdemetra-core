@@ -5,7 +5,6 @@
  */
 package demetra.tramoseats.io.protobuf;
 
-import demetra.seats.DecompositionSpec;
 
 /**
  *
@@ -14,7 +13,7 @@ import demetra.seats.DecompositionSpec;
 @lombok.experimental.UtilityClass
 public class DecompositionProto {
 
-    public void fill(DecompositionSpec spec, TramoSeatsProtos.DecompositionSpec.Builder builder) {
+    public void fill(demetra.seats.DecompositionSpec spec, DecompositionSpec.Builder builder) {
         builder.setXlBoundary(spec.getXlBoundary())
                 .setTrendBoundary((spec.getTrendBoundary()))
                 .setSeastolerance(spec.getSeasTolerance())
@@ -24,17 +23,17 @@ public class DecompositionProto {
                 .setNbcasts(spec.getBackcastCount())
                 .setApproximation(convert(spec.getApproximationMode()))
                 .setAlgorithm(convert(spec.getMethod()))
-                .setBiasCorrection(spec.getBiasCorrection() != DecompositionSpec.BiasCorrection.None);
+                .setBiasCorrection(spec.getBiasCorrection() != demetra.seats.DecompositionSpec.BiasCorrection.None);
     }
 
-    public TramoSeatsProtos.DecompositionSpec convert(DecompositionSpec spec) {
-        TramoSeatsProtos.DecompositionSpec.Builder builder = TramoSeatsProtos.DecompositionSpec.newBuilder();
+    public DecompositionSpec convert(demetra.seats.DecompositionSpec spec) {
+        DecompositionSpec.Builder builder = DecompositionSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public DecompositionSpec convert(TramoSeatsProtos.DecompositionSpec spec) {
-        return DecompositionSpec.builder()
+    public demetra.seats.DecompositionSpec convert(DecompositionSpec spec) {
+        return demetra.seats.DecompositionSpec.builder()
                 .xlBoundary(spec.getXlBoundary())
                 .trendBoundary(spec.getTrendBoundary())
                 .seasTolerance(spec.getSeastolerance())
@@ -42,49 +41,49 @@ public class DecompositionProto {
                 .seasBoundaryAtPi(spec.getSeasBoundaryAtPi())
                 .forecastCount(spec.getNfcasts())
                 .backcastCount(spec.getNbcasts())
-                .biasCorrection(spec.getBiasCorrection() ? DecompositionSpec.BiasCorrection.Legacy : DecompositionSpec.BiasCorrection.None)
+                .biasCorrection(spec.getBiasCorrection() ? demetra.seats.DecompositionSpec.BiasCorrection.Legacy : demetra.seats.DecompositionSpec.BiasCorrection.None)
                 .approximationMode(convert(spec.getApproximation()))
                 .method(convert(spec.getAlgorithm()))
                 .build();
     }
 
-    TramoSeatsProtos.SeatsApproximation convert(DecompositionSpec.ModelApproximationMode app) {
+    SeatsApproximation convert(demetra.seats.DecompositionSpec.ModelApproximationMode app) {
         switch (app) {
             case Legacy:
-                return TramoSeatsProtos.SeatsApproximation.SEATS_APP_LEGACY;
+                return SeatsApproximation.SEATS_APP_LEGACY;
             case Noisy:
-                return TramoSeatsProtos.SeatsApproximation.SEATS_APP_NOISY;
+                return SeatsApproximation.SEATS_APP_NOISY;
             default:
-                return TramoSeatsProtos.SeatsApproximation.SEATS_APP_NONE;
+                return SeatsApproximation.SEATS_APP_NONE;
         }
     }
 
-    TramoSeatsProtos.SeatsAlgorithm convert(DecompositionSpec.ComponentsEstimationMethod method) {
+    SeatsAlgorithm convert(demetra.seats.DecompositionSpec.ComponentsEstimationMethod method) {
         switch (method) {
             case KalmanSmoother:
-                return TramoSeatsProtos.SeatsAlgorithm.SEATS_ALG_KALMANSMOOTHER;
+                return SeatsAlgorithm.SEATS_ALG_KALMANSMOOTHER;
             default:
-                return TramoSeatsProtos.SeatsAlgorithm.SEATS_ALG_BURMAN;
+                return SeatsAlgorithm.SEATS_ALG_BURMAN;
         }
     }
 
-    DecompositionSpec.ModelApproximationMode convert(TramoSeatsProtos.SeatsApproximation app) {
+    demetra.seats.DecompositionSpec.ModelApproximationMode convert(SeatsApproximation app) {
         switch (app) {
             case SEATS_APP_LEGACY:
-                return DecompositionSpec.ModelApproximationMode.Legacy;
+                return demetra.seats.DecompositionSpec.ModelApproximationMode.Legacy;
             case SEATS_APP_NOISY:
-                return DecompositionSpec.ModelApproximationMode.Noisy;
+                return demetra.seats.DecompositionSpec.ModelApproximationMode.Noisy;
             default:
-                return DecompositionSpec.ModelApproximationMode.None;
+                return demetra.seats.DecompositionSpec.ModelApproximationMode.None;
         }
     }
 
-    DecompositionSpec.ComponentsEstimationMethod convert(TramoSeatsProtos.SeatsAlgorithm method) {
+    demetra.seats.DecompositionSpec.ComponentsEstimationMethod convert(SeatsAlgorithm method) {
         switch (method) {
             case SEATS_ALG_KALMANSMOOTHER:
-                return DecompositionSpec.ComponentsEstimationMethod.KalmanSmoother;
+                return demetra.seats.DecompositionSpec.ComponentsEstimationMethod.KalmanSmoother;
             default:
-                return DecompositionSpec.ComponentsEstimationMethod.Burman;
+                return demetra.seats.DecompositionSpec.ComponentsEstimationMethod.Burman;
         }
     }
 }

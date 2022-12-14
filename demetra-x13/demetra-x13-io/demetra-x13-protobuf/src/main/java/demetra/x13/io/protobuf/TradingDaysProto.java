@@ -31,7 +31,7 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 @lombok.experimental.UtilityClass
 public class TradingDaysProto {
 
-    public void fill(TradingDaysSpec spec, X13Protos.RegArimaSpec.TradingDaysSpec.Builder builder) {
+    public void fill(TradingDaysSpec spec, RegArimaSpec.TradingDaysSpec.Builder builder) {
 
         String holidays = spec.getHolidays();
         if (holidays != null) {
@@ -70,8 +70,8 @@ public class TradingDaysProto {
         }
     }
 
-    public X13Protos.RegArimaSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
-        X13Protos.RegArimaSpec.TradingDaysSpec.Builder builder = X13Protos.RegArimaSpec.TradingDaysSpec.newBuilder();
+    public RegArimaSpec.TradingDaysSpec convert(TradingDaysSpec spec) {
+        RegArimaSpec.TradingDaysSpec.Builder builder = RegArimaSpec.TradingDaysSpec.newBuilder();
         fill(spec, builder);
         return builder.setLpcoefficient(ToolkitProtosUtility.convert(spec.getLpCoefficient()))
                 .addAllTdcoefficients(ToolkitProtosUtility.convert(spec.getTdCoefficients()))
@@ -82,13 +82,13 @@ public class TradingDaysProto {
         return convert(spec).toByteArray();
     }
 
-    private boolean isTest(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
-        return spec.getAuto() != X13Protos.AutomaticTradingDays.TD_AUTO_NO
-                || spec.getTest() == X13Protos.RegressionTest.TEST_ADD
-                || spec.getTest() == X13Protos.RegressionTest.TEST_REMOVE;
+    private boolean isTest(RegArimaSpec.TradingDaysSpec spec) {
+        return spec.getAuto() != AutomaticTradingDays.TD_AUTO_NO
+                || spec.getTest() == RegressionTest.TEST_ADD
+                || spec.getTest() == RegressionTest.TEST_REMOVE;
     }
 
-    public TradingDaysSpec convert(X13Protos.RegArimaSpec.TradingDaysSpec spec) {
+    public TradingDaysSpec convert(RegArimaSpec.TradingDaysSpec spec) {
         TradingDaysType td = ModellingProtosUtility.convert(spec.getTd());
         LengthOfPeriodType lp = ModellingProtosUtility.convert(spec.getLp());
         Parameter lpc = ToolkitProtosUtility.convert(spec.getLpcoefficient());
@@ -147,7 +147,7 @@ public class TradingDaysProto {
     }
 
     public TradingDaysSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.RegArimaSpec.TradingDaysSpec spec = X13Protos.RegArimaSpec.TradingDaysSpec.parseFrom(bytes);
+        RegArimaSpec.TradingDaysSpec spec = RegArimaSpec.TradingDaysSpec.parseFrom(bytes);
         return convert(spec);
     }
 

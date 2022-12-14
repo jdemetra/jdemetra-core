@@ -26,7 +26,6 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.x13.io.protobuf.RegArimaProto;
-import demetra.x13.io.protobuf.X13Protos;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.StationaryTransformation;
 import jdplus.regsarima.regular.Forecast;
@@ -87,7 +86,7 @@ public class RegArima {
 
     public RegArimaSpec specOf(byte[] buffer) {
         try {
-            X13Protos.RegArimaSpec spec = X13Protos.RegArimaSpec.parseFrom(buffer);
+            demetra.x13.io.protobuf.RegArimaSpec spec = demetra.x13.io.protobuf.RegArimaSpec.parseFrom(buffer);
             return RegArimaProto.convert(spec);
         } catch (InvalidProtocolBufferException ex) {
             return null;

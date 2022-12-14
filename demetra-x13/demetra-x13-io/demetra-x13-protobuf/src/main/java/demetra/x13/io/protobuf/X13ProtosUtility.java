@@ -19,8 +19,6 @@ package demetra.x13.io.protobuf;
 import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.TradingDaysSpec;
-import demetra.sa.DecompositionMode;
-import demetra.x11.BiasCorrection;
 import demetra.x11.CalendarSigmaOption;
 import demetra.x11.SeasonalFilterOption;
 
@@ -31,58 +29,58 @@ import demetra.x11.SeasonalFilterOption;
 @lombok.experimental.UtilityClass
 public class X13ProtosUtility {
 
-    public X13Protos.DecompositionMode convert(DecompositionMode mode) {
+    public DecompositionMode convert(demetra.sa.DecompositionMode mode) {
         switch (mode) {
             case Additive:
-                return X13Protos.DecompositionMode.MODE_ADDITIVE;
+                return DecompositionMode.MODE_ADDITIVE;
             case Multiplicative:
-                return X13Protos.DecompositionMode.MODE_MULTIPLICATIVE;
+                return DecompositionMode.MODE_MULTIPLICATIVE;
             case LogAdditive:
-                return X13Protos.DecompositionMode.MODE_LOGADDITIVE;
+                return DecompositionMode.MODE_LOGADDITIVE;
             case PseudoAdditive:
-                return X13Protos.DecompositionMode.MODE_PSEUDOADDITIVE;
+                return DecompositionMode.MODE_PSEUDOADDITIVE;
             default:
-                return X13Protos.DecompositionMode.MODE_UNKNOWN;
+                return DecompositionMode.MODE_UNKNOWN;
         }
     }
 
-    public DecompositionMode convert(X13Protos.DecompositionMode mode) {
+    public demetra.sa.DecompositionMode convert(DecompositionMode mode) {
         switch (mode) {
             case MODE_ADDITIVE:
-                return DecompositionMode.Additive;
+                return demetra.sa.DecompositionMode.Additive;
             case MODE_MULTIPLICATIVE:
-                return DecompositionMode.Multiplicative;
+                return demetra.sa.DecompositionMode.Multiplicative;
             case MODE_LOGADDITIVE:
-                return DecompositionMode.LogAdditive;
+                return demetra.sa.DecompositionMode.LogAdditive;
             case MODE_PSEUDOADDITIVE:
-                return DecompositionMode.PseudoAdditive;
+                return demetra.sa.DecompositionMode.PseudoAdditive;
             default:
-                return DecompositionMode.Undefined;
+                return demetra.sa.DecompositionMode.Undefined;
         }
     }
 
-    public X13Protos.SeasonalFilter convert(SeasonalFilterOption sf) {
+    public SeasonalFilter convert(SeasonalFilterOption sf) {
         switch (sf) {
             case Stable:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_STABLE;
+                return SeasonalFilter.SEASONAL_FILTER_STABLE;
             case X11Default:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_X11DEFAULT;
+                return SeasonalFilter.SEASONAL_FILTER_X11DEFAULT;
             case S3X1:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_S3X1;
+                return SeasonalFilter.SEASONAL_FILTER_S3X1;
             case S3X3:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_S3X3;
+                return SeasonalFilter.SEASONAL_FILTER_S3X3;
             case S3X5:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_S3X5;
+                return SeasonalFilter.SEASONAL_FILTER_S3X5;
             case S3X9:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_S3X9;
+                return SeasonalFilter.SEASONAL_FILTER_S3X9;
             case S3X15:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_S3X15;
+                return SeasonalFilter.SEASONAL_FILTER_S3X15;
             default:
-                return X13Protos.SeasonalFilter.SEASONAL_FILTER_MSR;
+                return SeasonalFilter.SEASONAL_FILTER_MSR;
         }
     }
 
-    public SeasonalFilterOption convert(X13Protos.SeasonalFilter sf) {
+    public SeasonalFilterOption convert(SeasonalFilter sf) {
         switch (sf) {
             case SEASONAL_FILTER_STABLE:
                 return SeasonalFilterOption.Stable;
@@ -103,46 +101,46 @@ public class X13ProtosUtility {
         }
     }
 
-    public BiasCorrection convert(X13Protos.BiasCorrection bias) {
+    public demetra.x11.BiasCorrection convert(BiasCorrection bias) {
         switch (bias) {
             case BIAS_LEGACY:
-                return BiasCorrection.Legacy;
+                return demetra.x11.BiasCorrection.Legacy;
             case BIAS_RATIO:
-                return BiasCorrection.Ratio;
+                return demetra.x11.BiasCorrection.Ratio;
             case BIAS_SMOOTH:
-                return BiasCorrection.Smooth;
+                return demetra.x11.BiasCorrection.Smooth;
             default:
-                return BiasCorrection.None;
+                return demetra.x11.BiasCorrection.None;
         }
     }
 
-    public X13Protos.BiasCorrection convert(BiasCorrection bias) {
+    public BiasCorrection convert(demetra.x11.BiasCorrection bias) {
         switch (bias) {
             case Legacy:
-                return X13Protos.BiasCorrection.BIAS_LEGACY;
+                return BiasCorrection.BIAS_LEGACY;
             case Ratio:
-                return X13Protos.BiasCorrection.BIAS_RATIO;
+                return BiasCorrection.BIAS_RATIO;
             case Smooth:
-                return X13Protos.BiasCorrection.BIAS_SMOOTH;
+                return BiasCorrection.BIAS_SMOOTH;
             default:
-                return X13Protos.BiasCorrection.BIAS_NONE;
+                return BiasCorrection.BIAS_NONE;
         }
     }
 
-    public X13Protos.CalendarSigma convert(CalendarSigmaOption sig) {
+    public CalendarSigma convert(CalendarSigmaOption sig) {
         switch (sig) {
             case All:
-                return X13Protos.CalendarSigma.SIGMA_ALL;
+                return CalendarSigma.SIGMA_ALL;
             case Signif:
-                return X13Protos.CalendarSigma.SIGMA_SIGNIF;
+                return CalendarSigma.SIGMA_SIGNIF;
             case Select:
-                return X13Protos.CalendarSigma.SIGMA_SELECT;
+                return CalendarSigma.SIGMA_SELECT;
             default:
-                return X13Protos.CalendarSigma.SIGMA_NONE;
+                return CalendarSigma.SIGMA_NONE;
         }
     }
 
-    public CalendarSigmaOption convert(X13Protos.CalendarSigma sig) {
+    public CalendarSigmaOption convert(CalendarSigma sig) {
         switch (sig) {
             case SIGMA_ALL:
                 return CalendarSigmaOption.All;
@@ -155,18 +153,18 @@ public class X13ProtosUtility {
         }
     }
 
-    public X13Protos.RegressionTest convert(RegressionTestSpec test) {
+    public RegressionTest convert(RegressionTestSpec test) {
         switch (test) {
             case Add:
-                return X13Protos.RegressionTest.TEST_ADD;
+                return RegressionTest.TEST_ADD;
             case Remove:
-                return X13Protos.RegressionTest.TEST_REMOVE;
+                return RegressionTest.TEST_REMOVE;
             default:
-                return X13Protos.RegressionTest.TEST_NO;
+                return RegressionTest.TEST_NO;
         }
     }
 
-    public RegressionTestSpec convert(X13Protos.RegressionTest test) {
+    public RegressionTestSpec convert(RegressionTest test) {
         switch (test) {
             case TEST_ADD:
                 return RegressionTestSpec.Add;
@@ -177,7 +175,7 @@ public class X13ProtosUtility {
         }
     }
 
-    public EasterSpec.Type convert(X13Protos.EasterType type) {
+    public EasterSpec.Type convert(EasterType type) {
         switch (type) {
             case EASTER_STANDARD:
                 return EasterSpec.Type.Easter;
@@ -190,39 +188,55 @@ public class X13ProtosUtility {
         }
     }
 
-    public X13Protos.EasterType convert(EasterSpec.Type type) {
+    public EasterType convert(EasterSpec.Type type) {
         switch (type) {
             case Easter:
-                return X13Protos.EasterType.EASTER_STANDARD;
+                return EasterType.EASTER_STANDARD;
             case JulianEaster:
-                return X13Protos.EasterType.EASTER_JULIAN;
+                return EasterType.EASTER_JULIAN;
             case SCEaster:
-                return X13Protos.EasterType.EASTER_SC;
+                return EasterType.EASTER_SC;
             default:
-                return X13Protos.EasterType.EASTER_UNUSED;
-        }
-    }
-    
-        public X13Protos.AutomaticTradingDays convert(TradingDaysSpec.AutoMethod auto) {
-        switch (auto) {
-             case WALD:
-                return X13Protos.AutomaticTradingDays.TD_AUTO_WALD;
-            case BIC:
-                return X13Protos.AutomaticTradingDays.TD_AUTO_BIC;
-            case AIC:
-                return X13Protos.AutomaticTradingDays.TD_AUTO_AIC;
-            default:
-                return X13Protos.AutomaticTradingDays.TD_AUTO_NO;
+                return EasterType.EASTER_UNUSED;
         }
     }
 
-    public TradingDaysSpec.AutoMethod convert(X13Protos.AutomaticTradingDays  auto) {
+    public AutomaticTradingDays convert(TradingDaysSpec.AutoMethod auto) {
+        switch (auto) {
+            case WALD:
+                return AutomaticTradingDays.TD_AUTO_WALD;
+            case BIC:
+                return AutomaticTradingDays.TD_AUTO_BIC;
+            case AIC:
+                return AutomaticTradingDays.TD_AUTO_AIC;
+            default:
+                return AutomaticTradingDays.TD_AUTO_NO;
+        }
+    }
+
+    public TradingDaysSpec.AutoMethod convert(AutomaticTradingDays auto) {
         return switch (auto) {
-             case TD_AUTO_WALD -> TradingDaysSpec.AutoMethod.WALD;
-            case TD_AUTO_BIC -> TradingDaysSpec.AutoMethod.BIC;
-            case TD_AUTO_AIC -> TradingDaysSpec.AutoMethod.AIC;
-            default -> TradingDaysSpec.AutoMethod.UNUSED;
+            case TD_AUTO_WALD ->
+                TradingDaysSpec.AutoMethod.WALD;
+            case TD_AUTO_BIC ->
+                TradingDaysSpec.AutoMethod.BIC;
+            case TD_AUTO_AIC ->
+                TradingDaysSpec.AutoMethod.AIC;
+            default ->
+                TradingDaysSpec.AutoMethod.UNUSED;
         };
+    }
+
+    public X13Output convert(jdplus.x13.X13Output output) {
+        X13Output.Builder builder
+                = X13Output.newBuilder()
+                        .setEstimationSpec(SpecProto.convert(output.getEstimationSpec()));
+        jdplus.x13.X13Results result = output.getResult();
+        if (result != null) {
+            builder.setResult(X13ResultsProto.convert(result))
+                    .setResultSpec(SpecProto.convert(output.getResultSpec()));
+        }
+        return builder.build();
     }
 
 }

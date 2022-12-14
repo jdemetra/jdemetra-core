@@ -6,9 +6,7 @@
 package demetra.tramoseats.io.protobuf;
 
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
-import demetra.tramo.TramoSpec;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
-import jdplus.tramo.TramoOutput;
 
 /**
  *
@@ -17,8 +15,8 @@ import jdplus.tramo.TramoOutput;
 @lombok.experimental.UtilityClass
 public class TramoProto {
 
-    public TramoSeatsProtos.TramoSpec convert(TramoSpec spec) {
-        return TramoSeatsProtos.TramoSpec.newBuilder()
+    public TramoSpec convert(demetra.tramo.TramoSpec spec) {
+        return TramoSpec.newBuilder()
                 .setBasic(BasicProto.convert(spec.getTransform()))
                 .setTransform(TransformProto.convert(spec.getTransform()))
                 .setOutlier(OutlierProto.convert(spec.getOutliers()))
@@ -29,8 +27,8 @@ public class TramoProto {
                 .build();
     }
 
-    public TramoSpec convert(TramoSeatsProtos.TramoSpec spec) {
-        return TramoSpec.builder()
+    public demetra.tramo.TramoSpec convert(TramoSpec spec) {
+        return demetra.tramo.TramoSpec.builder()
                 .transform(TransformProto.convert(spec.getBasic(), spec.getTransform()))
                 .outliers(OutlierProto.convert(spec.getOutlier()))
                 .arima(RegArimaProtosUtility.convert(spec.getArima()))
@@ -40,9 +38,9 @@ public class TramoProto {
                 .build();
     }
     
-        public TramoSeatsProtos.TramoOutput convert(TramoOutput output){
-        TramoSeatsProtos.TramoOutput.Builder builder = 
-                TramoSeatsProtos.TramoOutput.newBuilder()
+        public TramoOutput convert(jdplus.tramo.TramoOutput output){
+        TramoOutput.Builder builder = 
+                TramoOutput.newBuilder()
                 .setEstimationSpec(TramoProto.convert(output.getEstimationSpec()));
         
         if (output.getResult() != null){

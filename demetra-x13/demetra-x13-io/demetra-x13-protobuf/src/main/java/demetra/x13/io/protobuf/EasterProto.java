@@ -27,11 +27,11 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 @lombok.experimental.UtilityClass
 public class EasterProto {
 
-    public void fill(EasterSpec spec, X13Protos.RegArimaSpec.EasterSpec.Builder builder) {
+    public void fill(EasterSpec spec, RegArimaSpec.EasterSpec.Builder builder) {
     }
 
-    public X13Protos.RegArimaSpec.EasterSpec convert(EasterSpec spec) {
-        return X13Protos.RegArimaSpec.EasterSpec.newBuilder()
+    public RegArimaSpec.EasterSpec convert(EasterSpec spec) {
+        return RegArimaSpec.EasterSpec.newBuilder()
                 .setType(X13ProtosUtility.convert(spec.getType()))
                 .setDuration(spec.getDuration())
                 .setTest(X13ProtosUtility.convert(spec.getTest()))
@@ -43,7 +43,7 @@ public class EasterProto {
         return convert(spec).toByteArray();
     }
 
-    public EasterSpec convert(X13Protos.RegArimaSpec.EasterSpec spec) {
+    public EasterSpec convert(RegArimaSpec.EasterSpec spec) {
 
         return EasterSpec.builder()
                 .duration(spec.getDuration())
@@ -54,7 +54,7 @@ public class EasterProto {
     }
 
     public EasterSpec of(byte[] bytes) throws InvalidProtocolBufferException {
-        X13Protos.RegArimaSpec.EasterSpec spec = X13Protos.RegArimaSpec.EasterSpec.parseFrom(bytes);
+        RegArimaSpec.EasterSpec spec = RegArimaSpec.EasterSpec.parseFrom(bytes);
         return convert(spec);
     }
 
