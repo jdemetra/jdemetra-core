@@ -29,6 +29,7 @@ import demetra.html.HtmlTableCell;
 import demetra.html.HtmlTag;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
+import demetra.timeseries.calendars.CalendarUtility;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -81,7 +82,7 @@ public class HtmlSlidingSpanDocument<I> extends AbstractHtmlElement implements H
         stream.write(format.format(p) + "%").newLines(2);
 
         if (nabnormal != 0) {
-            String title = "";
+            String title;
             if (info == DiagnosticInfo.AbsoluteDifference || info == DiagnosticInfo.PeriodToPeriodDifference)
                 title = "Breakdowns of unstable factors and Average Maximum Differences across spans";
             else
@@ -110,7 +111,7 @@ public class HtmlSlidingSpanDocument<I> extends AbstractHtmlElement implements H
                 HtmlClass style = bold ? Bootstrap4.FONT_WEIGHT_BOLD : HtmlClass.NO_CLASS;
 
                 stream.open(HtmlTag.TABLEROW);
-                stream.write(new HtmlTableCell(Integer.toString(block.getStart().annualPosition()+1)).withClass(style));
+                stream.write(new HtmlTableCell(CalendarUtility.formatPeriod(freq, block.getStart().annualPosition())).withClass(style));
                 stream.write(new HtmlTableCell(n + "").withClass(style));
                 if (info == DiagnosticInfo.AbsoluteDifference || info == DiagnosticInfo.PeriodToPeriodDifference)
                     stream.write(new HtmlTableCell(format.format(m)).withClass(style));
@@ -132,8 +133,6 @@ public class HtmlSlidingSpanDocument<I> extends AbstractHtmlElement implements H
             nbold = 2 * nabnormal;
             nbold /= (y1-y0+1);
 
-            TsPeriod start=s.getStart();
-            int period=start.annualFrequency();
             
             YearIterator yiter = new YearIterator(s);
             while(yiter.hasMoreElements()) {

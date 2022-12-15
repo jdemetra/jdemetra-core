@@ -348,6 +348,8 @@ public class SlidingSpans<I> {
         }
 
         double[] x = new double[m_domainT.length()];
+        for (int i=0; i<x.length; ++i)
+            x[i]=Double.NaN;
         TsPeriod start = m_domainT.getStartPeriod();
         for (Entry<TsPeriod, MaxMin> kv : buffer.entrySet()) {
             if (kv.getValue().count >= m_spanMin) {
