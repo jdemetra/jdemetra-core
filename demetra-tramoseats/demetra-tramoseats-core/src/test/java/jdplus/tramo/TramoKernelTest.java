@@ -29,7 +29,6 @@ import demetra.timeseries.calendars.EasterRelatedDay;
 import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.timeseries.regression.ITsVariable;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.TsDataSuppliers;

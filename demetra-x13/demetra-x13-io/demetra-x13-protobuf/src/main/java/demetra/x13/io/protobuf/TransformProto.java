@@ -17,7 +17,6 @@
 package demetra.x13.io.protobuf;
 
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
-import demetra.regarima.TransformSpec;
 
 /**
  *
@@ -26,21 +25,21 @@ import demetra.regarima.TransformSpec;
 @lombok.experimental.UtilityClass
 public class TransformProto {
 
-    public void fill(TransformSpec spec, X13Protos.RegArimaSpec.TransformSpec.Builder builder) {
+    public void fill(demetra.regarima.TransformSpec spec, RegArimaSpec.TransformSpec.Builder builder) {
         builder.setTransformation(ModellingProtosUtility.convert(spec.getFunction()))
                 .setAdjust(ModellingProtosUtility.convert(spec.getAdjust()))
                 .setAicdiff(spec.getAicDiff())
                 .setOutliersCorrection(spec.isOutliersCorrection());
     }
 
-    public X13Protos.RegArimaSpec.TransformSpec convert(TransformSpec spec) {
-        X13Protos.RegArimaSpec.TransformSpec.Builder builder = X13Protos.RegArimaSpec.TransformSpec.newBuilder();
+    public RegArimaSpec.TransformSpec convert(demetra.regarima.TransformSpec spec) {
+        RegArimaSpec.TransformSpec.Builder builder = RegArimaSpec.TransformSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public TransformSpec convert(X13Protos.RegArimaSpec.TransformSpec spec) {
-        return TransformSpec.builder()
+    public demetra.regarima.TransformSpec convert(RegArimaSpec.TransformSpec spec) {
+        return demetra.regarima.TransformSpec.builder()
                 .function(ModellingProtosUtility.convert(spec.getTransformation()))
                 .adjust(ModellingProtosUtility.convert(spec.getAdjust()))
                 .aicDiff(spec.getAicdiff())

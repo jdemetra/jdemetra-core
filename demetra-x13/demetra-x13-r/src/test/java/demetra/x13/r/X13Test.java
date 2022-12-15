@@ -7,7 +7,7 @@ package demetra.x13.r;
 
 import demetra.data.Data;
 import demetra.x13.X13Spec;
-import demetra.x13.io.protobuf.X13Output;
+import jdplus.x13.X13Output;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

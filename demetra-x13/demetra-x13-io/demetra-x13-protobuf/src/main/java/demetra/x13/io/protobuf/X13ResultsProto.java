@@ -20,11 +20,7 @@ import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.sa.io.protobuf.SaProtos;
 import demetra.sa.io.protobuf.SaProtosUtility;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import jdplus.x13.X13Finals;
-import jdplus.x13.X13Preadjustment;
-import jdplus.x13.Mstatistics;
 import jdplus.x13.X13Diagnostics;
-import jdplus.x13.X13Results;
 
 /**
  *
@@ -33,8 +29,8 @@ import jdplus.x13.X13Results;
 @lombok.experimental.UtilityClass
 public class X13ResultsProto {
     
-    public X13Protos.X13Preadjustment convert(X13Preadjustment preadjust){
-        return X13Protos.X13Preadjustment.newBuilder()
+    public X13Preadjustment convert(jdplus.x13.X13Preadjustment preadjust){
+        return X13Preadjustment.newBuilder()
                 .setA1(ToolkitProtosUtility.convert(preadjust.getA1()))
                 .setA1A(ToolkitProtosUtility.convert(preadjust.getA1a()))
                 .setA1B(ToolkitProtosUtility.convert(preadjust.getA1b()))
@@ -45,8 +41,8 @@ public class X13ResultsProto {
                 .build();
     }
     
-    public X13Protos.X13Finals convert(X13Finals finals){
-        return X13Protos.X13Finals.newBuilder()
+    public X13Finals convert(jdplus.x13.X13Finals finals){
+        return X13Finals.newBuilder()
                 .setD11Final(ToolkitProtosUtility.convert(finals.getD11final()))
                 .setD12Final(ToolkitProtosUtility.convert(finals.getD12final()))
                 .setD12Final(ToolkitProtosUtility.convert(finals.getD12final()))
@@ -64,14 +60,14 @@ public class X13ResultsProto {
                 .build();
     }
 
-    public X13Protos.X13Results convert(X13Results rslts) {
-        X13Protos.X13Results.Builder builder = X13Protos.X13Results.newBuilder();
+    public X13Results convert(jdplus.x13.X13Results rslts) {
+        X13Results.Builder builder = X13Results.newBuilder();
         X13Diagnostics diags=rslts.getDiagnostics();
         builder.setPreprocessing(RegArimaEstimationProto.convert(rslts.getPreprocessing()))
                 .setPreadjustment(convert(rslts.getPreadjustment()))
                 .setDecomposition(X11ResultsProto.convert(rslts.getDecomposition()))
                 .setFinal(convert(rslts.getFinals()))
-                .setDiagnosticsX13(X13Protos.Diagnostics.newBuilder()
+                .setDiagnosticsX13(Diagnostics.newBuilder()
                         .setMstatistics(convert(diags.getMstatistics()))
                         .build())
                 .setDiagnosticsSa(SaProtosUtility.of(diags.getGenericDiagnostics(), 
@@ -79,8 +75,8 @@ public class X13ResultsProto {
         return builder.build();
     }
     
-    public X13Protos.MStatistics convert(Mstatistics mstats){
-        return X13Protos.MStatistics.newBuilder()
+    public MStatistics convert(jdplus.x13.Mstatistics mstats){
+        return MStatistics.newBuilder()
                 .setM1(mstats.getM(1))
                 .setM2(mstats.getM(2))
                 .setM3(mstats.getM(3))
@@ -97,7 +93,7 @@ public class X13ResultsProto {
                 .build();
     }
 
-    public SaProtos.VarianceDecomposition of(Mstatistics mstatistics) {
+    public SaProtos.VarianceDecomposition of(jdplus.x13.Mstatistics mstatistics) {
         return SaProtos.VarianceDecomposition.newBuilder()
                 .setCycle(mstatistics.getVarC())
                 .setSeasonal(mstatistics.getVarS())

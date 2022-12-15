@@ -9,7 +9,6 @@ import demetra.data.Parameter;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
 import demetra.tramo.RegressionSpec;
-import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IOutlier;
 import demetra.timeseries.regression.InterventionVariable;
@@ -31,7 +30,7 @@ import java.util.List;
 @lombok.experimental.UtilityClass
 public class RegressionProto {
 
-    public RegressionSpec convert(TramoSeatsProtos.TramoSpec.RegressionSpec spec, double tc) {
+    public RegressionSpec convert(TramoSpec.RegressionSpec spec, double tc) {
         CalendarSpec.Builder cbuilder = CalendarSpec.builder();
         if (spec.hasEaster()) {
             cbuilder.easter(EasterProto.convert(spec.getEaster()));
@@ -66,8 +65,8 @@ public class RegressionProto {
         return builder.build();
     }
 
-    public TramoSeatsProtos.TramoSpec.RegressionSpec convert(RegressionSpec spec) {
-        TramoSeatsProtos.TramoSpec.RegressionSpec.Builder builder = TramoSeatsProtos.TramoSpec.RegressionSpec.newBuilder()
+    public TramoSpec.RegressionSpec convert(RegressionSpec spec) {
+        TramoSpec.RegressionSpec.Builder builder = TramoSpec.RegressionSpec.newBuilder()
                 .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getCalendar().getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getCalendar().getTradingDays()));

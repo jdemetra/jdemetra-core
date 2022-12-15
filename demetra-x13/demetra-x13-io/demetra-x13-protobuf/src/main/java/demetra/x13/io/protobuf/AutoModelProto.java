@@ -26,7 +26,7 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
  */
 @lombok.experimental.UtilityClass
 public class AutoModelProto {
-    public void fill(AutoModelSpec spec, X13Protos.RegArimaSpec.AutoModelSpec.Builder builder) {
+    public void fill(AutoModelSpec spec, RegArimaSpec.AutoModelSpec.Builder builder) {
         builder.setEnabled(spec.isEnabled())
                 .setBalanced(spec.isBalanced())
                 .setCheckmu(spec.isCheckMu())
@@ -43,13 +43,13 @@ public class AutoModelProto {
         
     }
 
-    public X13Protos.RegArimaSpec.AutoModelSpec convert(AutoModelSpec spec) {
-        X13Protos.RegArimaSpec.AutoModelSpec.Builder builder = X13Protos.RegArimaSpec.AutoModelSpec.newBuilder();
+    public RegArimaSpec.AutoModelSpec convert(AutoModelSpec spec) {
+        RegArimaSpec.AutoModelSpec.Builder builder = RegArimaSpec.AutoModelSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public AutoModelSpec convert(X13Protos.RegArimaSpec.AutoModelSpec spec) {
+    public AutoModelSpec convert(RegArimaSpec.AutoModelSpec spec) {
         return AutoModelSpec.builder()
                 .enabled(spec.getEnabled())
                 .checkMu(spec.getCheckmu())

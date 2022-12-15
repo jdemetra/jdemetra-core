@@ -26,15 +26,15 @@ import demetra.tramoseats.TramoSeatsSpec;
 @lombok.experimental.UtilityClass
 public class TramoSeatsProto {
 
-    public TramoSeatsProtos.Spec convert(TramoSeatsSpec spec) {
-        return TramoSeatsProtos.Spec.newBuilder()
+    public Spec convert(TramoSeatsSpec spec) {
+        return Spec.newBuilder()
                 .setTramo(TramoProto.convert(spec.getTramo()))
                 .setSeats(DecompositionProto.convert(spec.getSeats()))
                 .setBenchmarking(SaProtosUtility.convert(spec.getBenchmarking()))
                 .build();
     }
     
-    public TramoSeatsSpec convert(TramoSeatsProtos.Spec spec) {
+    public TramoSeatsSpec convert(Spec spec) {
         return TramoSeatsSpec.builder()
                 .tramo(TramoProto.convert(spec.getTramo()))
                 .seats(DecompositionProto.convert(spec.getSeats()))

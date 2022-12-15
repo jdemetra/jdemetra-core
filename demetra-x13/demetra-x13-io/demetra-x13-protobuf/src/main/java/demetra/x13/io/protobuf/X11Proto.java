@@ -19,7 +19,6 @@ package demetra.x13.io.protobuf;
 import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.x11.SeasonalFilterOption;
 import demetra.x11.SigmaVecOption;
-import demetra.x11.X11Spec;
 
 /**
  *
@@ -27,7 +26,7 @@ import demetra.x11.X11Spec;
  */
 @lombok.experimental.UtilityClass
 public class X11Proto {
-    public void fill(X11Spec spec, X13Protos.X11Spec.Builder builder) {
+    public void fill(demetra.x11.X11Spec spec, X11Spec.Builder builder) {
         builder
                 .setMode(X13ProtosUtility.convert(spec.getMode()))
                 .setSeasonal(spec.isSeasonal())
@@ -51,14 +50,14 @@ public class X11Proto {
         }
     }
 
-    public X13Protos.X11Spec convert(X11Spec spec) {
-        X13Protos.X11Spec.Builder builder = X13Protos.X11Spec.newBuilder();
+    public X11Spec convert(demetra.x11.X11Spec spec) {
+        X11Spec.Builder builder = X11Spec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public X11Spec convert(X13Protos.X11Spec x11) {
-        X11Spec.Builder builder = X11Spec.builder()
+    public demetra.x11.X11Spec convert(X11Spec x11) {
+        demetra.x11.X11Spec.Builder builder = demetra.x11.X11Spec.builder()
                 .mode(X13ProtosUtility.convert(x11.getMode()))
                 .seasonal(x11.getSeasonal())
                 .lowerSigma(x11.getLsig())

@@ -27,19 +27,19 @@ import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 @lombok.experimental.UtilityClass
 public class BasicProto {
 
-    public void fill(BasicSpec spec, X13Protos.RegArimaSpec.BasicSpec.Builder builder) {
+    public void fill(BasicSpec spec, RegArimaSpec.BasicSpec.Builder builder) {
         builder.setSpan(ToolkitProtosUtility.convert(spec.getSpan()))
                 .setPreliminaryCheck(spec.isPreliminaryCheck())
                 .setPreprocessing(spec.isPreprocessing());
     }
 
-    public X13Protos.RegArimaSpec.BasicSpec convert(BasicSpec spec) {
-        X13Protos.RegArimaSpec.BasicSpec.Builder builder = X13Protos.RegArimaSpec.BasicSpec.newBuilder();
+    public RegArimaSpec.BasicSpec convert(BasicSpec spec) {
+        RegArimaSpec.BasicSpec.Builder builder = RegArimaSpec.BasicSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public BasicSpec convert(X13Protos.RegArimaSpec.BasicSpec spec) {
+    public BasicSpec convert(RegArimaSpec.BasicSpec spec) {
         return BasicSpec.builder()
                 .span(ToolkitProtosUtility.convert(spec.getSpan()))
                 .preprocessing(spec.getPreprocessing())

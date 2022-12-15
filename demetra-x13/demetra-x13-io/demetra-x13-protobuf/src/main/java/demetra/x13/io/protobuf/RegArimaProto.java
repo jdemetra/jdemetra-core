@@ -16,8 +16,6 @@
  */
 package demetra.x13.io.protobuf;
 
-import jdplus.x13.regarima.RegArimaOutput;
-import demetra.regarima.RegArimaSpec;
 import demetra.regarima.io.protobuf.RegArimaEstimationProto;
 import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 
@@ -28,8 +26,8 @@ import demetra.regarima.io.protobuf.RegArimaProtosUtility;
 @lombok.experimental.UtilityClass
 public class RegArimaProto {
 
-    public X13Protos.RegArimaSpec convert(RegArimaSpec spec) {
-        return X13Protos.RegArimaSpec.newBuilder()
+    public RegArimaSpec convert(demetra.regarima.RegArimaSpec spec) {
+        return RegArimaSpec.newBuilder()
                 .setBasic(BasicProto.convert(spec.getBasic()))
                 .setTransform(TransformProto.convert(spec.getTransform()))
                 .setOutlier(OutlierProto.convert(spec.getOutliers()))
@@ -40,8 +38,8 @@ public class RegArimaProto {
                 .build();
     }
 
-    public RegArimaSpec convert(X13Protos.RegArimaSpec spec) {
-        return RegArimaSpec.builder()
+    public demetra.regarima.RegArimaSpec convert(RegArimaSpec spec) {
+        return demetra.regarima.RegArimaSpec.builder()
                 .basic(BasicProto.convert(spec.getBasic()))
                 .transform(TransformProto.convert(spec.getTransform()))
                 .outliers(OutlierProto.convert(spec.getOutlier()))
@@ -52,9 +50,9 @@ public class RegArimaProto {
                 .build();
     }
     
-        public X13Protos.RegArimaOutput convert(RegArimaOutput output){
-        X13Protos.RegArimaOutput.Builder builder = 
-                X13Protos.RegArimaOutput.newBuilder()
+        public RegArimaOutput convert(jdplus.x13.regarima.RegArimaOutput output){
+        RegArimaOutput.Builder builder = 
+                RegArimaOutput.newBuilder()
                 .setEstimationSpec(convert(output.getEstimationSpec()));
         
         if (output.getResult() != null){

@@ -27,7 +27,7 @@ import demetra.tramo.TradingDaysSpec;
 @lombok.experimental.UtilityClass
 public class TramoSeatsProtosUtility {
 
-    public EasterSpec.Type convert(TramoSeatsProtos.EasterType type) {
+    public EasterSpec.Type convert(EasterType type) {
         switch (type) {
             case EASTER_STANDARD:
                 return EasterSpec.Type.Standard;
@@ -40,31 +40,31 @@ public class TramoSeatsProtosUtility {
         }
     }
 
-    public TramoSeatsProtos.EasterType convert(EasterSpec.Type type) {
+    public EasterType convert(EasterSpec.Type type) {
         switch (type) {
             case Standard:
-                return TramoSeatsProtos.EasterType.EASTER_STANDARD;
+                return EasterType.EASTER_STANDARD;
             case IncludeEaster:
-                return TramoSeatsProtos.EasterType.EASTER_INCLUDEEASTER;
+                return EasterType.EASTER_INCLUDEEASTER;
             case IncludeEasterMonday:
-                return TramoSeatsProtos.EasterType.EASTER_INCLUDEEASTERMONDAY;
+                return EasterType.EASTER_INCLUDEEASTERMONDAY;
             default:
-                return TramoSeatsProtos.EasterType.EASTER_UNUSED;
+                return EasterType.EASTER_UNUSED;
         }
     }
 
-    public TramoSeatsProtos.TradingDaysTest convert(RegressionTestType test) {
+    public TradingDaysTest convert(RegressionTestType test) {
         switch (test) {
             case Joint_F:
-                return TramoSeatsProtos.TradingDaysTest.TD_TEST_JOINT_F;
+                return TradingDaysTest.TD_TEST_JOINT_F;
             case Separate_T:
-                return TramoSeatsProtos.TradingDaysTest.TD_TEST_SEPARATE_T;
+                return TradingDaysTest.TD_TEST_SEPARATE_T;
             default:
-                return TramoSeatsProtos.TradingDaysTest.TD_TEST_NO;
+                return TradingDaysTest.TD_TEST_NO;
         }
     }
 
-    public RegressionTestType convert(TramoSeatsProtos.TradingDaysTest test) {
+    public RegressionTestType convert(TradingDaysTest test) {
         switch (test) {
             case TD_TEST_JOINT_F:
                 return RegressionTestType.Joint_F;
@@ -75,22 +75,22 @@ public class TramoSeatsProtosUtility {
         }
     }
 
-    public TramoSeatsProtos.AutomaticTradingDays convert(TradingDaysSpec.AutoMethod auto) {
+    public AutomaticTradingDays convert(TradingDaysSpec.AutoMethod auto) {
         switch (auto) {
             case FTEST:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_FTEST;
+                return AutomaticTradingDays.TD_AUTO_FTEST;
             case WALD:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_WALD;
+                return AutomaticTradingDays.TD_AUTO_WALD;
             case BIC:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_BIC;
+                return AutomaticTradingDays.TD_AUTO_BIC;
             case AIC:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_AIC;
+                return AutomaticTradingDays.TD_AUTO_AIC;
             default:
-                return TramoSeatsProtos.AutomaticTradingDays.TD_AUTO_NO;
+                return AutomaticTradingDays.TD_AUTO_NO;
         }
     }
 
-    public TradingDaysSpec.AutoMethod convert(TramoSeatsProtos.AutomaticTradingDays  auto) {
+    public TradingDaysSpec.AutoMethod convert(AutomaticTradingDays  auto) {
         return switch (auto) {
             case TD_AUTO_FTEST -> TradingDaysSpec.AutoMethod.FTEST;
             case TD_AUTO_WALD -> TradingDaysSpec.AutoMethod.WALD;
@@ -99,4 +99,17 @@ public class TramoSeatsProtosUtility {
             default -> TradingDaysSpec.AutoMethod.UNUSED;
         };
     }
+    
+        public TramoSeatsOutput convert(jdplus.tramoseats.TramoSeatsOutput output) {
+        TramoSeatsOutput.Builder builder
+                = TramoSeatsOutput.newBuilder()
+                        .setEstimationSpec(SpecProto.convert(output.getEstimationSpec()));
+        jdplus.tramoseats.TramoSeatsResults result = output.getResult();
+        if (result != null) {
+            builder.setResult(TramoSeatsResultsProto.convert(result))
+                    .setResultSpec(SpecProto.convert(output.getResultSpec()));
+        }
+        return builder.build();
+    }
+
 }

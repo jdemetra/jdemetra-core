@@ -22,7 +22,6 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.tramoseats.TramoSeatsKernel;
-import jdplus.tramoseats.TramoSeatsResults;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,8 +39,8 @@ public class TramoSeatsResultsProtoTest {
     public void testFull() {
         TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         ProcessingLog log=ProcessingLog.dummy();
-        TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
-        TramoSeatsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
+        jdplus.tramoseats.TramoSeatsResults rslt = ts.process(Data.TS_PROD, log);
+        TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
         assertTrue(pb.toByteArray() != null);
    }
     
@@ -51,8 +50,8 @@ public class TramoSeatsResultsProtoTest {
         TsData s=TsData.ofInternal(start, Data.RETAIL_BEERWINEANDLIQUORSTORES);
         TramoSeatsKernel ts = TramoSeatsKernel.of(TramoSeatsSpec.RSAfull, null);
         ProcessingLog log=ProcessingLog.dummy();
-        TramoSeatsResults rslt = ts.process(s, log);
-        TramoSeatsProtos.TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
+        jdplus.tramoseats.TramoSeatsResults rslt = ts.process(s, log);
+        TramoSeatsResults pb = TramoSeatsResultsProto.convert(rslt);
         assertTrue(pb.toByteArray() != null);
    }
 }

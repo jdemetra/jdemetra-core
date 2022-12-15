@@ -13,7 +13,7 @@ import demetra.tramo.AutoModelSpec;
  */
 @lombok.experimental.UtilityClass
 public class AutoModelProto {
-    public void fill(AutoModelSpec spec, TramoSeatsProtos.TramoSpec.AutoModelSpec.Builder builder) {
+    public void fill(AutoModelSpec spec, TramoSpec.AutoModelSpec.Builder builder) {
         builder.setEnabled(spec.isEnabled())
                 .setEnabled(spec.isEnabled())
                 .setCancel(spec.getCancel())
@@ -27,13 +27,13 @@ public class AutoModelProto {
         
     }
 
-    public TramoSeatsProtos.TramoSpec.AutoModelSpec convert(AutoModelSpec spec) {
-        TramoSeatsProtos.TramoSpec.AutoModelSpec.Builder builder = TramoSeatsProtos.TramoSpec.AutoModelSpec.newBuilder();
+    public TramoSpec.AutoModelSpec convert(AutoModelSpec spec) {
+        TramoSpec.AutoModelSpec.Builder builder = TramoSpec.AutoModelSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public AutoModelSpec convert(TramoSeatsProtos.TramoSpec.AutoModelSpec spec) {
+    public AutoModelSpec convert(TramoSpec.AutoModelSpec spec) {
         return AutoModelSpec.builder()
                 .enabled(spec.getEnabled())
                 .cancel(spec.getCancel())

@@ -9,7 +9,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import demetra.regarima.OutlierSpec;
 import demetra.regarima.SingleOutlierSpec;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import demetra.x13.io.protobuf.X13Protos.OutlierMethod;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ import java.util.List;
  */
 @lombok.experimental.UtilityClass
 public class OutlierProto {
-    public void fill(OutlierSpec spec, X13Protos.RegArimaSpec.OutlierSpec.Builder builder) {
+    public void fill(OutlierSpec spec, RegArimaSpec.OutlierSpec.Builder builder) {
         builder.setSpan(ToolkitProtosUtility.convert(spec.getSpan()))
                 .setDefva(spec.getDefaultCriticalValue())
                 .setMonthlyTcRate(spec.getMonthlyTCRate())
@@ -28,25 +27,25 @@ public class OutlierProto {
         
         List<SingleOutlierSpec> types = spec.getTypes();
         for (SingleOutlierSpec t : types){
-            builder.addOutliers(X13Protos.RegArimaSpec.OutlierSpec.Type.newBuilder()
+            builder.addOutliers(RegArimaSpec.OutlierSpec.Type.newBuilder()
                     .setCode(t.getType())
                     .setVa(t.getCriticalValue())
                     .build());
         }
     }
 
-    public X13Protos.RegArimaSpec.OutlierSpec convert(OutlierSpec spec) {
-        X13Protos.RegArimaSpec.OutlierSpec.Builder builder = X13Protos.RegArimaSpec.OutlierSpec.newBuilder();
+    public RegArimaSpec.OutlierSpec convert(OutlierSpec spec) {
+        RegArimaSpec.OutlierSpec.Builder builder = RegArimaSpec.OutlierSpec.newBuilder();
         fill(spec, builder);
         return builder.build();
     }
 
-    public OutlierSpec convert(X13Protos.RegArimaSpec.OutlierSpec spec) {
+    public OutlierSpec convert(RegArimaSpec.OutlierSpec spec) {
         OutlierSpec.Builder builder = OutlierSpec.builder();
         
         int n = spec.getOutliersCount();
         for (int i=0; i<n; ++i){
-            X13Protos.RegArimaSpec.OutlierSpec.Type cur = spec.getOutliers(i);
+            RegArimaSpec.OutlierSpec.Type cur = spec.getOutliers(i);
             builder.type(new SingleOutlierSpec(cur.getCode(), cur.getVa()));
         }
         

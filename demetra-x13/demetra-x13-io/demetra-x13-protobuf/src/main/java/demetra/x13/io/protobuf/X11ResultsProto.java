@@ -17,7 +17,6 @@
 package demetra.x13.io.protobuf;
 
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
-import jdplus.x11.X11Results;
 
 /**
  *
@@ -26,8 +25,8 @@ import jdplus.x11.X11Results;
 @lombok.experimental.UtilityClass
 public class X11ResultsProto {
 
-    public X13Protos.X11Results convert(X11Results x11) {
-        return X13Protos.X11Results.newBuilder()
+    public X11Results convert(jdplus.x11.X11Results x11) {
+        return X11Results.newBuilder()
                 .setMode(X13ProtosUtility.convert(x11.getMode()))
                 .setB1(ToolkitProtosUtility.convert(x11.getB1()))
                 .setB2(ToolkitProtosUtility.convert(x11.getB2()))

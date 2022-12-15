@@ -26,15 +26,15 @@ import demetra.x13.X13Spec;
 @lombok.experimental.UtilityClass
 public class SpecProto {
 
-    public X13Protos.Spec convert(X13Spec spec) {
-        return X13Protos.Spec.newBuilder()
+    public Spec convert(X13Spec spec) {
+        return Spec.newBuilder()
                 .setRegarima(RegArimaProto.convert(spec.getRegArima()))
                 .setX11(X11Proto.convert(spec.getX11()))
                 .setBenchmarking(SaProtosUtility.convert(spec.getBenchmarking()))
                 .build();
     }
 
-    public X13Spec convert(X13Protos.Spec spec) {
+    public X13Spec convert(Spec spec) {
         return X13Spec.builder()
                 .regArima(RegArimaProto.convert(spec.getRegarima()))
                 .x11(X11Proto.convert(spec.getX11()))

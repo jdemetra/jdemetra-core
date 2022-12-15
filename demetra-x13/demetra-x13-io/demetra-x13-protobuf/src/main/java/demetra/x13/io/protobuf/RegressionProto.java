@@ -39,7 +39,7 @@ import java.util.List;
  */
 @lombok.experimental.UtilityClass
 public class RegressionProto {
-    public RegressionSpec convert(X13Protos.RegArimaSpec.RegressionSpec spec, double tc) {
+    public RegressionSpec convert(RegArimaSpec.RegressionSpec spec, double tc) {
         RegressionSpec.Builder builder = RegressionSpec.builder()
                 .mean(ToolkitProtosUtility.convert(spec.getMean()))
                 .easter(EasterProto.convert(spec.getEaster()))
@@ -68,8 +68,8 @@ public class RegressionProto {
         return builder.build();
     }
 
-    public X13Protos.RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
-        X13Protos.RegArimaSpec.RegressionSpec.Builder builder = X13Protos.RegArimaSpec.RegressionSpec.newBuilder()
+    public RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
+        RegArimaSpec.RegressionSpec.Builder builder = RegArimaSpec.RegressionSpec.newBuilder()
                 .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
