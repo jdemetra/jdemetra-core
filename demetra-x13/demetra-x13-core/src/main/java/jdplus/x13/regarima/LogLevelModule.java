@@ -16,7 +16,6 @@
  */
 package jdplus.x13.regarima;
 
-import demetra.data.DoubleSeq;
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;

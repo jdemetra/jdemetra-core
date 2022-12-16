@@ -98,7 +98,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, RegressionTestSpec test, boolean autoAdjust) {
-        if (type == TradingDaysType.NONE) {
+        if (type == TradingDaysType.NONE && lp == LengthOfPeriodType.None) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,
@@ -106,7 +106,7 @@ public final class TradingDaysSpec implements Validatable<TradingDaysSpec> {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
-        if (type == TradingDaysType.NONE) {
+        if (type == TradingDaysType.NONE && lp == LengthOfPeriodType.None) {
             throw new IllegalArgumentException();
         }
         return new TradingDaysSpec(null, null, type,

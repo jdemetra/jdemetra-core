@@ -38,10 +38,10 @@ import demetra.timeseries.regression.ModellingUtility;
 import jdplus.regarima.IRegArimaComputer;
 
 /**
- * This module test for the presence of td, easter and mean in 
- * the initial model (after log/level test)
- * On entry, the model only contains pre-specified regression variables 
- * On exit, it can also contain td, lp, easter and mean
+ * This module test for the presence of td, easter and mean in the initial model
+ * (after log/level test) On entry, the model only contains pre-specified
+ * regression variables On exit, it can also contain td, lp, easter and mean
+ *
  * @author Jean Palate
  */
 @Development(status = Development.Status.Preliminary)
@@ -50,7 +50,7 @@ public class DefaultRegressionTest implements IRegressionModule {
     public static final double CVAL = 1.96;
     public static final double T0 = 2, T1 = 2.6;
     public static final double T2 = 2.2;
-    
+
     public static Builder builder() {
         return new Builder();
     }
@@ -64,7 +64,8 @@ public class DefaultRegressionTest implements IRegressionModule {
         private double tmean = CVAL, teaster = CVAL;
         private double twd = T2, t0td = T0, t1td = T1;
         private double fpvalue = 0.05;
-        private double precision=1e-5;
+        private double precision = 1e-5;
+        private boolean adjust = false;
 
         private boolean joinTest = false;
         private boolean testMean = true;
@@ -133,6 +134,17 @@ public class DefaultRegressionTest implements IRegressionModule {
             return this;
         }
 
+        /**
+         * Indicates if the lp effect can/must be handled as pre-adjustment
+         *
+         * @param adjust
+         * @return
+         */
+        public Builder adjust(boolean adjust) {
+            this.adjust = adjust;
+            return this;
+        }
+
     }
 
     private final ITradingDaysVariable td;
@@ -140,6 +152,7 @@ public class DefaultRegressionTest implements IRegressionModule {
     private final IEasterVariable easter;
     private final IRegressionTest tdTest, wdTest, lpTest, mhTest, meanTest;
     private final double precision;
+    private final boolean adjust;
 
 //    private IRegressionTest tdTest_, wdTest_, lpTest_, mhTest_, meanTest_;
     private DefaultRegressionTest(Builder builder) {
@@ -151,7 +164,8 @@ public class DefaultRegressionTest implements IRegressionModule {
         lpTest = new TRegressionTest(builder.t0td);
         mhTest = new TRegressionTest(builder.teaster);
         meanTest = builder.testMean ? new TRegressionTest(builder.tmean) : null;
-        precision=builder.precision;
+        precision = builder.precision;
+        adjust = builder.adjust;
     }
 
     private ModelDescription createTestModel(RegSarimaModelling current) {
@@ -171,8 +185,9 @@ public class DefaultRegressionTest implements IRegressionModule {
 
     @Override
     public ProcessingResult test(final RegSarimaModelling context) {
-        if (td == null && lp == null && easter == null && meanTest == null)
+        if (td == null && lp == null && easter == null && meanTest == null) {
             return ProcessingResult.Unprocessed;
+        }
         // estimate the model.
         ModelDescription currentModel = context.getDescription();
         ModelDescription tmpModel = createTestModel(context);
@@ -203,7 +218,11 @@ public class DefaultRegressionTest implements IRegressionModule {
             if (variable != null && ModellingUtility.isAutomaticallyIdentified(variable)) {
                 int pos = tmpModel.findPosition(variable.getCore());
                 if (usetd && lpTest.accept(ll, nhp, pos, 1)) {
-                    currentModel.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
+                    if (adjust && tmpModel.isLogTransformation() && ll.coefficient(pos) > 0) {
+                        currentModel.setPreadjustment(lp.getType());
+                    } else {
+                        currentModel.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
+                    }
                     changed = true;
                 }
             }
