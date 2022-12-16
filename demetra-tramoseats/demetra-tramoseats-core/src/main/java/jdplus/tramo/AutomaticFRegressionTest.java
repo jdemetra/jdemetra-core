@@ -54,6 +54,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         private double fpvalue = DEF_FPVAL;
         private boolean testMean = true;
         private double precision = 1e-5;
+        private boolean adjust = false;
 
         public Builder tradingDays(ITradingDaysVariable td) {
             this.td = td;
@@ -67,6 +68,17 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
         public Builder leapYear(ILengthOfPeriodVariable lp) {
             this.lp = lp;
+            return this;
+        }
+
+        /**
+         * Indicates if the lp effect can/must be handled as pre-adjustment
+         *
+         * @param adjust
+         * @return
+         */
+        public Builder adjust(boolean adjust) {
+            this.adjust = adjust;
             return this;
         }
 
@@ -112,6 +124,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
     private final ITradingDaysVariable td, wd;
     private final ILengthOfPeriodVariable lp;
+    private final boolean adjust;
     private final IEasterVariable easter;
     private final double tmean, teaster, tlp;
     private final double fpvalue;
@@ -129,6 +142,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         this.tlp = builder.tlp;
         this.testMean = builder.testMean;
         this.precision = builder.precision;
+        this.adjust = builder.adjust;
     }
 
     @Override
@@ -203,6 +217,7 @@ public class AutomaticFRegressionTest implements IRegressionModule {
 
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
+        boolean preadjustment = adjust && current.isLogTransformation();
         if (aTd != null) {
             current.addVariable(Variable.variable("td", aTd, TramoModelBuilder.calendarAMI));
         }
@@ -215,8 +230,13 @@ public class AutomaticFRegressionTest implements IRegressionModule {
         }
         if (aTd != null && lp != null) {
             int pos = test.findPosition(lp);
-            if (pos >= 0 && Math.abs(ll.tstat(pos, nhp, true)) > tlp) {
-                current.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
+            double tstat = pos >= 0 ? ll.tstat(pos, nhp, true) : 0;
+            if (Math.abs(tstat) > tlp) {
+                if (preadjustment && tstat > 0) {
+                    current.setPreadjustment(lp.getType());
+                } else {
+                    current.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
+                }
                 changed = true;
             }
         }

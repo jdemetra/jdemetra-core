@@ -16,7 +16,6 @@
  */
 package jdplus.tramo;
 
-import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
@@ -110,6 +109,11 @@ public class AutomaticRegressionTest implements IRegressionModule {
             return this;
         }
 
+        /**
+         * Indicates if the lp effect can/must be handled as pre-adjustment
+         * @param adjust
+         * @return 
+         */
         public Builder adjust(boolean adjust) {
             this.adjust = adjust;
             return this;
@@ -157,7 +161,7 @@ public class AutomaticRegressionTest implements IRegressionModule {
         ModelDescription model = createTestModel(context, tdsel, lpsel);
         RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima(), model.mapping());
         int nhp = current.getArimaSpec().freeParametersCount();
-        return update(current, model, tdsel, regarima.getConcentratedLikelihood(), nhp);
+        return update(current, model, tdsel, lpsel, regarima.getConcentratedLikelihood(), nhp);
     }
 
     private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
@@ -166,9 +170,9 @@ public class AutomaticRegressionTest implements IRegressionModule {
         tmp.setMean(true);
         if (td != null) {
             tmp.addVariable(Variable.variable("td", td, TramoModelBuilder.calendarAMI));
-            if (lp != null) {
-                tmp.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
-            }
+        }
+        if (lp != null) {
+            tmp.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
         }
         if (easter != null) {
             tmp.addVariable(Variable.variable("easter", easter, TramoModelBuilder.calendarAMI));
@@ -176,8 +180,9 @@ public class AutomaticRegressionTest implements IRegressionModule {
         return tmp;
     }
 
-    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ConcentratedLikelihoodWithMissing ll, int nhp) {
+    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ILengthOfPeriodVariable aLp, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
+        boolean preadjustment=adjust && current.isLogTransformation();
         if (aTd != null) {
             current.addVariable(Variable.variable("td", aTd, TramoModelBuilder.calendarAMI));
         }
@@ -188,12 +193,12 @@ public class AutomaticRegressionTest implements IRegressionModule {
                 changed = true;
             }
         }
-        if (aTd != null && lp != null) {
-            int pos = test.findPosition(lp);
+        if (aLp != null) {
+            int pos = test.findPosition(aLp);
             double tstat = ll.tstat(pos, nhp, true);
             if (Math.abs(tstat) > tlp) {
-                if (adjust && tstat > 0) {
-                    current.setPreadjustment(LengthOfPeriodType.LeapYear);
+                if (preadjustment && tstat > 0) {
+                    current.setPreadjustment(lp.getType());
                 } else {
                     current.addVariable(Variable.variable("lp", lp, TramoModelBuilder.calendarAMI));
                 }

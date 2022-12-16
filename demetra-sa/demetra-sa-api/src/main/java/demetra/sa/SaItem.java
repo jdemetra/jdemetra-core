@@ -256,25 +256,29 @@ public final class SaItem {
         } else {
             SaSpecification dspec = definition.getDomainSpec();
             SaSpecification pspec = estimation.getPointSpec();
-            SaProcessingFactory fac = SaManager.factoryFor(pspec);
+            SaProcessingFactory fac = SaManager.factoryFor(dspec);
             SaSpecification espec = definition.activeSpecification();
             if (fac != null) {
-                TsDomain frozenSpan = policy.getFrozenSpan();
-                if (frozenSpan == null) {
-                    switch (policy.getPolicy()) {
-                        case LastOutliers:
-                            frozenSpan = oldData.getDomain().select(TimeSelector.excluding(0, oldData.getAnnualFrequency()));
-                            break;
-                        case Current:
-                            TsPeriod end = oldData.getEnd();
-                            TsPeriod nend = nts.getData().getEnd();
-                            int n = end.until(nend);
-                            if (n > 0) {
-                                frozenSpan = TsDomain.of(end, n);
-                            }
+                if (pspec != null) {
+                    TsDomain frozenSpan = policy.getFrozenSpan();
+                    if (frozenSpan == null) {
+                        switch (policy.getPolicy()) {
+                            case LastOutliers:
+                                frozenSpan = oldData.getDomain().select(TimeSelector.excluding(0, oldData.getAnnualFrequency()));
+                                break;
+                            case Current:
+                                TsPeriod end = oldData.getEnd();
+                                TsPeriod nend = nts.getData().getEnd();
+                                int n = end.until(nend);
+                                if (n > 0) {
+                                    frozenSpan = TsDomain.of(end, n);
+                                }
+                        }
                     }
+                    espec = fac.refreshSpec(pspec, dspec, policy.getPolicy(), frozenSpan);
+                } else {
+                    espec = dspec;
                 }
-                espec = fac.refreshSpec(pspec, dspec, policy.getPolicy(), frozenSpan);
             }
             SaDefinition ndef = SaDefinition.builder()
                     .ts(nts)

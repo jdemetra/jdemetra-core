@@ -16,6 +16,7 @@
  */
 package demetra.timeseries.regression;
 
+import demetra.timeseries.calendars.LengthOfPeriodType;
 import nbbrd.design.Development;
 
 /**
@@ -26,6 +27,8 @@ import nbbrd.design.Development;
 public interface ILengthOfPeriodVariable extends ICalendarVariable{
     
     public static final String NAME="lp";
+    
+    LengthOfPeriodType getType();
     
     @Override
     default int dim(){

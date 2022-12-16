@@ -27,13 +27,18 @@ import jdplus.regsarima.regular.RegSarimaModelling;
 import jdplus.sarima.SarimaModel;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
 import demetra.timeseries.regression.ITradingDaysVariable;
+import jdplus.regarima.IRegArimaComputer;
+import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.TradingDaysRegressionComparator;
+import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
  * was not handled with auto-td
  */
 public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
+
+    public static final double DEF_TLP = 2;
 
     public static Builder builder() {
         return new Builder();
@@ -47,6 +52,7 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
          */
         private ITradingDaysVariable td[];
         private ILengthOfPeriodVariable lp;
+        private double tlp = DEF_TLP;
         private boolean aic = true;
         private double precision = 1e-3;
         private boolean adjust = true;
@@ -58,6 +64,11 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
 
         public Builder leapYear(ILengthOfPeriodVariable lp) {
             this.lp = lp;
+            return this;
+        }
+
+        public Builder lpThreshold(double tlp) {
+            this.tlp = tlp;
             return this;
         }
 
@@ -76,6 +87,11 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
             return this;
         }
 
+        /**
+         * Indicates if the lp effect can/must be handled as pre-adjustment
+         * @param adjust
+         * @return 
+         */
         public Builder adjust(boolean adjust) {
             this.adjust = adjust;
             return this;
@@ -88,6 +104,7 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
 
     private final ITradingDaysVariable[] td;
     private final ILengthOfPeriodVariable lp;
+    private final double tlp;
     private final double precision;
     private final boolean aic;
     private final boolean adjust;
@@ -98,6 +115,7 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
         this.precision = builder.precision;
         this.aic = builder.aic;
         this.adjust = builder.adjust;
+        this.tlp = builder.tlp;
     }
 
     @Override
@@ -112,11 +130,30 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
 
         ITradingDaysVariable tdsel = best < 2 ? null : td[best - 2];
         ILengthOfPeriodVariable lpsel = best < 1 ? null : lp;
-        return update(current, tdsel, lpsel);
+        IRegArimaComputer processor = RegArimaUtility.processor(true, precision);
+        ModelDescription model = createTestModel(context, tdsel, lpsel);
+        RegArimaEstimation<SarimaModel> regarima = processor.process(model.regarima(), model.mapping());
+        int nhp = current.getArimaSpec().freeParametersCount();
+        return update(current, model, tdsel, lpsel, regarima.getConcentratedLikelihood(), nhp);
     }
 
-    private ProcessingResult update(ModelDescription current, ITradingDaysVariable aTd, ILengthOfPeriodVariable aLp) {
+    private ModelDescription createTestModel(RegSarimaModelling context, ITradingDaysVariable td, ILengthOfPeriodVariable lp) {
+        ModelDescription tmp = ModelDescription.copyOf(context.getDescription());
+        tmp.setAirline(true);
+        tmp.setMean(true);
+        if (td != null) {
+            tmp.addVariable(Variable.variable("td", td, X13ModelBuilder.calendarAMI));
+        }
+        if (lp != null) {
+            tmp.addVariable(Variable.variable("lp", lp, X13ModelBuilder.calendarAMI));
+        }
+
+        return tmp;
+    }
+
+    private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ILengthOfPeriodVariable aLp, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
+        boolean preadjustment=adjust && current.isLogTransformation();
         Variable var = current.variable("td");
         if (aTd != null) {
             if (var != null) {
@@ -137,21 +174,32 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
 
         var = current.variable("lp");
         if (aLp != null) {
-            if (var == null) {
-                if (adjust) {
-                    if (!current.isAdjusted()) {
-                        current.setPreadjustment(LengthOfPeriodType.LeapYear);
-                        changed = true;
+            int pos = test.findPosition(lp);
+            double tstat = ll.tstat(pos, nhp, true);
+            if (Math.abs(tstat) > tlp) {
+                if (var == null) {
+                    if (preadjustment && tstat > 0) {
+                        if (!current.isAdjusted()) {
+                            current.setPreadjustment(aLp.getType());
+                            return ProcessingResult.Changed;
+                        }
+                    } else {
+                        current.addVariable(Variable.variable("lp", lp, X13ModelBuilder.calendarAMI));
+                        return ProcessingResult.Changed;
                     }
+                } else if (preadjustment && tstat > 0) {
+                    current.setPreadjustment(aLp.getType());
+                    current.remove("lp");
+                    return ProcessingResult.Changed;
                 } else {
-                    current.addVariable(Variable.variable("lp", lp, X13ModelBuilder.calendarAMI));
-                    changed = true;
+                    return ProcessingResult.Unchanged;
                 }
             }
-        } else if (var != null) {
+        }
+        if (var != null) {
             current.remove("lp");
             changed = true;
-        } else if (current.isAdjusted() && adjust) {
+        } else if (current.isAdjusted() && preadjustment) {
             current.setPreadjustment(LengthOfPeriodType.None);
             changed = true;
         }
