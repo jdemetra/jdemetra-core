@@ -134,6 +134,7 @@ public class Data {
 
     public static Ts s(String name, TsData data) {
         return Ts.builder()
+                .moniker(TsMoniker.NULL)
                 .type(TsInformationType.Data)
                 .name(name)
                 .data(data)

@@ -47,6 +47,7 @@ import demetra.data.Parameter;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
 import java.time.LocalDate;
+import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
 import jdplus.ssf.sts.Noise;
@@ -146,14 +147,17 @@ public class TemporalDisaggregationProcessor {
             fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
+//            double c = 2 * rslt.getValue() / (dll.dim() - dll.nx() - 1);
+//            double[] grad = fmin.gradientAtMinimum().toArray();
+//            for (int i = 0; i < grad.length; ++i) {
+//                grad[i] /= -c;
+//            }
+            IFunctionDerivatives derivatives = rslt.derivatives();
             dll = rslt.getLikelihood();
-            double c = 2 * rslt.getSsqE() / (dll.dim() - dll.nx() - 1);
-            double[] grad = fmin.gradientAtMinimum().toArray();
-            for (int i = 0; i < grad.length; ++i) {
-                grad[i] /= -c;
-            }
+            DoubleSeq grad = derivatives.gradient();
+            FastMatrix hessian = derivatives.hessian();
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p.toArray(), grad, fmin.curvatureAtMinimum().times(1 / c));
+                    p.toArray(), grad.toArray(), hessian);
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nmodel = Ssf.of(AR1.of(p.get(0), 1, spec.isZeroInitialization()), AR1.defaultLoading());
@@ -243,13 +247,16 @@ public class TemporalDisaggregationProcessor {
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
-            double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getSsqE();
-            double[] grad = fmin.gradientAtMinimum().toArray();
-            for (int i = 0; i < grad.length; ++i) {
-                grad[i] *= -c;
-            }
+//            double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getSsqE();
+//            double[] grad = fmin.gradientAtMinimum().toArray();
+//            for (int i = 0; i < grad.length; ++i) {
+//                grad[i] *= -c;
+//            }
+            IFunctionDerivatives derivatives = rslt.derivatives();
+            DoubleSeq grad = derivatives.gradient();
+            FastMatrix hessian = derivatives.hessian();
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p.toArray(), grad, fmin.curvatureAtMinimum().times(c));
+                    p.toArray(), grad.toArray(), hessian);
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 ncmp = AR1.of(p.get(0), 1, spec.isZeroInitialization());

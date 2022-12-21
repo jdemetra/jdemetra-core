@@ -146,7 +146,6 @@ public class TramoSeatsSpecMappingTest {
     @Test
     public void testSaItem() {
         Ts ts = Ts.builder()
-                .moniker(TsMoniker.of())
                 .name("prod")
                 .data(Data.TS_PROD)
                 .build();
@@ -171,7 +170,6 @@ public class TramoSeatsSpecMappingTest {
     @Test
     public void testSaItems() {
         Ts ts = Ts.builder()
-                .moniker(TsMoniker.of())
                 .name("prod")
                 .data(Data.TS_PROD)
                 .build();
@@ -199,7 +197,6 @@ public class TramoSeatsSpecMappingTest {
 
     public static void testXmlSerialization2() throws IOException {
         Ts ts = Ts.builder()
-                .moniker(TsMoniker.of())
                 .name("prod")
                 .data(Data.TS_PROD)
                 .build();
