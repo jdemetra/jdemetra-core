@@ -195,7 +195,6 @@ public class DiffuseSquareRootSmoother extends BaseDiffuseSmoother {
         OrdinarySmoother smoother = OrdinarySmoother
                 .builder(ssf)
                 .calcVariance(calcvar)
-                .rescaleVariance(false)
                 .build();
         smoother.process(frslts.getEndDiffusePosition(), endpos, frslts, srslts);
         // updates R, N

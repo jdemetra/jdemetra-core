@@ -476,13 +476,11 @@ public class DkToolkit {
                     CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(initializer);
                     CkmsFilter ffilter = new CkmsFilter(ff);
                     ffilter.process(ssf, data, dr);
-                    ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range, true);
+                    return new DkFilter(ssf, fr, true);
                 } else {
                     OrdinaryFilter filter = new OrdinaryFilter(initializer);
                     filter.process(ssf, data, dr);
-                    ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range, true);
+                    return new DkFilter(ssf, fr, true);
                 }
             } else {
                 DefaultDiffuseFilteringResults fr = DefaultDiffuseFilteringResults.light();
@@ -493,13 +491,11 @@ public class DkToolkit {
                     CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(initializer);
                     CkmsFilter ffilter = new CkmsFilter(ff);
                     ffilter.process(ssf, data, dr);
-                    ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range, true);
+                    return new DkFilter(ssf, fr, true);
                 } else {
                     OrdinaryFilter filter = new OrdinaryFilter(initializer);
                     filter.process(ssf, data, dr);
-                    ResultsRange range = new ResultsRange(0, data.length());
-                    return new DkFilter(ssf, fr, range, true);
+                    return new DkFilter(ssf, fr, true);
                 }
             }
         }
@@ -518,17 +514,6 @@ public class DkToolkit {
             return xl;
         }
 
-        private static boolean isUsed(final int i, final int[] unused) {
-            if (unused == null) {
-                return true;
-            }
-            for (int j = 0; j < unused.length; ++j) {
-                if (unused[j] == i) {
-                    return false;
-                }
-            }
-            return true;
-        }
     }
 
 }

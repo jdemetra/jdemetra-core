@@ -180,7 +180,6 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
         OrdinarySmoother smoother = OrdinarySmoother
                 .builder(ssf)
                 .calcVariance(calcvar)
-                .rescaleVariance(false)
                 .build();
         int beg = frslts.getEndDiffusePosition();
         smoother.process(beg, end, frslts, srslts);

@@ -18,6 +18,7 @@ package jdplus.ssf.akf;
 
 import nbbrd.design.Development;
 import jdplus.ssf.StateInfo;
+import jdplus.ssf.UpdateInformation;
 import jdplus.ssf.likelihood.DiffuseLikelihood;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.PredictionErrorDecomposition;
@@ -56,7 +57,7 @@ public class QPredictionErrorDecomposition extends PredictionErrorDecomposition 
 
     @Override
     public void save(int t, AugmentedUpdateInformation pe) {
-        if (pe == null || pe.isMissing()) {
+        if (pe.getStatus() != UpdateInformation.Status.OBSERVATION) {
             return;
         }
         if (pe.isDiffuse()) {

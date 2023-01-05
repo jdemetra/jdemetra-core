@@ -86,7 +86,7 @@ public class AugmentedFilter {
             // K L' = PZ' or L K' = ZP
 
             double y = data.get(t);
-            pe.set(y - loading.ZX(t, state.a()));
+            pe.set(y - loading.ZX(t, state.a()), data.isConstraint(t));
             loading.ZM(t, state.B(), pe.E());
             pe.E().apply(x -> -x);
             return true;

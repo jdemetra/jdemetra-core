@@ -62,7 +62,6 @@ public class QRFilter {
      *
      * @param ssf
      * @param data
-     * @param rslts
      * @return
      */
     public boolean process(final ISsf ssf, final ISsfData data) {
@@ -88,7 +87,7 @@ public class QRFilter {
         X = FastMatrix.make(data.length(), ssf.getDiffuseDim());
         ssf.diffuseEffects(X);
         yl = DataBlock.of(fr.errors(true, true));
-        FastFilter ffilter = new FastFilter(ssf, fr, new ResultsRange(0, data.length()));
+        FastFilter ffilter = new FastFilter(ssf, fr);
         int n = ffilter.getOutputLength(X.getRowsCount());
         Xl = FastMatrix.make(n, X.getColumnsCount());
         for (int i = 0; i < X.getColumnsCount(); ++i) {
@@ -143,10 +142,8 @@ public class QRFilter {
     public ProfileLikelihood profileLikelihood() {
         QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, Xl);
         DataBlock b = DataBlock.of(ls.getB());
-        DataBlock e = DataBlock.of(ls.getE());
-        int nd = b.length(), n = Xl.getRowsCount();
+        int n = Xl.getRowsCount();
         double ssq = ls.getSsqErr();
-        double dcorr = 2 * LogSign.of(ls.rawRDiagonal()).getValue();
         FastMatrix R = ls.rawR();
         FastMatrix bvar = SymmetricMatrix.UUt(UpperTriangularMatrix
                 .inverse(R));

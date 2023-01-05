@@ -52,7 +52,7 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         e = new DataResults();
         f = new DataResults();
     }
-
+    
     public boolean isInitialized() {
         return A.isInitialized();
     }
@@ -100,10 +100,14 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
         range.add(t);
     }
 
+    public boolean isMissing(int pos){
+        return e.isMissing(pos);
+    }
+
     public double error(int pos) {
         return e.get(pos);
     }
-
+    
     public double errorVariance(int pos) {
         return f.get(pos);
     }
@@ -191,7 +195,6 @@ public class DefaultFilteringResults implements IFilteringResults, IStateResults
             }
         }
         return det.getLogDeterminant();
-
     }
     
 }

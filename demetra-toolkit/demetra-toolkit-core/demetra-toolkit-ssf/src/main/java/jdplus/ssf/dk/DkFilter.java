@@ -37,7 +37,7 @@ public class DkFilter {
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
-    private final int start, end, enddiffuse;
+    private final int enddiffuse;
     private final boolean normalized;
 
     public boolean isnormalized() {
@@ -56,13 +56,11 @@ public class DkFilter {
         return new FastDiffuseFilter1().filter(x, normalized);
     }
 
-    public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, ResultsRange range, boolean normalized) {
+    public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, boolean normalized) {
         this.frslts = frslts;
         this.ssf = ssf;
         loading = ssf.loading();
         dynamics = ssf.dynamics();
-        start = range.getStart();
-        end = range.getEnd();
         enddiffuse = frslts.getEndDiffusePosition();
         this.normalized = normalized;
     }
@@ -79,14 +77,15 @@ public class DkFilter {
         private DataBlockIterator scols;
 
         boolean filter(FastMatrix x, boolean normalized) {
-            if (x.getRowsCount() > end - start) {
+            int n=frslts.size();
+            if (x.getRowsCount() > n) {
                 return false;
             }
             int dim = ssf.getStateDim();
             states = FastMatrix.make(dim, x.getColumnsCount());
             prepareTmp();
             DataBlockIterator rows = x.rowsIterator();
-            int pos = start;
+            int pos = 0;
             while (rows.hasNext()) {
                 iterate(pos++, rows.next(), normalized);
             }
@@ -100,7 +99,7 @@ public class DkFilter {
         }
 
         private void iterate(int i, DataBlock row, boolean normalized) {
-            boolean missing = !Double.isFinite(frslts.error(i));
+            boolean missing = frslts.isMissing(i);
             double f = frslts.errorVariance(i);
             double w;
             DataBlock K;
@@ -152,22 +151,21 @@ public class DkFilter {
         private DataBlock state;
 
         boolean filter(DataBlock x, boolean normalized) {
-            if (x.length() > end - start) {
+            int len=frslts.size();
+            if (x.length() > len) {
                 return false;
             }
             int dim = ssf.getStateDim(), n = x.length();
             state = DataBlock.make(dim);
-            int pos = start, xpos = 0;
+            int pos = 0;
             do {
-                x.set(xpos, iterate(pos, x.get(xpos), normalized));
-                pos++;
-                xpos++;
-            } while (xpos < n);
+                x.set(pos, iterate(pos, x.get(pos), normalized));
+            } while (++pos < n);
             return true;
         }
 
         private double iterate(int i, double y, boolean normalized) {
-            boolean missing = !Double.isFinite(frslts.error(i));
+            boolean missing = frslts.isMissing(i);
             double f = frslts.errorVariance(i);
             double w;
             DataBlock K;
@@ -205,12 +203,13 @@ public class DkFilter {
         }
 
         boolean apply(DoubleSeq in, DataBlock out) {
-            if (in.length() > end - start) {
+            int len=frslts.size();
+            if (in.length() > len) {
                 return false;
             }
             int dim = ssf.getStateDim(), n = in.length();
             state = DataBlock.make(dim);
-            int pos = start, ipos = 0, opos = 0;
+            int pos = 0, opos = 0;
             do {
                 boolean missing = !Double.isFinite(frslts.error(pos));
                 if (!missing) {
@@ -233,7 +232,7 @@ public class DkFilter {
                         K = frslts.M(pos);
                     }
 
-                    double e = in.get(ipos) - loading.ZX(pos, state);
+                    double e = in.get(pos) - loading.ZX(pos, state);
                     // update the states
                     state.addAY(e / w, K);
                     if (!diffuse && f != 0) {
@@ -241,7 +240,7 @@ public class DkFilter {
                     }
                 }
                 dynamics.TX(pos++, state);
-            } while (++ipos < n);
+            } while (pos < n);
             return true;
         }
 

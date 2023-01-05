@@ -88,16 +88,6 @@ public class ExtendedSsfData implements ISsfData {
 
     /**
      * 
-     * @return
-     */
-    @Override
-    public boolean hasData()
-    {
-	return data.hasData();
-    }
-
-    /**
-     * 
      * @param pos
      * @return
      */

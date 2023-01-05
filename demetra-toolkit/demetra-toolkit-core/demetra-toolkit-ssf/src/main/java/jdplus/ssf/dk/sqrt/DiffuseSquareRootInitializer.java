@@ -52,7 +52,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     private Transformation fn = (DataBlock row, FastMatrix A) -> ElementaryTransformations.fastRowGivens(row, A);
     private final IDiffuseSquareRootFilteringResults results;
     private AugmentedState astate;
-    private DiffuseUpdateInformation pe;
+    private DiffuseUpdateInformation updateInfo;
     private ISsf ssf;
     private ISsfLoading loading;
     private ISsfError error;
@@ -107,7 +107,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         error = ssf.measurementError();
         dynamics = ssf.dynamics();
         this.data = data;
-        this.scale=data.scale();
+        this.scale = data.scale();
         t = 0;
         int end = data.length();
         if (!initState()) {
@@ -121,11 +121,11 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             if (error(t)) {
                 // pe contains e(t), f(t), C(t), Ci(t)
                 if (results != null) {
-                    results.save(t, pe);
+                    results.save(t, updateInfo);
                 }
                 update();
             } else if (results != null) {
-                results.save(t, pe);
+                results.save(t, updateInfo);
             }
             if (results != null) {
                 results.save(t, astate, StateInfo.Concurrent);
@@ -162,7 +162,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         if (astate == null) {
             return false;
         }
-        pe = new DiffuseUpdateInformation(r);
+        updateInfo = new DiffuseUpdateInformation(r);
         Z = DataBlock.make(astate.getDiffuseDim());
         initialization.diffuseConstraints(constraints());
         return true;
@@ -172,7 +172,7 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
      * Computes P(t|t), a(t|t)
      */
     private void update() {
-        if (pe.isDiffuse()) {
+        if (updateInfo.isDiffuse()) {
             update1();
         } else {
             update0();
@@ -180,28 +180,26 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
     }
 
     private void update0() {
-        double f = pe.getVariance();
+        double f = updateInfo.getVariance();
         if (f != 0) {
-            double e = pe.get();
-            DataBlock C = pe.M();
+            double e = updateInfo.get();
+            DataBlock C = updateInfo.M();
             FastMatrix P = astate.P();
             P.addXaXt(-1 / f, C);
             // state
             // a0 = a0 + f1*Mi*v0.
-            if (data.hasData()) {
-                double c = e / f;
-                astate.a().addAY(c, C);
-            }
+            double c = e / f;
+            astate.a().addAY(c, C);
         }
     }
 
     private void update1() {
-        double f = pe.getVariance();
+        double f = updateInfo.getVariance();
 //        if (f == 0) {
 //            return;
 //        }
-        double fi = pe.getDiffuseVariance(), e = pe.get();
-        DataBlock C = pe.M(), Ci = pe.Mi();
+        double fi = updateInfo.getDiffuseVariance(), e = updateInfo.get();
+        DataBlock C = updateInfo.M(), Ci = updateInfo.Mi();
         // P = T P T' - 1/f*(TMf)(TMf)'+RQR'+f*(TMf/f-TMi/fi)(TMf/f-TMi/fi)'
         if (f != 0) {
             astate.P().addXaXt(-1 / f, C);
@@ -210,10 +208,8 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             astate.P().addXaXt(1 / f, tmp);
         }
 
-        if (data.hasData()) {
-            // a0 = a0 + f1*Mi*v0. Reuse Mf as temporary buffer
-            astate.a().addAY(e / fi, Ci);
-        }
+        // a0 = a0 + f1*Mi*v0. Reuse Mf as temporary buffer
+        astate.a().addAY(e / fi, Ci);
     }
 
     /**
@@ -228,10 +224,10 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
         preArray();
         DataBlock z = zconstraints();
         double fi = z.ssq();
-        if (fi < Constants.getEpsilon() ) {
+        if (fi < Constants.getEpsilon()) {
             fi = 0;
         }
-        pe.setDiffuseVariance(fi);
+        updateInfo.setDiffuseVariance(fi);
 
         double f = loading.ZVZ(t, astate.P());
         if (error != null) {
@@ -241,31 +237,29 @@ public class DiffuseSquareRootInitializer implements OrdinaryFilter.Initializer 
             f = 0;
         }
 
-        pe.setVariance(f);
-        if (data.hasData()) {
-            double y = data.get(t);
-            if (Double.isNaN(y)) {
-                pe.setMissing();
-                return false;
-            } else {
-                double e = y - loading.ZX(t, astate.a());
-                if (Math.abs(e) < scale * Constants.getEpsilon()) {
-                    e = 0;
-                }
-                if (fi == 0 && f == 0 && e != 0) {
-                    throw new SsfException(SsfException.INCONSISTENT);
-                }
-                pe.set(e);
+        updateInfo.setVariance(f);
+        double y = data.get(t);
+        if (Double.isNaN(y)) {
+            updateInfo.setMissing();
+            return false;
+        } else {
+            double e = y - loading.ZX(t, astate.a());
+            if (Math.abs(e) < scale * Constants.getEpsilon()) {
+                e = 0;
             }
+            if (fi == 0 && f == 0 && e != 0) {
+                throw new SsfException(SsfException.INCONSISTENT);
+            }
+            updateInfo.set(e, data.isConstraint(t));
         }
 
-        DataBlock C = pe.M();
+        DataBlock C = updateInfo.M();
         loading.ZM(t, astate.P(), C);
-        if (pe.isDiffuse()) {
+        if (updateInfo.isDiffuse()) {
             FastMatrix B = constraints();
             fn.transform(z, B);
-            pe.Mi().setAY(z.get(0), B.column(0));
-            pe.Mi().apply(x->Math.abs(x)<Constants.getEpsilon() ? 0 : x);
+            updateInfo.Mi().setAY(z.get(0), B.column(0));
+            updateInfo.Mi().apply(x -> Math.abs(x) < Constants.getEpsilon() ? 0 : x);
             // move right
             astate.dropDiffuseConstraint();
         }

@@ -47,11 +47,6 @@ public class SsfDataWindow implements ISsfData {
     }
 
     @Override
-    public boolean hasData() {
-        return data.hasData();
-    }
-
-    @Override
     public int length() {
         return end - start;
     }

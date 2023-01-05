@@ -25,31 +25,32 @@ public class FastFilter {
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
-    private final int start, end;
     private FastMatrix states;
     // temporaries
     private DataBlock tmp;
-    private DataBlockIterator scols;
+    private DataBlockIterator scols;;
+    // temporaries
 
-    public FastFilter(ISsf ssf, DefaultFilteringResults frslts, ResultsRange range) {
+
+    public FastFilter(ISsf ssf, DefaultFilteringResults frslts) {
         this.ssf = ssf;
         this.frslts = frslts;
         loading = ssf.measurement().loading();
         dynamics = ssf.dynamics();
-        start = range.getStart();
-        end = range.getEnd();
     }
 
     public boolean filter(FastMatrix x) {
-        if (end - start < x.getRowsCount()) {
+        int n=frslts.size();
+        int m=x.getRowsCount();
+        if (n < m) {
             return false;
         }
         int dim = ssf.getStateDim();
         states = FastMatrix.make(dim, x.getColumnsCount());
         prepareTmp();
         DataBlockIterator rows = x.rowsIterator();
-        int pos = start;
-        while (pos < end && rows.hasNext()) {
+        int pos = 0;
+        while (pos < m && rows.hasNext()) {
             iterate(pos++, rows.next());
         }
         return true;
@@ -89,12 +90,12 @@ public class FastFilter {
     public void apply(DoubleSeq in, DataBlock out) {
         int dim = ssf.getStateDim(), n = in.length();
         DataBlock state = DataBlock.make(dim);
-        int pos = start, ipos = 0, opos = 0;
+        int pos = 0, opos = 0;
         do {
             boolean missing = !Double.isFinite(frslts.error(pos));
             if (!missing) {
                 double f = frslts.errorVariance(pos);
-                double e = in.get(ipos) - loading.ZX(pos, state);
+                double e = in.get(pos) - loading.ZX(pos, state);
                 if (f > 0) {
                     out.set(opos++, e / Math.sqrt(f));
                     // update the state
@@ -106,16 +107,17 @@ public class FastFilter {
                 }
             }
             dynamics.TX(pos++, state);
-        } while (++ipos < n);
+        } while (pos < n);
     }
 
     public int getOutputLength(int inputLength) {
         int n = 0;
-        int imax = start + inputLength;
+        int imax = inputLength;
+        int end=frslts.size();
         if (imax > end) {
             return -1;
         }
-        for (int i = start; i < imax; ++i) {
+        for (int i = 0; i < imax; ++i) {
             double e = frslts.error(i), v = frslts.errorVariance(i);
             if (Double.isFinite(e) && v != 0) {
                 ++n;

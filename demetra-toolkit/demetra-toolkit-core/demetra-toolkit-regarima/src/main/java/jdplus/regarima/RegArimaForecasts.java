@@ -92,8 +92,7 @@ public class RegArimaForecasts {
         DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(fr);
         OrdinaryFilter of = new OrdinaryFilter(initializer);
         of.process(ssf, new SsfData(yall), fr);
-        ResultsRange range = new ResultsRange(0, nall);
-        DkFilter filter = new DkFilter(ssf, fr, range, false);
+        DkFilter filter = new DkFilter(ssf, fr, false);
 
         int nx = X == null ? 0 : X.getColumnsCount();
 

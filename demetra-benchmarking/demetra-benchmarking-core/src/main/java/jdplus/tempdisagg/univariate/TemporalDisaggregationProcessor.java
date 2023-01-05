@@ -50,7 +50,9 @@ import java.time.LocalDate;
 import jdplus.math.functions.IFunctionDerivatives;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
+import jdplus.ssf.dk.DefaultDiffuseFilteringResults;
 import jdplus.ssf.sts.Noise;
+import jdplus.ssf.univariate.FastFilter;
 
 /**
  *
@@ -147,17 +149,16 @@ public class TemporalDisaggregationProcessor {
             fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
-//            double c = 2 * rslt.getValue() / (dll.dim() - dll.nx() - 1);
-//            double[] grad = fmin.gradientAtMinimum().toArray();
-//            for (int i = 0; i < grad.length; ++i) {
-//                grad[i] /= -c;
-//            }
-            IFunctionDerivatives derivatives = rslt.derivatives();
             dll = rslt.getLikelihood();
-            DoubleSeq grad = derivatives.gradient();
-            FastMatrix hessian = derivatives.hessian();
+            double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getValue();
+            double[] grad = fmin.gradientAtMinimum().toArray();
+            for (int i = 0; i < grad.length; ++i) {
+                grad[i] *= -c;
+            }
+            FastMatrix hessian = fmin.curvatureAtMinimum();
+            hessian.mul(-c);
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p.toArray(), grad.toArray(), hessian);
+                    p.toArray(), grad, hessian);
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nmodel = Ssf.of(AR1.of(p.get(0), 1, spec.isZeroInitialization()), AR1.defaultLoading());
@@ -204,7 +205,7 @@ public class TemporalDisaggregationProcessor {
         if (regeffect != null) {
             regeffect = regeffect.multiply(f);
         }
-        TsData res = hresiduals(model, dll.coefficients());
+        TsData res = hresiduals(model, dll.coefficients(), rssf);
         res = res.multiply(f);
         res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
         dll = dll.rescale(model.getYfactor(), model.getXfactor());
@@ -247,16 +248,14 @@ public class TemporalDisaggregationProcessor {
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
-//            double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getSsqE();
-//            double[] grad = fmin.gradientAtMinimum().toArray();
-//            for (int i = 0; i < grad.length; ++i) {
-//                grad[i] *= -c;
-//            }
-            IFunctionDerivatives derivatives = rslt.derivatives();
-            DoubleSeq grad = derivatives.gradient();
-            FastMatrix hessian = derivatives.hessian();
+            double c = -.5 * (dll.degreesOfFreedom() - 1) / rslt.getValue();
+            double[] grad = fmin.gradientAtMinimum().toArray();
+            for (int i = 0; i < grad.length; ++i) {
+                grad[i] *= c;
+            }
+            FastMatrix hessian = fmin.curvatureAtMinimum().times(c);
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p.toArray(), grad.toArray(), hessian);
+                    p.toArray(), grad, hessian);
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 ncmp = AR1.of(p.get(0), 1, spec.isZeroInitialization());
@@ -306,7 +305,7 @@ public class TemporalDisaggregationProcessor {
         }
         // full residuals are obtained by applying the filter on the series without the
         // regression effects
-        TsData res = hresiduals(model, dll.coefficients());
+        TsData res = hresiduals(model, dll.coefficients(), ssf);
         res = res.divide(yfac);
         res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
         dll = dll.rescale(yfac, xfac);
@@ -431,7 +430,7 @@ public class TemporalDisaggregationProcessor {
         return TsData.of(model.getHDom().getStartPeriod(), regs);
     }
 
-    private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
+    private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff, ISsf ssf) {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
         FastMatrix hx = model.getHEX();
@@ -444,7 +443,8 @@ public class TemporalDisaggregationProcessor {
                 }
             }
         }
-        return TsData.ofInternal(model.getHEDom().getStartPeriod(), y);
+        DefaultDiffuseFilteringResults fr = DkToolkit.filter(ssf, new SsfData(y), false);
+         return TsData.of(model.getHEDom().getStartPeriod(), fr.errors());
     }
 
     private ResidualsDiagnostics diagnostic(TsData res) {

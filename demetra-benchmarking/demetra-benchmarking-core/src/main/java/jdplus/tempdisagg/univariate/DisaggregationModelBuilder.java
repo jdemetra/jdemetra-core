@@ -46,7 +46,7 @@ import jdplus.math.matrices.FastMatrix;
  */
 @Development(status = Development.Status.Alpha)
 @BuilderPattern(DisaggregationModel.class)
-class DisaggregationModelBuilder {
+public class DisaggregationModelBuilder {
 
     final TsData y;
     final List<Variable> regressors = new ArrayList<>();
@@ -65,39 +65,39 @@ class DisaggregationModelBuilder {
     double[] xfactor;
     int start;
 
-    DisaggregationModelBuilder(TsData y) {
+    public DisaggregationModelBuilder(TsData y) {
         this.y = y;
     }
 
-    DisaggregationModelBuilder disaggregationDomain(TsDomain domain) {
+    public DisaggregationModelBuilder disaggregationDomain(TsDomain domain) {
         this.disaggregationDomain = domain;
         return this;
     }
 
-    DisaggregationModelBuilder aggregationType(AggregationType type) {
+    public DisaggregationModelBuilder aggregationType(AggregationType type) {
         this.aType = type;
         return this;
     }
 
-    DisaggregationModelBuilder observationPosition(int pos) {
+    public DisaggregationModelBuilder observationPosition(int pos) {
         this.observationPosition = pos - 1;
         this.aType = AggregationType.UserDefined;
         return this;
     }
 
-    DisaggregationModelBuilder rescale(boolean rescale) {
+    public DisaggregationModelBuilder rescale(boolean rescale) {
         this.rescale = rescale;
         return this;
     }
 
-    DisaggregationModelBuilder addX(@NonNull Variable... vars) {
+    public DisaggregationModelBuilder addX(@NonNull Variable... vars) {
         for (int i = 0; i < vars.length; ++i) {
             regressors.add(vars[i]);
         }
         return this;
     }
 
-    DisaggregationModelBuilder addX(@NonNull Collection<Variable> vars) {
+    public DisaggregationModelBuilder addX(@NonNull Collection<Variable> vars) {
         regressors.addAll(vars);
         return this;
     }
@@ -162,17 +162,17 @@ class DisaggregationModelBuilder {
 
         // adjust start and end...
         switch (aType) {
-            case Last:
+            case Last -> {
                 if (!hEnd.start().equals(cEnd.start())) {
                     cEnd = cEnd.previous();
                 }
-                break;
-            case First:
+            }
+            case First -> {
                 if (!hStart.start().equals(cStart.start())) {
                     cStart = cStart.next();
                 }
-                break;
-            case UserDefined:
+            }
+            case UserDefined -> {
                 TsPeriod c = TsPeriod.of(hUnit, cStart.start());
                 if (c.until(hStart) > observationPosition) {
                     cStart = cStart.next();
@@ -181,18 +181,16 @@ class DisaggregationModelBuilder {
                 if (d.until(hEnd) <= observationPosition) {
                     cEnd = cEnd.previous();
                 }
-                break;
-            case Sum:
-            case Average:
+            }
+            case Sum, Average -> {
                 if (!hStart.start().equals(cStart.start())) {
                     cStart = cStart.next();
                 }
                 if (!hEnd.start().equals(cEnd.start())) {
                     cEnd = cEnd.previous();
                 }
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid aggregation type");
+            }
+            default -> throw new IllegalArgumentException("Invalid aggregation type");
         }
         if (lStart.isAfter(cStart)) {
             cStart = lStart;
@@ -202,18 +200,13 @@ class DisaggregationModelBuilder {
         }
         TsPeriod eStart;
         switch (aType) {
-            case Last:
-                eStart = TsPeriod.of(hUnit, cStart.end()).previous();
-                break;
-            case First:
-                eStart = TsPeriod.of(hUnit, cStart.start());
-                break;
-            case UserDefined:
+            case Last -> eStart = TsPeriod.of(hUnit, cStart.end()).previous();
+            case First -> eStart = TsPeriod.of(hUnit, cStart.start());
+            case UserDefined -> {
                 TsPeriod c = TsPeriod.of(hUnit, cStart.start());
                 eStart = c.plus(observationPosition);
-                break;
-            default:
-                eStart = TsPeriod.of(hUnit, cStart.start());
+            }
+            default -> eStart = TsPeriod.of(hUnit, cStart.start());
         }
 
         // Number of common lowfreq data
@@ -221,7 +214,7 @@ class DisaggregationModelBuilder {
 
         // TODO: should be adjusted for diffuse orders
         if (ny < regressors.size()) {
-            throw new IllegalArgumentException("Empty model"); //To change body of generated methods, choose Tools | Templates.
+            throw new IllegalArgumentException("Empty model"); 
         }
         lEDom = TsDomain.of(cStart, ny);
         // estimation domain in high frequency (start include, end excluded)
@@ -234,19 +227,14 @@ class DisaggregationModelBuilder {
         // first: start at the first high freq period of a low freq period 
         // and ends at a second high freq period of a low freq period
         // TODO: custom interpolation
-        TsDomain yDom = TsDomain.of(cStart, ny);
         int np;
-        switch (aType) {
-            case Average:
-            case Sum:
-                np = ny * frequencyRatio;
-                break;
-            default:
-                np = (ny - 1) * frequencyRatio + 1;
-        }
+        np = switch (aType) {
+            case Average, Sum -> ny * frequencyRatio;
+            default -> (ny - 1) * frequencyRatio + 1;
+        };
         hEDom = TsDomain.of(eStart, np);
-        prepareY(yDom);
-        if (regressors.size() > 0) {
+        prepareY(lEDom);
+        if (!regressors.isEmpty()) {
             prepareX();
         }
         scale(rescale ? new AbsMeanNormalizer() : null);

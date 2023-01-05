@@ -89,8 +89,8 @@ public class M2uAdapter {
         }
 
         @Override
-        public boolean hasData() {
-            return data.hasData();
+        public boolean isConstraint(int pos) {
+            return data.isConstraint(pos / nvars, pos % nvars);
         }
 
         @Override

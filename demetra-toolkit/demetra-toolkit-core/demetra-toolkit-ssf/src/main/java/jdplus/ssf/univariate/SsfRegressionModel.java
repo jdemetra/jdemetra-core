@@ -18,12 +18,12 @@ package jdplus.ssf.univariate;
 
 import nbbrd.design.Development;
 import java.util.Arrays;
-import jdplus.math.matrices.FastMatrix;
 import demetra.math.matrices.Matrix;
 
 /**
- * Uni-variate state space regression model y = X b + e e ~ ssf b may contain
- * diffuse elements and/or fixed unknown elements
+ * Uni-variate state space regression model y = X b + e where: 
+ * e ~ ssf 
+ * b may contain diffuse elements and/or fixed unknown elements
  *
  * @param <F> The class of the state space model
  * @author Jean Palate

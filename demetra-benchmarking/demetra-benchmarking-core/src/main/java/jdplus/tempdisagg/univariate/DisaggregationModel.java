@@ -27,23 +27,34 @@ import jdplus.math.matrices.FastMatrix;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
 @lombok.Value
-class DisaggregationModel {
+public class DisaggregationModel {
     
     @NonNull TsData originalSeries;
     
     Variable[] indicators;
     
+    /**
+     * Y expanded to the high frequency (with missing values).
+     * Unscaled
+     */
     @NonNull
     double[] hO;
 
-    @NonNull
-    double[] hY;
     /**
      * Y expanded to the high frequency (with missing values). hY corresponds to
      * hDom (domain of the set of the indicators or pre-specified domain when
      * indicators are missing). If necessary it is expanded with missing values.
+     * Scaled
+     */
+    @NonNull
+    double[] hY;
+    /**
+     * Y expanded to the high frequency (with missing values). hEY corresponds to
+     * hEDom (common domain of the aggregated series and of the set of the indicators or pre-specified domain when
+     * indicators are missing). 
+     * Scaled
      */
     @NonNull
     double[] hEY;
@@ -108,14 +119,8 @@ class DisaggregationModel {
         this.start=builder.start;
     }
 
-    int nx() {
+    public int nx() {
         return hX == null ? 0 : hX.getColumnsCount();
     }
-
-    int n() {
-        return hEY.length;
-    }
-    
-    
 
 }

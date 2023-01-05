@@ -17,9 +17,7 @@
 package jdplus.ssf.univariate;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import demetra.data.Seq;
 
 /**
  *
@@ -36,9 +34,12 @@ public interface ISsfData extends DoubleSeq {
 
     /**
      *
+     * @param pos
      * @return
      */
-    boolean hasData();
+    default boolean isConstraint(int pos){
+        return false;
+    }
 
     default int getObsCount() {
         int nm = 0, n = length();

@@ -372,7 +372,6 @@ public class AugmentedSmoother {
         OrdinarySmoother smoother = OrdinarySmoother
                 .builder(ssf)
                 .calcVariance(calcvar)
-                .rescaleVariance(false)
                 .build();
         smoother.process(startpos, endpos, frslts, srslts);
         // updates R, N

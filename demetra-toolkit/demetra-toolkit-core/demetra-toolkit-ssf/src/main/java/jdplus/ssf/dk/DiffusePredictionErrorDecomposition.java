@@ -61,7 +61,7 @@ public class DiffusePredictionErrorDecomposition extends PredictionErrorDecompos
 
     @Override
     public void save(int t, DiffuseUpdateInformation pe) {
-        if (pe == null || pe.isMissing()) {
+        if (pe.getStatus() != DiffuseUpdateInformation.Status.OBSERVATION) {
             return;
         }
         double d = pe.getDiffuseVariance();

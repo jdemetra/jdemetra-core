@@ -45,14 +45,6 @@ public class OrdinarySmoother {
             this.ssf = ssf;
         }
 
-        public Builder rescaleVariance(boolean rescale) {
-            this.rescaleVariance = rescale;
-            if (rescale) {
-                calcVariance = true;
-            }
-            return this;
-        }
-
         public Builder calcVariance(boolean calc) {
             this.calcVariance = calc;
             if (!calc) {
@@ -62,7 +54,7 @@ public class OrdinarySmoother {
         }
 
         public OrdinarySmoother build() {
-            return new OrdinarySmoother(ssf, calcVariance, rescaleVariance);
+            return new OrdinarySmoother(ssf, calcVariance);
         }
     }
 
@@ -73,7 +65,7 @@ public class OrdinarySmoother {
     private final ISsf ssf;
     private final ISsfDynamics dynamics;
     private final ISsfLoading loading;
-    private final boolean calcvar, rescalevar;
+    private final boolean calcvar;
     private State state;
     private ISmoothingResults srslts;
     private DefaultFilteringResults frslts;
@@ -84,10 +76,9 @@ public class OrdinarySmoother {
     private boolean missing;
     private int stop;
 
-    public OrdinarySmoother(ISsf ssf, boolean calcvar, boolean rescalevar) {
+    public OrdinarySmoother(ISsf ssf, boolean calcvar) {
         this.ssf = ssf;
         this.calcvar = calcvar;
-        this.rescalevar = rescalevar;
         dynamics = ssf.dynamics();
         loading = ssf.loading();
     }
@@ -236,7 +227,7 @@ public class OrdinarySmoother {
             }
         } else {
             u = 0;
-            uVariance = Double.NaN;
+            uVariance = 0;
         }
     }
 

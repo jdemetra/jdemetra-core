@@ -88,7 +88,7 @@ public class PredictionErrorDecomposition implements
 
     @Override
     public void save(final int t, final UpdateInformation pe) {
-        if (pe == null || pe.isMissing()) {
+        if (pe.getStatus() != UpdateInformation.Status.OBSERVATION) {
             return;
         }
         double e = pe.get();

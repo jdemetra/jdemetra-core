@@ -85,14 +85,12 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
             f = 0;
         }
         pe.setVariance(f);
-        if (data.hasData()) {
-            double y = data.get(t);
-            if (Double.isNaN(y)) {
-                pe.setMissing();
-                return false;
-            } else {
-                pe.set(y - loading.ZX(t, state.a()));
-            }
+        double y = data.get(t);
+        if (Double.isNaN(y)) {
+            pe.setMissing();
+            return false;
+        } else {
+            pe.set(y - loading.ZX(t, state.a()), data.isConstraint(t));
         }
         loading.ZM(t, state.P(), pe.M());
         if (pe.isDiffuse()) {
@@ -188,13 +186,11 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
 
         // state
         // a0 = Ta0 + f1*TMi*v0. Reuse Mf as temporary buffer
-        if (data.hasData()) {
-            // prod(n, m_T, m_a0, m_tmp);
-            double c = e / f;
+        // prod(n, m_T, m_a0, m_tmp);
+        double c = e / f;
 //            for (int i = 0; i < m_r; ++i)
 //                state.A.set(i, state.A.get(i) + state.C.get(i) * c);
-            state.a().addAY(c, C);
-        }
+        state.a().addAY(c, C);
     }
 
     private void update1() {
@@ -216,10 +212,8 @@ public class DurbinKoopmanInitializer implements OrdinaryFilter.Initializer {
         tmp.addAY(-f / fi, Ci);
         state.P().addXaXt(1 / f, tmp);
 
-        if (data.hasData()) {
-            // a0 = Ta0 + f1*TMi*v0. 
-            state.a().addAY(e / fi, Ci);
-        }
+        // a0 = Ta0 + f1*TMi*v0. 
+        state.a().addAY(e / fi, Ci);
     }
 
 }
