@@ -63,12 +63,12 @@ public interface ISsf extends ISsfState {
         loading().XpZd(pos, x, -x.dot(m) / f);
     }
 
-    default void XL(int pos, FastMatrix M, DataBlock m, double f) {
-        // MT - [(MT)*m]/f * z
+    default void XL(int pos, FastMatrix X, DataBlock m, double f) {
+        // XT - [(XT)*m]/f * z
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
-        // Apply XL on each row copyOf M
-        DataBlockIterator rows = M.rowsIterator();
+        // Apply XL on each row of X
+        DataBlockIterator rows = X.rowsIterator();
         while (rows.hasNext()){
             DataBlock row=rows.next();
             dynamics.XT(pos, row);
@@ -77,12 +77,12 @@ public interface ISsf extends ISsfState {
        
     }
 
-    default void XtL(int pos, FastMatrix M, DataBlock m, double f) {
-        // MT - [(MT)*m]/f * z
+    default void XtL(int pos, FastMatrix X, DataBlock m, double f) {
+        // XT - [(XT)*m]/f * z
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
-        // Apply XL on each row copyOf M
-        DataBlockIterator cols = M.columnsIterator();
+        // Apply XL on each column of M
+        DataBlockIterator cols = X.columnsIterator();
         while (cols.hasNext()){
             DataBlock col=cols.next();
             dynamics.XT(pos, col);
@@ -91,30 +91,30 @@ public interface ISsf extends ISsfState {
        
     }
     /**
-     *
+     * L is defined by T-KZ = T - Tm/f Z
      * @param pos
      * @param x The column array being modified
      * @param m A Colunm array (usually P*Z')
      * @param f The divisor copyOf m (usually ZPZ'+ H)
      */
-    default void LX(int pos, DataBlock x, DataBlock m, double f) {
+    default void Lx(int pos, DataBlock x, DataBlock m, double f) {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
         x.addAY(-loading().ZX(pos, x) / f, m);
-        dynamics().XT(pos, x);
+        dynamics().TX(pos, x);
     }
 
-    default void LM(int pos, FastMatrix M, DataBlock m, double f) {
+    default void LX(int pos, FastMatrix X, DataBlock m, double f) {
         // TX - T*m/f * z * X
         // TX - T * m * (zX)/f)
         // T (X - m*(zX/f))
         ISsfDynamics dynamics = dynamics();
         ISsfLoading loading = loading();
-        // Apply LX on each column copyOf M
-        M.columns().forEach(col -> {
+        // Apply LX on each column of M
+        X.columns().forEach(col -> {
             col.addAY(-loading.ZX(pos, col) / f, m);
-            dynamics.XT(pos, col);
+            dynamics.TX(pos, col);
         });
     }
 

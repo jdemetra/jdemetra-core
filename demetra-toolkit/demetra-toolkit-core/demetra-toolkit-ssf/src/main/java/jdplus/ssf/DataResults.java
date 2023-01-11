@@ -78,6 +78,13 @@ public class DataResults {
         }
     }
 
+    public boolean isMissing(final int t) {
+        if (data == null || t < start) {
+            return true;
+        } else {
+            return Double.isNaN(data[t - start]);
+        }
+    }
     public void save(final int t, final double x) {
         int st = t - start;
         if (st < 0) {

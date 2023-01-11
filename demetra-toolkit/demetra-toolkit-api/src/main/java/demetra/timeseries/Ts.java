@@ -16,7 +16,6 @@
  */
 package demetra.timeseries;
 
-import demetra.processing.ProcessingLog.InformationType;
 import internal.timeseries.util.TsDataBuilderUtil;
 import nbbrd.design.LombokWorkaround;
 import nbbrd.design.StaticFactoryMethod;
@@ -67,12 +66,12 @@ public class Ts {
 
     @StaticFactoryMethod
     public static @NonNull Ts of(@NonNull TsData data) {
-        return builder().data(data).build();
+        return builder().moniker(TsMoniker.of()).data(data).build();
     }
 
     @StaticFactoryMethod
     public static @NonNull Ts of(@NonNull String name, @NonNull TsData data) {
-        return builder().name(name).data(data).build();
+        return builder().moniker(TsMoniker.of()).name(name).data(data).build();
     }
 
     public @NonNull Ts load(@NonNull TsInformationType info, @NonNull TsFactory factory) {
@@ -87,6 +86,8 @@ public class Ts {
         }
         return factory.makeTs(moniker, info);
     }
+    
+    private static final String FROZEN=" (frozen)";
 
     public @NonNull Ts freeze() {
         if (!moniker.isProvided()) {
@@ -95,8 +96,9 @@ public class Ts {
         Builder builder = this.toBuilder();
         putFreezeMeta(builder, moniker);
 
-        return builder.moniker(TsMoniker.of())
-                .name(name + (" (frozen)"))
+        return builder
+                .moniker(TsMoniker.of())
+                .name(name + FROZEN)
                 .type(TsInformationType.UserDefined)
                 .build();
     }

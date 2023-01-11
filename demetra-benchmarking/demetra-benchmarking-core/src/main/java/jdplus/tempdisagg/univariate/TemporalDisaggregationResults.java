@@ -23,7 +23,6 @@ import demetra.math.functions.ObjectiveFunctionPoint;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.regression.Variable;
-import java.util.Map;
 import demetra.math.matrices.Matrix;
 import jdplus.stats.likelihood.DiffuseConcentratedLikelihood;
 import jdplus.stats.likelihood.DiffuseLikelihoodStatistics;

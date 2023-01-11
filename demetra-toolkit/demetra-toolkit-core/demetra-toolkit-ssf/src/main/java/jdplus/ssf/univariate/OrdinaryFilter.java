@@ -97,7 +97,7 @@ public class OrdinaryFilter {
                     throw new SsfException(SsfException.INCONSISTENT);
                 }
             }
-            updinfo.set(e);
+            updinfo.set(e, data.isConstraint(t));
             return true;
         }
     }

@@ -63,7 +63,7 @@ public class ArrayFilter {
             updinfo.setMissing();
         } else {
             double y = data.get(t);
-            updinfo.set(y - loading.ZX(t, state.a));
+            updinfo.set(y - loading.ZX(t, state.a), data.isConstraint(t));
         }
     }
 

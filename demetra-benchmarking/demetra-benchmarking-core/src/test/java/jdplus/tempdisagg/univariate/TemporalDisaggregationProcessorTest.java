@@ -34,7 +34,7 @@ public class TemporalDisaggregationProcessorTest {
                 .constant(true)
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
-                .rescale(true)
+                .rescale(false)
                 .algorithm(SsfInitialization.Augmented)
                 .build();
         TemporalDisaggregationResults rslt1 = TemporalDisaggregationProcessor.process(y, new TsData[]{q}, spec1);
@@ -45,7 +45,7 @@ public class TemporalDisaggregationProcessorTest {
                 .constant(true)
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
-                .rescale(true)
+                .rescale(false)
                 .algorithm(SsfInitialization.SqrtDiffuse)
                 .build();
         TemporalDisaggregationResults rslt2 = TemporalDisaggregationProcessor.process(y, new TsData[]{q}, spec2);
@@ -58,13 +58,15 @@ public class TemporalDisaggregationProcessorTest {
                 .constant(true)
                 .maximumLikelihood(true)
                 .estimationPrecision(1e-9)
-                .rescale(true)
+                .rescale(false)
                 .algorithm(SsfInitialization.Diffuse)
                 .build();
         TemporalDisaggregationResults rslt3 = TemporalDisaggregationProcessor.process(y, new TsData[]{q}, spec3);
-        assertTrue(rslt1.getCoefficients().distance(rslt3.getCoefficients()) < 1e-6);
-        assertTrue(rslt1.getCoefficientsCovariance().diagonal()
-                .distance(rslt3.getCoefficientsCovariance().diagonal()) < 1e-6);
+        double d=rslt1.getCoefficients().distance(rslt3.getCoefficients());
+        assertTrue(d < 1e-6);
+        d=rslt1.getCoefficientsCovariance().diagonal()
+                .distance(rslt3.getCoefficientsCovariance().diagonal());
+        assertTrue(d < 1e-6);
 //        System.out.println("CL");
 //        System.out.println(rslt2.getDisaggregatedSeries().getValues());
 //        System.out.println(rslt2.getStdevDisaggregatedSeries().getValues());

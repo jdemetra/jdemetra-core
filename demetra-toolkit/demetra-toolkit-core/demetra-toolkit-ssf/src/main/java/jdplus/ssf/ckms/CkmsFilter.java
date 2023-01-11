@@ -16,7 +16,6 @@
  */
 package jdplus.ssf.ckms;
 
-import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.univariate.IFilteringResults;
@@ -163,6 +162,6 @@ public class CkmsFilter {
 
     private void error(int t) {
         double y = data.get(t);
-        pe.set(y - loading.ZX(t, state.a));
+        pe.set(y - loading.ZX(t, state.a), data.isConstraint(t));
     }
 }

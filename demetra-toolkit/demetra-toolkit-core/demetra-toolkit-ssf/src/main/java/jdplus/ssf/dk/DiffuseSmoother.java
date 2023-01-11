@@ -159,7 +159,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
             a.addProduct(Ri, frslts.Pi(pos).columnsIterator());
         }
     }
-
+    
     @Override
     protected void updateP(int pos) {
         FastMatrix P = state.P();
@@ -180,7 +180,6 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
         OrdinarySmoother smoother = OrdinarySmoother
                 .builder(ssf)
                 .calcVariance(calcvar)
-                .rescaleVariance(false)
                 .build();
         int beg = frslts.getEndDiffusePosition();
         smoother.process(beg, end, frslts, srslts);

@@ -42,7 +42,6 @@ public final class DemoTsBuilder {
         DemoTsBuilder builder = new DemoTsBuilder().obsCount(24).rng(rng);
         return TsCollection
                 .builder()
-                .moniker(TsMoniker.of())
                 .items(IntStream.range(0, nSeries).mapToObj(i -> builder.name("S" + i).build()).collect(Collectors.toList()))
                 .build();
     }
@@ -108,7 +107,7 @@ public final class DemoTsBuilder {
     }
 
     public Ts build() {
-        Ts.Builder result = Ts.builder().name(name).moniker(TsMoniker.of());
+        Ts.Builder result = Ts.builder().name(name);
         double[] values = generator.apply(obsCount, rng);
         if (missingCount > 0 && values.length > 0) {
             for (int x = 0; x < missingCount; x++) {

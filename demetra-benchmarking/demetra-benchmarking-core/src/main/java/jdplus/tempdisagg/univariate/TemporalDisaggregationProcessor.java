@@ -42,13 +42,19 @@ import demetra.timeseries.TsUnit;
 import java.util.ArrayList;
 import java.util.List;
 import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.tempdisagg.univariate.TemporalDisaggregationSpec;
 import demetra.timeseries.regression.Variable;
-import java.time.LocalDate;
+import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
+import jdplus.math.matrices.QuadraticForm;
+import jdplus.ssf.DataBlockResults;
+import jdplus.ssf.dk.DefaultDiffuseFilteringResults;
+import jdplus.ssf.dk.DiffuseSmoother;
+import jdplus.ssf.dk.FastDkSmoother;
 import jdplus.ssf.sts.Noise;
 
 /**
@@ -57,6 +63,16 @@ import jdplus.ssf.sts.Noise;
  */
 @lombok.experimental.UtilityClass
 public class TemporalDisaggregationProcessor {
+
+    @lombok.Value
+    @lombok.AllArgsConstructor
+    private static class TemporalDisaggregationEstimation {
+
+        ObjectiveFunctionPoint ml;
+        DiffuseConcentratedLikelihood dll;
+        StateComponent noise;
+        ISsfLoading loading;
+    }
 
     public TemporalDisaggregationResults process(TsData aggregatedSeries, TsData[] indicators, TemporalDisaggregationSpec spec) {
         if (indicators == null || indicators.length == 0) {
@@ -147,13 +163,15 @@ public class TemporalDisaggregationProcessor {
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
-            double c = 2 * rslt.getSsqE() / (dll.dim() - dll.nx() - 1);
+            double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getValue();
             double[] grad = fmin.gradientAtMinimum().toArray();
             for (int i = 0; i < grad.length; ++i) {
-                grad[i] /= -c;
+                grad[i] *= -c;
             }
+            FastMatrix hessian = fmin.curvatureAtMinimum();
+            hessian.mul(-c);
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p.toArray(), grad, fmin.curvatureAtMinimum().times(1 / c));
+                    p.toArray(), grad, hessian);
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 nmodel = Ssf.of(AR1.of(p.get(0), 1, spec.isZeroInitialization()), AR1.defaultLoading());
@@ -200,7 +218,7 @@ public class TemporalDisaggregationProcessor {
         if (regeffect != null) {
             regeffect = regeffect.multiply(f);
         }
-        TsData res = hresiduals(model, dll.coefficients());
+        TsData res = hresiduals(model, dll.coefficients(), rssf);
         res = res.multiply(f);
         res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
         dll = dll.rescale(model.getYfactor(), model.getXfactor());
@@ -220,7 +238,177 @@ public class TemporalDisaggregationProcessor {
                 .build();
     }
 
+    // Estimate the disaggregation  model
+    private TemporalDisaggregationEstimation estimateDisaggregationModel(DisaggregationModel model, TemporalDisaggregationSpec spec) {
+        StateComponent ncmp = noiseComponent(spec);
+        ISsfLoading nloading = noiseLoading(spec);
+        int[] diffuse = diffuseRegressors(model.nx(), spec);
+        if (!spec.isParameterEstimation()) {
+            Ssf cssf = Ssf.of(SsfCumulator.of(ncmp, nloading, model.getFrequencyRatio(), 0),
+                    SsfCumulator.defaultLoading(nloading, model.getFrequencyRatio(), 0));
+            SsfData ssfdata = new SsfData(model.getHEY());
+            SsfRegressionModel ssfmodel = new SsfRegressionModel(cssf, ssfdata, model.getHEX(), diffuse);
+            return new TemporalDisaggregationEstimation(
+                    null,
+                    DkToolkit.concentratedLikelihoodComputer(true, false, true).compute(ssfmodel),
+                    ncmp,
+                    nloading
+            );
+        } else {
+            SsfFunction<Parameter, Ssf> fn = ssfFunction(model, spec);
+            SsqFunctionMinimizer fmin = LevenbergMarquardtMinimizer
+                    .builder()
+                    .build();
+            double start = spec.getParameter().getType() == ParameterType.Undefined
+                    ? .9 : spec.getParameter().getValue();
+            fmin.minimize(fn.ssqEvaluate(Doubles.of(start)));
+            SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
+            DoubleSeq p = rslt.getParameters();
+            DiffuseConcentratedLikelihood dll = rslt.getLikelihood();
+            double c = -.5 * (dll.degreesOfFreedom() - 1) / rslt.getValue();
+            double[] grad = fmin.gradientAtMinimum().toArray();
+            for (int i = 0; i < grad.length; ++i) {
+                grad[i] *= c;
+            }
+            FastMatrix hessian = fmin.curvatureAtMinimum().times(c);
+            ObjectiveFunctionPoint ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
+                    p.toArray(), grad, hessian);
+            if (spec.getResidualsModel() == Model.Ar1) {
+                ncmp = AR1.of(p.get(0), 1, spec.isZeroInitialization());
+            } else {
+                ncmp = Arima_1_1_0.of(p.get(0), 1, spec.isZeroInitialization());
+            }
+            return new TemporalDisaggregationEstimation(
+                    ml, dll, ncmp, nloading
+            );
+        }
+    }
+
+    private void disaggregateEstimation(DisaggregationModel model, TemporalDisaggregationEstimation estimation, final double[] z, final double[] e) {
+        double[] hy = model.getHY();
+        FastMatrix hX = model.getHX();
+        FastMatrix hXC = model.getHXC();
+
+        StateComponent ncmp = estimation.getNoise();
+        ISsfLoading nloading = estimation.getLoading();
+        Ssf cssf = Ssf.of(SsfCumulator.of(ncmp, nloading, model.getFrequencyRatio(), model.getStart()),
+                SsfCumulator.defaultLoading(nloading, model.getFrequencyRatio(), model.getStart()));
+        DiffuseSmoother smoother = DiffuseSmoother.builder(cssf)
+                .calcVariance(true)
+                .rescaleVariance(false)
+                .build();
+        DefaultSmoothingResults srslts = DefaultSmoothingResults.full();
+        srslts.prepare(cssf.getStateDim(), 0, hy.length);
+        DiffuseConcentratedLikelihood dll = estimation.getDll();
+        double sigma = Math.sqrt(dll.sigma2());
+        int dim = ncmp.dim();
+        if (hX == null || hX.isEmpty()) {
+            SsfData data = new SsfData(hy);
+            DefaultDiffuseFilteringResults frslts = DkToolkit.filter(cssf, data, true);
+            smoother.process(hy.length, frslts, srslts);
+            for (int i = 0; i < z.length; ++i) {
+                z[i] = nloading.ZX(i, srslts.a(i).drop(1, 0));
+                double v = nloading.ZVZ(i, srslts.P(i).extract(1, dim, 1, dim));
+                e[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
+            }
+        } else {
+            // Xb
+            DoubleSeq b = dll.coefficients();
+            DataBlock Xb = DataBlock.make(hXC.getRowsCount());
+            DataBlock Xbc = DataBlock.make(hXC.getRowsCount());
+            DoubleSeqCursor bcur = b.cursor();
+            DataBlockIterator xcols = hX.columnsIterator();
+            DataBlockIterator xccols = hXC.columnsIterator();
+            double c = bcur.getAndNext();
+            Xb.setAY(c, xcols.next());
+            Xbc.setAY(c, xccols.next());
+            while (xcols.hasNext()) {
+                c = bcur.getAndNext();
+                Xb.addAY(c, xcols.next());
+                Xbc.addAY(c, xccols.next());
+            }
+            // u=y-Xb
+            DataBlock u = DataBlock.copyOf(hy);
+            u.sub(Xbc);
+
+            //L(y-Xb)
+            SsfData data = new SsfData(u);
+            DefaultDiffuseFilteringResults frslts = DkToolkit.filter(cssf, data, true);
+            smoother.process(hy.length, frslts, srslts);
+
+            // Z = L(y-Xb) + Xb  
+            // V = V(L(y-Xb)) + (LX-X) V(B) (LX-X)'
+            FastMatrix Vb = dll.unscaledCovariance();
+            FastDkSmoother fsmoother = new FastDkSmoother(cssf, frslts);
+            FastMatrix LhX = FastMatrix.make(hX.getRowsCount(), hX.getColumnsCount());
+            DataBlockIterator lxcols = LhX.columnsIterator();
+            xccols.reset();
+            while (xccols.hasNext()) {
+                fsmoother.smooth(xccols.next());
+                DataBlockResults ss = fsmoother.smoothedStates();
+                lxcols.next().set(i -> nloading.ZX(i, ss.datablock(i).drop(1, 0)));
+            }
+
+            LhX.sub(hX);
+            for (int i = 0; i < z.length; ++i) {
+                z[i] = nloading.ZX(i, srslts.a(i).drop(1, 0)) + Xb.get(i);
+                double v = nloading.ZVZ(i, srslts.P(i).extract(1, dim, 1, dim));
+                v += QuadraticForm.apply(Vb, LhX.row(i));
+                e[i] = v <= 0 ? 0 : sigma * Math.sqrt(v);
+            }
+        }
+    }
+
     private TemporalDisaggregationResults disaggregate(DisaggregationModel model, TemporalDisaggregationSpec spec) {
+        TemporalDisaggregationEstimation edm = estimateDisaggregationModel(model, spec);
+        TsDomain hDom = model.getHDom();
+        double[] yh = new double[hDom.length()];
+        double[] eyh = new double[hDom.length()];
+
+        disaggregateEstimation(model, edm, yh, eyh);
+        double yfac = model.getYfactor();
+        if (spec.getAggregationType() == AggregationType.Average) {
+            yfac /= model.getFrequencyRatio();
+        }
+        if (yfac != 1) {
+            for (int i = 0; i < yh.length; ++i) {
+                yh[i] /= yfac;
+                eyh[i] /= yfac;
+            }
+        }
+
+        double[] xfac = model.getXfactor();
+
+        DiffuseConcentratedLikelihood dll = edm.getDll();
+        TsData regeffect = regeffect(model, dll.coefficients());
+        if (regeffect != null) {
+            regeffect = regeffect.divide(yfac);
+        }
+        // full residuals are obtained by applying the filter on the series without the
+        // regression effects
+        Ssf ssf = Ssf.of(SsfCumulator.of(edm.getNoise(), edm.getLoading(), model.getFrequencyRatio(), model.getStart()),
+                SsfCumulator.defaultLoading(edm.getLoading(), model.getFrequencyRatio(), model.getStart()));
+        TsData res = hresiduals(model, dll.coefficients(), ssf);
+        res = res.divide(yfac);
+        res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
+        dll = dll.rescale(yfac, xfac);
+        int nparams = spec.isParameterEstimation() ? 1 : 0;
+        return TemporalDisaggregationResults.builder()
+                .originalSeries(model.getOriginalSeries())
+                .disaggregationDomain(model.getHDom())
+                .indicators(model.getIndicators())
+                .maximum(edm.getMl())
+                .likelihood(dll)
+                .hyperParametersCount(nparams)
+                .stats(dll.stats(0, nparams))
+                .disaggregatedSeries(TsData.ofInternal(hDom.getStartPeriod(), yh))
+                .stdevDisaggregatedSeries(TsData.ofInternal(hDom.getStartPeriod(), eyh))
+                .regressionEffects(regeffect)
+                .residualsDiagnostics(diagnostic(res))
+                .build();
+    }
+
+    private TemporalDisaggregationResults disaggregate2(DisaggregationModel model, TemporalDisaggregationSpec spec) {
         StateComponent ncmp = noiseComponent(spec);
         ISsfLoading nloading = noiseLoading(spec);
         int[] diffuse = diffuseRegressors(model.nx(), spec);
@@ -243,13 +431,14 @@ public class TemporalDisaggregationProcessor {
             SsfFunctionPoint<Parameter, Ssf> rslt = (SsfFunctionPoint<Parameter, Ssf>) fmin.getResult();
             DoubleSeq p = rslt.getParameters();
             dll = rslt.getLikelihood();
-            double c = .5 * (dll.dim() - dll.nx() - 1) / rslt.getSsqE();
+            double c = -.5 * (dll.degreesOfFreedom() - 1) / rslt.getValue();
             double[] grad = fmin.gradientAtMinimum().toArray();
             for (int i = 0; i < grad.length; ++i) {
-                grad[i] *= -c;
+                grad[i] *= c;
             }
+            FastMatrix hessian = fmin.curvatureAtMinimum().times(c);
             ml = new ObjectiveFunctionPoint(rslt.getLikelihood().logLikelihood(),
-                    p.toArray(), grad, fmin.curvatureAtMinimum().times(c));
+                    p.toArray(), grad, hessian);
 
             if (spec.getResidualsModel() == Model.Ar1) {
                 ncmp = AR1.of(p.get(0), 1, spec.isZeroInitialization());
@@ -299,7 +488,7 @@ public class TemporalDisaggregationProcessor {
         }
         // full residuals are obtained by applying the filter on the series without the
         // regression effects
-        TsData res = hresiduals(model, dll.coefficients());
+        TsData res = hresiduals(model, dll.coefficients(), ssf);
         res = res.divide(yfac);
         res = res.aggregate(model.getLDom().getTsUnit(), AggregationType.Last, true);
         dll = dll.rescale(yfac, xfac);
@@ -424,7 +613,7 @@ public class TemporalDisaggregationProcessor {
         return TsData.of(model.getHDom().getStartPeriod(), regs);
     }
 
-    private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff) {
+    private TsData hresiduals(DisaggregationModel model, DoubleSeq coeff, ISsf ssf) {
         double[] y = new double[model.getHEDom().length()];
         double[] hy = model.getHEY();
         FastMatrix hx = model.getHEX();
@@ -437,7 +626,8 @@ public class TemporalDisaggregationProcessor {
                 }
             }
         }
-        return TsData.ofInternal(model.getHEDom().getStartPeriod(), y);
+        DefaultDiffuseFilteringResults fr = DkToolkit.filter(ssf, new SsfData(y), false);
+        return TsData.of(model.getHEDom().getStartPeriod(), fr.errors(true, false));
     }
 
     private ResidualsDiagnostics diagnostic(TsData res) {
@@ -450,46 +640,9 @@ public class TemporalDisaggregationProcessor {
                 .fullResiduals(res)
                 .niid(tests)
                 .build();
+
     }
 
-    private LikelihoodStatistics lstats(DiffuseConcentratedLikelihood dll, int nobs, TemporalDisaggregationSpec spec) {
-        return LikelihoodStatistics.statistics(dll.logLikelihood(), nobs)
-                .llAdjustment(0)
-                .differencingOrder(dll.ndiffuse())
-                .parametersCount((spec.isParameterEstimation() ? 1 : 0) + dll.nx() + 1)
-                .ssq(dll.ssq())
-                .build();
-    }
-
-//    private LinearModelEstimation lestimation(DiffuseConcentratedLikelihood dll, TemporalDisaggregationSpec spec) {
-//        if (dll.nx() == 0) {
-//            return LinearModelEstimation.EMPTY;
-//        }
-//        ParameterEstimation[] c = new ParameterEstimation[dll.nx()];
-//        int pos = 0;
-//        int nparams = spec.isParameterEstimation() ? 1 : 0;
-//        T tstat = new T(dll.dim() - dll.nx() - nparams);
-//        DoubleSeq coefficients = dll.coefficients();
-//        MatrixType cov = dll.covariance(nparams, true);
-//        DoubleSeq ser = cov.diagonal();
-//        if (spec.isConstant()) {
-//            double ccur = coefficients.get(pos), ecur = Math.sqrt(ser.get(pos));
-//            double pval = 2 * tstat.getProbability(Math.abs(ccur / ecur), ProbabilityType.Upper);
-//            c[pos++] = new ParameterEstimation(ccur, ecur, pval, "constant");
-//        }
-//        if (spec.isTrend()) {
-//            double ccur = coefficients.get(pos), ecur = Math.sqrt(ser.get(pos));
-//            double pval = 2 * tstat.getProbability(Math.abs(ccur / ecur), ProbabilityType.Upper);
-//            c[pos++] = new ParameterEstimation(ccur, ecur, pval, "trend");
-//        }
-//        int i = 1;
-//        while (pos < c.length) {
-//            double ccur = coefficients.get(pos), ecur = Math.sqrt(ser.get(pos));
-//            double pval = 2 * tstat.getProbability(Math.abs(ccur / ecur), ProbabilityType.Upper);
-//            c[pos++] = new ParameterEstimation(ccur, ecur, pval, "var" + (i++));
-//        }
-//        return new LinearModelEstimation(c, cov);
-//    }
     private static class Mapping implements IParametricMapping<Parameter> {
 
         private final double lbound;

@@ -68,6 +68,9 @@ public class HtmlDiffuseLikelihood extends AbstractHtmlElement implements HtmlEl
             stream.write("Adjusted loglikelihood = ").write(
                     df6.format(stats.getAdjustedLogLikelihood())).newLines(2);
         }
+//        double ssq = stats.getSsqErr();
+//        stream.write("Sum of squared residuals (full residuals) = ")
+//                .write(dg6.format(ssq)).newLine();
         double stde = Math.sqrt(stats.getSsqErr() / stats.getEffectiveObservationsCount());
         stream.write("Standard error of the regression (ML estimate) = ")
                 .write(dg6.format(stde)).newLine();

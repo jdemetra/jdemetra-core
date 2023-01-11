@@ -62,7 +62,6 @@ public class X13FactoryTest {
     @Test
     public void testSaItem() {
         Ts ts = Ts.builder()
-                .moniker(TsMoniker.of())
                 .name("prod")
                 .data(Data.TS_PROD)
                 .build();

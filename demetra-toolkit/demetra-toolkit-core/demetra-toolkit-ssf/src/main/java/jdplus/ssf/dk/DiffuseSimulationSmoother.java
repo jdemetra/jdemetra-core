@@ -24,7 +24,6 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.random.JdkRNG;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.ResultsRange;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.univariate.ISsfData;
 import jdplus.ssf.ISsfLoading;
@@ -360,7 +359,7 @@ public class DiffuseSimulationSmoother {
         }
 
         private void filter() {
-            DkFilter f = new DkFilter(ssf, frslts, new ResultsRange(0, n), false);
+            FastDkFilter f = new FastDkFilter(ssf, frslts, false);
             ferrors = simulatedData.clone();
             f.filter(DataBlock.copyOf(ferrors));
         }

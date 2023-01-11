@@ -27,23 +27,34 @@ import jdplus.math.matrices.FastMatrix;
  *
  * @author Jean Palate
  */
-@Development(status = Development.Status.Beta)
+@Development(status = Development.Status.Release)
 @lombok.Value
-class DisaggregationModel {
+public class DisaggregationModel {
     
     @NonNull TsData originalSeries;
     
     Variable[] indicators;
     
+    /**
+     * Y expanded to the high frequency (with missing values).
+     * Unscaled
+     */
     @NonNull
     double[] hO;
 
-    @NonNull
-    double[] hY;
     /**
      * Y expanded to the high frequency (with missing values). hY corresponds to
      * hDom (domain of the set of the indicators or pre-specified domain when
      * indicators are missing). If necessary it is expanded with missing values.
+     * Scaled
+     */
+    @NonNull
+    double[] hY;
+    /**
+     * Y expanded to the high frequency (with missing values). hEY corresponds to
+     * hEDom (common domain of the aggregated series and of the set of the indicators or pre-specified domain when
+     * indicators are missing). 
+     * Scaled
      */
     @NonNull
     double[] hEY;
@@ -51,6 +62,10 @@ class DisaggregationModel {
      * Regression variables. Defined on the high level domain. Could be null
      */
     FastMatrix hX;
+    /**
+     * Cumulated regression variables. Defined on the high level domain. Could be null
+     */
+    FastMatrix hXC;
     /**
      * Regression variables transformed to match the aggregation mode
      * (cumulative variables). Defined on the high level domain.
@@ -92,11 +107,12 @@ class DisaggregationModel {
     
     DisaggregationModel(DisaggregationModelBuilder builder){
         this.originalSeries=builder.y;
-        this.indicators=builder.regressors.toArray(new Variable[builder.regressors.size()]);
+        this.indicators=builder.regressors.toArray(Variable[]::new);
         this.hO=builder.hO;
         this.hY=builder.hY;
         this.hEY=builder.hEY;
         this.hX=builder.hX;
+        this.hXC=builder.hXC;
         this.hEX=builder.hEX;
         this.lDom=builder.y.getDomain();
         this.lEDom=builder.lEDom;
@@ -108,14 +124,8 @@ class DisaggregationModel {
         this.start=builder.start;
     }
 
-    int nx() {
+    public int nx() {
         return hX == null ? 0 : hX.getColumnsCount();
     }
-
-    int n() {
-        return hEY.length;
-    }
-    
-    
 
 }

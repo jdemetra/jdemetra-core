@@ -39,11 +39,6 @@ public class SsfData implements ISsfData  {
     }
 
     @Override
-    public boolean hasData() {
-        return true;
-    }
-
-    @Override
     public int length() {
         return data.length();
     }

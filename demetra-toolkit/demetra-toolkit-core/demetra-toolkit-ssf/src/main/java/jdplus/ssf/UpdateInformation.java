@@ -24,16 +24,21 @@ import jdplus.data.DataBlock;
  */
 public class UpdateInformation {
 
+    static public enum Status {
+        OBSERVATION, CONSTRAINT, MISSING
+    }
+
+    private Status status;
+
     /**
      * e is the prediction error (=y(t)-Z(t)A(t))
      */
-    private double e, f,stde;
+    private double e, f, stde;
 
     /**
      * M = P Z'
      */
     private final DataBlock M;
-    
 
     /**
      *
@@ -44,67 +49,75 @@ public class UpdateInformation {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public double get() {
         return e;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public double getVariance() {
         return f;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public double getStandardDeviation() {
         return stde;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
-     public DataBlock M() {
+    public DataBlock M() {
         return M;
     }
 
     /**
-     * =(ZPZ'+v) variance copyOf the
- prediction error 
-     * @param f 
+     * =(ZPZ'+v) variance copyOf the prediction error
+     *
+     * @param f
      */
-    public void setVariance(final double f){
-        this.f=f;
-        this.stde=Math.sqrt(f);
-    };
-    
-    public void setStandardDeviation(final double e){
-        this.f=e*e;
-        this.stde=e;
-    };
-    
-    public void set(final double val){
-        this.e=val;
+    public void setVariance(final double f) {
+        this.f = f;
+        this.stde = Math.sqrt(f);
     }
+
+    ;
+    
+    public void setStandardDeviation(final double e) {
+        this.f = e * e;
+        this.stde = e;
+    }
+
+    public void set(final double val, final boolean constraint) {
+        status = constraint ? Status.CONSTRAINT : Status.OBSERVATION;
+        e = val;
+    }
+
     /**
-     * 
+     *
      * @return
      */
-    public boolean isMissing()
-    {
-	return Double.isNaN(e);
+    public boolean isMissing() {
+        return status == Status.MISSING;
     }
-    
-    public void setMissing(){
-        e=Double.NaN;
-        M.set(()->Double.NaN);
+
+    public void setMissing() {
+        e = Double.NaN;
+        status = Status.MISSING;
+        M.set(() -> Double.NaN);
     }
-    
+
+    public Status getStatus() {
+        return status;
+    }
+
 }

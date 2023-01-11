@@ -23,21 +23,118 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.univariate.ISsf;
 import jdplus.ssf.ISsfDynamics;
-import jdplus.ssf.ResultsRange;
 import jdplus.ssf.State;
 import demetra.data.DoubleSeq;
+import jdplus.ssf.univariate.DefaultFilteringResults;
 
 /**
  *
  * @author Jean Palate
  */
-public class DkFilter {
+public class FastDkFilter {
 
-    private final BaseDiffuseFilteringResults frslts;
+    public static interface VarianceFilterProvider {
+
+        int size();
+
+        int endDiffusePosition();
+
+        boolean isMissing(int pos);
+
+        double errorVariance(int pos);
+
+        double diffuseNorm2(int pos);
+
+        DataBlock M(int pos);
+
+        DataBlock Mi(int pos);
+
+        public static VarianceFilterProvider of(final BaseDiffuseFilteringResults fr) {
+            return new VarianceFilterProvider() {
+                @Override
+                public int size() {
+                    return fr.size();
+                }
+
+                @Override
+                public int endDiffusePosition() {
+                    return fr.getEndDiffusePosition();
+                }
+
+                @Override
+                public boolean isMissing(int pos) {
+                    return fr.isMissing(pos);
+                }
+
+                @Override
+                public double errorVariance(int pos) {
+                    return fr.errorVariance(pos);
+                }
+
+                @Override
+                public double diffuseNorm2(int pos) {
+                    return fr.diffuseNorm2(pos);
+                }
+
+                @Override
+                public DataBlock M(int pos) {
+                    return fr.M(pos);
+                }
+
+                @Override
+                public DataBlock Mi(int pos) {
+                    return fr.Mi(pos);
+                }
+
+            };
+        }
+
+        public static VarianceFilterProvider of(final DefaultFilteringResults fr) {
+            return new VarianceFilterProvider() {
+                @Override
+                public int size() {
+                    return fr.size();
+                }
+
+                @Override
+                public int endDiffusePosition() {
+                    return 0;
+                }
+
+                @Override
+                public boolean isMissing(int pos) {
+                    return fr.isMissing(pos);
+                }
+
+                @Override
+                public double errorVariance(int pos) {
+                    return fr.errorVariance(pos);
+                }
+
+                @Override
+                public double diffuseNorm2(int pos) {
+                    return 0;
+                }
+
+                @Override
+                public DataBlock M(int pos) {
+                    return fr.M(pos);
+                }
+
+                @Override
+                public DataBlock Mi(int pos) {
+                    return DataBlock.EMPTY;
+                }
+
+            };
+        }
+    }
+
+    private final VarianceFilterProvider vf;
     private final ISsf ssf;
     private final ISsfLoading loading;
     private final ISsfDynamics dynamics;
-    private final int start, end, enddiffuse;
+    private final int enddiffuse;
     private final boolean normalized;
 
     public boolean isnormalized() {
@@ -56,13 +153,11 @@ public class DkFilter {
         return new FastDiffuseFilter1().filter(x, normalized);
     }
 
-    public DkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, ResultsRange range, boolean normalized) {
-        this.frslts = frslts;
+    public FastDkFilter(ISsf ssf, BaseDiffuseFilteringResults frslts, boolean normalized) {
+        this.vf = VarianceFilterProvider.of(frslts);
         this.ssf = ssf;
         loading = ssf.loading();
         dynamics = ssf.dynamics();
-        start = range.getStart();
-        end = range.getEnd();
         enddiffuse = frslts.getEndDiffusePosition();
         this.normalized = normalized;
     }
@@ -79,14 +174,15 @@ public class DkFilter {
         private DataBlockIterator scols;
 
         boolean filter(FastMatrix x, boolean normalized) {
-            if (x.getRowsCount() > end - start) {
+            int n = vf.size();
+            if (x.getRowsCount() > n) {
                 return false;
             }
             int dim = ssf.getStateDim();
             states = FastMatrix.make(dim, x.getColumnsCount());
             prepareTmp();
             DataBlockIterator rows = x.rowsIterator();
-            int pos = start;
+            int pos = 0;
             while (rows.hasNext()) {
                 iterate(pos++, rows.next(), normalized);
             }
@@ -100,22 +196,22 @@ public class DkFilter {
         }
 
         private void iterate(int i, DataBlock row, boolean normalized) {
-            boolean missing = !Double.isFinite(frslts.error(i));
-            double f = frslts.errorVariance(i);
+            boolean missing = vf.isMissing(i);
+            double f = vf.errorVariance(i);
             double w;
             DataBlock K;
             if (i < enddiffuse) {
-                double fi = frslts.diffuseNorm2(i);
+                double fi = vf.diffuseNorm2(i);
                 if (fi != 0) {
                     w = fi;
-                    K = frslts.Mi(i);
+                    K = vf.Mi(i);
                 } else {
                     w = f;
-                    K = frslts.M(i);
+                    K = vf.M(i);
                 }
             } else {
                 w = f;
-                K = frslts.M(i);
+                K = vf.M(i);
             }
 
             loading.ZM(i, states, tmp);
@@ -152,37 +248,36 @@ public class DkFilter {
         private DataBlock state;
 
         boolean filter(DataBlock x, boolean normalized) {
-            if (x.length() > end - start) {
+            int len = vf.size();
+            if (x.length() > len) {
                 return false;
             }
             int dim = ssf.getStateDim(), n = x.length();
             state = DataBlock.make(dim);
-            int pos = start, xpos = 0;
+            int pos = 0;
             do {
-                x.set(xpos, iterate(pos, x.get(xpos), normalized));
-                pos++;
-                xpos++;
-            } while (xpos < n);
+                x.set(pos, iterate(pos, x.get(pos), normalized));
+            } while (++pos < n);
             return true;
         }
 
         private double iterate(int i, double y, boolean normalized) {
-            boolean missing = !Double.isFinite(frslts.error(i));
-            double f = frslts.errorVariance(i);
+            boolean missing = vf.isMissing(i);
+            double f = vf.errorVariance(i);
             double w;
             DataBlock K;
             if (i < enddiffuse) {
-                double fi = frslts.diffuseNorm2(i);
+                double fi = vf.diffuseNorm2(i);
                 if (fi != 0) {
                     w = fi;
-                    K = frslts.Mi(i);
+                    K = vf.Mi(i);
                 } else {
                     w = f;
-                    K = frslts.M(i);
+                    K = vf.M(i);
                 }
             } else {
                 w = f;
-                K = frslts.M(i);
+                K = vf.M(i);
             }
             double e = y - loading.ZX(i, state);
             // update the states
@@ -205,35 +300,36 @@ public class DkFilter {
         }
 
         boolean apply(DoubleSeq in, DataBlock out) {
-            if (in.length() > end - start) {
+            int len = vf.size();
+            if (in.length() > len) {
                 return false;
             }
             int dim = ssf.getStateDim(), n = in.length();
             state = DataBlock.make(dim);
-            int pos = start, ipos = 0, opos = 0;
+            int pos = 0, opos = 0;
             do {
-                boolean missing = !Double.isFinite(frslts.error(pos));
+                boolean missing = vf.isMissing(pos);
                 if (!missing) {
-                    double f = frslts.errorVariance(pos);
+                    double f = vf.errorVariance(pos);
                     double w;
                     DataBlock K;
                     boolean diffuse = false;
                     if (pos < enddiffuse) {
-                        double fi = frslts.diffuseNorm2(pos);
+                        double fi = vf.diffuseNorm2(pos);
                         if (fi != 0) {
                             w = fi;
-                            K = frslts.Mi(pos);
+                            K = vf.Mi(pos);
                             diffuse = true;
                         } else {
                             w = f;
-                            K = frslts.M(pos);
+                            K = vf.M(pos);
                         }
                     } else {
                         w = f;
-                        K = frslts.M(pos);
+                        K = vf.M(pos);
                     }
 
-                    double e = in.get(ipos) - loading.ZX(pos, state);
+                    double e = in.get(pos) - loading.ZX(pos, state);
                     // update the states
                     state.addAY(e / w, K);
                     if (!diffuse && f != 0) {
@@ -241,7 +337,7 @@ public class DkFilter {
                     }
                 }
                 dynamics.TX(pos++, state);
-            } while (++ipos < n);
+            } while (pos < n);
             return true;
         }
 
