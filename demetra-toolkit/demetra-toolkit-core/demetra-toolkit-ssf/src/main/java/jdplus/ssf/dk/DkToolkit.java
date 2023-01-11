@@ -411,7 +411,7 @@ public class DkToolkit {
             int n = y.length();
             DiffusePredictionErrorDecomposition pe = new DiffusePredictionErrorDecomposition(true);
             pe.prepare(model.getSsf(), n);
-            DkFilter filter = filteringResults(model.getSsf(), y, pe);
+            FastDkFilter filter = filteringResults(model.getSsf(), y, pe);
             DiffuseLikelihood ll = pe.likelihood(scaling);
             DoubleSeq yl = pe.errors(true, true);
             int nl = yl.length();
@@ -466,7 +466,7 @@ public class DkToolkit {
 
         }
 
-        private DkFilter filteringResults(ISsf ssf, ISsfData data, DiffusePredictionErrorDecomposition pe) {
+        private FastDkFilter filteringResults(ISsf ssf, ISsfData data, DiffusePredictionErrorDecomposition pe) {
             if (sqr) {
                 DefaultDiffuseSquareRootFilteringResults fr = DefaultDiffuseSquareRootFilteringResults.light();
                 fr.prepare(ssf, 0, data.length());
@@ -476,11 +476,11 @@ public class DkToolkit {
                     CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(initializer);
                     CkmsFilter ffilter = new CkmsFilter(ff);
                     ffilter.process(ssf, data, dr);
-                    return new DkFilter(ssf, fr, true);
+                    return new FastDkFilter(ssf, fr, true);
                 } else {
                     OrdinaryFilter filter = new OrdinaryFilter(initializer);
                     filter.process(ssf, data, dr);
-                    return new DkFilter(ssf, fr, true);
+                    return new FastDkFilter(ssf, fr, true);
                 }
             } else {
                 DefaultDiffuseFilteringResults fr = DefaultDiffuseFilteringResults.light();
@@ -491,16 +491,16 @@ public class DkToolkit {
                     CkmsDiffuseInitializer ff = new CkmsDiffuseInitializer(initializer);
                     CkmsFilter ffilter = new CkmsFilter(ff);
                     ffilter.process(ssf, data, dr);
-                    return new DkFilter(ssf, fr, true);
+                    return new FastDkFilter(ssf, fr, true);
                 } else {
                     OrdinaryFilter filter = new OrdinaryFilter(initializer);
                     filter.process(ssf, data, dr);
-                    return new DkFilter(ssf, fr, true);
+                    return new FastDkFilter(ssf, fr, true);
                 }
             }
         }
 
-        private FastMatrix xl(SsfRegressionModel model, DkFilter lp, int nl) {
+        private FastMatrix xl(SsfRegressionModel model, FastDkFilter lp, int nl) {
             Matrix x = model.getX();
             if (x == null) {
                 return null;

@@ -33,7 +33,6 @@ import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.regression.Variable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -57,7 +56,7 @@ public class DisaggregationModelBuilder {
 
     // local information used in the building operation
     double[] hO, hY, hEY;
-    FastMatrix hX;
+    FastMatrix hX, hXC;
     FastMatrix hEX;
     TsDomain lEDom, hDom, hEDom;
     int frequencyRatio;
@@ -114,6 +113,7 @@ public class DisaggregationModelBuilder {
         hY = null;
         hEY = null;
         hX = null;
+        hXC = null;
         hEX = null;
         hDom = null;
         hEDom = null;
@@ -190,7 +190,8 @@ public class DisaggregationModelBuilder {
                     cEnd = cEnd.previous();
                 }
             }
-            default -> throw new IllegalArgumentException("Invalid aggregation type");
+            default ->
+                throw new IllegalArgumentException("Invalid aggregation type");
         }
         if (lStart.isAfter(cStart)) {
             cStart = lStart;
@@ -200,13 +201,16 @@ public class DisaggregationModelBuilder {
         }
         TsPeriod eStart;
         switch (aType) {
-            case Last -> eStart = TsPeriod.of(hUnit, cStart.end()).previous();
-            case First -> eStart = TsPeriod.of(hUnit, cStart.start());
+            case Last ->
+                eStart = TsPeriod.of(hUnit, cStart.end()).previous();
+            case First ->
+                eStart = TsPeriod.of(hUnit, cStart.start());
             case UserDefined -> {
                 TsPeriod c = TsPeriod.of(hUnit, cStart.start());
                 eStart = c.plus(observationPosition);
             }
-            default -> eStart = TsPeriod.of(hUnit, cStart.start());
+            default ->
+                eStart = TsPeriod.of(hUnit, cStart.start());
         }
 
         // Number of common lowfreq data
@@ -214,7 +218,7 @@ public class DisaggregationModelBuilder {
 
         // TODO: should be adjusted for diffuse orders
         if (ny < regressors.size()) {
-            throw new IllegalArgumentException("Empty model"); 
+            throw new IllegalArgumentException("Empty model");
         }
         lEDom = TsDomain.of(cStart, ny);
         // estimation domain in high frequency (start include, end excluded)
@@ -229,8 +233,10 @@ public class DisaggregationModelBuilder {
         // TODO: custom interpolation
         int np;
         np = switch (aType) {
-            case Average, Sum -> ny * frequencyRatio;
-            default -> (ny - 1) * frequencyRatio + 1;
+            case Average, Sum ->
+                ny * frequencyRatio;
+            default ->
+                (ny - 1) * frequencyRatio + 1;
         };
         hEDom = TsDomain.of(eStart, np);
         prepareY(lEDom);
@@ -241,29 +247,37 @@ public class DisaggregationModelBuilder {
     }
 
     private void prepareX() {
-        ITsVariable[] vars=new ITsVariable[regressors.size()];
-        int vpos=0;
-        for (Variable var : regressors){
-            vars[vpos++]=var.getCore();
+        ITsVariable[] vars = new ITsVariable[regressors.size()];
+        int vpos = 0;
+        for (Variable var : regressors) {
+            vars[vpos++] = var.getCore();
         }
         hX = Regression.matrix(disaggregationDomain, vars);
-
         int pos = hDom.indexOf(hEDom.getStartPeriod());
         int del = pos % frequencyRatio;
         if (del != 0) {
-            start = frequencyRatio - del;
+            start = frequencyRatio - del;;;
         } else {
             start = 0;
         }
         if (aType != AggregationType.Average
                 && aType != AggregationType.Sum) {
             hEX = hX.extract(pos, hEDom.length(), 0, hX.getColumnsCount());
+            hXC = hX;
         } else {
+            hXC = hX.deepClone();
+            FastMatrix xc;
+            if (del != 0){
+                xc=hXC.dropTopLeft(del, 0);
+                hXC.top(del).get().set(Double.NaN);
+            }else
+                xc=hXC;
             hEX = hX.extract(pos, hEDom.length(), 0, hX.getColumnsCount()).deepClone();
             Cumulator cumul = new Cumulator(frequencyRatio);
-            DataBlockIterator cX = hEX.columnsIterator();
+            DataBlockIterator cX = hEX.columnsIterator(), cXC=xc.columnsIterator();
             while (cX.hasNext()) {
                 cumul.transform(cX.next());
+                cumul.transform(cXC.next());
             }
         }
     }
@@ -337,6 +351,11 @@ public class DisaggregationModelBuilder {
                 i = 0;
                 while (ecols.hasNext()) {
                     ecols.next().mul(xfactor[i++]);
+                }
+                DataBlockIterator eccols = hXC.columnsIterator();
+                i = 0;
+                while (eccols.hasNext()) {
+                    eccols.next().mul(xfactor[i++]);
                 }
             }
         } else {

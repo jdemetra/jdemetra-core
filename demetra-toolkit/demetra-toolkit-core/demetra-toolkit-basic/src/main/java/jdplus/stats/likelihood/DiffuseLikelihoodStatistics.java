@@ -26,7 +26,7 @@ public class DiffuseLikelihoodStatistics {
         return logLikelihood + transformationAdjustment;
     }
 
-    public double getEffectiveObservationsCount() {
+    public int getEffectiveObservationsCount() {
         return observationsCount-diffuseCount;
     }
 

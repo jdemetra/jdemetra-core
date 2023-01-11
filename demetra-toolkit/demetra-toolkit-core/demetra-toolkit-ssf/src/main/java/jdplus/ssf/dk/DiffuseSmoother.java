@@ -159,7 +159,7 @@ public class DiffuseSmoother extends BaseDiffuseSmoother {
             a.addProduct(Ri, frslts.Pi(pos).columnsIterator());
         }
     }
-
+    
     @Override
     protected void updateP(int pos) {
         FastMatrix P = state.P();

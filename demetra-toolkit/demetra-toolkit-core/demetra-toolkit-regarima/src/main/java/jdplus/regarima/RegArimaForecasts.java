@@ -24,7 +24,7 @@ import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.QuadraticForm;
 import jdplus.ssf.ResultsRange;
-import jdplus.ssf.dk.DkFilter;
+import jdplus.ssf.dk.FastDkFilter;
 import jdplus.ssf.dk.sqrt.DefaultDiffuseSquareRootFilteringResults;
 import jdplus.ssf.dk.sqrt.DiffuseSquareRootInitializer;
 import jdplus.ssf.univariate.OrdinaryFilter;
@@ -92,7 +92,7 @@ public class RegArimaForecasts {
         DiffuseSquareRootInitializer initializer = new DiffuseSquareRootInitializer(fr);
         OrdinaryFilter of = new OrdinaryFilter(initializer);
         of.process(ssf, new SsfData(yall), fr);
-        DkFilter filter = new DkFilter(ssf, fr, false);
+        FastDkFilter filter = new FastDkFilter(ssf, fr, false);
 
         int nx = X == null ? 0 : X.getColumnsCount();
 

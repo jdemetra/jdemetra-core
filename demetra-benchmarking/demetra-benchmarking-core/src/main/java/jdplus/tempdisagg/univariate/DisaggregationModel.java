@@ -63,6 +63,10 @@ public class DisaggregationModel {
      */
     FastMatrix hX;
     /**
+     * Cumulated regression variables. Defined on the high level domain. Could be null
+     */
+    FastMatrix hXC;
+    /**
      * Regression variables transformed to match the aggregation mode
      * (cumulative variables). Defined on the high level domain.
      */
@@ -103,11 +107,12 @@ public class DisaggregationModel {
     
     DisaggregationModel(DisaggregationModelBuilder builder){
         this.originalSeries=builder.y;
-        this.indicators=builder.regressors.toArray(new Variable[builder.regressors.size()]);
+        this.indicators=builder.regressors.toArray(Variable[]::new);
         this.hO=builder.hO;
         this.hY=builder.hY;
         this.hEY=builder.hEY;
         this.hX=builder.hX;
+        this.hXC=builder.hXC;
         this.hEX=builder.hEX;
         this.lDom=builder.y.getDomain();
         this.lEDom=builder.lEDom;
