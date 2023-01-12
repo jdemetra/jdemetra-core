@@ -17,7 +17,9 @@ import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegressionTestSpec;
 import demetra.regarima.TradingDaysSpec;
 import demetra.regarima.TransformSpec;
+import demetra.sa.ComponentType;
 import demetra.sa.EstimationPolicyType;
+import demetra.sa.SaVariable;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -39,6 +41,8 @@ import java.util.Optional;
 import jdplus.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.ModellingUtility;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -402,6 +406,15 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
         }
     }
 
+    private static Map<String, String> ao_attributes() {
+        HashMap<String, String> attributes = new HashMap<>();
+        attributes.put(ModellingUtility.AMI, "x13");
+        attributes.put(SaVariable.REGEFFECT, ComponentType.Irregular.name());
+        return attributes;
+    }
+
+    private static final Map<String, String> IV_AO = ao_attributes();
+
     private void fixVariables(RegressionSpec reg, RegArimaSpec domainSpec, RegArimaSpec.Builder builder, TsDomain frozenDomain) {
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
@@ -430,6 +443,7 @@ public class RegArimaFactory /*implements SaProcessingFactory<RegArimaSeatsSpec,
                     niv.add(Variable.<InterventionVariable>builder()
                             .name(EstimationPolicyType.IV_AO+period.display())
                             .core(ao)
+                            .attributes(IV_AO)
                             .build());
                 }
         }
