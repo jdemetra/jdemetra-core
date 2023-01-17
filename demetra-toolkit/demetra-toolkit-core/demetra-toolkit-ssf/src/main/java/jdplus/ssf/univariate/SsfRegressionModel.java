@@ -35,7 +35,7 @@ public class SsfRegressionModel<F extends ISsf> {
 
     private final Matrix X;
 
-    private final int[] diffuseElements;
+    private final int diffuseElements;
 
     /**
      *
@@ -48,22 +48,19 @@ public class SsfRegressionModel<F extends ISsf> {
      * @param ssf The state space form of the residuals
      * @param data The observations
      * @param X The regression variables. May be null.
-     * @param DiffuseX The 0-based positions of the diffuse regression
-     * coefficients. May be null.
+     * @param diffuseX The number of diffuse regression
+     * coefficients, which must be placed at the beginning.
      */
     public SsfRegressionModel(final F ssf, final ISsfData data, final Matrix X,
-            final int[] DiffuseX) {
+            final int diffuseX) {
         this.ssf = ssf;
         y = data;
         this.X = X;
-        diffuseElements = DiffuseX;
-        if (diffuseElements != null) {
-            Arrays.sort(diffuseElements);
-        }
+        diffuseElements = diffuseX;
     }
 
     public SsfRegressionModel(final F ssf, final ISsfData data) {
-        this(ssf, data, null, null);
+        this(ssf, data, null, 0);
     }
 
     /**
@@ -80,27 +77,16 @@ public class SsfRegressionModel<F extends ISsf> {
     }
 
     /**
-     * Gets the 0-based positions of the diffuse coefficients.
+     * Gets the number of the diffuse coefficients.
      *
-     * @return The internal object containing the positions. May be null.
+     * @return 
      */
-    public int[] getDiffuseElements() {
+    public int getDiffuseElements() {
         return diffuseElements;
     }
 
     public boolean isDiffuse(int idx) {
-        if (diffuseElements == null) {
-            return false;
-        } else {
-            for (int i = 0; i < diffuseElements.length; ++i) {
-                if (diffuseElements[i] == idx) {
-                    return true;
-                } else if (diffuseElements[i] > idx) {
-                    return false;
-                }
-            }
-            return false;
-        }
+        return idx<diffuseElements;
     }
 
     /**

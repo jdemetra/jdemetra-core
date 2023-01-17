@@ -40,10 +40,10 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
             .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
             .constant(true)
             .truncatedParameter(0.0)
-            .maximumLikelihood(true)
-            .estimationPrecision(1e-9)
+            .fast(true)
+            .estimationPrecision(1e-5)
             .rescale(true)
-            .algorithm(SsfInitialization.SqrtDiffuse)
+            .algorithm(SsfInitialization.Augmented)
             .defaultPeriod(4)
             .build();
 
@@ -110,7 +110,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     private TimeSelector estimationSpan;
     private boolean log, diffuseRegressors;
     private Double truncatedParameter;
-    private boolean zeroInitialization, maximumLikelihood;
+    private boolean zeroInitialization, fast;
 
     private double estimationPrecision;
     private SsfInitialization algorithm;
@@ -130,7 +130,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
                 .residualsModel(Model.Ar1)
                 .constant(true)
                 .estimationSpan(TimeSelector.all())
-                .maximumLikelihood(true)
+                .fast(true)
                 .parameter(Parameter.undefined())
                 .estimationPrecision(DEF_EPS)
                 .algorithm(SsfInitialization.SqrtDiffuse)

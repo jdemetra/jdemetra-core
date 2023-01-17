@@ -180,15 +180,11 @@ public class BsmKernel {
 
     }
 
-    private int[] diffuseItems() {
-        int[] idiffuse = null;
-        if (X != null && estimationSpec.isDiffuseRegression()) {
-            idiffuse = new int[X.getColumnsCount()];
-            for (int i = 0; i < idiffuse.length; ++i) {
-                idiffuse[i] = i;
-            }
+    private int diffuseItems() {
+         if (X != null && estimationSpec.isDiffuseRegression()) {
+            return X.getColumnsCount();
         }
-        return idiffuse;
+        return 0;
     }
 
     private boolean estimate() {

@@ -42,7 +42,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
         private Matrix X;
-        private int[] diffuseX;
+        private int diffuseElements;
         private boolean ml = true, log = false, fast = false, sqr = true, mt = false, sym = false, scalingFactor=true;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
@@ -51,9 +51,9 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
             this.mapping = mapping;
         }
 
-        public Builder regression(final Matrix X, final int[] diffuseX) {
+        public Builder regression(final Matrix X, final int diffuseX) {
             this.X = X;
-            this.diffuseX = diffuseX;
+            this.diffuseElements = diffuseX;
             return this;
         }
 
@@ -95,7 +95,7 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
         }
 
         public SsfFunction<S, F> build() {
-            return new SsfFunction(data, X, diffuseX, mapping, builder, ml, log, fast, sqr, mt, sym, scalingFactor);
+            return new SsfFunction(data, X, diffuseElements, mapping, builder, ml, log, fast, sqr, mt, sym, scalingFactor);
         }
     }
 
@@ -108,16 +108,16 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
     private final ISsfData data;
     private final boolean missing;
     private final Matrix X;
-    private final int[] diffuseX;
+    private final int diffuseElements;
     private final boolean ml, log, fast, sqr, mt, sym, scaling;
 
-    private SsfFunction(ISsfData data, Matrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+    private SsfFunction(ISsfData data, Matrix X, int diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
             final boolean ml, final boolean log, final boolean fast, final boolean sqr, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
         this.builder = builder;
         this.X = X;
-        this.diffuseX = diffuseX;
+        this.diffuseElements = diffuseX;
         missing = data.hasMissingValues();
         this.ml = ml;
         this.sqr=sqr;
@@ -200,10 +200,10 @@ public class SsfFunction<S, F extends ISsf> implements LikelihoodFunction<Diffus
     }
 
     /**
-     * @return the diffuseX
+     * @return the number of diffuse elements
      */
-    public int[] getDiffuseX() {
-        return diffuseX;
+    public int getDiffuseElements() {
+        return diffuseElements;
     }
 
     /**

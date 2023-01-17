@@ -28,14 +28,14 @@ import jdplus.math.matrices.FastMatrix;
 @Development(status=Development.Status.Release)
 public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
 
-    public static Builder builder(int n, int nd) {
-        return new Builder(n, nd);
+    public static Builder builder(int n, int nd, int nxd) {
+        return new Builder(n, nd, nxd);
     }
 
     @BuilderPattern(DiffuseConcentratedLikelihood.class)
     public static class Builder {
 
-        private final int n, nd;
+        private final int n, nd, nxd;
         private double ssqerr, ldet, lddet;
         private double[] res;
         private boolean legacy;
@@ -43,9 +43,10 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
         private FastMatrix bvar;
         private boolean scalingFactor = true;
 
-        Builder(int n, int nd) {
+        Builder(int n, int nd, int nxd) {
             this.n = n;
             this.nd = nd;
+            this.nxd = nxd;
         }
 
         public Builder scalingFactor(boolean scalingFactor) {
@@ -97,12 +98,18 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
         }
 
         public DiffuseConcentratedLikelihood build() {
-            return new InternalDiffuseConcentratedLikelihood(n, nd, ssqerr, 
+            return new InternalDiffuseConcentratedLikelihood(n, nd, nxd, ssqerr, 
                     ldet, lddet, b, bvar, res, legacy, scalingFactor);
         }
     }
 
+    /**
+     * Contains diffuse regression variables
+     * @return 
+     */
     int ndiffuse();
+    
+    int ndiffuseRegressors();
 
     double diffuseCorrection();
 
@@ -118,7 +125,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
 
     @Override
     default int degreesOfFreedom(){
-        return dim()-nx()-ndiffuse();
+        return dim()-(nx()-ndiffuseRegressors())-ndiffuse();
     }
     
     default DiffuseLikelihoodStatistics stats(double llcorrection, int nparams) {
@@ -130,7 +137,7 @@ public interface DiffuseConcentratedLikelihood extends ConcentratedLikelihood {
                 .observationsCount(this.dim())
                 .ssqErr(ssq())
                 .diffuseCount(ndiffuse())
-                .estimatedParametersCount(nparams + nx() + 1)
+                .estimatedParametersCount(nparams + (nx()-ndiffuseRegressors()) + 1)
                 .build();
     }
 

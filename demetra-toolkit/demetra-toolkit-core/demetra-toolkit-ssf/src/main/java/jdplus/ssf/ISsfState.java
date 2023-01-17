@@ -34,6 +34,10 @@ public interface ISsfState extends ISsfRoot {
         return initialization().getDiffuseDim();
     }
 
+    default StateComponent asComponent() {
+        return new StateComponent(initialization(), dynamics());
+    }
+
     static final String FMT = "0.#####";
 
 }

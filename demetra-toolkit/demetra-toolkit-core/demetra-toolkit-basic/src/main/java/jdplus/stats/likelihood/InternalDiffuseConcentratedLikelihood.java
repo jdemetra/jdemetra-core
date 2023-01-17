@@ -33,17 +33,18 @@ import jdplus.math.matrices.FastMatrix;
 final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentratedLikelihood {
 
     private final double ll, ssqerr, ldet, lddet;
-    private final int nobs, nd;
+    private final int nobs, nd, nxd;
     private final double[] res;
     private final double[] b;
     private final FastMatrix bvar;
     private final boolean legacy;
     private final boolean scalingFactor;
 
-    InternalDiffuseConcentratedLikelihood(final int n, final int nd, final double ssqerr, final double ldet, final double lddet,
+    InternalDiffuseConcentratedLikelihood(final int n, final int nd, final int nxd, final double ssqerr, final double ldet, final double lddet,
             final double[] b, final FastMatrix bvar, final double[] res, final boolean legacy, final boolean scalingFactor) {
         this.nobs = n;
         this.nd = nd;
+        this.nxd = nxd;
         this.ssqerr = ssqerr;
         this.ldet = ldet;
         this.lddet = lddet;
@@ -71,6 +72,10 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
         return nd;
     }
 
+    @Override
+    public int ndiffuseRegressors() {
+        return nxd;
+    }
     /**
      * Number ofFunction regression variables
      *
@@ -204,7 +209,7 @@ final class InternalDiffuseConcentratedLikelihood implements DiffuseConcentrated
         if (!scalingFactor) {
             nlddet += nd * Math.log(yfactor);
         }
-        return new InternalDiffuseConcentratedLikelihood(nobs, nd, ssqerr / (yfactor * yfactor), nldet, nlddet, nb, nbvar, nres, legacy, scalingFactor);
+        return new InternalDiffuseConcentratedLikelihood(nobs, nd, nxd, ssqerr / (yfactor * yfactor), nldet, nlddet, nb, nbvar, nres, legacy, scalingFactor);
     }
 
     @Override

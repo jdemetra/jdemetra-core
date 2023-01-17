@@ -42,7 +42,7 @@ public class DiffuseConcentratedLikelihoodFunction<S, F extends ISsf> implements
         private final ISsfBuilder<S, F> builder;
         private final ISsfData data;
         private FastMatrix X;
-        private int[] diffuseX;
+        private int diffuseX;
         private boolean ml = true, log = false, fast = false, mt = false, sym = false, scalingFactor=true;
 
         private Builder(final ISsfData data, final IParametricMapping<S> mapping, final ISsfBuilder<S, F> builder) {
@@ -51,7 +51,7 @@ public class DiffuseConcentratedLikelihoodFunction<S, F extends ISsf> implements
             this.mapping = mapping;
         }
 
-        public Builder regression(final FastMatrix X, final int[] diffuseX) {
+        public Builder regression(final FastMatrix X, final int diffuseX) {
             this.X = X;
             this.diffuseX = diffuseX;
             return this;
@@ -103,10 +103,10 @@ public class DiffuseConcentratedLikelihoodFunction<S, F extends ISsf> implements
     private final ISsfData data;
     private final boolean missing;
     private final FastMatrix X;
-    private final int[] diffuseX;
+    private final int diffuseX;
     private final boolean ml, log, fast, mt, sym, scaling;
 
-    private DiffuseConcentratedLikelihoodFunction(ISsfData data, FastMatrix X, int[] diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
+    private DiffuseConcentratedLikelihoodFunction(ISsfData data, FastMatrix X, int diffuseX, IParametricMapping<S> mapper, ISsfBuilder<S, F> builder,
             final boolean ml, final boolean log, final boolean fast, final boolean mt, final boolean sym, final boolean scaling) {
         this.data = data;
         this.mapping = mapper;
@@ -192,7 +192,7 @@ public class DiffuseConcentratedLikelihoodFunction<S, F extends ISsf> implements
     /**
      * @return the diffuseX
      */
-    public int[] getDiffuseX() {
+    public int getDiffuseX() {
         return diffuseX;
     }
 

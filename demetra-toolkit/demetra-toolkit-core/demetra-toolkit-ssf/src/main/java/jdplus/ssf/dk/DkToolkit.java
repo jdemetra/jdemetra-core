@@ -52,6 +52,8 @@ import jdplus.math.matrices.FastMatrix;
 import jdplus.math.matrices.decomposition.Householder2;
 import jdplus.math.matrices.decomposition.QRDecomposition;
 import demetra.math.matrices.Matrix;
+import static jdplus.math.linearsystem.QRLeastSquaresSolver.leastSquares;
+import jdplus.math.matrices.decomposition.HouseholderWithPivoting;
 
 /**
  *
@@ -158,8 +160,8 @@ public class DkToolkit {
      * @param data Data
      * @param all Computes also the variances
      * @param rescaleVariance If true, the variances are rescaled using the
-     * estimation done in the
-     * filtering phase. Otherwise, the raw variances are returned.
+     * estimation done in the filtering phase. Otherwise, the raw variances are
+     * returned.
      * @return
      */
     public DefaultSmoothingResults smooth(ISsf ssf, ISsfData data, boolean all, boolean rescaleVariance) {
@@ -184,8 +186,8 @@ public class DkToolkit {
      * @param data Data
      * @param all Computes also the variances
      * @param rescaleVariance If true, the variances are rescaled using the
-     * estimation done in the
-     * filtering phase. Otherwise, the raw variances are returned.
+     * estimation done in the filtering phase. Otherwise, the raw variances are
+     * returned.
      * @return
      */
     public StateStorage smooth(IMultivariateSsf ssf, IMultivariateSsfData data, boolean all, boolean rescaleVariance) {
@@ -214,8 +216,8 @@ public class DkToolkit {
      * @param sresults Storage for the results. The variances are computed or
      * not following the properties of the storage
      * @param rescaleVariance If true, the variances are rescaled using the
-     * estimation done in the
-     * filtering phase. Otherwise, the raw variances are returned.
+     * estimation done in the filtering phase. Otherwise, the raw variances are
+     * returned.
      * @return
      */
     public static boolean smooth(ISsf ssf, ISsfData data, ISmoothingResults sresults, boolean rescaleVariance) {
@@ -417,7 +419,7 @@ public class DkToolkit {
             int nl = yl.length();
             FastMatrix xl = xl(model, filter, nl);
             if (xl == null) {
-                return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD())
+                return DiffuseConcentratedLikelihood.builder(ll.dim(), ll.getD(), 0)
                         .ssqErr(ll.ssq())
                         .logDeterminant(ll.logDeterminant())
                         .logDiffuseDeterminant(ll.getDiffuseCorrection())
@@ -425,26 +427,25 @@ public class DkToolkit {
                         .scalingFactor(scaling)
                         .build();
             } else {
-                QRLeastSquaresSolution ls = QRLeastSquaresSolver.robustLeastSquares(yl, xl);
+                HouseholderWithPivoting h = new HouseholderWithPivoting();
+                int ndiffuse = model.getDiffuseElements();
+                QRDecomposition qr = h.decompose(xl, ndiffuse);
+                QRLeastSquaresSolution ls = leastSquares(qr, yl, 1e-9);
                 DataBlock b = DataBlock.of(ls.getB());
                 DataBlock res = DataBlock.of(ls.getE());
                 double ssqerr = ls.getSsqErr();
                 // initializing the results...
                 int nobs = ll.dim();
                 int d = ll.getD();
-                int[] idiffuse = model.getDiffuseElements();
                 double ldet = ll.logDeterminant(), dcorr = ll.getDiffuseCorrection();
-                if (idiffuse != null) {
+                if (ndiffuse > 0) {
                     DoubleSeq rdiag = ls.rawRDiagonal();
-                    int[] pivot = ls.pivot();
                     double lregdet = 0;
                     int ndc = 0;
-                    for (int i = 0; i < idiffuse.length; ++i) {
-                        double r = pivot == null ? rdiag.get(idiffuse[i])
-                                : rdiag.get(pivot[idiffuse[i]]);
+                    for (int i = 0; i < ndiffuse; ++i) {
+                        double r = rdiag.get(i);
                         if (r != 0) {
-                            lregdet += Math.log(Math.abs(rdiag
-                                    .get(idiffuse[i])));
+                            lregdet += Math.log(Math.abs(r));
                             ++ndc;
                         }
                     }
@@ -453,7 +454,7 @@ public class DkToolkit {
                     d += ndc;
                 }
                 FastMatrix bvar = ls.unscaledCovariance();
-                return DiffuseConcentratedLikelihood.builder(nobs, d)
+                return DiffuseConcentratedLikelihood.builder(nobs, d, ndiffuse)
                         .ssqErr(ssqerr)
                         .logDeterminant(ldet)
                         .logDiffuseDeterminant(dcorr)
@@ -507,7 +508,7 @@ public class DkToolkit {
             }
             FastMatrix xl = FastMatrix.make(nl, x.getColumnsCount());
             DataBlockIterator lcols = xl.columnsIterator();
-            int i=0;
+            int i = 0;
             while (lcols.hasNext()) {
                 lp.apply(x.column(i++), lcols.next());
             }
