@@ -16,25 +16,21 @@
  */
 package jdplus.tempdisagg.univariate;
 
-import demetra.data.AggregationType;
 import static demetra.data.AggregationType.Average;
 import demetra.data.DoubleSeq;
 import demetra.tempdisagg.univariate.ModelBasedDentonSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
-import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import java.time.LocalDate;
 import java.util.Map.Entry;
-import jdplus.ssf.arima.Rw;
 import jdplus.ssf.benchmarking.SsfCumulator;
 import jdplus.benchmarking.univariate.BenchmarkingUtility;
 import jdplus.data.DataBlock;
 import jdplus.data.normalizer.AbsMeanNormalizer;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.akf.AkfToolkit;
 import jdplus.ssf.dk.DkToolkit;
 import jdplus.ssf.basic.Coefficients;
 import jdplus.ssf.basic.Loading;
@@ -74,16 +70,6 @@ public class ModelBasedDentonProcessor {
                 throw new TsException(TsException.INVALID_OPERATION);
         }
 
-//        TsPeriod sh = indicator.getStart();
-//        TsPeriod sl = TsPeriod.of(sh.getUnit(), naggregatedSeries.getStart().start());
-//        int offset = sh.until(sl);
-//        switch (spec.getAggregationType()) {
-//            case Last ->
-//                offset += ratio - 1;
-//            case UserDefined ->
-//                offset += spec.getObservationPosition();
-//        }
-//
         DataBlock x=DataBlock.of(indicator.getValues());
         AbsMeanNormalizer normalizer=new AbsMeanNormalizer();
         double fx=normalizer.normalize(x);
@@ -118,8 +104,12 @@ public class ModelBasedDentonProcessor {
         DiffuseLikelihood ll = DkToolkit.likelihood(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
         DoubleSeq e = ll.e();
         //TsData res=TsData.of(start, DoubleSeq.ONE)
+        TsData lbi = TsData.divide(aggregatedSeries, indicator.aggregate(aggregatedSeries.getTsUnit(), spec.getAggregationType(), true));
 
         return ModelBasedDentonResults.builder()
+                .target(aggregatedSeries)
+                .indicator(indicator)
+                .aggregatedBiRatios(lbi)
                 .disaggregatedSeries(TsData.multiply(biratios, indicator))
                 .stdevDisaggregatedSeries(TsData.multiply(ebiratios, indicator.abs()))
                 .biRatios(biratios)

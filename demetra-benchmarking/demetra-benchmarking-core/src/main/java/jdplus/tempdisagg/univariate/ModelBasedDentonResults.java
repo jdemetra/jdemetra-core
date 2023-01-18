@@ -31,6 +31,15 @@ import nbbrd.design.Development;
 public class ModelBasedDentonResults implements GenericExplorable{
 
     @lombok.NonNull
+    TsData target;
+
+    @lombok.NonNull
+    TsData indicator;
+
+    @lombok.NonNull
+    TsData aggregatedBiRatios;
+
+    @lombok.NonNull
     TsData disaggregatedSeries;
     
     @lombok.NonNull

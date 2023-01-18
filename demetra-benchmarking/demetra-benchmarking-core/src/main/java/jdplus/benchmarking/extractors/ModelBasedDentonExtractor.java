@@ -18,6 +18,7 @@ package jdplus.benchmarking.extractors;
 
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
+import demetra.tempdisagg.univariate.TemporalDisaggregationDictionaries;
 import jdplus.tempdisagg.univariate.ResidualsDiagnostics;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.timeseries.TsData;
@@ -31,18 +32,29 @@ import nbbrd.service.ServiceProvider;
 @ServiceProvider(InformationExtractor.class)
 public class ModelBasedDentonExtractor extends InformationMapping<ModelBasedDentonResults> {
 
-    public final String DISAGG = "disagg", EDISAGG = "edisagg", BIRATIO = "biratio", EBIRATIO = "ebiratio",
-            RES="residuals", RESDIAGS = "residualsstats", LIKELIHOOD = "ll";
-
     public ModelBasedDentonExtractor() {
-        set(DISAGG, TsData.class, source -> source.getDisaggregatedSeries());
-        set(EDISAGG, TsData.class, source -> source.getStdevDisaggregatedSeries());
-        set(BIRATIO, TsData.class, source -> source.getBiRatios());
-        set(EBIRATIO, TsData.class, source -> source.getStdevBiRatios());
-        set(RES, TsData.class, source -> source.getResiduals());
-        delegate(LIKELIHOOD, LikelihoodStatistics.class, source -> source.getLikelihood());
-        delegate(RESDIAGS, ResidualsDiagnostics.class, source -> source.getResidualsDiagnostics());
-        
+        set(TemporalDisaggregationDictionaries.TARGET, TsData.class, source -> source.getTarget());
+        set(TemporalDisaggregationDictionaries.INDICATOR, TsData.class, source -> source.getIndicator());
+        set(TemporalDisaggregationDictionaries.DISAGG, TsData.class, source -> source.getDisaggregatedSeries());
+        set(TemporalDisaggregationDictionaries.LDISAGG, TsData.class, 
+               source -> source.getDisaggregatedSeries()
+                        .fn(source.getStdevDisaggregatedSeries(), (a, b) -> a - 2 * b));
+        set(TemporalDisaggregationDictionaries.UDISAGG, TsData.class, 
+               source -> source.getDisaggregatedSeries()
+                        .fn(source.getStdevDisaggregatedSeries(), (a, b) -> a + 2 * b));
+        set(TemporalDisaggregationDictionaries.EDISAGG, TsData.class, source -> source.getStdevDisaggregatedSeries());
+        set(TemporalDisaggregationDictionaries.LFBIRATIO, TsData.class, source -> source.getAggregatedBiRatios());
+        set(TemporalDisaggregationDictionaries.BIRATIO, TsData.class, source -> source.getBiRatios());
+        set(TemporalDisaggregationDictionaries.EBIRATIO, TsData.class, source -> source.getStdevBiRatios());
+        set(TemporalDisaggregationDictionaries.LBIRATIO, TsData.class, 
+               source -> source.getBiRatios()
+                        .fn(source.getStdevBiRatios(), (a, b) -> a - 2 * b));
+        set(TemporalDisaggregationDictionaries.UBIRATIO, TsData.class, 
+               source -> source.getBiRatios()
+                        .fn(source.getStdevBiRatios(), (a, b) -> a + 2 * b));
+        set(TemporalDisaggregationDictionaries.RES, TsData.class, source -> source.getResiduals());
+        delegate(TemporalDisaggregationDictionaries.LIKELIHOOD, LikelihoodStatistics.class, source -> source.getLikelihood());
+        delegate(TemporalDisaggregationDictionaries.RES, ResidualsDiagnostics.class, source -> source.getResidualsDiagnostics());
     }
 
     @Override

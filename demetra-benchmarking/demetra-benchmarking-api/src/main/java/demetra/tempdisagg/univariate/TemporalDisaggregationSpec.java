@@ -35,31 +35,44 @@ import demetra.util.Validatable;
 @lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class TemporalDisaggregationSpec implements ProcSpecification, Validatable<TemporalDisaggregationSpec> {
 
-    public static final TemporalDisaggregationSpec CHOWLIN = builder()
-            .aggregationType(AggregationType.Sum)
-            .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
-            .constant(true)
-            .truncatedParameter(0.0)
-            .fast(true)
-            .estimationPrecision(1e-5)
-            .rescale(true)
-            .algorithm(SsfInitialization.Augmented)
-            .defaultPeriod(4)
-            .build();
-
-    public static final TemporalDisaggregationSpec FERNANDEZ = builder()
-            .aggregationType(AggregationType.Sum)
-            .residualsModel(TemporalDisaggregationSpec.Model.Rw)
-            .constant(false)
-            .rescale(true)
-            .algorithm(SsfInitialization.SqrtDiffuse)
-            .build();
-
     public static final String VERSION = "3.0.0";
 
     public static final String FAMILY = "temporaldisaggregation";
     public static final String METHOD = "generic";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
+    
+    public static final SsfInitialization DEF_ALGORITHM=SsfInitialization.SqrtDiffuse;
+    public static final boolean DEF_FAST=true, DEF_RESCALE=true, DEF_LOG=false, DEF_DIFFUSE=false;
+    
+   public static final double DEF_EPS = 1e-5;
+    
+    public static final AggregationType DEF_AGGREGATION=AggregationType.Sum;
+    
+    public static final TemporalDisaggregationSpec CHOWLIN = builder()
+            .estimationSpan(TimeSelector.all())
+            .aggregationType(AggregationType.Sum)
+            .residualsModel(TemporalDisaggregationSpec.Model.Ar1)
+            .constant(true)
+            .truncatedParameter(0.0)
+            .fast(DEF_FAST)
+            .estimationPrecision(DEF_EPS)
+            .rescale(DEF_RESCALE)
+            .algorithm(DEF_ALGORITHM)
+            .defaultPeriod(4)
+            .build();
+
+    public static final TemporalDisaggregationSpec FERNANDEZ = builder()
+            .estimationSpan(TimeSelector.all())
+            .aggregationType(AggregationType.Sum)
+            .residualsModel(TemporalDisaggregationSpec.Model.Rw)
+            .constant(false)
+            .fast(DEF_FAST)
+            .estimationPrecision(DEF_EPS)
+            .rescale(DEF_RESCALE)
+            .algorithm(DEF_ALGORITHM)
+            .defaultPeriod(4)
+            .build();
+
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
@@ -96,8 +109,7 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
         }
     }
 
-    public static final double DEF_EPS = 1e-5;
-    @lombok.NonNull
+     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
     private int defaultPeriod;
@@ -126,16 +138,16 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
 
     public static Builder builder() {
         return new Builder()
-                .aggregationType(AggregationType.Sum)
+                .aggregationType(DEF_AGGREGATION)
                 .residualsModel(Model.Ar1)
                 .constant(true)
                 .estimationSpan(TimeSelector.all())
-                .fast(true)
+                .fast(DEF_FAST)
+                .algorithm(DEF_ALGORITHM)
+                .rescale(DEF_RESCALE)
                 .parameter(Parameter.undefined())
                 .estimationPrecision(DEF_EPS)
-                .algorithm(SsfInitialization.SqrtDiffuse)
-                .defaultPeriod(4)
-                .rescale(true);
+                .defaultPeriod(4);
     }
 
     @Override
