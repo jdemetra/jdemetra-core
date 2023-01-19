@@ -256,7 +256,7 @@ public class DisaggregationModelBuilder {
         int pos = hDom.indexOf(hEDom.getStartPeriod());
         int del = pos % frequencyRatio;
         if (del != 0) {
-            start = frequencyRatio - del;;;
+            start = frequencyRatio - del;
         } else {
             start = 0;
         }

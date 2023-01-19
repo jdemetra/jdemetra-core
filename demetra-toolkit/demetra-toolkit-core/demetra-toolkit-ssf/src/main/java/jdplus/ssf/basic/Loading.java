@@ -239,10 +239,7 @@ public class Loading {
 
         @Override
         public void ZM(int pos, FastMatrix m, DataBlock zm) {
-            zm.set(m.row(0), m.row(1), (x, y) -> x + y);
-            for (int r = 2; r < m.getRowsCount(); ++r) {
-                zm.add(m.row(r));
-            }
+            zm.set(i->m.column(i).sum());
         }
 
         @Override

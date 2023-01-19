@@ -57,7 +57,6 @@
         <module>demetra-highfreq</module>
         <module>demetra-sa-experimental</module>
         <module>demetra-businesscycle</module>
-        <module>jdr</module>
         <module>demetra-tsp</module>
         <module>demetra-revisions</module>
         <module>demetra-calendars</module>

@@ -30,6 +30,7 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
+import internal.jdplus.arima.MaLjungBoxFilter;
 
 /**
  * @author Jean Palate

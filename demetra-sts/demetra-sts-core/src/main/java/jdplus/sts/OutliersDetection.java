@@ -415,15 +415,8 @@ public class OutliersDetection {
 
     SsfFunction<BsmData, SsfBsm2> currentFunction(DoubleSeq y, FastMatrix W) {
         BsmMapping mapper = new BsmMapping(curSpec == null ? spec : curSpec, model.getPeriod(), null);
-        int[] diffuse = null;
-        if (W != null) {
-            diffuse = new int[W.getColumnsCount()];
-            for (int i = 0; i < diffuse.length; ++i) {
-                diffuse[i] = i;
-            }
-        }
         return SsfFunction.builder(new SsfData(y), mapper, bsmmodel -> SsfBsm2.of(bsmmodel))
-                .regression(W, diffuse)
+                .regression(W, W != null ? W.getColumnsCount() : 0)
                 .useFastAlgorithm(true)
                 .useParallelProcessing(false)
                 .useLog(true)

@@ -36,7 +36,7 @@ public class TemporalDisaggregationSpecMapping {
 
     public final String SPAN = "span", MODEL = "model", PARAMETER = "parameter", AGGTYPE = "aggregation",
             CONSTANT = "constant", TREND = "trend", ZEROINIT = "zeroinit", DIFFUSEREGS = "diffuseregs",
-            EPS = "precision", LOG = "log", SSF = "ssfoption", FREQ = "defaultfrequency", ML = "ml", TRUNCATED = "truncatedrho";
+            EPS = "precision", LOG = "log", SSF = "ssfoption", FREQ = "defaultfrequency", FAST = "fast", RESCALING = "rescaling", TRUNCATED = "truncatedrho";
 
     public static final InformationSetSerializer<TemporalDisaggregationSpec> SERIALIZER = new InformationSetSerializer<TemporalDisaggregationSpec>() {
         @Override
@@ -71,6 +71,9 @@ public class TemporalDisaggregationSpecMapping {
         String n = info.get(MODEL, String.class);
         if (n != null) {
             builder.residualsModel(TemporalDisaggregationSpec.Model.valueOf(n));
+        } else {
+            builder.residualsModel(TemporalDisaggregationSpec.Model.Ar1)
+                    .constant(true);
         }
         Integer i = info.get(FREQ, Integer.class);
         if (i != null) {
@@ -108,9 +111,13 @@ public class TemporalDisaggregationSpecMapping {
         if (b != null) {
             builder.diffuseRegressors(b);
         }
-        b = info.get(ML, Boolean.class);
+        b = info.get(FAST, Boolean.class);
         if (b != null) {
-            builder.maximumLikelihood(b);
+            builder.fast(b);
+        }
+        b = info.get(RESCALING, Boolean.class);
+        if (b != null) {
+            builder.rescale(b);
         }
         Double t = info.get(TRUNCATED, Double.class);
         if (t != null) {
@@ -135,22 +142,29 @@ public class TemporalDisaggregationSpecMapping {
         if (p != null && p.isDefined()) {
             info.set(PARAMETER, p);
         }
-        info.set(AGGTYPE, spec.getAggregationType().name());
+        if (spec.getAggregationType() != TemporalDisaggregationSpec.DEF_AGGREGATION || verbose) {
+            info.set(AGGTYPE, spec.getAggregationType().name());
+        }
         info.set(CONSTANT, spec.isConstant());
         info.set(TREND, spec.isTrend());
         info.set(FREQ, spec.getDefaultPeriod());
-        info.set(SSF, spec.getAlgorithm().name());
+        if (spec.getAlgorithm() != TemporalDisaggregationSpec.DEF_ALGORITHM || verbose) {
+            info.set(SSF, spec.getAlgorithm().name());
+        }
         if (spec.isZeroInitialization() || verbose) {
             info.set(ZEROINIT, spec.isZeroInitialization());
         }
-        if (spec.isLog() || verbose) {
+        if (spec.isLog() != TemporalDisaggregationSpec.DEF_LOG || verbose) {
             info.set(LOG, spec.isLog());
         }
-        if (spec.isDiffuseRegressors() || verbose) {
+        if (spec.isDiffuseRegressors() != TemporalDisaggregationSpec.DEF_DIFFUSE || verbose) {
             info.set(DIFFUSEREGS, spec.isDiffuseRegressors());
         }
-        if (!spec.isMaximumLikelihood() || verbose) {
-            info.set(ML, spec.isMaximumLikelihood());
+        if (spec.isFast() != TemporalDisaggregationSpec.DEF_FAST || verbose) {
+            info.set(FAST, spec.isFast());
+        }
+        if (spec.isRescale() != TemporalDisaggregationSpec.DEF_RESCALE || verbose) {
+            info.set(RESCALING, spec.isRescale());
         }
         if (spec.getEstimationPrecision() != TemporalDisaggregationSpec.DEF_EPS || verbose) {
             info.set(EPS, spec.getEstimationPrecision());

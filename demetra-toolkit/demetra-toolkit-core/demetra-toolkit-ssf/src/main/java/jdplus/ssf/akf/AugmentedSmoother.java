@@ -106,11 +106,11 @@ public class AugmentedSmoother {
         initFilter(ssf);
         initSmoother(ssf, endpos);
         this.delta = DataBlock.of(delta);
-        this.S=S;
+        this.S = S;
         if (N != null) {
-                Psi = FastMatrix.identity(S.getColumnsCount());
-                LowerTriangularMatrix.solveXL(this.S, Psi);
-                LowerTriangularMatrix.solveLtX(this.S, Psi);
+            Psi = FastMatrix.identity(S.getColumnsCount());
+            LowerTriangularMatrix.solveXL(this.S, Psi);
+            LowerTriangularMatrix.solveLtX(this.S, Psi);
         }
         return processNoCollapsing(endpos);
     }
@@ -143,19 +143,20 @@ public class AugmentedSmoother {
     }
 
     private void loadInfo(int pos) {
-        err = frslts.error(pos);
-        errVariance = frslts.errorVariance(pos);
-        missing = !Double.isFinite(err);
-
-        E.copy(frslts.E(pos));
-        // P*Z
-        M.copy(frslts.M(pos));
-        // T*P*Z/f
-        if (errVariance != 0) {
-            K.copy(frslts.M(pos));
-            dynamics.TX(pos, K);
-            K.div(errVariance);
+        missing = frslts.isMissing(pos);
+        if (!missing) {
+            err = frslts.error(pos);
+            errVariance = frslts.errorVariance(pos);
+            E.copy(frslts.E(pos));
+            M.copy(frslts.M(pos));
+            // T*P*Z/f
+            if (errVariance != 0) {
+                K.copy(frslts.M(pos));
+                dynamics.TX(pos, K);
+                K.div(errVariance);
+            }
         }
+
         DataBlock fa = frslts.a(pos);
         hasinfo = fa != null;
         if (!hasinfo) {

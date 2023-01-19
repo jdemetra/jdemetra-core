@@ -73,7 +73,7 @@ public class SsfFunctionPoint<S, F extends ISsf> implements
             if (fn.getX() == null) {
                 dcl = computer.compute(currentSsf, fn.getData());
             } else {
-                dcl = computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseX()));
+                dcl = computer.compute(new SsfRegressionModel(currentSsf, fn.getData(), fn.getX(), fn.getDiffuseElements()));
             }
             e = dcl.e();
             if (fn.isScalingFactor()) {

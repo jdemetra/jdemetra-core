@@ -10,6 +10,8 @@ package demetra.tempdisagg.univariate;
  */
 @lombok.experimental.UtilityClass
 public class TemporalDisaggregationDictionaries {
+    
+    public final String TARGET="target", INDICATOR="indicator", LFBIRATIO="lfbiratio", BIRATIO="biratio", LBIRATIO="lbiratio", UBIRATIO="ubiratio", EBIRATIO="ebiratio";
 
     public final String LIKELIHOOD = "likelihood", DISAGG = "disagg", EDISAGG = "edisagg", LDISAGG = "ldisagg", UDISAGG = "udisagg",
             RES = "residuals", ML = "ml", COEFF = "coeff", COVAR = "covar", REGEFFECT = "regeffect", SMOOTHINGEFFECT = "smoothingeffect", SPART = "smoothingpart",

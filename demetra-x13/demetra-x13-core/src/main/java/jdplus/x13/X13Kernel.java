@@ -41,7 +41,7 @@ import jdplus.sarima.SarimaModel;
 import jdplus.x11.X11Kernel;
 import jdplus.x11.X11Results;
 import jdplus.x11.X11Utility;
-import jdplus.x13.regarima.FastArimaForecasts;
+import jdplus.ssf.arima.FastArimaForecasts;
 import jdplus.x13.regarima.RegArimaKernel;
 
 /**

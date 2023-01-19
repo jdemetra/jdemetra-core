@@ -31,128 +31,128 @@ import jdplus.ssf.univariate.DefaultFilteringResults;
  * @author Jean Palate
  */
 public class FastDkSmoother {
-    
+
     public static interface VarianceFilterProvider {
-        
+
         int size();
-        
+
         int endDiffusePosition();
-        
+
         boolean isMissing(int pos);
-        
+
         double errorVariance(int pos);
-        
+
         double diffuseNorm2(int pos);
-        
+
         DataBlock M(int pos);
-        
+
         DataBlock Mi(int pos);
-        
+
         FastMatrix P(int pos);
-        
+
         FastMatrix Pi(int pos);
-        
+
         public static VarianceFilterProvider of(final DefaultDiffuseFilteringResults fr) {
             return new VarianceFilterProvider() {
                 @Override
                 public int size() {
                     return fr.size();
                 }
-                
+
                 @Override
                 public int endDiffusePosition() {
                     return fr.getEndDiffusePosition();
                 }
-                
+
                 @Override
                 public boolean isMissing(int pos) {
                     return fr.isMissing(pos);
                 }
-                
+
                 @Override
                 public double errorVariance(int pos) {
                     return fr.errorVariance(pos);
                 }
-                
+
                 @Override
                 public double diffuseNorm2(int pos) {
                     return fr.diffuseNorm2(pos);
                 }
-                
+
                 @Override
                 public DataBlock M(int pos) {
                     return fr.M(pos);
                 }
-                
+
                 @Override
                 public DataBlock Mi(int pos) {
                     return fr.Mi(pos);
                 }
-                
+
                 @Override
                 public FastMatrix P(int pos) {
                     return fr.P(pos);
                 }
-                
+
                 @Override
                 public FastMatrix Pi(int pos) {
                     return fr.Pi(pos);
                 }
-                
+
             };
         }
-        
+
         public static VarianceFilterProvider of(final DefaultFilteringResults fr) {
             return new VarianceFilterProvider() {
                 @Override
                 public int size() {
                     return fr.size();
                 }
-                
+
                 @Override
                 public int endDiffusePosition() {
                     return 0;
                 }
-                
+
                 @Override
                 public boolean isMissing(int pos) {
                     return fr.isMissing(pos);
                 }
-                
+
                 @Override
                 public double errorVariance(int pos) {
                     return fr.errorVariance(pos);
                 }
-                
+
                 @Override
                 public double diffuseNorm2(int pos) {
                     return 0;
                 }
-                
+
                 @Override
                 public DataBlock M(int pos) {
                     return fr.M(pos);
                 }
-                
+
                 @Override
                 public DataBlock Mi(int pos) {
                     return DataBlock.EMPTY;
                 }
-                
+
                 @Override
                 public FastMatrix P(int pos) {
                     return fr.P(pos);
                 }
-                
+
                 @Override
                 public FastMatrix Pi(int pos) {
                     return FastMatrix.EMPTY;
                 }
-                
+
             };
         }
     }
-    
+
     private final VarianceFilterProvider vf;
     private final ISsf ssf;
     private final ISsfLoading loading;
@@ -161,7 +161,7 @@ public class FastDkSmoother {
     private final DataBlock state;
     private final DataBlockResults A = new DataBlockResults();
     private final DataBlock Rf, Ri, C, Ci;
-    
+
     public FastDkSmoother(ISsf ssf, DefaultDiffuseFilteringResults frslts) {
         this.vf = VarianceFilterProvider.of(frslts);
         this.ssf = ssf;
@@ -176,30 +176,36 @@ public class FastDkSmoother {
         Ci = DataBlock.make(dim);
         A.prepare(dim, 0, vf.size());
     }
-    
+
     public void smooth(DoubleSeq x) {
-        DoubleSeq fx=forwardFilter(x);
+        clear();
+        DoubleSeq fx = forwardFilter(x);
         backwardFilter(fx);
     }
-    
-    public DataBlockResults smoothedStates(){
+
+    public DataBlockResults smoothedStates() {
         return A;
     }
-    
-   
+
+    private void clear() {
+        state.set(0);
+        Rf.set(0);
+        Ri.set(0);
+    }
+
     DoubleSeq forwardFilter(DoubleSeq x) {
         int n = vf.size();
-        double[] fx=new double[n];
+        double[] fx = new double[n];
         int pos = 0;
         ssf.initialization().a0(state);
         DoubleSeqCursor cursor = x.cursor();
         while (pos < n) {
-            fx[pos]=iterateFilter(pos, cursor.getAndNext());
+            fx[pos] = iterateFilter(pos, cursor.getAndNext());
             pos++;
         }
         return DoubleSeq.of(fx);
     }
-    
+
     private double iterateFilter(int i, double x) {
         // save the current state
         A.save(i, state);
@@ -229,18 +235,19 @@ public class FastDkSmoother {
         dynamics.TX(i, state);
         return fx;
     }
-    
+
     void backwardFilter(DoubleSeq x) {
-        int t = x.length();
-        while (--t >= 0) {
-            if (t >= enddiffuse) {
-                iterateSmoother(t, x.get(t));
-            } else {
-                iterateDiffuseSmoother(t, x.get(t));
-            }
+        int t = x.length()-1;
+        while (t >= enddiffuse) {
+            iterateSmoother(t, x.get(t));
+            --t;
+        }
+        while (t >= 0) {
+            iterateDiffuseSmoother(t, x.get(t));
+            --t;
         }
     }
-    
+
     private void iterateDiffuseSmoother(int pos, double fx) {
         double f = vf.errorVariance(pos);
         double fi = vf.diffuseNorm2(pos);
@@ -272,7 +279,7 @@ public class FastDkSmoother {
         a.addProduct(Rf, vf.P(pos).columnsIterator());
         a.addProduct(Ri, vf.Pi(pos).columnsIterator());
     }
-    
+
     private void iterateSmoother(int pos, double fx) {
         double f = vf.errorVariance(pos);
         C.copy(vf.M(pos));

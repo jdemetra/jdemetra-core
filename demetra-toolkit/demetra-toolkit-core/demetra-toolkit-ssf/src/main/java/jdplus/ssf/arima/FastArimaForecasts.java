@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package jdplus.x13.regarima;
+package jdplus.ssf.arima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
@@ -22,6 +22,7 @@ import nbbrd.design.Development;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.arima.estimation.ArimaForecasts;
 import demetra.data.DoubleSeq;
+import internal.jdplus.arima.MaLjungBoxFilter;
 
 /**
  * Computes the forecasts of an Arima model using the approach followed in

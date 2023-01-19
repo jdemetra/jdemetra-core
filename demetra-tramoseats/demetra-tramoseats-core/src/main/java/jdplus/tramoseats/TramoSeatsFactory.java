@@ -126,7 +126,7 @@ public final class TramoSeatsFactory implements SaProcessingFactory<TramoSeatsSp
     @Override
     public TramoSeatsSpec refreshSpec(TramoSeatsSpec currentSpec, TramoSeatsSpec domainSpec, EstimationPolicyType policy, TsDomain domain) {
         // NOT COMPLETE
-        if (policy == policy.None) {
+        if (policy == EstimationPolicyType.None) {
             return currentSpec;
         }
         TramoSpec ntspec = TramoFactory.getInstance().refreshSpec(currentSpec.getTramo(), domainSpec.getTramo(), policy, domain);

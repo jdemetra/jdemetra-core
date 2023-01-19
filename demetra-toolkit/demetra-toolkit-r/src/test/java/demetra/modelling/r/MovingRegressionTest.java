@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r;
+package demetra.modelling.r;
 
+import demetra.modelling.r.MovingRegression;
 import demetra.data.Data;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsData;

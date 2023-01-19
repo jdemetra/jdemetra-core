@@ -9,7 +9,9 @@ import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.data.Range;
 import demetra.modelling.TransformationType;
+import demetra.sa.ComponentType;
 import demetra.sa.EstimationPolicyType;
+import demetra.sa.SaVariable;
 import demetra.timeseries.TimeSelector;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
@@ -39,6 +41,8 @@ import java.util.List;
 import jdplus.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.ModellingUtility;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -99,7 +103,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
             }
             case Fixed, Current -> {
                 fixArima(currentSpec, domainSpec, builder);
-                fixVariables(currentSpec.getRegression(), domainSpec, builder, null);
+                fixVariables(currentSpec.getRegression(), domainSpec, builder, frozenDomain);
             }
             default -> {
                 return currentSpec;
@@ -219,9 +223,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         if (ftd.isPresent()) {
             Variable v = ftd.get();
             if (tdspec.isAutomatic()) {
-                ITradingDaysVariable  tdv=(ITradingDaysVariable) v.getCore();
-                td=tdv.getTradingDaysType();
-             } else {
+                ITradingDaysVariable tdv = (ITradingDaysVariable) v.getCore();
+                td = tdv.getTradingDaysType();
+            } else {
                 td = tdspec.getTradingDaysType();
             }
             ctd = v.getCoefficients();
@@ -415,6 +419,15 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         }
     }
 
+    private static Map<String, String> ao_attributes() {
+        HashMap<String, String> attributes = new HashMap<>();
+        attributes.put(ModellingUtility.AMI, "tramo");
+        attributes.put(SaVariable.REGEFFECT, ComponentType.Irregular.name());
+        return attributes;
+    }
+
+    private static final Map<String, String> IV_AO = ao_attributes();
+
     private void fixVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozenDomain) {
         RegressionSpec.Builder rbuilder = reg.toBuilder();
         Parameter mean = reg.getMean();
@@ -442,6 +455,7 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
                         .build();
                 niv.add(Variable.<InterventionVariable>builder()
                         .name(EstimationPolicyType.IV_AO + period.display())
+                        .attributes(IV_AO)
                         .core(ao)
                         .build());
             }

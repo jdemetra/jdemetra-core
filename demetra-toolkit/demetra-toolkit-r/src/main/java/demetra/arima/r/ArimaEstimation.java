@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.arima.r;
 
 import demetra.data.Doubles;
 import jdplus.regarima.RegArimaEstimation;
