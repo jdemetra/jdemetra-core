@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package jdplus.x13.regarima;
+package internal.jdplus.arima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package demetra.r;
+package demetra.arima.r;
 
 import jdplus.regarima.RegArimaModel;
 import jdplus.ssf.arima.SsfArima;
@@ -23,10 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import jdplus.ssf.arima.ExactArimaForecasts;
 import demetra.data.DoubleSeq;
-import jdplus.x13.regarima.FastArimaForecasts;
 import jdplus.ssf.StateComponent;
 import jdplus.ssf.univariate.Ssf;
 import demetra.information.GenericExplorable;
+import jdplus.ssf.arima.FastArimaForecasts;
 
 /**
  *

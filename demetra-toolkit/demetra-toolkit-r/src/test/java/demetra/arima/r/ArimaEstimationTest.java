@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.r;
+package demetra.arima.r;
 
+import demetra.arima.r.ArimaEstimation;
 import demetra.data.Data;
 import org.junit.jupiter.api.Test;
 
