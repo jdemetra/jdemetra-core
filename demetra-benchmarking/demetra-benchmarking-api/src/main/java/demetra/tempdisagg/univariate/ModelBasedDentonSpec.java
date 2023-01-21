@@ -36,7 +36,9 @@ public class ModelBasedDentonSpec implements ProcSpecification, Validatable<Mode
     public static final AlgorithmDescriptor ALGORITHM = new AlgorithmDescriptor("temporaldisaggregation", "mdenton", null);
 
     @lombok.Singular
-    private Map<LocalDate, Double> outlierVariances; 
+    private Map<LocalDate, Double> shockVariances; 
+    @lombok.Singular
+    private Map<LocalDate, Double> fixedBiRatios; 
     private int differencing;
     @lombok.NonNull
     private AggregationType aggregationType;

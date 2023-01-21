@@ -52,12 +52,6 @@ public interface IMultivariateSsfData {
         return false;
     }
 
-    /**
-     *
-     * @return
-     */
-    boolean hasData();
-
      /**
      *
      * @return

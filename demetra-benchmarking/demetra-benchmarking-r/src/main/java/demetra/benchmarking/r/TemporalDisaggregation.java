@@ -57,7 +57,7 @@ public class TemporalDisaggregation {
         return ProcessorI.process(y, indicator, spec);
     }
     
-    public ModelBasedDentonResults processModelBasedDenton(TsData y, TsData indicator, int differencing, String aggregation, int obspos, String[] odates, double[] ovar){
+    public ModelBasedDentonResults processModelBasedDenton(TsData y, TsData indicator, int differencing, String aggregation, int obspos, String[] odates, double[] ovar, String[] fdates, double[] fval){
         ModelBasedDentonSpec.Builder builder = ModelBasedDentonSpec.builder()
                 .aggregationType(AggregationType.valueOf(aggregation))
                 .differencing(1);
@@ -65,7 +65,14 @@ public class TemporalDisaggregation {
             if (odates.length != ovar.length)
                 throw new IllegalArgumentException();
             for (int i=0; i<odates.length; ++i){
-                builder.outlierVariance(LocalDate.parse(odates[i], DateTimeFormatter.ISO_DATE), ovar[i]);
+                builder.shockVariance(LocalDate.parse(odates[i], DateTimeFormatter.ISO_DATE), ovar[i]);
+            }
+        }  
+        if (fdates != null && fval != null){
+            if (fdates.length != fval.length)
+                throw new IllegalArgumentException();
+            for (int i=0; i<fdates.length; ++i){
+                builder.fixedBiRatio(LocalDate.parse(fdates[i], DateTimeFormatter.ISO_DATE), fval[i]);
             }
         }  
         return ModelBasedDentonProcessor.process(y, indicator, builder.build());
