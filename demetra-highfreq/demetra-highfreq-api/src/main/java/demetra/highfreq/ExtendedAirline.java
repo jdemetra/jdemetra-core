@@ -28,12 +28,14 @@ import demetra.data.Parameter;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class ExtendedAirline {
 
+    private boolean isMean;
     private double[] periodicities;
     private int ndifferencing;
     private boolean ar;
     private DoubleSeq p;
 
     public static ExtendedAirline of(ExtendedAirlineSpec spec) {
+        boolean ismean=spec.isMean();
         double[] periodicities = spec.getPeriodicities();
         int diff = spec.getDifferencingOrder();
         boolean ar = spec.getPhi() != null;
@@ -68,7 +70,7 @@ public class ExtendedAirline {
                 p[i + 1] = .2;
             }
         }
-        return new ExtendedAirline(periodicities, diff, ar, DoubleSeq.of(p));
+        return new ExtendedAirline(ismean,periodicities, diff, ar, DoubleSeq.of(p));
     }
 
 }

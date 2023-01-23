@@ -59,10 +59,11 @@ public class FractionalAirlineProcessor {
                 .phi(ar ? Parameter.undefined() : null)
                 .theta(ar ? null : Parameter.undefined())
                 .adjustToInt(false)
+                   .mean(mean)
                 .build();
         return ExtendedAirlineKernel.fastProcess(DoubleSeq.of(y), x, mean, outliers, cv, spec, precision);
     }
-
+    
     public double[] random(double[] periods, double theta, double[] stheta, boolean adjust, int n, double[] initial, double stdev, int warmup) {
         ExtendedAirlineSpec spec = ExtendedAirlineSpec.builder()
                 .periodicities(periods)

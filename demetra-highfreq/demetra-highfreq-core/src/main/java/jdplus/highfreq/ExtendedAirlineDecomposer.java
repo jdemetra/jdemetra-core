@@ -51,7 +51,7 @@ import jdplus.ssf.arima.SsfUcarima;
 public class ExtendedAirlineDecomposer {
 
     public static LightExtendedAirlineDecomposition decompose(DoubleSeq s, double period, boolean sn, boolean cov, int nb, int nf) {
-        ExtendedAirlineMapping mapping = new ExtendedAirlineMapping(new double[]{period});
+         ExtendedAirlineMapping mapping = new ExtendedAirlineMapping(new double[]{period});
 
         GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
         builder.minimizer(LevenbergMarquardtMinimizer.builder())
