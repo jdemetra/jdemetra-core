@@ -33,11 +33,14 @@ public class TransformSpec {
 
     @lombok.NonNull
     private TimeSelector span;
+    @lombok.NonNull
+    private DataCleaning cleaning;
+    @lombok.NonNull
     private TransformationType function;
     private double aicDiff;
     
     public static Builder builder(){
-        return new Builder().function(TransformationType.None).span(TimeSelector.all());
+        return new Builder().cleaning(DataCleaning.NONE).function(TransformationType.None).span(TimeSelector.all());
     }
     
 }

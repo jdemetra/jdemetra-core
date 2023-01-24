@@ -59,8 +59,7 @@ public class TemporalDisaggregation {
     
     public ModelBasedDentonResults processModelBasedDenton(TsData y, TsData indicator, int differencing, String aggregation, int obspos, String[] odates, double[] ovar, String[] fdates, double[] fval){
         ModelBasedDentonSpec.Builder builder = ModelBasedDentonSpec.builder()
-                .aggregationType(AggregationType.valueOf(aggregation))
-                .differencing(1);
+                .aggregationType(AggregationType.valueOf(aggregation));
         if (odates != null && ovar != null){
             if (odates.length != ovar.length)
                 throw new IllegalArgumentException();

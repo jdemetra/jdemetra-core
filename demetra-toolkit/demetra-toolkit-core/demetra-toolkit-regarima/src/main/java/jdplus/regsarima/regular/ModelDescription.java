@@ -32,6 +32,7 @@ import demetra.timeseries.regression.TrendConstant;
 import demetra.timeseries.regression.Variable;
 import demetra.util.IntList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public final class ModelDescription {
     /**
      * Position in the original series of the missing values (if interpolated)
      */
-    private int[] missing;
+    private int[] missing=IntList.EMPTY;
 
     private boolean logTransformation;
     private LengthOfPeriodType lpTransformation = LengthOfPeriodType.None;
@@ -105,7 +106,7 @@ public final class ModelDescription {
     }
 
     public static ModelDescription copyOf(@NonNull ModelDescription model) {
-        return copyOf(model, null);
+        return copyOf(model, model.estimationDomain);
     }
 
     public static ModelDescription copyOf(@NonNull ModelDescription model, TsDomain estimationDomain) {
@@ -198,7 +199,16 @@ public final class ModelDescription {
             int diff = arima.getDifferencingOrder();
             LogJacobian lj;
             TsData tmp;
-            lj = new LogJacobian(diff, series.length(), missing);
+            int start, end;
+            if (estimationDomain == null){
+                start=diff;
+                end=series.length();
+            }else{
+                int del=series.getStart().until(estimationDomain.getStartPeriod());
+                start=del+diff;
+                end=del+estimationDomain.getLength();
+            }
+            lj = new LogJacobian(start, end, missing);
             tmp = interpolatedData == null ? series : TsData.ofInternal(series.getStart(), interpolatedData);
             if (logTransformation) {
                 if (lpTransformation != LengthOfPeriodType.None) {
@@ -207,7 +217,6 @@ public final class ModelDescription {
                 tmp = Transformations.log().transform(tmp, lj);
             }
             llCorrection = lj.value;
-
             // remove preadjustment
             if (hasFixedEffects()) {
                 final DataBlock ndata = DataBlock.of(tmp.getValues());
@@ -242,7 +251,7 @@ public final class ModelDescription {
     }
 
     public int[] getMissingInEstimationDomain() {
-        if (estimationDomain == null || missing == null || missing.length == 0) {
+        if (estimationDomain == null || missing.length == 0) {
             return missing;
         }
         int start = series.getStart().until(estimationDomain.getStartPeriod());
@@ -275,7 +284,7 @@ public final class ModelDescription {
         if (y.length > n) {
             int pos = series.getStart().until(domain.getStartPeriod());
             yc = DoubleSeq.of(y, pos, n);
-            if (missing != null && missing.length > 0) {
+            if (missing.length > 0) {
                 missingc = missing.clone();
                 for (int i = 0; i < missingc.length; ++i) {
                     missingc[i] -= pos;
@@ -472,6 +481,19 @@ public final class ModelDescription {
         return TsData.ofInternal(series.getStart(), transformedData);
     }
 
+    public TsData getTransformedSeries(boolean correctedForMissings) {
+        buildTransformation();
+        if (correctedForMissings || missing.length == 0) {
+            return TsData.ofInternal(series.getStart(), transformedData);
+        }else{
+            double[] data = transformedData.clone();
+            for (int i=0; i<missing.length; ++i){
+                data[missing[i]]=Double.NaN;
+            }
+            return TsData.ofInternal(series.getStart(), data);
+        }
+    }
+
     public TsData getInterpolatedSeries() {
         if (interpolatedData == null) {
             return series;
@@ -579,7 +601,12 @@ public final class ModelDescription {
         if (series.getValues().anyMatch(z -> Double.isNaN(z))) {
             IntList lmissing = new IntList();
             interpolatedData = interpolator.interpolate(series.getValues(), lmissing);
-            missing = lmissing.isEmpty() ? null : lmissing.toArray();
+            if (lmissing.isEmpty()) {
+                missing = IntList.EMPTY;
+            } else {
+                missing = lmissing.toArray();
+                Arrays.sort(missing);
+            }
             invalidateTransformation();
         } else {
             interpolatedData = null;

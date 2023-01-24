@@ -39,14 +39,12 @@ public class ModelBasedDentonSpec implements ProcSpecification, Validatable<Mode
     private Map<LocalDate, Double> shockVariances; 
     @lombok.Singular
     private Map<LocalDate, Double> fixedBiRatios; 
-    private int differencing;
     @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
 
     public static Builder builder() {
         return new Builder()
-                .differencing(1)
                 .aggregationType(AggregationType.Sum)
                 .observationPosition(0);
     }

@@ -112,7 +112,8 @@ public class ModelBasedDentonProcessor {
         // Not optimal
         DiffuseLikelihood ll = DkToolkit.likelihood(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
         DoubleSeq e = ll.e();
-        //TsData res=TsData.of(start, DoubleSeq.ONE)
+        int del=x.length()-e.length();
+        TsData res=TsData.of(indicator.getStart().plus(del), e);
         TsData lbi = TsData.divide(aggregatedSeries, indicator.aggregate(aggregatedSeries.getTsUnit(), spec.getAggregationType(), true));
 
         return ModelBasedDentonResults.builder()
@@ -124,7 +125,7 @@ public class ModelBasedDentonProcessor {
                 .biRatios(biratios)
                 .stdevBiRatios(ebiratios)
                 .likelihood(ll.stats(0, 0))
-                //               .residuals()
+                .residuals(res)
                 .build();
     }
 
@@ -192,7 +193,8 @@ public class ModelBasedDentonProcessor {
         // Not optimal
         DiffuseLikelihood ll = DkToolkit.likelihood(M2uAdapter.of(ssf), M2uAdapter.of(Q), true, true);
         DoubleSeq e = ll.e();
-        //TsData res=TsData.of(start, DoubleSeq.ONE)
+        int del=x.length()-e.length();
+        TsData res=TsData.of(indicator.getStart().plus(del), e);
         TsData lbi = TsData.divide(aggregatedSeries, indicator.aggregate(aggregatedSeries.getTsUnit(), spec.getAggregationType(), true));
 
         return ModelBasedDentonResults.builder()
@@ -204,7 +206,7 @@ public class ModelBasedDentonProcessor {
                 .biRatios(biratios)
                 .stdevBiRatios(ebiratios)
                 .likelihood(ll.stats(0, 0))
-                //               .residuals()
+                .residuals(res)
                 .build();
     }
 

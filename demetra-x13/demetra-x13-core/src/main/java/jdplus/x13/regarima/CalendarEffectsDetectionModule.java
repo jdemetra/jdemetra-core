@@ -105,7 +105,7 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
         IRegArimaComputer<SarimaModel> processor = RegArimaUtility.processor(true, eps);
 
         // builds models with and without td
-        ModelDescription ntddesc = ModelDescription.copyOf(description, null);
+        ModelDescription ntddesc = ModelDescription.copyOf(description);
         boolean removed = ntddesc.removeVariable(var -> ModellingUtility.isTradingDays(var));
         if (lp != null) {
             if (ntddesc.isAdjusted()) {

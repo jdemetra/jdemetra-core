@@ -210,7 +210,6 @@ public interface GeneralLinearModel<M> extends Explorable {
                             all.addAY(cursor.getAndNext(), col);
                         } else {
                             all.addAY(c.getValue(), col);
-
                         }
                     }
                 } else {
@@ -334,7 +333,7 @@ public interface GeneralLinearModel<M> extends Explorable {
             for (int i = 0; i < nmissing; ++i) {
                 int pos = dpos + missing[i].getPosition();
                 TsDomain mdom = TsDomain.of(domain.get(pos), 1);
-                TsData de = deterministicEffect(mdom, v -> true);
+                TsData de = preadjustmentEffect(mdom, v -> true);
                 if (bTransformed || !description.isLogTransformation()) {
                     datac[pos] = missing[i].getValue() + de.getValue(0);
                 } else {
@@ -361,12 +360,13 @@ public interface GeneralLinearModel<M> extends Explorable {
             for (int i = 0; i < nmissing; ++i) {
                 int pos = dpos + missing[i].getPosition();
                 TsDomain mdom = TsDomain.of(domain.get(pos), 1);
-                TsData det = deterministicEffect(mdom);
+                TsData preadjust = preadjustmentEffect(mdom, v->true);
+                    missingvals[i] = missing[i].getValue() + preadjust.getValue(0);
                 if (!description.isLogTransformation()) {
-                    missingvals[i] = missing[i].getValue() + det.getValue(0);
+                    missingvals[i] = missing[i].getValue() + preadjust.getValue(0);
                 } else {
-                    det = backTransform(det, true);
-                    missingvals[i] = Math.exp(missing[i].getValue()) * det.getValue(0);
+                    preadjust = backTransform(preadjust, true);
+                    missingvals[i] = Math.exp(missing[i].getValue()) * preadjust.getValue(0);
                 }
             }
         }
