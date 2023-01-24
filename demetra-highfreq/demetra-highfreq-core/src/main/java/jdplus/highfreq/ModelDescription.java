@@ -19,6 +19,8 @@ package jdplus.highfreq;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
+import demetra.highfreq.CleanedData;
+import demetra.highfreq.DataCleaning;
 import demetra.highfreq.ExtendedAirline;
 import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.timeseries.TsData;
@@ -32,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import jdplus.arima.estimation.IArimaMapping;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.data.interpolation.DataInterpolator;
@@ -44,12 +45,11 @@ import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
 import demetra.timeseries.regression.ModellingUtility;
-import demetra.timeseries.regression.TrendConstant;
+import java.util.Arrays;
 import jdplus.arima.ArimaModel;
 import jdplus.timeseries.simplets.Transformations;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import jdplus.regarima.IRegArimaComputer;
 
 /**
  *
@@ -62,8 +62,10 @@ public final class ModelDescription {
      * Original series
      */
     private final TsData series;
-
+    
     private final TsDomain estimationDomain;
+    
+    private final CleanedData cleanedData;
     /**
      * Interpolated data (before transformation) and transformed data. Their
      * domain correspond to the domain of the series
@@ -71,10 +73,10 @@ public final class ModelDescription {
     private double[] interpolatedData, transformedData;
     private double llCorrection;
     /**
-     * Position in the original series of the missing values (if interpolated)
+     * Positions of the missing values (if interpolated) in the cleaned data
      */
-    private int[] missing;
-
+    private int[] missing = IntList.EMPTY;
+    
     private boolean logTransformation;
     /**
      * Regression variables
@@ -85,19 +87,19 @@ public final class ModelDescription {
      * Arima component
      */
     private ExtendedAirlineSpec arima = ExtendedAirlineSpec.DEFAULT_W;
-
+    
     private boolean sortedVariables; //optimization
 
     public static ModelDescription dummyModel() {
         return new ModelDescription();
     }
-
+    
     public static ModelDescription copyOf(@NonNull ModelDescription model) {
         return copyOf(model, null);
     }
-
+    
     public static ModelDescription copyOf(@NonNull ModelDescription model, TsDomain estimationDomain) {
-        ModelDescription nmodel = new ModelDescription(model.series, estimationDomain);
+        ModelDescription nmodel = new ModelDescription(model.series, estimationDomain, model.cleanedData.getCleaning());
         nmodel.arima = model.arima;
         nmodel.logTransformation = model.logTransformation;
         nmodel.interpolatedData = model.interpolatedData;
@@ -107,10 +109,15 @@ public final class ModelDescription {
         model.variables.forEach(nmodel.variables::add);
         return nmodel;
     }
-
+    
     private ModelDescription() {
         this.series = null;
         this.estimationDomain = null;
+        this.cleanedData = null;
+    }
+    
+    public ModelDescription(@NonNull TsData series, TsDomain estimationDomain) {
+        this(series, estimationDomain, DataCleaning.of(series));
     }
 
     /**
@@ -120,9 +127,11 @@ public final class ModelDescription {
      * @param series The given series
      * @param estimationDomain Estimation domain. Can be null. In that case, the
      * estimation will be performed on the whole series
+     * @param cleaning
      */
-    public ModelDescription(@NonNull TsData series, TsDomain estimationDomain) {
+    public ModelDescription(@NonNull TsData series, TsDomain estimationDomain, DataCleaning cleaning) {
         this.series = series;
+        TsData s;
         if (estimationDomain != null) {
             estimationDomain = estimationDomain.intersection(series.getDomain());
             // check possible missing values
@@ -135,9 +144,13 @@ public final class ModelDescription {
                 throw new TsException("Missing values outside the estimation domain");
             }
             this.estimationDomain = estimationDomain;
+            s = TsData.fitToDomain(series, estimationDomain);
         } else {
             this.estimationDomain = null;
+            s = series;
         }
+        cleanedData = CleanedData.of(s, cleaning);
+        
     }
 
     // the regression variables are organized as follows:
@@ -173,7 +186,7 @@ public final class ModelDescription {
         variables.addAll(vars);
         sortedVariables = true;
     }
-
+    
     private void buildTransformation() {
         if (transformedData == null) {
             int diff = arima.getDifferencingOrder();
@@ -218,9 +231,9 @@ public final class ModelDescription {
     public TsDomain getEstimationDomain() {
         return estimationDomain == null ? series.getDomain() : estimationDomain;
     }
-
+    
     public int[] getMissingInEstimationDomain() {
-        if (estimationDomain == null || missing == null || missing.length == 0) {
+        if (estimationDomain == null || missing.length == 0) {
             return missing;
         }
         int start = series.getStart().until(estimationDomain.getStartPeriod());
@@ -250,7 +263,7 @@ public final class ModelDescription {
         if (y.length > n) {
             int pos = series.getStart().until(domain.getStartPeriod());
             yc = DoubleSeq.of(y, pos, n);
-            if (missing != null && missing.length > 0) {
+            if (missing.length > 0) {
                 missingc = missing.clone();
                 for (int i = 0; i < missingc.length; ++i) {
                     missingc[i] -= pos;
@@ -259,8 +272,8 @@ public final class ModelDescription {
         } else {
             yc = DoubleSeq.of(y);
         }
-        ExtendedAirlineMapping mapping=ExtendedAirlineMapping.of(arima);
-        ExtendedAirline ea=ExtendedAirline.of(arima);
+        ExtendedAirlineMapping mapping = ExtendedAirlineMapping.of(arima);
+        ExtendedAirline ea = ExtendedAirline.of(arima);
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(yc)
                 .missing(missingc)
@@ -284,31 +297,31 @@ public final class ModelDescription {
                 }
             }
         }
-        if (! excluded.isEmpty()){
-            variables.replaceAll(v->v.exclude(true));
+        if (!excluded.isEmpty()) {
+            variables.replaceAll(v -> v.exclude(true));
         }
         return builder.build();
     }
-
+    
     private void invalidateTransformation() {
         this.transformedData = null;
         this.llCorrection = 0;
     }
-
+    
     public Variable variable(String name) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getName().equals(name))
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
-
+    
     public Variable variable(ITsVariable v) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getCore() == v)
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
-
+    
     public boolean remove(String name) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getName().equals(name))
@@ -320,7 +333,7 @@ public final class ModelDescription {
             return false;
         }
     }
-
+    
     public boolean remove(ITsVariable v) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getCore() == v)
@@ -332,7 +345,7 @@ public final class ModelDescription {
             return false;
         }
     }
-
+    
     public Variable addVariable(Variable var) {
         String name = var.getName();
         while (contains(name)) {
@@ -343,12 +356,12 @@ public final class ModelDescription {
         sortedVariables = false;
         return nvar;
     }
-
+    
     public boolean contains(String name) {
         return variables.stream()
                 .anyMatch(var -> var.getName().equals(name));
     }
-
+    
     public void setLogTransformation(boolean log) {
         if (this.logTransformation == log) {
             return;
@@ -356,7 +369,7 @@ public final class ModelDescription {
         this.logTransformation = log;
         invalidateTransformation();
     }
-
+    
     public boolean isLogTransformation() {
         return this.logTransformation;
     }
@@ -374,6 +387,19 @@ public final class ModelDescription {
     public TsDomain getDomain() {
         return series.getDomain();
     }
+    
+    public TsData getTransformedSeries(boolean correctedForMissings) {
+        buildTransformation();
+        if (correctedForMissings || missing.length == 0) {
+            return TsData.ofInternal(series.getStart(), transformedData);
+        } else {
+            double[] data = transformedData.clone();
+            for (int i = 0; i < missing.length; ++i) {
+                data[missing[i]] = Double.NaN;
+            }
+            return TsData.ofInternal(series.getStart(), data);
+        }
+    }
 
     /**
      * Gets the transformed original series. The original may be transformed for
@@ -388,7 +414,7 @@ public final class ModelDescription {
         buildTransformation();
         return TsData.ofInternal(series.getStart(), transformedData);
     }
-
+    
     public TsData getInterpolatedSeries() {
         if (interpolatedData == null) {
             return series;
@@ -403,7 +429,7 @@ public final class ModelDescription {
     public ExtendedAirlineSpec getStochasticSpec() {
         return arima;
     }
-
+    
     public void setStochasticSpec(ExtendedAirlineSpec spec) {
         arima = spec;
         if (transformedData != null) {
@@ -411,10 +437,10 @@ public final class ModelDescription {
             buildTransformation();
         }
     }
-
+    
     public ArimaModel arima() {
-        ExtendedAirlineMapping mapping=ExtendedAirlineMapping.of(arima);
-        ExtendedAirline ea=ExtendedAirline.of(arima);
+        ExtendedAirlineMapping mapping = ExtendedAirlineMapping.of(arima);
+        ExtendedAirline ea = ExtendedAirline.of(arima);
         return mapping.map(ea.getP());
     }
 
@@ -424,7 +450,7 @@ public final class ModelDescription {
     public boolean isMean() {
         return arima.isMean();
     }
-
+    
     public boolean hasFixedEffects() {
         return variables.stream().anyMatch(v -> !v.isFree());
     }
@@ -451,31 +477,34 @@ public final class ModelDescription {
 
     /**
      * Interpolates missing values. The interpolation is processed on the
-     * complete series
+     * cleaned series, which depends on the estimation period and on the
+     * cleaning option (sundays, weekends...) The position of the missing are
+     * relative to the cleaned series
      *
      * @param interpolator
      */
     public void interpolate(@NonNull DataInterpolator interpolator) {
-        TsData y = series;
-        if (series.getValues().anyMatch(z -> Double.isNaN(z))) {
+        DoubleSeq cdata = cleanedData.getData();
+        if (cdata.anyMatch(z -> Double.isNaN(z))) {
             IntList lmissing = new IntList();
-            interpolatedData = interpolator.interpolate(series.getValues(), lmissing);
-            missing = lmissing.isEmpty() ? null : lmissing.toArray();
+            interpolatedData = interpolator.interpolate(cdata, lmissing);
+            if (lmissing.isEmpty()) {
+                missing = IntList.EMPTY;
+            } else {
+                missing = lmissing.toArray();
+                Arrays.sort(missing);
+            }
             invalidateTransformation();
         } else {
             interpolatedData = null;
             missing = IntList.EMPTY;
         }
     }
-
-    public int[] getMissing() {
-        return this.missing;
-    }
-
+    
     public void setMean(boolean mean) {
-        arima=arima.toBuilder().mean(mean).build();
+        arima = arima.toBuilder().mean(mean).build();
     }
-
+    
     public boolean removeVariable(Predicate<Variable> pred) {
         if (variables.removeIf(pred.and(var -> ModellingUtility.isAutomaticallyIdentified(var)))) {
             return true;
@@ -483,7 +512,7 @@ public final class ModelDescription {
             return false;
         }
     }
-
+    
     public int getAnnualFrequency() {
         return series.getAnnualFrequency();
     }
@@ -493,9 +522,9 @@ public final class ModelDescription {
      * position take into account an eventual mean correction.
      *
      * @param variable
-     * @return -1 if not found, otherwise the position of the first
-     * free coefficient of the considered variable, corrected for the presence
-     * of a mean correction (which is always the first one).
+     * @return -1 if not found, otherwise the position of the first free
+     * coefficient of the considered variable, corrected for the presence of a
+     * mean correction (which is always the first one).
      */
     public int findPosition(ITsVariable variable) {
         sortVariables();
@@ -516,13 +545,13 @@ public final class ModelDescription {
         }
         return isMean() ? pos + 1 : pos;
     }
-
+    
     public ExtendedAirlineMapping mapping() {
         return ExtendedAirlineMapping.of(arima);
     }
-
+    
     public RegArimaEstimation<ArimaModel> estimate(ExtendedAirlineComputer processor) {
-
+        
         RegArimaModel<ArimaModel> model = regarima();
         RegArimaEstimation<ArimaModel> rslt = processor.process(model, mapping());
         // update current description
@@ -537,24 +566,24 @@ public final class ModelDescription {
                 .llAdjustment(llCorrection)
                 .build();
     }
-
+    
     public void setFreeParameters(DoubleSeq p) {
-        ExtendedAirlineSpec.Builder builder=arima.toBuilder();
+        ExtendedAirlineSpec.Builder builder = arima.toBuilder();
         DoubleSeqCursor pcur = p.cursor();
         
         Parameter P = arima.getPhi();
-        if (P != null){
+        if (P != null) {
             builder.phi(Parameter.estimated(pcur.getAndNext()));
-        }else{
+        } else {
             builder.theta(Parameter.estimated(pcur.getAndNext()));
         }
-        int nth=arima.getPeriodicities().length;
-        Parameter[] th=new Parameter[nth];
+        int nth = arima.getPeriodicities().length;
+        Parameter[] th = new Parameter[nth];
         for (int i = 0; i < nth; ++i) {
-            th[i]=Parameter.estimated(pcur.getAndNext());
+            th[i] = Parameter.estimated(pcur.getAndNext());
         }
         builder.stheta(th);
         arima = builder.build();
     }
-
+    
 }

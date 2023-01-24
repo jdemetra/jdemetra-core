@@ -213,7 +213,7 @@ public class RegArimaKernel implements RegSarimaProcessor {
             log = ProcessingLog.dummy();
         }
         clear();
-        ModelDescription desc = modelBuilder.build(originalTs, null);
+        ModelDescription desc = modelBuilder.build(originalTs, log);
         if (desc == null) {
             throw new RegArimaException("Initialization failed");
         }

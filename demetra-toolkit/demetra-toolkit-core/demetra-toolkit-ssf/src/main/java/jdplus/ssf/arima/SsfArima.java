@@ -37,11 +37,13 @@ import jdplus.ssf.univariate.OrdinaryFilter;
 import jdplus.ssf.basic.Loading;
 import jdplus.ssf.UpdateInformation;
 import demetra.data.DoubleSeqCursor;
+import jdplus.arima.ArimaModel;
+import jdplus.math.linearfilters.BackFilter;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.univariate.ISsfMeasurement;
 import jdplus.math.matrices.FastMatrix;
+import jdplus.math.polynomials.UnitRoots;
 import jdplus.ssf.univariate.Ssf;
 
 /**
@@ -58,6 +60,15 @@ public class SsfArima {
 
     public ISsfLoading defaultLoading() {
         return Loading.fromPosition(0);
+    }
+    
+    public StateComponent differencingSsf(int d, double var){
+        if (d<=0)
+            return null;
+        if (d == 1)
+            return Rw.of(var, false);
+        ArimaModel model=new ArimaModel(BackFilter.ONE, new BackFilter(UnitRoots.D(1, d)), BackFilter.ONE, var);
+        return ofNonStationary(model);
     }
 
     public StateComponent stateComponent(IArimaModel arima) {
@@ -100,7 +111,6 @@ public class SsfArima {
     private OrdinaryFilter.Initializer diffuseInitializer(IArimaModel arima) {
         return (State state, ISsf ssf, ISsfData data) -> {
             ArimaInitialization initialization = (ArimaInitialization) ssf.initialization();
-            ISsfMeasurement m = ssf.measurement();
             int nr = ssf.getStateDim(), nd = initialization.getDiffuseDim();
             FastMatrix A = FastMatrix.make(nr + nd, nd);
             double[] dif = arima.getNonStationaryAr().asPolynomial().toArray();
@@ -148,7 +158,6 @@ public class SsfArima {
         }
         ArimaInitialization initialization = new ArimaInitialization(arima);
         ISsfDynamics dynamics = new ArimaDynamics(initialization.data);
-        ISsfLoading loading = Loading.fromPosition(0);
         return new StateComponent(initialization, dynamics);
     }
 
@@ -156,13 +165,12 @@ public class SsfArima {
 
         final ArimaData data;
         private final DataBlock acgf;
-        private final FastMatrix P0, V;
+        private final FastMatrix P0;
 
         ArmaInitialization(IArimaModel arima) {
             data = new ArimaData(arima);
             acgf = DataBlock.of(arima.getAutoCovarianceFunction().values(data.dim));
             P0 = p0(data.var, acgf, data.psi);
-            V = v(data.var, data.psi);
         }
 
         static FastMatrix v(double var, DataBlock psi) {
@@ -437,15 +445,15 @@ public class SsfArima {
          */
         @Override
         public void TX(final int pos, final DataBlock x) {
-            double z = 0;
+            double tx = 0;
             if (data.phi.length > 1) {
                 DoubleSeqCursor reader = x.reverseReader();
                 for (int i = 1; i < data.phi.length; ++i) {
-                    z -= data.phi[i] * reader.getAndNext();
+                    tx -= data.phi[i] * reader.getAndNext();
                 }
             }
             x.bshift(1);
-            x.set(data.dim - 1, z);
+            x.set(data.dim - 1, tx);
         }
 
         /**

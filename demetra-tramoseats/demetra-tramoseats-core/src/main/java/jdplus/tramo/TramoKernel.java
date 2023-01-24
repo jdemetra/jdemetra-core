@@ -271,7 +271,7 @@ public class TramoKernel implements RegSarimaProcessor {
             log = ProcessingLog.dummy();
         }
         log.push(TRAMO);
-        ModelDescription desc = build(originalTs, null);
+        ModelDescription desc = build(originalTs, log);
         if (desc == null) {
             throw new TramoException("Initialization failed");
         }
@@ -538,7 +538,7 @@ public class TramoKernel implements RegSarimaProcessor {
     }
 
     private void restore(RegSarimaModelling context) {
-        context.set(ModelDescription.copyOf(refAuto.getDescription(), null), refAuto.getEstimation());
+        context.set(ModelDescription.copyOf(refAuto.getDescription()), refAuto.getEstimation());
     }
 //
 //    /////////////////////////////////////////////////////////////////////////////

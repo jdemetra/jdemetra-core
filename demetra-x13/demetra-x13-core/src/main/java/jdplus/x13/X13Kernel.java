@@ -58,7 +58,7 @@ public class X13Kernel {
             if (basic.isPreliminaryCheck()) {
                 jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
-            return sc;
+            return s;
         };
     }
 

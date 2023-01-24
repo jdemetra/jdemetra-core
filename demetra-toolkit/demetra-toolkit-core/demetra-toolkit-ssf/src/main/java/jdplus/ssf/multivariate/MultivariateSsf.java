@@ -18,6 +18,7 @@ package jdplus.ssf.multivariate;
 
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
+import jdplus.ssf.StateComponent;
 
 /**
  *
@@ -41,7 +42,13 @@ public class MultivariateSsf implements IMultivariateSsf {
         this.measurements = measurements;
     }
 
-    @Override
+   public MultivariateSsf(final StateComponent state, final ISsfMeasurements measurements) {
+        this.initializer = state.initialization();
+        this.dynamics = state.dynamics();
+        this.measurements = measurements;
+    }
+
+   @Override
     public ISsfInitialization initialization() {
         return initializer;
     }

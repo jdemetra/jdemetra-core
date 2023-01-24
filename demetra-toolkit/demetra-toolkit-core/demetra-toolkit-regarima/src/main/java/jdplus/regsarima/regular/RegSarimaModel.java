@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2023 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -286,7 +286,6 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
 
     public IFunction likelihoodFunction() {
         RegArmaModel<SarimaModel> regarima = regarima().differencedModel();
-        IArimaMapping<SarimaModel> mapping = mapping();
         return RegArmaFunction.<SarimaModel>builder(regarima.getY())
                 .likelihoodEvaluation(DefaultLikelihoodEvaluation.ml())
                 .variables(regarima.getX())
@@ -348,24 +347,34 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
         }
         return bcasts;
     }
+    
+    private TsData regY(){
+        TsData s=transformedSeries();
+        TsData preadjust=this.preadjustmentEffect(s.getDomain(), v->true);
+        return TsData.subtract(s, preadjust);
+    }
 
     private Forecasts internalForecasts(int nf) {
+        TsDomain dom = this.getDescription().getDomain();
+        if (nf == 0) {
+            TsData empty = TsData.of(dom.getEndPeriod(), DoubleSeq.empty());
+            return new Forecasts(empty, empty, empty, empty);
+        }
+        
         RegArimaForecasts.Result fcasts;
         DoubleSeq b = getEstimation().getCoefficients();
         LikelihoodStatistics ll = getEstimation().getStatistics();
         double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount());
-        TsDomain edom = estimation.getDomain();
-        TsDomain xdom = edom.extend(0, nf);
+        TsDomain xdom = dom.extend(0, nf);
         if (b.isEmpty()) {
-            fcasts = RegArimaForecasts.calcForecast(arima(),
-                    getEstimation().originalY(), nf, sig2);
+            fcasts = RegArimaForecasts.calcForecast(arima(), regY().getValues(), nf, sig2);
         } else {
             FastMatrix matrix = regressionMatrix(xdom);
             fcasts = RegArimaForecasts.calcForecast(arima(),
-                    getEstimation().originalY(), matrix,
+                    regY().getValues(), matrix,
                     b, getEstimation().getCoefficientsCovariance(), sig2);
         }
-        TsPeriod fstart = edom.getEndPeriod();
+        TsPeriod fstart = dom.getEndPeriod();
         double[] f = fcasts.getForecasts();
         double[] ef = fcasts.getForecastsStdev();
 
@@ -387,14 +396,18 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
 
     private Forecasts internalBackcasts(int nb) {
         // we forecast to the past. Reverse everything
+        TsDomain dom = getDescription().getDomain();
+        if (nb == 0) {
+            TsData empty = TsData.of(dom.getStartPeriod(), DoubleSeq.empty());
+            return new Forecasts(empty, empty, empty, empty);
+        }
         RegArimaForecasts.Result bcasts;
         DoubleSeq b = getEstimation().getCoefficients();
         LikelihoodStatistics ll = getEstimation().getStatistics();
         double sig2 = ll.getSsqErr() / (ll.getEffectiveObservationsCount() - ll.getEstimatedParametersCount());
-        TsDomain edom = estimation.getDomain();
-        TsDomain xdom = edom.extend(nb, 0);
+        TsDomain xdom = dom.extend(nb, 0);
         if (b.isEmpty()) {
-            bcasts = RegArimaForecasts.calcForecast(arima(), getEstimation().originalY().reverse(), nb, sig2);
+            bcasts = RegArimaForecasts.calcForecast(arima(), regY().getValues().reverse(), nb, sig2);
         } else {
             FastMatrix matrix = regressionMatrix(xdom);
             // reverse the matrix
@@ -404,10 +417,10 @@ public class RegSarimaModel implements GeneralLinearModel<SarimaSpec>, GenericEx
                 riter.next().copy(iter.next().reverse());
             }
             bcasts = RegArimaForecasts.calcForecast(arima(),
-                    getEstimation().originalY().reverse(), matrix,
+                    regY().getValues().reverse(), matrix,
                     b, getEstimation().getCoefficientsCovariance(), sig2);
         }
-        TsPeriod bstart = edom.getStartPeriod().plus(-nb);
+        TsPeriod bstart = dom.getStartPeriod().plus(-nb);
         double[] f = bcasts.getForecasts();
         double[] ef = bcasts.getForecastsStdev();
         Arrays2.reverse(f);

@@ -16,44 +16,54 @@ import jdplus.math.matrices.FastMatrix;
  */
 public class SsfMatrix implements IMultivariateSsfData {
 
-    private final FastMatrix x_;
+    private final FastMatrix x;
+    private final boolean[] constraints;
 
     public SsfMatrix(FastMatrix x) {
-        x_ = x;
+        this.x = x;
+        constraints=null;
     }
 
-    @Override
+     public SsfMatrix(FastMatrix x, boolean[] constraints) {
+        this.x = x;
+        this.constraints=constraints;
+    }
+
+   @Override
     public double get(int pos, int v) {
-        return pos < x_.getRowsCount() ? x_.get(pos, v) : Double.NaN;
+        return pos < x.getRowsCount() ? x.get(pos, v) : Double.NaN;
     }
 
     @Override
     public boolean isMissing(int pos, int v) {
-        if (pos >= x_.getRowsCount()) {
+        if (pos >= x.getRowsCount()) {
             return true;
         }
-        double y = x_.get(pos, v);
+        double y = x.get(pos, v);
         return !Double.isFinite(y);
     }
 
     @Override
-    public boolean hasData() {
-        return true;
+    public boolean isConstraint(int pos, int v) {
+        if (constraints == null)
+            return false;
+        else
+            return constraints[v];
     }
 
     @Override
     public int getObsCount() {
-        return x_.getRowsCount();
+        return x.getRowsCount();
     }
 
     @Override
     public int getVarsCount() {
-        return x_.getColumnsCount();
+        return x.getColumnsCount();
     }
 
 
     @Override
     public DoubleSeq get(int pos) {
-        return pos < x_.getRowsCount() ? x_.row(pos) : DataBlock.EMPTY;
+        return pos < x.getRowsCount() ? x.row(pos) : DataBlock.EMPTY;
     }
 }

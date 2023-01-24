@@ -44,7 +44,7 @@ public class TramoSeatsKernel {
             if (transform.isPreliminaryCheck()) {
                 jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
-            return sc;
+            return s;
         };
     }
 
