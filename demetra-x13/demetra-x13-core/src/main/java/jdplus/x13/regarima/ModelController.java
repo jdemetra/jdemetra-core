@@ -19,6 +19,7 @@ package jdplus.x13.regarima;
 
 import demetra.data.DoubleSeq;
 import demetra.stats.StatisticalTest;
+import internal.jdplus.arima.ModifiedLjungBoxFilter;
 import jdplus.data.DataBlock;
 import jdplus.stats.linearmodel.LinearModel;
 import jdplus.regarima.RegArimaEstimation;

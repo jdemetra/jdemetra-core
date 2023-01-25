@@ -16,6 +16,11 @@
  */
 package demetra.highfreq;
 
+import demetra.modelling.highfreq.RegressionSpec;
+import demetra.modelling.highfreq.OutlierSpec;
+import demetra.modelling.highfreq.EstimateSpec;
+import demetra.modelling.highfreq.SeriesSpec;
+import demetra.modelling.highfreq.TransformSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import lombok.NonNull;
@@ -27,45 +32,47 @@ import nbbrd.design.Development;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName="Builder")
-public class ExtendedAirlineModellingSpec implements ProcSpecification {
-    
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class ExtendedAirlineModellingSpec implements ProcSpecification{
+
+    @NonNull
+    private SeriesSpec series;
+    @NonNull
+    private EstimateSpec estimate;
     @NonNull
     private TransformSpec transform;
+    @NonNull
+    private RegressionSpec regression;
     @NonNull
     private ExtendedAirlineSpec stochastic;
     @NonNull
     private OutlierSpec outlier;
-    @NonNull
-    private RegressionSpec regression;
-    @NonNull
-    private EstimateSpec estimate;
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder()
+                .series(SeriesSpec.DEFAULT)
                 .transform(TransformSpec.DEFAULT)
                 .stochastic(ExtendedAirlineSpec.DEFAULT_WD)
                 .regression(RegressionSpec.DEFAULT)
                 .outlier(OutlierSpec.DEFAULT_DISABLED)
                 .estimate(EstimateSpec.DEFAULT);
-                
+
     }
-    
+
     public static final ExtendedAirlineModellingSpec DEFAULT = builder().build();
 
     public static final String METHOD = "extendedairline";
     public static final String FAMILY = "Modelling";
     public static final String VERSION = "0.1.0.0";
 
-
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
         return new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
     }
-    
+
     @Override
-    public String display(){
+    public String display() {
         return "Extended airline";
     }
-    
+
 }

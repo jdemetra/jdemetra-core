@@ -14,12 +14,10 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13.regarima;
+package jdplus.sa.preprocessing;
 
-import internal.jdplus.arima.ModifiedLjungBoxFilter;
+import demetra.arima.SarimaOrders;
 import nbbrd.design.Development;
-import jdplus.arima.estimation.ResidualsComputer;
-import jdplus.data.DataBlock;
 import jdplus.regarima.outlier.CriticalValueComputer;
 import jdplus.sarima.SarimaModel;
 import jdplus.regsarima.RegSarimaComputer;
@@ -31,7 +29,7 @@ import jdplus.regarima.IRegArimaComputer;
  */
 @Development(status = Development.Status.Preliminary)
 @lombok.experimental.UtilityClass
-public class X13Utility {
+public class DemetraUtility {
 
     public static final double MINCV = 2.8;
 
@@ -47,15 +45,24 @@ public class X13Utility {
                 .build();
     }
 
-    public static ResidualsComputer mlComputer() {
-        return (arma, y) -> {
-            ModifiedLjungBoxFilter f = new ModifiedLjungBoxFilter();
-            int n = y.length();
-            int nf = f.prepare(arma, n);
-            DataBlock fres = DataBlock.make(nf);
-            f.apply(y, fres);
-            return nf == n ? fres : fres.drop(nf - n, 0);
-        };
+    public int autlar(final int n, final SarimaOrders spec) {
+        int d = spec.getD() + spec.getPeriod() * spec.getBd();
+        int q = spec.getQ() + spec.getPeriod() * spec.getBq();
+        int p = spec.getP() + spec.getPeriod() * spec.getBp();
+        int nd = n - d;
+        int nar = (int) Math.log(nd * nd);
+        int m = Math.max(p, 2 * q);
+        if (m > nar) {
+            nar = m;
+        }
+        if (nar >= nd) {
+            nar = nd - nd / 4;
+        }
+        if (nar > 50) {
+            nar = 50;
+        }
+        int ncol = spec.getP() + (1 + spec.getP()) * spec.getBp() + spec.getQ()
+                + (1 + spec.getQ()) * spec.getBq();
+        return nd - nar - Math.max(p, q) - ncol;
     }
-
 }

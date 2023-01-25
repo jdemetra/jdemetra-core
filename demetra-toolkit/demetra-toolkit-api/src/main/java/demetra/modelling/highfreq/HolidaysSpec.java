@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.highfreq;
+package demetra.modelling.highfreq;
 
 import demetra.data.Parameter;
 import demetra.timeseries.calendars.CalendarManager;

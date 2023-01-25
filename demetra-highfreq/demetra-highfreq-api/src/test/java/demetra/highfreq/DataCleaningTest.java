@@ -16,6 +16,8 @@
  */
 package demetra.highfreq;
 
+import demetra.modelling.highfreq.DataCleaning;
+import demetra.modelling.highfreq.CleanedData;
 import demetra.data.DoubleSeq;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;

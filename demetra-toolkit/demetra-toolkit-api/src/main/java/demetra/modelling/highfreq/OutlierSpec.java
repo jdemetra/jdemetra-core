@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.highfreq;
+package demetra.modelling.highfreq;
 
 import demetra.timeseries.TimeSelector;
 import nbbrd.design.Development;

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.tramo;
+package demetra.modelling.regular;
 
 import demetra.data.Parameter;
 import nbbrd.design.Development;
@@ -27,40 +27,35 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class EasterSpec implements Validatable<EasterSpec> {
 
     public static enum Type {
-        Unused, Standard, IncludeEaster, IncludeEasterMonday;
-
-        public boolean containsEaster() {
-            return this == IncludeEaster || this == IncludeEasterMonday;
-        }
-
-        public boolean containsEasterMonday() {
-            return this == IncludeEasterMonday;
-        }
+        UNUSED, EASTER, JULIANEASTER;
     };
 
     public static final int DEF_IDUR = 6;
-    public static final boolean DEF_JULIAN = false;
+    public static final Type DEF_TYPE = Type.UNUSED;
 
     boolean test;
     int duration;
     Type type;
-    boolean julian;
-    
+
     // optional coefficient.
     Parameter coefficient;
 
     public static final EasterSpec DEFAULT_UNUSED = EasterSpec.builder().build();
+    public static final EasterSpec DEFAULT_USED = new Builder()
+            .test(true)
+            .type(Type.EASTER)
+            .duration(DEF_IDUR)
+            .build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
                 .test(false)
-                .julian(DEF_JULIAN)
-                .type(Type.Unused)
+                .type(Type.UNUSED)
                 .duration(DEF_IDUR);
     }
 
@@ -69,28 +64,33 @@ public final class EasterSpec implements Validatable<EasterSpec> {
         if (duration <= 0 || duration > 15) {
             throw new IllegalArgumentException("Duration should be inside [1, 15]");
         }
-        if (test && Parameter.isFixed(coefficient))
+        if (test && Parameter.isFixed(coefficient)) {
             throw new IllegalArgumentException("Fixed coefficient should not be used with testing");
+        }
         return this;
     }
 
     public boolean isUsed() {
-        return type != Type.Unused;
-    }
-
-    public boolean isDefined() {
-        return type != Type.Unused && !test;
+        return type != Type.UNUSED;
     }
 
     public boolean isDefault() {
         return this.equals(DEFAULT_UNUSED);
     }
-    
-    public static EasterSpec none(){
+
+    public boolean isDefined() {
+        return type != Type.UNUSED && !test;
+    }
+
+    public boolean isJulian() {
+        return type == Type.JULIANEASTER;
+    }
+
+    public static EasterSpec none() {
         return DEFAULT_UNUSED;
     }
-    
-    public boolean hasFixedCoefficient(){
+
+    public boolean hasFixedCoefficient() {
         return coefficient != null && coefficient.isFixed();
     }
 

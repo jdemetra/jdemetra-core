@@ -14,9 +14,8 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.highfreq;
+package demetra.modelling.highfreq;
 
-import demetra.modelling.TransformationType;
 import demetra.timeseries.TimeSelector;
 import nbbrd.design.Development;
 
@@ -26,21 +25,25 @@ import nbbrd.design.Development;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName="Builder")
-public class TransformSpec {
-    
-    public static final TransformSpec DEFAULT=builder().build();
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+public class EstimateSpec {
+
+    public static final EstimateSpec DEFAULT=builder().build();
+
+    public static final boolean DEF_APP_HESSIAN = false;
+    public static final double EPS = 1e-7;
 
     @lombok.NonNull
     private TimeSelector span;
-    @lombok.NonNull
-    private DataCleaning cleaning;
-    @lombok.NonNull
-    private TransformationType function;
-    private double aicDiff;
-    
-    public static Builder builder(){
-        return new Builder().cleaning(DataCleaning.NONE).function(TransformationType.None).span(TimeSelector.all());
+    // operational
+    private double precision;
+    private boolean approximateHessian;
+
+    public static Builder builder() {
+        return new Builder()
+                .span(TimeSelector.all())
+                .precision(EPS)
+                .approximateHessian(DEF_APP_HESSIAN);
     }
-    
+
 }
