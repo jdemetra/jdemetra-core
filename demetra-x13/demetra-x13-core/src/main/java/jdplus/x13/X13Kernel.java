@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.CholetteProcessor;
+import jdplus.sa.PreliminaryChecks;
 import jdplus.sa.SaBenchmarkingResults;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.SaVariablesMapping;
@@ -51,7 +52,7 @@ import jdplus.x13.regarima.RegArimaKernel;
 @lombok.Value
 public class X13Kernel {
 
-    private static PreliminaryChecks of(X13Spec spec) {
+    private static PreliminaryChecks.Tool of(X13Spec spec) {
         BasicSpec basic = spec.getRegArima().getBasic();
         return (s, logs) -> {
             TsData sc = s.select(basic.getSpan());
@@ -62,7 +63,7 @@ public class X13Kernel {
         };
     }
 
-    private PreliminaryChecks preliminary;
+    private PreliminaryChecks.Tool preliminary;
     private RegArimaKernel regarima;
     private SaVariablesMapping samapping;
     private X11Spec spec;
@@ -70,7 +71,7 @@ public class X13Kernel {
     private CholetteProcessor cholette;
 
     public static X13Kernel of(X13Spec spec, ModellingContext context) {
-        PreliminaryChecks check = of(spec);
+        PreliminaryChecks.Tool check = of(spec);
         RegArimaKernel regarima = RegArimaKernel.of(spec.getRegArima(), context);
         SaVariablesMapping mapping = new SaVariablesMapping();
         // TO DO: fill maping with existing information in TramoSpec (section Regression)

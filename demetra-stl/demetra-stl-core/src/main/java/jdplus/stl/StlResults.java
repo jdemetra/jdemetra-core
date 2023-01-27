@@ -16,8 +16,12 @@
  */
 package jdplus.stl;
 
-import demetra.data.DoubleSeq;
 import demetra.information.GenericExplorable;
+import demetra.sa.ComponentType;
+import demetra.sa.DecompositionMode;
+import demetra.sa.SeriesDecomposition;
+import demetra.timeseries.TsData;
+import java.util.Map;
 
 /**
  *
@@ -26,12 +30,33 @@ import demetra.information.GenericExplorable;
 @lombok.Value
 @lombok.Builder(builderClassName="Builder")
 public class StlResults implements GenericExplorable{
-
-    DoubleSeq series;
-    DoubleSeq trend;
-    DoubleSeq seasonal;
-    DoubleSeq irregular;
-    DoubleSeq sa;
-    DoubleSeq fit;
-    DoubleSeq weights;
+    boolean multiplicative;
+    TsData series;
+    TsData sa;
+    TsData trend;
+    @lombok.Singular
+    Map<Integer, TsData> seasonals;
+    TsData irregular;
+    TsData fit;
+    TsData weights;
+    
+    public TsData seasonal(){
+        if (seasonals.isEmpty())
+            return null;
+        TsData all=null;
+        for (TsData s :seasonals.values()){
+            all=multiplicative ? TsData.multiply(all, s) : TsData.add(all, s);
+        }
+        return all;            
+    }
+    
+    public SeriesDecomposition asDecomposition(){
+        return SeriesDecomposition.builder(multiplicative ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
+                .add(series, ComponentType.Series)
+                .add(trend, ComponentType.Trend)
+                .add(sa, ComponentType.SeasonallyAdjusted)
+                .add(irregular, ComponentType.Irregular)
+                .add(seasonal(), ComponentType.Seasonal)
+                .build();
+    }
 }

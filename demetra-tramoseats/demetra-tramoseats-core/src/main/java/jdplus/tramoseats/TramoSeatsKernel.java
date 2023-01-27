@@ -20,6 +20,7 @@ import demetra.tramo.TransformSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import jdplus.regsarima.regular.RegSarimaModel;
 import jdplus.sa.CholetteProcessor;
+import jdplus.sa.PreliminaryChecks;
 import jdplus.sa.SaBenchmarkingResults;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 import jdplus.sarima.SarimaModel;
@@ -36,7 +37,7 @@ import jdplus.tramo.TramoKernel;
 @lombok.Value
 public class TramoSeatsKernel {
 
-    private static PreliminaryChecks of(TramoSeatsSpec spec) {
+    private static PreliminaryChecks.Tool of(TramoSeatsSpec spec) {
 
         TransformSpec transform = spec.getTramo().getTransform();
         return (s, logs) -> {
@@ -48,13 +49,13 @@ public class TramoSeatsKernel {
         };
     }
 
-    private PreliminaryChecks preliminary;
+    private PreliminaryChecks.Tool preliminary;
     private TramoKernel tramo;
     private SeatsKernel seats;
     private CholetteProcessor cholette;
 
     public static TramoSeatsKernel of(TramoSeatsSpec spec, ModellingContext context) {
-        PreliminaryChecks check = of(spec);
+        PreliminaryChecks.Tool check = of(spec);
         TramoKernel tramo = TramoKernel.of(spec.getTramo(), context);
         SeatsKernel seats = new SeatsKernel(SeatsToolkit.of(spec.getSeats()));
         return new TramoSeatsKernel(check, tramo, seats, CholetteProcessor.of(spec.getBenchmarking()));

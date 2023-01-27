@@ -14,47 +14,50 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa.preprocessing;
+package jdplus.sa.regarima;
 
-import demetra.timeseries.regression.ILengthOfPeriodVariable;
-import demetra.timeseries.regression.ITradingDaysVariable;
+import demetra.timeseries.calendars.LengthOfPeriodType;
+import nbbrd.design.BuilderPattern;
 import demetra.timeseries.regression.Variable;
-import jdplus.regarima.IRegArimaComputer;
 import jdplus.regarima.RegArimaEstimation;
-import jdplus.regarima.RegArimaUtility;
 import jdplus.regsarima.regular.IRegressionModule;
 import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.ProcessingResult;
 import jdplus.regsarima.regular.RegSarimaModelling;
-import jdplus.regsarima.regular.TradingDaysRegressionComparator;
 import jdplus.sarima.SarimaModel;
+import demetra.timeseries.regression.ILengthOfPeriodVariable;
+import demetra.timeseries.regression.ITradingDaysVariable;
+import jdplus.regarima.IRegArimaComputer;
+import jdplus.regarima.RegArimaUtility;
+import jdplus.regsarima.regular.TradingDaysRegressionComparator;
 import jdplus.stats.likelihood.ConcentratedLikelihoodWithMissing;
-import nbbrd.design.BuilderPattern;
 
 /**
  * * @author gianluca, jean Correction 22/7/2014. pre-specified Easter effect
  * was not handled with auto-td
  */
-public class AutomaticWaldTD implements IRegressionModule {
+public class AutomaticTradingDaysWaldTest implements IRegressionModule {
 
-    public static final double DEF_FPVAL = 0.01, DEF_PCONSTRAINT = .10, DEF_TLP=2;
+    public static final double DEF_TLP = 2;
 
     public static Builder builder() {
         return new Builder();
     }
 
-    @BuilderPattern(AutomaticWaldTD.class)
+    @BuilderPattern(AutomaticTradingDaysWaldTest.class)
     public static class Builder {
+        
+        public static final double DEF_PVALUE = 0.01, DEF_CONSTRAINT_PVALUE=0.1; 
 
         /**
          * Increasing complexity
          */
         private ITradingDaysVariable td[];
         private ILengthOfPeriodVariable lp;
-        private double tlp=DEF_TLP;
-        private double fpvalue = DEF_FPVAL, pconstraint = DEF_PCONSTRAINT;
-        private double precision = 1e-5;
-        private boolean adjust = false;
+        private double tlp = DEF_TLP;
+        private double fpvalue = DEF_PVALUE, pconstraint = DEF_CONSTRAINT_PVALUE;
+        private double precision = 1e-3;
+        private boolean adjust = true;
 
         public Builder tradingDays(ITradingDaysVariable[] td) {
             this.td = td.clone();
@@ -63,6 +66,11 @@ public class AutomaticWaldTD implements IRegressionModule {
 
         public Builder leapYear(ILengthOfPeriodVariable lp) {
             this.lp = lp;
+            return this;
+        }
+
+        public Builder lpThreshold(double tlp) {
+            this.tlp = tlp;
             return this;
         }
 
@@ -81,34 +89,24 @@ public class AutomaticWaldTD implements IRegressionModule {
             return this;
         }
 
-        public Builder tlp(double tlp) {
-            this.tlp = tlp;
-            return this;
-        }
-
-        /**
-         * Indicates if the lp effect can/must be handled as pre-adjustment
-         *
-         * @param adjust
-         * @return
-         */
         public Builder adjust(boolean adjust) {
             this.adjust = adjust;
             return this;
         }
 
-        public AutomaticWaldTD build() {
-            return new AutomaticWaldTD(this);
+        public AutomaticTradingDaysWaldTest build() {
+            return new AutomaticTradingDaysWaldTest(this);
         }
     }
 
     private final ITradingDaysVariable[] td;
     private final ILengthOfPeriodVariable lp;
-    private final double fpvalue, pconstraint, tlp;
+    private final double tlp;
+    private final double fpvalue, pconstraint;
     private final double precision;
     private final boolean adjust;
 
-    private AutomaticWaldTD(Builder builder) {
+    private AutomaticTradingDaysWaldTest(Builder builder) {
         this.td = builder.td;
         this.lp = builder.lp;
         this.tlp = builder.tlp;
@@ -145,29 +143,62 @@ public class AutomaticWaldTD implements IRegressionModule {
         if (lp != null) {
             tmp.addVariable(Variable.variable("lp", lp, ModelBuilder.calendarAMI));
         }
+
         return tmp;
     }
 
     private ProcessingResult update(ModelDescription current, ModelDescription test, ITradingDaysVariable aTd, ILengthOfPeriodVariable aLp, ConcentratedLikelihoodWithMissing ll, int nhp) {
         boolean changed = false;
-        boolean preadjustment = adjust && current.isLogTransformation();
+        boolean preadjustment=adjust && current.isLogTransformation();
+        Variable var = current.variable("td");
         if (aTd != null) {
-            current.addVariable(Variable.variable("td", aTd, ModelBuilder.calendarAMI));
+            if (var != null) {
+                if (!var.getCore().equals(aTd)) {
+                    current.remove("td");
+                    current.addVariable(Variable.variable("td", aTd, ModelBuilder.calendarAMI));
+                    changed = true;
+                }
+            } else {
+                current.addVariable(Variable.variable("td", aTd, ModelBuilder.calendarAMI));
+                changed = true;
+            }
+
+        } else if (var != null) {
+            current.remove("td");
             changed = true;
         }
+
+        var = current.variable("lp");
         if (aLp != null) {
             int pos = test.findPosition(lp);
             double tstat = ll.tstat(pos, nhp, true);
             if (Math.abs(tstat) > tlp) {
-                if (preadjustment && tstat > 0) {
-                    current.setPreadjustment(lp.getType());
+                if (var == null) {
+                    if (preadjustment && tstat > 0) {
+                        if (!current.isAdjusted()) {
+                            current.setPreadjustment(aLp.getType());
+                            return ProcessingResult.Changed;
+                        }
+                    } else {
+                        current.addVariable(Variable.variable("lp", lp, ModelBuilder.calendarAMI));
+                        return ProcessingResult.Changed;
+                    }
+                } else if (preadjustment && tstat > 0) {
+                    current.setPreadjustment(aLp.getType());
+                    current.remove("lp");
+                    return ProcessingResult.Changed;
                 } else {
-                    current.addVariable(Variable.variable("lp", lp, ModelBuilder.calendarAMI));
+                    return ProcessingResult.Unchanged;
                 }
-                changed = true;
             }
+        }
+        if (var != null) {
+            current.remove("lp");
+            changed = true;
+        } else if (current.isAdjusted() && preadjustment) {
+            current.setPreadjustment(LengthOfPeriodType.None);
+            changed = true;
         }
         return changed ? ProcessingResult.Changed : ProcessingResult.Unchanged;
     }
-
 }

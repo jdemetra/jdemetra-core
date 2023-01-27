@@ -29,11 +29,11 @@ import demetra.timeseries.TimeSelector;
 @lombok.Builder(toBuilder = true)
 public final class EstimateSpec  {
 
-    public static final double DEF_EPS = 1e-7;
+    public static final double DEF_EPS = 1e-7, DEF_IEPS = 1e-4;
 
     @lombok.NonNull
     private TimeSelector span;
-    private double precision;
+    private double precision, intermediatePrecision;
 
     public static final EstimateSpec DEFAULT = EstimateSpec.builder().build();
 
@@ -41,7 +41,8 @@ public final class EstimateSpec  {
     public static Builder builder() {
         return new Builder()
                 .span(TimeSelector.all())
-                .precision(DEF_EPS);
+                .precision(DEF_EPS)
+                .intermediatePrecision(DEF_IEPS);
     }
 
     public boolean isDefault() {

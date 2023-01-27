@@ -31,11 +31,11 @@ import java.util.List;
  * @author PALATEJ
  */
 @lombok.experimental.UtilityClass
-public class StlPlusKernel {
+public class StlToolkit {
 
-    public StlPlusResults process(TsData data, StlSpec spec) {
-        StlKernel stl = new StlKernel(spec);
-        StlResults decomp = stl.process(data.getValues());
+    public StlResults process(TsData data, StlSpec spec) {
+        RawStlKernel stl = new RawStlKernel(spec);
+        RawStlResults decomp = stl.process(data.getValues());
 
         TsPeriod start = data.getStart();
         TsData trend = TsData.of(start, decomp.getTrend()),
@@ -45,7 +45,7 @@ public class StlPlusKernel {
                 sa = TsData.of(start, decomp.getSa()),
                 seasonal = TsData.of(start, decomp.getSeasonal());
 
-        return StlPlusResults.builder()
+        return StlResults.builder()
                 .multiplicative(spec.isMultiplicative())
                 .series(data)
                 .trend(trend)
@@ -57,7 +57,7 @@ public class StlPlusKernel {
                 .build();
     }
 
-    public StlPlusResults process(TsData data, MStlSpec spec) {
+    public StlResults process(TsData data, MStlSpec spec) {
         // We should add pre-processing
         MStlKernel stl = new MStlKernel(spec);
         MStlResults decomp = stl.process(data.getValues());
@@ -68,7 +68,7 @@ public class StlPlusKernel {
                 weights = TsData.of(start, decomp.getWeights()),
                 sa = TsData.of(start, decomp.getSa());
 
-        StlPlusResults.Builder builder = StlPlusResults.builder()
+        StlResults.Builder builder = StlResults.builder()
                 .series(data)
                 .trend(trend)
                 .irregular(irr)
@@ -84,7 +84,7 @@ public class StlPlusKernel {
          return builder.build();
     }
     
-    public StlPlusResults process(TsData data, IStlSpec spec) {
+    public StlResults process(TsData data, IStlSpec spec) {
         // We should add pre-processing
         
         MStlResults decomp = IStlKernel.process(data.getValues(), spec);
@@ -95,7 +95,7 @@ public class StlPlusKernel {
                 weights = TsData.of(start, decomp.getWeights()),
                 sa = TsData.of(start, decomp.getSa());
 
-        StlPlusResults.Builder builder = StlPlusResults.builder()
+        StlResults.Builder builder = StlResults.builder()
                 .series(data)
                 .trend(trend)
                 .irregular(irr)

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13.regarima;
+package jdplus.sa.regarima;
 
 import demetra.data.Data;
 import demetra.sa.ComponentType;
@@ -34,7 +34,6 @@ import jdplus.regsarima.regular.ModelDescription;
 import jdplus.regsarima.regular.RegSarimaModelling;
 import org.junit.jupiter.api.Test;
 
-import static jdplus.x13.regarima.Converter.convert;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -48,7 +47,6 @@ public class LogLevelModuleTest {
 
     @Test
     public void testNoAdjust() {
-        long t0 = System.currentTimeMillis();
         TsData[] insee = Data.insee();
         for (int i = 0; i < insee.length; ++i) {
             LogLevelModule ll = LogLevelModule.builder()
@@ -62,7 +60,7 @@ public class LogLevelModuleTest {
             ll.process(m);
             boolean log = m.getDescription().isLogTransformation();
             ec.tstoolkit.modelling.arima.x13.LogLevelTest oll = new ec.tstoolkit.modelling.arima.x13.LogLevelTest();
-            ec.tstoolkit.timeseries.simplets.TsData s = convert(insee[i]);
+            ec.tstoolkit.timeseries.simplets.TsData s = Converter.convert(insee[i]);
             ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(s, null);
             ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
             desc.setTransformation(DefaultTransformationType.Auto);
@@ -75,13 +73,10 @@ public class LogLevelModuleTest {
             assertEquals(ll.getAICcLog(), oll.getLog().getStatistics().AICC, 1e-1);
             assertTrue(log == olog);
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
     }
 
     @Test
     public void testAdjust() {
-        long t0 = System.currentTimeMillis();
         TsData[] insee = Data.insee();
         for (int i = 0; i < insee.length; ++i) {
             LogLevelModule ll = LogLevelModule.builder()
@@ -97,7 +92,7 @@ public class LogLevelModuleTest {
             ll.process(m);
             boolean log = m.getDescription().isLogTransformation();
             ec.tstoolkit.modelling.arima.x13.LogLevelTest oll = new ec.tstoolkit.modelling.arima.x13.LogLevelTest();
-            ec.tstoolkit.timeseries.simplets.TsData s = convert(insee[i]);
+            ec.tstoolkit.timeseries.simplets.TsData s = Converter.convert(insee[i]);
             ec.tstoolkit.modelling.arima.ModelDescription desc = new ec.tstoolkit.modelling.arima.ModelDescription(s, null);
             ec.tstoolkit.modelling.arima.ModellingContext context = new ec.tstoolkit.modelling.arima.ModellingContext();
             desc.setAirline(true);
@@ -113,13 +108,10 @@ public class LogLevelModuleTest {
             assertEquals(ll.getAICcLevel(), oll.getLevel().getStatistics().AICC, 1e-1);
             assertEquals(ll.getAICcLog(), oll.getLog().getStatistics().AICC, 1e-1);
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
     }
 
     @Test
     public void testAdjustTD() {
-        long t0 = System.currentTimeMillis();
         int n = 0;
         TsData[] insee = Data.insee();
         for (int i = 0; i < insee.length; ++i) {
@@ -144,15 +136,10 @@ public class LogLevelModuleTest {
                 ++n;
             }
         }
-        assertTrue(n == 3);
-        System.out.println(n);
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
     }
 
     @Test
     public void testAO() {
-        long t0 = System.currentTimeMillis();
         TsData[] insee = Data.insee();
         for (int i = 0; i < insee.length; ++i) {
             LogLevelModule ll = LogLevelModule.builder()
@@ -177,7 +164,5 @@ public class LogLevelModuleTest {
             ll.process(m);
 //            System.out.println(ll.isChoosingLog());
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
     }
 }

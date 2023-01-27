@@ -46,7 +46,7 @@ public class StlKernelTest {
                 .innerLoopsCount(2)
                 .outerLoopsCount(5)
                 .build();
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
         double[] data=Data.EXPORTS.clone();
         data[13]=Double.NaN;
         data[14]=Double.NaN;
@@ -63,8 +63,8 @@ public class StlKernelTest {
                 .seasonalSpec(new SeasonalSpec(12, 7, false))
                 .trendSpec(LoessSpec.of(21, 1, false))
                 .build();
-        StlKernel stl = new StlKernel(spec);
-        StlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
+        RawStlKernel stl = new RawStlKernel(spec);
+        RawStlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(rslt.getTrend());
 //        System.out.println(rslt.getSeasonal());
 //        System.out.println(rslt.getIrregular());
@@ -75,9 +75,9 @@ public class StlKernelTest {
     public void testSpec() {
 
         StlSpec spec = StlSpec
-                .createDefault(12, false);
-        StlKernel stl = new StlKernel(spec);
-        StlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
+                .createDefault(12, false, false);
+        RawStlKernel stl = new RawStlKernel(spec);
+        RawStlResults rslt = stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(rslt.getSeries());
 //        System.out.println(rslt.getTrend());
 //        System.out.println(rslt.getSeasonal());
@@ -88,10 +88,10 @@ public class StlKernelTest {
 //    @Ignore
     public void testMul() {
 
-        StlSpec spec = StlSpec .createDefault(12, false);
+        StlSpec spec = StlSpec .createDefault(12, false, false);
 //        spec.setMultiplicative(true);
 //        spec.setNumberOfOuterIterations(5);
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
         stl.process(Doubles.of(Data.EXPORTS));
 //        System.out.println(DataBlock.of(stl.trend));
 //        System.out.println(DataBlock.of(stl.season[0]));
@@ -102,10 +102,10 @@ public class StlKernelTest {
 //    @Ignore
     public void testMissing() {
 
-        StlSpec spec = StlSpec.createDefault(12, false);
+        StlSpec spec = StlSpec.createDefault(12, false, false);
 //        spec.setMultiplicative(true);
 //        spec.setNumberOfOuterIterations(5);
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
         DataBlock s = DataBlock.copyOf(Data.EXPORTS);
         Random rnd = new Random();
         for (int i = 0; i < 30; ++i) {
@@ -123,9 +123,9 @@ public class StlKernelTest {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 10000; ++i) {
 //            StlPlusKernel stl = new StlPlusKernel(12, 7);
-            StlSpec spec = StlSpec.createDefault(12, 7, false);
+            StlSpec spec = StlSpec.createDefault(12, 7, false, false);
 //            spec.setNumberOfOuterIterations(5);
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
             stl.process(Doubles.of(Data.EXPORTS));
         }
         long t1 = System.currentTimeMillis();

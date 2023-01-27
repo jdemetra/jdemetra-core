@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13.regarima;
+package jdplus.sa.regarima;
 
 import demetra.timeseries.regression.IEasterVariable;
 import demetra.timeseries.regression.Variable;
@@ -96,7 +96,7 @@ public class EasterDetectionModule implements IRegressionModule {
 
         for (int i = 0; i < n; ++i) {
             ModelDescription curDesc = ModelDescription.copyOf(refdesc);
-            curDesc.addVariable(Variable.variable("easter", easters[i], X13ModelBuilder.calendarAMI));
+            curDesc.addVariable(Variable.variable("easter", easters[i], ModelBuilder.calendarAMI));
             desc[i] = curDesc;
             est[i] = curDesc.estimate(processor);
         }

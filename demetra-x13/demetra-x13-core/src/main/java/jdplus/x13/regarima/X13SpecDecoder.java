@@ -39,6 +39,11 @@ import demetra.regarima.EasterSpec;
 import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.regression.ITradingDaysVariable;
 import java.util.List;
+import jdplus.sa.regarima.AutomaticTradingDaysRegressionTest;
+import jdplus.sa.regarima.LogLevelModule;
+import jdplus.sa.regarima.AutomaticTradingDaysWaldTest;
+import jdplus.sa.regarima.CalendarEffectsDetectionModule;
+import jdplus.sa.regarima.EasterDetectionModule;
 
 /**
  * The Tramo processing builder initializes the regarima processing, which
@@ -170,7 +175,7 @@ final class X13SpecDecoder {
                             .build());
                     break;
                 case WALD:
-                    builder.calendarTest(TradingDaysWaldTest.builder()
+                    builder.calendarTest(AutomaticTradingDaysWaldTest.builder()
                             .leapYear(X13ModelBuilder.leapYear(tdspec))
                             .tradingDays(nestedtd(spec, context))
                             .adjust(tdspec.isAutoAdjust())

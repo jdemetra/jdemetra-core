@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13.regarima;
+package jdplus.sa.regarima;
 
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import nbbrd.design.BuilderPattern;
@@ -142,10 +142,10 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
         tmp.setAirline(true);
         tmp.setMean(true);
         if (td != null) {
-            tmp.addVariable(Variable.variable("td", td, X13ModelBuilder.calendarAMI));
+            tmp.addVariable(Variable.variable("td", td, ModelBuilder.calendarAMI));
         }
         if (lp != null) {
-            tmp.addVariable(Variable.variable("lp", lp, X13ModelBuilder.calendarAMI));
+            tmp.addVariable(Variable.variable("lp", lp, ModelBuilder.calendarAMI));
         }
 
         return tmp;
@@ -159,11 +159,11 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
             if (var != null) {
                 if (!var.getCore().equals(aTd)) {
                     current.remove("td");
-                    current.addVariable(Variable.variable("td", aTd, X13ModelBuilder.calendarAMI));
+                    current.addVariable(Variable.variable("td", aTd, ModelBuilder.calendarAMI));
                     changed = true;
                 }
             } else {
-                current.addVariable(Variable.variable("td", aTd, X13ModelBuilder.calendarAMI));
+                current.addVariable(Variable.variable("td", aTd, ModelBuilder.calendarAMI));
                 changed = true;
             }
 
@@ -184,7 +184,7 @@ public class AutomaticTradingDaysRegressionTest implements IRegressionModule {
                             return ProcessingResult.Changed;
                         }
                     } else {
-                        current.addVariable(Variable.variable("lp", lp, X13ModelBuilder.calendarAMI));
+                        current.addVariable(Variable.variable("lp", lp, ModelBuilder.calendarAMI));
                         return ProcessingResult.Changed;
                     }
                 } else if (preadjustment && tstat > 0) {

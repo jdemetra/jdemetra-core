@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa.preprocessing;
+package jdplus.sa.regarima;
 
 import demetra.data.Parameter;
 import demetra.modelling.TransformationType;
@@ -382,6 +382,20 @@ public class ModelBuilder implements IModelBuilder{
         }
     }
 
+    public static IEasterVariable easter(EasterSpec.Type type, int w) {
+        switch (type) {
+            case JULIANEASTER:
+                return new JulianEasterVariable(w, true);
+            case EASTER:
+                return EasterVariable.builder()
+                        .duration(w)
+                        .meanCorrection(EasterVariable.Correction.Simple)
+                        .endPosition(-1)
+                        .build();
+            default:
+                return null;
+        }
+    }
     public static IEasterVariable easter(ModellingSpec spec) {
         EasterSpec espec = spec.getRegression().getCalendar().getEaster();
         if (!espec.isUsed()) {

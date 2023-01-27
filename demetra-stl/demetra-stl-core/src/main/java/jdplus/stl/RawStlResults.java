@@ -1,7 +1,7 @@
 /*
- * Copyright 2020 National Bank of Belgium
+ * Copyright 2022 National Bank of Belgium
  *
- * Licensed under the EUPL, Version 1.2 or � as soon they will be approved 
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
@@ -14,17 +14,24 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.x13;
+package jdplus.stl;
 
-import demetra.processing.ProcessingLog;
-import demetra.timeseries.TsData;
+import demetra.data.DoubleSeq;
+import demetra.information.GenericExplorable;
 
 /**
  *
- * @author palatej
+ * @author PALATEJ
  */
-@FunctionalInterface
-public interface PreliminaryChecks {
-    TsData check(TsData original, ProcessingLog log);
-}
+@lombok.Value
+@lombok.Builder(builderClassName="Builder")
+public class RawStlResults implements GenericExplorable{
 
+    DoubleSeq series;
+    DoubleSeq trend;
+    DoubleSeq seasonal;
+    DoubleSeq irregular;
+    DoubleSeq sa;
+    DoubleSeq fit;
+    DoubleSeq weights;
+}

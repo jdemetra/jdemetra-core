@@ -642,8 +642,8 @@ public class TramoKernelTest {
     public static void stressTestProd() {
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
-            IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TRfull.build();
-            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1967, 0, data, true);
+            IPreprocessor processor = ec.tstoolkit.modelling.arima.tramo.TramoSpecification.TR2.build();
+            ec.tstoolkit.timeseries.simplets.TsData s = new ec.tstoolkit.timeseries.simplets.TsData(ec.tstoolkit.timeseries.simplets.TsFrequency.Monthly, 1982, 3, Data.ABS_RETAIL, true);
             ec.tstoolkit.modelling.arima.PreprocessingModel rslt = processor.process(s, null);
         }
         long t1 = System.currentTimeMillis();
@@ -651,9 +651,9 @@ public class TramoKernelTest {
         System.out.println(t1 - t0);
         t0 = System.currentTimeMillis();
         for (int i = 0; i < 1000; ++i) {
-            TramoKernel processor = TramoKernel.of(TramoSpec.TRfull, null);
-            TsPeriod start = TsPeriod.monthly(1967, 1);
-            TsData s = TsData.ofInternal(start, data);
+            TramoKernel processor = TramoKernel.of(TramoSpec.TR2, null);
+            TsPeriod start = TsPeriod.monthly(1982,4);
+            TsData s = TsData.ofInternal(start, Data.ABS_RETAIL);
             RegSarimaModel rslt = processor.process(s, null);
         }
         t1 = System.currentTimeMillis();

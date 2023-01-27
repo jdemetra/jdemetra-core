@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa.preprocessing;
+package jdplus.sa.regarima;
 
 import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;

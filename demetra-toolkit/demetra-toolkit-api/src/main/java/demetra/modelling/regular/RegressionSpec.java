@@ -33,34 +33,40 @@ import java.util.List;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class RegressionSpec implements Validatable<RegressionSpec> {
 
-    
+    public static final double DEF_AICCDIFF = 0;
+    public static final boolean DEF_CHECKMU = true;
+
+    private double aicDiff;
+
     Parameter mean;
     boolean checkMu;
     CalendarSpec calendar;
-    
+
     @lombok.Singular
-    List< Variable<IOutlier> > outliers;
+    List< Variable<IOutlier>> outliers;
     @lombok.Singular
-    List< Variable<Ramp> > ramps;
+    List< Variable<Ramp>> ramps;
     @lombok.Singular
-    List< Variable<InterventionVariable> > interventionVariables;
+    List< Variable<InterventionVariable>> interventionVariables;
     @lombok.Singular
-    List< Variable<TsContextVariable> > userDefinedVariables;
+    List< Variable<TsContextVariable>> userDefinedVariables;
 
     public static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .aicDiff(DEF_AICCDIFF)
+                .checkMu(DEF_CHECKMU)
                 .calendar(CalendarSpec.builder().build());
     }
 
     public boolean isUsed() {
-        return mean !=null || calendar.isUsed() || !outliers.isEmpty()
-                || !ramps.isEmpty() || !interventionVariables.isEmpty() 
+        return mean != null || calendar.isUsed() || !outliers.isEmpty()
+                || !ramps.isEmpty() || !interventionVariables.isEmpty()
                 || !userDefinedVariables.isEmpty();
     }
 
@@ -76,22 +82,22 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     public static class Builder implements Validatable.Builder<RegressionSpec> {
 
     }
-    
-    public boolean isSpecified(){
-        return ! (calendar.getEaster().isTest() 
+
+    public boolean isSpecified() {
+        return !(calendar.getEaster().isTest()
                 || calendar.getTradingDays().isAutomatic()
                 || calendar.getTradingDays().isTest()
-                || checkMu
-                );
+                || checkMu);
     }
-    
-    public boolean hasFixedCoefficients(){
-        if (! isUsed())
+
+    public boolean hasFixedCoefficients() {
+        if (!isUsed()) {
             return false;
+        }
         return (mean != null && mean.isFixed()) || calendar.hasFixedCoefficients()
-                || outliers.stream().anyMatch(var->! var.isFree())
-                || ramps.stream().anyMatch(var->! var.isFree())
-                || interventionVariables.stream().anyMatch(var->! var.isFree())
-                || userDefinedVariables.stream().anyMatch(var->! var.isFree());
+                || outliers.stream().anyMatch(var -> !var.isFree())
+                || ramps.stream().anyMatch(var -> !var.isFree())
+                || interventionVariables.stream().anyMatch(var -> !var.isFree())
+                || userDefinedVariables.stream().anyMatch(var -> !var.isFree());
     }
 }

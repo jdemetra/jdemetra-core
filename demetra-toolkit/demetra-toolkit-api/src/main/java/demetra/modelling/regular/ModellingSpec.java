@@ -40,10 +40,12 @@ public final class ModellingSpec implements Validatable<ModellingSpec>, ProcSpec
     public static final String VERSION_V3 = "3.0.0";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
 
-    public static final ModellingSpec DEFAULT = ModellingSpec.builder().build();
+    public static final ModellingSpec DEFAULT = ModellingSpec.builder().build(), DISABLED=builder().enabled(false).build();
 
     @lombok.NonNull
     private SeriesSpec series;
+    
+    private boolean enabled;
 
     @lombok.NonNull
     private TransformSpec transform;
@@ -64,10 +66,12 @@ public final class ModellingSpec implements Validatable<ModellingSpec>, ProcSpec
     public static Builder builder() {
         SarimaSpec sarima = SarimaSpec.airline();
         return new Builder()
+                .enabled(true)
                 .series(SeriesSpec.DEFAULT)
                 .transform(TransformSpec.DEFAULT)
                 .estimate(EstimateSpec.DEFAULT)
                 .outliers(OutlierSpec.DEFAULT_ENABLED)
+                .regression(RegressionSpec.DEFAULT)
                 .arima(sarima);
     }
 
@@ -95,7 +99,7 @@ public final class ModellingSpec implements Validatable<ModellingSpec>, ProcSpec
     public static final ModellingSpec FULL;
 
     static {
-
+        
         TransformSpec tr = TransformSpec.builder()
                 .function(TransformationType.Auto)
                 .build();
@@ -120,9 +124,13 @@ public final class ModellingSpec implements Validatable<ModellingSpec>, ProcSpec
                 .ls(true).build();
 
         FULL = ModellingSpec.builder()
+                .series(SeriesSpec.DEFAULT)
+                .enabled(true)
                 .transform(tr)
+                .estimate(EstimateSpec.DEFAULT)
                 .outliers(o)
                 .regression(reg)
+                .arima(SarimaSpec.airline())
                 .build();
     }
 

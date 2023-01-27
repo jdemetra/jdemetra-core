@@ -14,7 +14,7 @@
 * See the Licence for the specific language governing permissions and 
 * limitations under the Licence.
  */
-package jdplus.x13.regarima;
+package jdplus.sa.regarima;
 
 import demetra.timeseries.calendars.LengthOfPeriodType;
 import demetra.timeseries.regression.ILengthOfPeriodVariable;
@@ -117,12 +117,12 @@ public class CalendarEffectsDetectionModule implements IRegressionModule {
         }
 
         ModelDescription tddesc = ModelDescription.copyOf(ntddesc);
-        tddesc.addVariable(Variable.variable("td", td, X13ModelBuilder.calendarAMI));
+        tddesc.addVariable(Variable.variable("td", td, ModelBuilder.calendarAMI));
         if (lp != null) {
             if (tddesc.isLogTransformation() && adjust != LengthOfPeriodType.None) {
                 tddesc.setPreadjustment(adjust);
             } else {
-                tddesc.addVariable(Variable.variable("lp", lp, X13ModelBuilder.calendarAMI));
+                tddesc.addVariable(Variable.variable("lp", lp, ModelBuilder.calendarAMI));
             }
         }
 

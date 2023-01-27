@@ -14,28 +14,30 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.stl;
+package jdplus.stlplus;
 
-import demetra.stl.StlSpec;
-import demetra.timeseries.TsData;
+import demetra.information.GenericExplorable;
+import demetra.processing.HasLog;
+import demetra.processing.ProcessingLog;
+import demetra.sa.SeriesDecomposition;
+import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.sa.SaBenchmarkingResults;
+import jdplus.sa.modelling.HasRegSarimaPreprocessing;
+import jdplus.stl.StlResults;
 
 /**
  *
  * @author palatej
  */
-public class StlKernel {
+@lombok.Value
+@lombok.Builder
+public class StlPlusResults implements GenericExplorable, HasLog, HasRegSarimaPreprocessing {
 
-    private final StlSpec spec;
-
-    private StlKernel(StlSpec spec) {
-        this.spec = spec;
-    }
-
-    public static StlKernel of(StlSpec spec) {
-        return new StlKernel(spec);
-    }
-
-    public StlResults process(TsData s) {
-        return StlToolkit.process(s, spec);
-    }
+    private RegSarimaModel preprocessing;
+    private StlResults decomposition;
+    private SeriesDecomposition finals;
+    private SaBenchmarkingResults benchmarking;
+    private StlPlusDiagnostics diagnostics;
+    private ProcessingLog log;
+    
 }

@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa.preprocessing;
+package jdplus.sa.regarima;
 
 import jdplus.regsarima.ami.FastOutliersDetector;
 import nbbrd.design.BuilderPattern;
@@ -202,13 +202,13 @@ public class OutliersDetectionModule implements IOutliersDetectionModule {
         if (so && period > 1) {
             factories.add(new PeriodicOutlierFactory(period, true));
         }
-        detector.setOutlierFactories(factories.toArray(IOutlierFactory[]::new));
+        detector.setOutlierFactories(factories.toArray(new IOutlierFactory[factories.size()]));
         return detector;
     }
 
     public static Map<String, String> attributes(IOutlier o) {
         HashMap<String, String> attributes = new HashMap<>();
-        attributes.put(ModellingUtility.AMI, "demetra");
+        attributes.put(ModellingUtility.AMI, "tramo");
         attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
         return attributes;
     }

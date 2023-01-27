@@ -9,7 +9,7 @@ import jdplus.stl.IDataGetter;
 import jdplus.stl.IDataSelector;
 import jdplus.stl.LoessFilter;
 import demetra.stl.LoessSpec;
-import jdplus.stl.StlKernel;
+import jdplus.stl.RawStlKernel;
 import demetra.stl.StlSpec;
 import demetra.data.DoubleSeq;
 import demetra.data.WeightFunction;
@@ -51,7 +51,7 @@ public class StlDecomposition {
                 .robustWeightThreshold(weightThreshold)
                 .robustWeightFunction(WeightFunction.valueOf(weightsFunction))
                 .build();
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
 
         int n = y.length();

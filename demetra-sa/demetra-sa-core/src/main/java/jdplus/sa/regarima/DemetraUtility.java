@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.sa.preprocessing;
+package jdplus.sa.regarima;
 
 import demetra.arima.SarimaOrders;
 import nbbrd.design.Development;
@@ -34,7 +34,7 @@ public class DemetraUtility {
     public static final double MINCV = 2.8;
 
     public double calcCv(int nobs) {
-        return Math.max(CriticalValueComputer.advancedComputer().applyAsDouble(nobs), MINCV);
+        return Math.max(CriticalValueComputer.simpleComputer().applyAsDouble(nobs), MINCV);
     }
 
     public IRegArimaComputer<SarimaModel> processor(boolean ml, double precision) {

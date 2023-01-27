@@ -6,6 +6,7 @@
 package jdplus.sa;
 
 import demetra.data.DoubleSeq;
+import demetra.processing.ProcessingLog;
 import demetra.sa.SaException;
 import demetra.timeseries.TsData;
 
@@ -15,6 +16,12 @@ import demetra.timeseries.TsData;
  */
 @lombok.experimental.UtilityClass
 public class PreliminaryChecks {
+
+    @FunctionalInterface
+    public static interface Tool {
+
+        TsData check(TsData original, ProcessingLog log);
+    }
 
     public final static int MAX_REPEAT_COUNT = 80, MAX_MISSING_COUNT = 33;
 
@@ -32,7 +39,7 @@ public class PreliminaryChecks {
         if (nrepeat > MAX_REPEAT_COUNT * nz / 100) {
             throw new SaException("Too many identical values");
         }
-        int nm = values.count(z->!Double.isFinite(z));
+        int nm = values.count(z -> !Double.isFinite(z));
         if (nm > MAX_MISSING_COUNT * nz / 100) {
             throw new SaException("Too many missing values");
         }
