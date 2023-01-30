@@ -16,10 +16,33 @@
  */
 package jdplus.stlplus;
 
+import demetra.processing.ProcessingLog;
+import demetra.stl.StlPlusSpec;
+import demetra.timeseries.AbstractTsDocument;
+import demetra.timeseries.TsData;
+import demetra.timeseries.regression.ModellingContext;
+
 /**
  *
  * @author palatej
  */
-public class StlPlusDocument {
-    
+public class StlPlusDocument extends AbstractTsDocument<StlPlusSpec, StlPlusResults> {
+
+    private final ModellingContext context;
+
+    public StlPlusDocument() {
+        super(StlPlusSpec.FULL);
+        context = ModellingContext.getActiveContext();
+    }
+
+    public StlPlusDocument(ModellingContext context) {
+        super(StlPlusSpec.FULL);
+        this.context = context;
+    }
+
+    @Override
+    protected StlPlusResults internalProcess(StlPlusSpec spec, TsData data) {
+        return StlPlusKernel.of(spec, context).process(data, ProcessingLog.dummy());
+    }
+
 }

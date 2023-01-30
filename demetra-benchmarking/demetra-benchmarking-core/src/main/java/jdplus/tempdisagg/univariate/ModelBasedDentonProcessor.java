@@ -155,16 +155,16 @@ public class ModelBasedDentonProcessor {
         DoubleSeq values = naggregatedSeries.getValues();
         int n=values.length();
         FastMatrix M=FastMatrix.make(n, 2);
-        M.column(0).copy(values);
-        M.column(1).set(Double.NaN);
+        M.column(1).copy(values);
+        M.column(0).set(Double.NaN);
         TsPeriod start = naggregatedSeries.getStart();
         spec.getFixedBiRatios().forEach((LocalDate d,Double v)->{
             TsPeriod p=start.withDate(d.atStartOfDay());
             int del=start.until(p);
             if (del>=0 && del<M.getRowsCount())
-                M.set(del, 1, v/fx);
+                M.set(del, 0, v/fx);
         });
-        SsfMatrix Q=new SsfMatrix(M, new boolean[]{false, true});
+        SsfMatrix Q=new SsfMatrix(M, 1);
         StateComponent cc;
         if (spec.getShockVariances().isEmpty()) {
             StateComponent c = Coefficients.timeVaryingCoefficients(DoubleSeq.of(1));
@@ -184,7 +184,7 @@ public class ModelBasedDentonProcessor {
             StateComponent c = Coefficients.timeVaryingCoefficient(DoubleSeq.of(stde), 1);
             cc = SsfCumulator.of(c, loading, ratio, 0);
          }
-        IMultivariateSsf ssf=new MultivariateSsf(cc, Measurements.of(new ISsfLoading[]{cloading, floading}, null));
+        IMultivariateSsf ssf=new MultivariateSsf(cc, Measurements.of(new ISsfLoading[]{floading, cloading}, null));
                 
         DefaultSmoothingResults srslts = DkToolkit.smooth(M2uAdapter.of(ssf), M2uAdapter.of(Q), true, true);
         TsData biratios = TsData.of(indicator.getStart(), srslts.getComponent(1).extract(0, n, 2).times(fx));

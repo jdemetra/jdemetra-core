@@ -36,6 +36,11 @@ public class StlKernel {
     }
 
     public StlResults process(TsData s) {
-        return StlToolkit.process(s, spec);
+        if (spec == null) {
+            StlSpec nspec = StlSpec.createDefault(s.getAnnualFrequency(), false, true);
+            return StlToolkit.process(s, nspec);
+        } else {
+            return StlToolkit.process(s, spec);
+        }
     }
 }

@@ -74,7 +74,7 @@ public class StlPlusKernel {
                 StlResults rslt = stl.process(sc);
                 // Step 5. Benchmarking
                 SaBenchmarkingResults bench = null;
-                 // Step 6. Diagnostics
+                // Step 6. Diagnostics
                 StlPlusDiagnostics diagnostics = StlPlusDiagnostics.of(null, rslt, rslt.asDecomposition());
 
                 return StlPlusResults.builder()
@@ -85,7 +85,6 @@ public class StlPlusKernel {
                         .diagnostics(diagnostics)
                         .log(log)
                         .build();
-                
 
             } else {
                 // Step 0. Preliminary checks
@@ -95,7 +94,9 @@ public class StlPlusKernel {
                 // Step 2. Link between regarima and stl
                 StlSpec cspec = spec;
                 boolean mul = preprocessing.getDescription().isLogTransformation();
-                if (cspec.isMultiplicative() != mul) {
+                if (cspec == null) {
+                    cspec = StlSpec.createDefault(s.getAnnualFrequency(), mul, true);
+                } else if (cspec.isMultiplicative() != mul) {
                     cspec = spec.toBuilder().multiplicative(mul).build();
                 }
                 StlKernel stl = StlKernel.of(cspec);

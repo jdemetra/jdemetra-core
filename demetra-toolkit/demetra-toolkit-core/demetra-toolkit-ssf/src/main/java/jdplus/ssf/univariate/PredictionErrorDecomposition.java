@@ -88,13 +88,13 @@ public class PredictionErrorDecomposition implements
 
     @Override
     public void save(final int t, final UpdateInformation pe) {
-        if (pe.getStatus() != UpdateInformation.Status.OBSERVATION) {
-            return;
-        }
         double e = pe.get();
-        cumulator.add(e, pe.getVariance());
+        if (pe.getStatus() == UpdateInformation.Status.OBSERVATION) {
+            cumulator.add(e, pe.getVariance());
+        }
         if (bres) {
-            res.set(t, e / pe.getStandardDeviation());
+            double sd = pe.getStandardDeviation();
+            res.set(t, sd == 0 ? Double.NaN : e / sd);
         }
     }
 
@@ -112,6 +112,6 @@ public class PredictionErrorDecomposition implements
                 .residuals(res)
                 .scalingFactor(scalingfactor)
                 .build();
-     }
+    }
 
 }

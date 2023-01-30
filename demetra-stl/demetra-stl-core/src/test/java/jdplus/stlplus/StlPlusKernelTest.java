@@ -39,13 +39,8 @@ public class StlPlusKernelTest {
 
     @Test
     public void testPreprocessing() {
-        StlPlusSpec spec = StlPlusSpec.builder()
-                .preprocessing(ModellingSpec.FULL)
-                .stl(StlSpec.createDefault(12, true, true))
-                .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED)
-                .build();
-
-        StlPlusKernel kernel = StlPlusKernel.of(spec, null);
+ 
+        StlPlusKernel kernel = StlPlusKernel.of(StlPlusSpec.FULL, null);
         StlPlusResults rslt = kernel.process(Data.TS_ABS_RETAIL, null);
         TsDataTable table = TsDataTable.of(Arrays.asList(
                 rslt.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Value),

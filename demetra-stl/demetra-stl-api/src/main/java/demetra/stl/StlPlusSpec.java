@@ -41,8 +41,9 @@ public class StlPlusSpec implements SaSpecification{
 
     @lombok.NonNull
     private ModellingSpec preprocessing;
-    @lombok.NonNull
+    
     private StlSpec stl;
+    
     @lombok.NonNull
     private SaBenchmarkingSpec benchmarking;
 
@@ -50,7 +51,7 @@ public class StlPlusSpec implements SaSpecification{
     public static Builder builder() {
         return new Builder()
                 .preprocessing(ModellingSpec.FULL)
-                .stl(StlSpec.createDefault(12, true, true))
+                .stl(null)
                 .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED);
     }
 
@@ -62,5 +63,16 @@ public class StlPlusSpec implements SaSpecification{
     
     private static final String SMETHOD = "STL+";
     
+    public static final StlPlusSpec FULL=StlPlusSpec.builder()
+            .preprocessing(ModellingSpec.FULL)
+            .stl(null)
+            .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED)
+            .build();
+    
+    public static final StlPlusSpec DEFAULT=StlPlusSpec.builder()
+            .preprocessing(ModellingSpec.DEFAULT)
+            .stl(null)
+            .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED)
+            .build();
     
 }

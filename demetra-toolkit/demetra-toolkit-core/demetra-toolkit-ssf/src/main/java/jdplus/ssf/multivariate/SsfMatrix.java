@@ -17,16 +17,16 @@ import jdplus.math.matrices.FastMatrix;
 public class SsfMatrix implements IMultivariateSsfData {
 
     private final FastMatrix x;
-    private final boolean[] constraints;
+    private final int nconstraints;
 
     public SsfMatrix(FastMatrix x) {
         this.x = x;
-        constraints=null;
+        nconstraints=0;
     }
 
-     public SsfMatrix(FastMatrix x, boolean[] constraints) {
+     public SsfMatrix(FastMatrix x, int nconstraints) {
         this.x = x;
-        this.constraints=constraints;
+        this.nconstraints=nconstraints;
     }
 
    @Override
@@ -45,10 +45,7 @@ public class SsfMatrix implements IMultivariateSsfData {
 
     @Override
     public boolean isConstraint(int pos, int v) {
-        if (constraints == null)
-            return false;
-        else
-            return constraints[v];
+        return v<nconstraints;
     }
 
     @Override
