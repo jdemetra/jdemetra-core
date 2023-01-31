@@ -109,7 +109,7 @@ public final class ModellingSpec implements Validatable<ModellingSpec>, ProcSpec
                 .test(true)
                 .build();
 
-        TradingDaysSpec td = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.BIC, TradingDaysSpec.DEF_PFTD, true);
+        TradingDaysSpec td = TradingDaysSpec.automatic(LengthOfPeriodType.LeapYear, TradingDaysSpec.AutoMethod.BIC, TradingDaysSpec.DEF_PTD, true);
 
         CalendarSpec cal = CalendarSpec.builder()
                 .easter(e)

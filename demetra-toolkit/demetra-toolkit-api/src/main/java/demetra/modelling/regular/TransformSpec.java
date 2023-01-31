@@ -32,6 +32,7 @@ public final class TransformSpec {
 
     public static final boolean DEF_OUTLIERS=false;
     public static final LengthOfPeriodType DEF_ADJUST=LengthOfPeriodType.None;
+    
     public static final TransformSpec 
             DEFAULT = TransformSpec.builder().build(),
             DEF_AUTO = TransformSpec.builder()

@@ -31,7 +31,6 @@ import demetra.timeseries.calendars.LengthOfPeriodType;
 public final class SeriesSpec {
 
     public static final boolean DEF_CHECK=true;
-    public static final LengthOfPeriodType DEF_ADJUST=LengthOfPeriodType.None;
 
     @lombok.NonNull
     private TimeSelector span;

@@ -108,7 +108,7 @@ public class StlPlusFactory implements SaProcessingFactory<StlPlusSpec, StlPlusR
 
     @Override
     public AlgorithmDescriptor descriptor() {
-        return StlPlusSpec.DESCRIPTOR_V3;
+        return StlPlusSpec.DESCRIPTOR;
     }
 
     @Override

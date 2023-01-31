@@ -128,7 +128,7 @@ public class TradingDaysSpec {
         AIC
     }
 
-    public static final double DEF_PFTD = .01;
+    public static final double DEF_PTD = .01;
 
     private String holidays;
     private String[] userVariables;
@@ -139,7 +139,7 @@ public class TradingDaysSpec {
     private boolean simplified;
     private int stockTradingDays;
     private AutoMethod automaticMethod;
-    private double probabilityForFTest;
+    private double probabilityForTest;
 
     private Parameter[] tdCoefficients;
     private Parameter lpCoefficient;
@@ -194,7 +194,7 @@ public class TradingDaysSpec {
 
     public TradingDaysSpec withCoefficients(Parameter[] tdc, Parameter lpc) {
         return new TradingDaysSpec(holidays, userVariables, tradingDaysType, lengthOfPeriodType,
-                false, autoAdjust, simplified, stockTradingDays, AutoMethod.UNUSED, probabilityForFTest, tdc, lpc);
+                false, autoAdjust, simplified, stockTradingDays, AutoMethod.UNUSED, probabilityForTest, tdc, lpc);
     }
 
     public boolean hasFixedCoefficients() {

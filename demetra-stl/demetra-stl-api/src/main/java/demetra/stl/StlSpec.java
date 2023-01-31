@@ -57,8 +57,6 @@ public class StlSpec implements ProcSpecification {
                 .robustWeightThreshold(RWTHRESHOLD);
     }
 
-//    public static final StlSpec DEFAULT = createDefault(DEF_SWINDOW, true);
-
     /**
      * Creates a default specification for a series that has a given periodicity
      *

@@ -32,11 +32,11 @@ import nbbrd.design.LombokWorkaround;
 public class StlPlusSpec implements SaSpecification{
     public static final String METHOD = "stlplus";
     public static final String VERSION_V3 = "3.0.0";
-    public static final AlgorithmDescriptor DESCRIPTOR_V3 = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return DESCRIPTOR_V3;
+        return DESCRIPTOR;
     }
 
     @lombok.NonNull
