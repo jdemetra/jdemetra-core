@@ -57,7 +57,7 @@ public class QPredictionErrorDecomposition extends PredictionErrorDecomposition 
 
     @Override
     public void save(int t, AugmentedUpdateInformation pe) {
-        if (pe.getStatus() != UpdateInformation.Status.OBSERVATION) {
+        if (pe.isMissing() || pe.getStatus() != UpdateInformation.Status.OBSERVATION) {
             return;
         }
         if (pe.isDiffuse()) {

@@ -20,7 +20,6 @@ import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import demetra.modelling.ComponentInformation;
 import demetra.modelling.ModellingDictionary;
-import demetra.modelling.SeriesInfo;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
 import demetra.sa.SaDictionaries;

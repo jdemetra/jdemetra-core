@@ -129,7 +129,7 @@ public class SsfBsm2Test {
         SsfData data = new SsfData(Data.EXPORTS);
         DiffuseLikelihood ll = DkToolkit.likelihoodComputer(true, true, true).compute(BSM, data);
         DiffuseLikelihood ll2 = CkmsToolkit.likelihoodComputer(true).compute(BSM, data);
-        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(true, true, true).compute(BSM, data);
+        DiffuseLikelihood ll3 = AkfToolkit.likelihoodComputer(false, true, true).compute(BSM, data);
         DiffuseLikelihood ll4 = AkfToolkit.robustLikelihoodComputer(true, true).compute(BSM, data);
         assertEquals(ll.logLikelihood(), ll2.logLikelihood(), 1e-6);
         assertEquals(ll.logLikelihood(), ll3.logLikelihood(), 1e-6);

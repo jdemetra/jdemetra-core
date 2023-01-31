@@ -63,13 +63,13 @@ public class DiffusePredictionErrorDecomposition extends PredictionErrorDecompos
     public void save(int t, DiffuseUpdateInformation pe) {
         double d = pe.getDiffuseVariance();
         if (d != 0) {
-            if (pe.getStatus() != DiffuseUpdateInformation.Status.OBSERVATION) {
+            if (pe.getStatus() == DiffuseUpdateInformation.Status.OBSERVATION) {
                 ++nd;
                 ddet.add(d);
             }
         } else {
             double e = pe.get();
-            if (pe.getStatus() != DiffuseUpdateInformation.Status.OBSERVATION) {
+            if (pe.getStatus() == DiffuseUpdateInformation.Status.OBSERVATION) {
                 cumulator.add(e, pe.getVariance());
             }
             if (bres) {

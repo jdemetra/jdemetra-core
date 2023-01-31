@@ -150,6 +150,17 @@ public class RawStlKernel {
             // Step 4: T=smooth(sa)
             LoessFilter tfilter = new LoessFilter(spec.getTrendSpec());
             tfilter.filter(IDataSelector.of(sa), weights == null ? null : k -> weights[k], IDataSelector.of(trend));
+            if (spec.isMultiplicative() && !DoubleSeq.of(trend).allMatch(q -> q > 0)) {
+                // workaround to avoid negative values in the trend
+                double[] lsa = new double[sa.length];
+                for (int i = 0; i < lsa.length; ++i) {
+                    lsa[i] = Math.log(sa[i]);
+                }
+                tfilter.filter(IDataSelector.of(lsa), weights == null ? null : k -> weights[k], IDataSelector.of(trend));
+                for (int i = 0; i < trend.length; ++i) {
+                    trend[i] = Math.exp(trend[i]);
+                }
+            }
             op(trend, season, fit);
         }
     }
