@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.util.Arrays.asList;
 import java.util.List;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -106,12 +108,14 @@ public class TswFactoryTest {
         }
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void testBinFile() throws URISyntaxException, IOException {
-        Path file = getResource("blog_16x16.png");
-        for (TswFactory factory : asList(oldFactory, newFactory)) {
-            factory.loadFile(file);
-        }
+        Assertions.assertThatIOException().isThrownBy(() -> {
+            Path file = getResource("blog_16x16.png");
+            for (TswFactory factory : asList(oldFactory, newFactory)) {
+                factory.loadFile(file);
+            }
+        });
     }
 
     @Test

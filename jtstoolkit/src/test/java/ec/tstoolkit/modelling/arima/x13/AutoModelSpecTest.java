@@ -6,7 +6,10 @@
 package ec.tstoolkit.modelling.arima.x13;
 
 import ec.tstoolkit.information.InformationSet;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -132,57 +135,48 @@ public class AutoModelSpecTest {
         assertTrue(actual.isDefault());
     }
     
-    @Test(expected = X13Exception.class)
+    @Test
     public void testSetArmaSignificanceLowerBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setArmaSignificance(.45);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setArmaSignificance(.45));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetPercentRSELowerBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setPercentRSE(.1);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setPercentRSE(.1));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetPercentReductionCVLowerBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setPercentReductionCV(.01);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setPercentReductionCV(.01));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetPercentReductionCVUpperBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setPercentReductionCV(.4);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setPercentReductionCV(.4));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetInitialUnitRootLimitLowerBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setInitialUnitRootLimit(1);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setInitialUnitRootLimit(1));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetFinalUnitRootLimitUpperBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setFinalUnitRootLimit(1);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setFinalUnitRootLimit(1));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetCancelationLimitLowerBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setCancelationLimit(-1);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setCancelationLimit(-1));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetCancelationLimitUpperBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setCancelationLimit(.4);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setCancelationLimit(.4));
     }
-    
-    @Test(expected = X13Exception.class)
+
+    @Test
     public void testSetUnitRootLimitLowerBound() {
-        AutoModelSpec expected = new AutoModelSpec();
-        expected.setUnitRootLimit(.9);
+        assertThatExceptionOfType(X13Exception.class).isThrownBy(() -> new AutoModelSpec().setUnitRootLimit(.9));
     }
 }

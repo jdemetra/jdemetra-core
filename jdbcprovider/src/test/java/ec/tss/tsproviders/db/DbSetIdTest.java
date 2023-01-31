@@ -17,6 +17,7 @@
 
 package ec.tss.tsproviders.db;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -34,17 +35,15 @@ public class DbSetIdTest {
     static final DbSetId ID1 = ID0.child(V1);
     static final DbSetId ID2 = ID0.child(V2);
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRoot() {
-        String[] tmp = new String[1];
-        tmp[0] = null;
-        DbSetId.root(tmp);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> DbSetId.root(new String[] { null }));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     @SuppressWarnings({"null", "ConstantConditions"})
     public void testRoot2() {
-        DbSetId.root((String[])null);
+        Assertions.assertThatNullPointerException().isThrownBy(() -> DbSetId.root((String[])null));
     }
 
     @Test

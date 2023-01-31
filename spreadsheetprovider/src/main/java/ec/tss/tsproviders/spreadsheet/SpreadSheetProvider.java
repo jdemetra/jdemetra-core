@@ -16,32 +16,26 @@
  */
 package ec.tss.tsproviders.spreadsheet;
 
-import ec.tss.ITsProvider;
-import ec.tss.TsAsyncMode;
-import ec.tss.TsCollectionInformation;
-import ec.tss.TsInformation;
-import ec.tss.TsInformationType;
-import ec.tss.TsMoniker;
-import ec.tss.tsproviders.*;
-import static ec.tss.tsproviders.spreadsheet.SpreadSheetBean.X_CLEAN_MISSING;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetFactory;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetCollection;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSeries;
-import ec.tss.tsproviders.spreadsheet.engine.SpreadSheetSource;
-import ec.tss.tsproviders.spreadsheet.engine.TsImportOptions;
+import ec.tss.*;
+import ec.tss.tsproviders.DataSet;
+import ec.tss.tsproviders.DataSource;
+import ec.tss.tsproviders.spreadsheet.engine.*;
 import ec.tss.tsproviders.utils.*;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.util.spreadsheet.Book;
-import ec.util.spreadsheet.BookFactoryLoader;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import internal.ec.tss.tsproviders.spreadsheet.BookSupplier;
 import nbbrd.service.ServiceProvider;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static ec.tss.tsproviders.spreadsheet.SpreadSheetBean.X_CLEAN_MISSING;
 
 /**
  *
@@ -57,11 +51,13 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     private static final Logger LOGGER = LoggerFactory.getLogger(SpreadSheetProvider.class);
     protected final Parsers.Parser<DataSource> legacyDataSourceParser;
     protected final Parsers.Parser<DataSet> legacyDataSetParser;
+    private final BookSupplier bookSupplier;
 
     public SpreadSheetProvider() {
         super(LOGGER, SOURCE, TsAsyncMode.Once);
         this.legacyDataSourceParser = SpreadSheetLegacy.legacyDataSourceParser();
         this.legacyDataSetParser = SpreadSheetLegacy.legacyDataSetParser();
+        this.bookSupplier = BookSupplier.usingServiceLoader();
     }
 
     @Override
@@ -89,17 +85,14 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
     @Override
     protected SpreadSheetSource loadFromBean(SpreadSheetBean bean) throws Exception {
         File file = getRealFile(bean.getFile());
-        Book.Factory factory = getFactoryByFile(file);
-        if (factory != null) {
-            try (Book book = factory.load(file)) {
-                ObsGathering gathering = bean.isCleanMissing()
-                        ? ObsGathering.excludingMissingValues(bean.getFrequency(), bean.getAggregationType())
-                        : ObsGathering.includingMissingValues(bean.getFrequency(), bean.getAggregationType());
-                TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), gathering);
-                return SpreadSheetFactory.getDefault().toSource(book, options);
-            }
+        Book.Factory factory = bookSupplier.getFactory(file).orElseThrow(() -> new RuntimeException("File type not supported"));
+        try (Book book = factory.load(file)) {
+            ObsGathering gathering = bean.isCleanMissing()
+                    ? ObsGathering.excludingMissingValues(bean.getFrequency(), bean.getAggregationType())
+                    : ObsGathering.includingMissingValues(bean.getFrequency(), bean.getAggregationType());
+            TsImportOptions options = TsImportOptions.create(bean.getDataFormat(), gathering);
+            return SpreadSheetFactory.getDefault().toSource(book, options);
         }
-        throw new RuntimeException("File type not supported");
     }
 
     @Override
@@ -291,20 +284,11 @@ public class SpreadSheetProvider extends AbstractFileLoader<SpreadSheetSource, S
 
     @Override
     public boolean accept(File pathname) {
-        return getFactoryByFile(pathname) != null;
+        return bookSupplier.getFactory(pathname).isPresent();
     }
 
     @Override
     public String getFileDescription() {
         return "Spreadsheet file";
-    }
-
-    private Book.@Nullable Factory getFactoryByFile(@NonNull File file) {
-        for (Book.Factory o : BookFactoryLoader.get()) {
-            if (o.canLoad() && o.accept(file)) {
-                return o;
-            }
-        }
-        return null;
     }
 }

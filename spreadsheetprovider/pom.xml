@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
     </parent>
 
     <artifactId>demetra-spreadsheet</artifactId>
+    <packaging>jar</packaging>
 
     <name>Demetra - Spreadsheet</name>
     <description>A TS Provider that handles Excel and OpenDocument spreadsheets.</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
-    <properties>
-        <spreadsheet4j.version>2.2.5</spreadsheet4j.version>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.nbbrd.spreadsheet4j</groupId>
+                <artifactId>spreadsheet-bom</artifactId>
+                <version>2.5.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- compile only -->
@@ -25,53 +36,41 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-api</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-html</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-od</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-poi</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-xmlss</artifactId>
-            <version>${spreadsheet4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-utils</artifactId>
-        </dependency>
+
         <!-- test only -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tck</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -5,13 +5,15 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
     </parent>
     
     <artifactId>demetra-tck</artifactId>
     <packaging>jar</packaging>
     
     <name>Demetra - TCK</name>
+    <description>Seasonal Adjustment Toolkit - TCK</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile only -->
@@ -20,9 +22,10 @@
             <artifactId>checker-qual</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
         <dependency>

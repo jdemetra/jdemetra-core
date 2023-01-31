@@ -5,10 +5,11 @@
  */
 package ec.tstoolkit.modelling.arima.x13;
 
-import ec.tstoolkit.ParameterType;
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.calendars.TradingDaysType;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.*;
 
 /**
@@ -94,39 +95,33 @@ public class RegArimaSpecificationTest {
         
     }
     
-    @Test (expected = java.lang.IllegalArgumentException.class)
+    @Test
     public void testSetOutliers(){
-        RegArimaSpecification expected = new RegArimaSpecification();
-        expected.setOutliers(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> new RegArimaSpecification().setOutliers(null));
     }
-    
-    @Test (expected = java.lang.IllegalArgumentException.class)
+
+    @Test
     public void testSetAutoModel(){
-        RegArimaSpecification expected = new RegArimaSpecification();
-        expected.setAutoModel(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> new RegArimaSpecification().setAutoModel(null));
     }
-    
-    @Test (expected = java.lang.IllegalArgumentException.class)
+
+    @Test
     public void testSetArima(){
-        RegArimaSpecification expected = new RegArimaSpecification();
-        expected.setArima(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> new RegArimaSpecification().setArima(null));
     }
-    
-    @Test (expected = java.lang.IllegalArgumentException.class)
+
+    @Test
     public void testSetTransform(){
-        RegArimaSpecification expected = new RegArimaSpecification();
-        expected.setTransform(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> new RegArimaSpecification().setTransform(null));
     }
-    
-    @Test (expected = java.lang.IllegalArgumentException.class)
+
+    @Test
     public void testSetRegression(){
-        RegArimaSpecification expected = new RegArimaSpecification();
-        expected.setRegression(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> new RegArimaSpecification().setRegression(null));
     }
-    
-    @Test (expected = java.lang.IllegalArgumentException.class)
+
+    @Test
     public void testSetEstimate(){
-        RegArimaSpecification expected = new RegArimaSpecification();
-        expected.setEstimate(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> new RegArimaSpecification().setEstimate(null));
     }
 }

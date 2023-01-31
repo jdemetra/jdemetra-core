@@ -161,12 +161,8 @@ final class LegacyIndexer implements Indexer {
     private static final Xml.Formatter<XmlLegacyWorkspace> FORMATTER;
 
     static {
-        try {
-            PARSER = Jaxb.Parser.of(XmlLegacyWorkspace.class);
-            FORMATTER = Jaxb.Formatter.of(XmlLegacyWorkspace.class).withFormatted(true);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        PARSER = Jaxb.Parser.of(XmlLegacyWorkspace.class);
+        FORMATTER = Jaxb.Formatter.of(XmlLegacyWorkspace.class).withFormatted(true);
     }
 
     private static XmlLegacyWorkspace unmarshalIndex(Path file) throws IOException {

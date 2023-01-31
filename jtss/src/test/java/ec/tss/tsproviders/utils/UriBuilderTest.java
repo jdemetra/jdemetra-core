@@ -62,14 +62,14 @@ public class UriBuilderTest {
         assertEquals(scheme, uri.getScheme());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSchemeEmpty() {
-        new UriBuilder("", host).build();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new UriBuilder("", host).build());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSchemeNull() {
-        new UriBuilder(null, host).build();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new UriBuilder(null, host).build());
     }
 
     @Test
@@ -78,14 +78,14 @@ public class UriBuilderTest {
         assertEquals(host, uri.getHost());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHostEmpty() {
-        new UriBuilder(scheme, "").build();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new UriBuilder(scheme, "").build());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testHostNull() {
-        new UriBuilder("", null).build();
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new UriBuilder("", null).build());
     }
 
     @Test

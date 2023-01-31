@@ -29,7 +29,7 @@ import net.jcip.annotations.Immutable;
  */
 @Immutable
 @lombok.Value
-@lombok.experimental.Wither
+@lombok.With
 public final class ObsGathering {
 
     @NonNull

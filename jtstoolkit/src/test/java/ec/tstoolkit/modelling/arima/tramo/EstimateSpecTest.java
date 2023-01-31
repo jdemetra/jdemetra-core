@@ -10,7 +10,11 @@ import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.PeriodSelectorType;
 import ec.tstoolkit.timeseries.TsPeriodSelector;
 import java.text.DateFormat;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -128,15 +132,13 @@ public class EstimateSpecTest {
         assertTrue(spec.isDefault());
     }
 
-    @Test(expected = TramoException.class)
+    @Test
     public void testSetTolUpperBound() {
-        EstimateSpec spec = new EstimateSpec();
-        spec.setTol(1.0);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new EstimateSpec().setTol(1.0));
     }
 
-    @Test(expected = TramoException.class)
+    @Test
     public void testSetTolLowerBound() {
-        EstimateSpec spec = new EstimateSpec();
-        spec.setTol(-0.1);
+        assertThatExceptionOfType(TramoException.class).isThrownBy(() -> new EstimateSpec().setTol(-0.1));
     }
 }

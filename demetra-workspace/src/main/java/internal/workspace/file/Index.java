@@ -25,11 +25,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder(toBuilder = true)
 class Index {
 
     @lombok.NonNull
-    @lombok.experimental.Wither
+    @lombok.With
     String name;
 
     @lombok.NonNull

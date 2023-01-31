@@ -5,13 +5,15 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
     </parent>
   
     <artifactId>demetra-sdmx</artifactId>
-    
+    <packaging>jar</packaging>
+
     <name>Demetra - SDMX</name>
     <description>A TS Provider that handles SDMX files.</description>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile only -->
@@ -21,28 +23,25 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-utils</artifactId>
         </dependency>
+
         <!-- test only -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tck</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

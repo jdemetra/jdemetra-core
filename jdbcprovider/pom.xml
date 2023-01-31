@@ -5,17 +5,15 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
     </parent>
   
     <artifactId>demetra-jdbc</artifactId>
+    <packaging>jar</packaging>
 
     <name>Demetra - JDBC</name>
     <description>A TS Provider that handles JDBC sources such as Oracle and MySql.</description>
-
-    <properties>
-        <hsqldb.version>2.5.0</hsqldb.version>
-    </properties>
+    <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <dependencies>
         <!-- compile only -->
@@ -25,7 +23,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -37,30 +35,25 @@
         
         <!-- compile and runtime -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-sql-util</groupId>
             <artifactId>java-sql-jdbc</artifactId>
-            <version>${sql-util.version}</version>
         </dependency>
 
         <!-- test only -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tck</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>     
             <groupId>org.hsqldb</groupId>     
             <artifactId>hsqldb</artifactId>     
-            <version>${hsqldb.version}</version> 
+            <version>2.7.1</version>
+            <classifier>jdk8</classifier>
             <scope>test</scope>
         </dependency> 
     </dependencies>

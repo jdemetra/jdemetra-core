@@ -25,8 +25,10 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -190,6 +192,13 @@ public final class Params {
             return locale != null && datePattern != null;
         }
 
+        @Nullable
+        private Locale parseLocale(@NonNull String locale) {
+            // Fix behavior change in Parsers#localeParser()
+            Locale result = Parsers.localeParser().parse(locale);
+            return Locale.ROOT.equals(result) && locale.isEmpty() ? null : result;
+        }
+
         @Override
         public DataFormat defaultValue() {
             return defaultValue;
@@ -200,8 +209,8 @@ public final class Params {
             String locale = config.get(localeKey);
             String datePattern = config.get(datePatternKey);
             String numberPattern = config.get(numberPatternKey);
-            return isValid(locale, datePattern) 
-                    ? DataFormat.of(Parsers.localeParser().parse(locale), datePattern, numberPattern) 
+            return isValid(locale, datePattern)
+                    ? DataFormat.of(parseLocale(locale), datePattern, numberPattern)
                     : defaultValue;
         }
 

@@ -7,7 +7,10 @@ package ec.tstoolkit.arima.special;
 
 import ec.tstoolkit.information.InformationSet;
 import ec.tstoolkit.timeseries.TsException;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.*;
 
 /**
@@ -57,15 +60,13 @@ public class EasterSpecTest {
         
     }
     
-    @Test (expected = TsException.class)
+    @Test
     public void testSetDurationLowerBound() {
-        EasterSpec spec = new EasterSpec();
-        spec.setDuration(0);
+        assertThatExceptionOfType(TsException.class).isThrownBy(() -> new EasterSpec().setDuration(0));
     }
-    
-    @Test (expected = TsException.class)
+
+    @Test
     public void testSetDurationUpperBound() {
-        EasterSpec spec = new EasterSpec();
-        spec.setDuration(16);
+        assertThatExceptionOfType(TsException.class).isThrownBy(() -> new EasterSpec().setDuration(16));
     }
 }

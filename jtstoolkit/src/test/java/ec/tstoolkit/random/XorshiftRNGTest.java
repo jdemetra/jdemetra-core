@@ -19,6 +19,8 @@ package ec.tstoolkit.random;
 
 import static ec.tstoolkit.random.RandomNumberGeneratorAssert.*;
 import static org.junit.Assert.assertTrue;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 /**
@@ -40,9 +42,9 @@ public class XorshiftRNGTest {
         assertPseudoRandomDoubleGenerator(createRNG(), createRNG(), N);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNextIntNegativeBound() {
-        createRNG().nextInt(-1);
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> createRNG().nextInt(-1));
     }
 
     @Test

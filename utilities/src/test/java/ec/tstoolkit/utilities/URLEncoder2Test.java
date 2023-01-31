@@ -21,9 +21,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
 /**
  * http://svn.apache.org/viewvc/commons/proper/codec/trunk/src/test/java/org/apache/commons/codec/net/URLCodecTest.java?revision=1352268&view=markup
@@ -43,19 +47,19 @@ public class URLEncoder2Test {
         Assert.assertEquals(URLEncoder.encode(EX1_SRC, StandardCharsets.UTF_8.name()), URLEncoder2.encode(EX1_SRC, StandardCharsets.UTF_8));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testStringBuilderNull() {
-        URLEncoder2.encode(null, EX1_SRC, StandardCharsets.UTF_8);
+        assertThatNullPointerException().isThrownBy(() -> URLEncoder2.encode(null, EX1_SRC, StandardCharsets.UTF_8));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCharSequenceNull() {
-        URLEncoder2.encode(new StringBuilder(), null, StandardCharsets.UTF_8);
+        assertThatNullPointerException().isThrownBy(() -> URLEncoder2.encode(new StringBuilder(), null, StandardCharsets.UTF_8));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCharsetNull() {
-        URLEncoder2.encode(new StringBuilder(), EX1_SRC, null);
+        assertThatNullPointerException().isThrownBy(() -> URLEncoder2.encode(new StringBuilder(), EX1_SRC, null));
     }
 
     static class FasterImpl implements Runnable {

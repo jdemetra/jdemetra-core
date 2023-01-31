@@ -317,6 +317,7 @@ public class ArmaModule {
 //
     /**
      *
+     * @param data
      * @param specs
      * @return
      */
@@ -377,6 +378,7 @@ public class ArmaModule {
             SarmaSpecification[] specs0 = lspecs0.toArray(new SarmaSpecification[lspecs0.size()]);
 
             ArmaModule step0 = new ArmaModule();
+            step0.setEpsilon(eps_);
             nmax = step0.sort(data, specs0);
             if (0 == nmax) {
                 return null;
@@ -399,6 +401,7 @@ public class ArmaModule {
         SarmaSpecification[] specs1 = lspecs1.toArray(new SarmaSpecification[lspecs1.size()]);
 
         ArmaModule step1 = new ArmaModule();
+        step1.setEpsilon(eps_);
         nmax = step1.sort(data, specs1);
         if (0 == nmax) {
             return null;
@@ -427,6 +430,7 @@ public class ArmaModule {
             SarmaSpecification[] specs2 = lspecs2.toArray(new SarmaSpecification[lspecs2.size()]);
 
             step2 = new ArmaModule();
+            step2.setEpsilon(eps_);
             if (0 == step2.sort(data, specs2)) {
                 return null;
             }
