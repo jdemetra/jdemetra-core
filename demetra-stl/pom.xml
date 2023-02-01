@@ -17,11 +17,13 @@
         <module>demetra-stl-api</module>
         <module>demetra-stl-core</module>
         <module>demetra-stl-r</module>
+        <module>demetra-stl-io</module>
     </modules>
   
     <properties>
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
         <jd3-toolkit.version>1.0.0-SNAPSHOT</jd3-toolkit.version>
+        <jd3-sa.version>1.0.0-SNAPSHOT</jd3-sa.version>
         <jd3-stl.version>1.0.0-SNAPSHOT</jd3-stl.version>
     </properties>
     
@@ -35,8 +37,8 @@
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
-                <artifactId>demetra-toolkit-api-advanced</artifactId>
-                <version>${jd3-toolkit.version}</version>            
+                <artifactId>demetra-sa-api</artifactId>
+                <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>
@@ -52,6 +54,16 @@
                 <groupId>eu.europa.ec.joinup.sat</groupId>
                 <artifactId>demetra-stl-api</artifactId>
                 <version>${jd3-stl.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-core</artifactId>
+                <version>${jd3-sa.version}</version>            
+            </dependency>
+            <dependency>
+                <groupId>eu.europa.ec.joinup.sat</groupId>
+                <artifactId>demetra-sa-information</artifactId>
+                <version>${jd3-sa.version}</version>            
             </dependency>
             <dependency>
                 <groupId>eu.europa.ec.joinup.sat</groupId>

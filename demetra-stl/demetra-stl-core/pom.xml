@@ -21,6 +21,10 @@
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-stl-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sa-core</artifactId>
+        </dependency>
 
         <!-- test only -->
         <dependency>

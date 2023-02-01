@@ -237,7 +237,7 @@ public class StationaryVarianceComputer {
     }
 
     private TsData cleanup(TsData s) {
-        if (s.getValues().allMatch(x -> Math.abs(x) < 1e-12)) {
+        if (s == null || s.getValues().allMatch(x -> Math.abs(x) < 1e-12)) {
             return null;
         } else {
             return s;

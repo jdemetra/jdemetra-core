@@ -43,7 +43,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     };
 
     public static final int DEF_IDUR = 6;
-    public static boolean DEF_JULIAN = false;
+    public static final boolean DEF_JULIAN = false;
 
     boolean test;
     int duration;

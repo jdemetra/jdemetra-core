@@ -18,13 +18,13 @@ package jdplus.highfreq;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
-import demetra.highfreq.EasterSpec;
+import demetra.modelling.highfreq.EasterSpec;
 import demetra.highfreq.ExtendedAirline;
 import demetra.highfreq.ExtendedAirlineModellingSpec;
 import demetra.highfreq.ExtendedAirlineSpec;
-import demetra.highfreq.HolidaysSpec;
-import demetra.highfreq.OutlierSpec;
-import demetra.highfreq.RegressionSpec;
+import demetra.modelling.highfreq.HolidaysSpec;
+import demetra.modelling.highfreq.OutlierSpec;
+import demetra.modelling.highfreq.RegressionSpec;
 import demetra.math.matrices.Matrix;
 import demetra.modelling.OutlierDescriptor;
 import demetra.processing.ProcessingLog;
@@ -103,7 +103,7 @@ public class ExtendedAirlineKernel {
     }
 
     private ModelDescription build(TsData originalTs, ProcessingLog log) {
-        TsData y = originalTs.select(spec.getTransform().getSpan());
+        TsData y = originalTs.select(spec.getSeries().getSpan());
         ModelDescription desc = new ModelDescription(y, y.getDomain().select(spec.getEstimate().getSpan()));
         // regression variables
         desc.setMean(spec.getStochastic().isMean());

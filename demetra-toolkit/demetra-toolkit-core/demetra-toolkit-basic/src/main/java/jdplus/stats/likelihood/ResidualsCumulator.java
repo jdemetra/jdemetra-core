@@ -16,6 +16,7 @@
  */
 package jdplus.stats.likelihood;
 
+import demetra.DemetraException;
 import jdplus.data.DataBlock;
 import nbbrd.design.Development;
 import jdplus.math.matrices.LowerTriangularMatrix;
@@ -70,6 +71,8 @@ public class ResidualsCumulator {
         if (Math.abs(var) < ZERO) {
             if (Math.abs(e) < ZERO) {
                 return;
+            }else{
+                throw new DemetraException();
             }
         }
 

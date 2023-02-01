@@ -62,6 +62,7 @@ public class LoessSpec {
      * @param period periodicity of the series
      * @param swindow the length of the two-sided seasonal filter (should be
      * odd)
+     * @param nojump
      * @return
      */
     public static LoessSpec defaultTrend(int period, int swindow, boolean nojump) {

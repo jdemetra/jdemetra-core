@@ -16,6 +16,7 @@
  */
 package jdplus.x13.regarima;
 
+import internal.jdplus.arima.ModifiedLjungBoxFilter;
 import nbbrd.design.Development;
 import jdplus.arima.estimation.ResidualsComputer;
 import jdplus.data.DataBlock;

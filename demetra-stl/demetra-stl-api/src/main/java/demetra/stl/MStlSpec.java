@@ -94,7 +94,7 @@ public class MStlSpec implements ProcSpecification {
         }
     }
 
-    public static final String METHOD = "stlplus";
+    public static final String METHOD = "mstlplus";
     public static final String FAMILY = "Seasonal adjustment";
     public static final String VERSION = "0.1.0.0";
 

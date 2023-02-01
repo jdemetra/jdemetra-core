@@ -27,6 +27,8 @@ import demetra.processing.ProcSpecification;
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class StlSpec implements ProcSpecification {
+    
+    public static final int DEF_SWINDOW=11;
 
     private boolean multiplicative;
     private LoessSpec trendSpec;
@@ -55,17 +57,16 @@ public class StlSpec implements ProcSpecification {
                 .robustWeightThreshold(RWTHRESHOLD);
     }
 
-    public static final StlSpec DEFAULT = createDefault(7, true);
-
     /**
      * Creates a default specification for a series that has a given periodicity
      *
      * @param period The periodicity of the series
+     * @param mul
      * @param robust True for robust filtering, false otherwise.
      * @return
      */
-    public static StlSpec createDefault(int period, boolean robust) {
-        return createDefault(period, 7, robust);
+    public static StlSpec createDefault(int period, boolean mul, boolean robust) {
+        return createDefault(period, DEF_SWINDOW, mul, robust);
     }
 
     /**
@@ -74,20 +75,23 @@ public class StlSpec implements ProcSpecification {
      *
      * @param period
      * @param swindow
+     * @param mul
      * @param robust
      * @return
      */
-    public static StlSpec createDefault(int period, int swindow, boolean robust) {
+    public static StlSpec createDefault(int period, int swindow, boolean mul, boolean robust) {
 
         if (robust) {
             return robustBuilder()
                     .trendSpec(LoessSpec.defaultTrend(period, swindow, true))
                     .seasonalSpec(new SeasonalSpec(period, swindow, true))
+                    .multiplicative(mul)
                     .build();
         } else {
             return builder()
                     .trendSpec(LoessSpec.defaultTrend(period, swindow, true))
                     .seasonalSpec(new SeasonalSpec(period, swindow, true))
+                    .multiplicative(mul)
                     .build();
         }
     }

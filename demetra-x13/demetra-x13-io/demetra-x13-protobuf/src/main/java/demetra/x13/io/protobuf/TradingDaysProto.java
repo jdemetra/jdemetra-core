@@ -143,7 +143,6 @@ public class TradingDaysProto {
                 return TradingDaysSpec.td(td, lp, tdc, lpc);
             }
         }
-
     }
 
     public TradingDaysSpec of(byte[] bytes) throws InvalidProtocolBufferException {

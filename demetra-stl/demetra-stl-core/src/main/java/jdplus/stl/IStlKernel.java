@@ -31,7 +31,7 @@ public class IStlKernel {
 
     public MStlResults process(DoubleSeq data, IStlSpec spec) {
         MStlResults.Builder builder = MStlResults.builder().series(data);
-        StlResults curRslt = null;
+        RawStlResults curRslt = null;
         DoubleSeq seasonal = null;
         boolean mul = spec.isMultiplicative();
         for (IStlSpec.PeriodSpec pspec : spec.getPeriodSpecs()) {
@@ -44,7 +44,7 @@ public class IStlKernel {
                     .robustWeightFunction(spec.getRobustWeightFunction())
                     .robustWeightThreshold(spec.getRobustWeightThreshold())
                     .build();
-            StlKernel kernel = new StlKernel(curSpec);
+            RawStlKernel kernel = new RawStlKernel(curSpec);
             curRslt = kernel.process(data);
             DoubleSeq seas = curRslt.getSeasonal();
             builder.season(seas);

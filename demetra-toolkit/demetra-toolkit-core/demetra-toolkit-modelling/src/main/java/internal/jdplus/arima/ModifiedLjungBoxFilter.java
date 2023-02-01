@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package jdplus.x13.regarima;
+package internal.jdplus.arima;
 
 import jdplus.arima.IArimaModel;
 import jdplus.data.DataBlock;
@@ -30,7 +30,6 @@ import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.math.polynomials.Polynomial;
 import jdplus.arima.estimation.ArmaFilter;
 import demetra.data.DoubleSeq;
-import internal.jdplus.arima.MaLjungBoxFilter;
 
 /**
  * @author Jean Palate

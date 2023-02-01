@@ -44,7 +44,7 @@ public class StlPlusSpecificationTest {
                 .seasonalSpec(new SeasonalSpec(52, 7, false))
                 .build();
 
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
         stl.process(data);
 //        FastMatrix m = FastMatrix.make(data.length(), 4);
 //        m.column(0).copyFrom(stl.getY(), 0);
@@ -64,7 +64,7 @@ public class StlPlusSpecificationTest {
                 .seasonalSpec(new SeasonalSpec(52, 7, false))
                 .build();
 
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
 
         stl.process(data);
 //        FastMatrix m = FastMatrix.make(data.length(), 4);
@@ -85,7 +85,7 @@ public class StlPlusSpecificationTest {
                 .trendSpec(LoessSpec.of(105, 1, 1, null))
                 .seasonalSpec(sspec)
                 .build();
-        StlKernel stl = new StlKernel(spec);
+        RawStlKernel stl = new RawStlKernel(spec);
         stl.process(data);
 
 //        FastMatrix m = FastMatrix.make(data.length(), 4);
