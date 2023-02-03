@@ -59,7 +59,7 @@ public class StlToolkit {
 
     public StlResults process(TsData data, MStlSpec spec) {
         // We should add pre-processing
-        MStlKernel stl = new MStlKernel(spec);
+        MStlKernel stl = MStlKernel.of(spec);
         MStlResults decomp = stl.process(data.getValues());
         TsPeriod start = data.getStart();
         TsData trend = TsData.of(start, decomp.getTrend()),

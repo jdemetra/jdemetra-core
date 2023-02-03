@@ -16,6 +16,8 @@
  */
 package demetra.highfreq;
 
+import demetra.data.DoubleSeq;
+import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import nbbrd.design.Development;
 
@@ -35,7 +37,24 @@ public class ExtendedAirlineSpec {
     private Parameter phi, theta;
     private Parameter[] stheta;
     private boolean adjustToInt;
-
+    
+    public static class Builder{
+        
+        public Builder periodicities(double[] p){
+            this.periodicities=p;
+            this.stheta=Parameter.make(p.length);
+            return this;
+        }
+        
+        public Builder stheta(Parameter[] p){
+            if (periodicities == null || p.length != periodicities.length)
+                throw new IllegalArgumentException();
+            this.stheta=p;
+            return this;
+        }
+        
+    }
+    
     public boolean isValid() {
         if (phi != null && theta != null) {
             return false;
@@ -70,7 +89,6 @@ public class ExtendedAirlineSpec {
             .differencingOrder(3)
             .phi(null)
             .theta(Parameter.undefined())
-            .stheta(Parameter.make(2))
             .adjustToInt(true)
             .build();
 
@@ -79,7 +97,6 @@ public class ExtendedAirlineSpec {
             .differencingOrder(3)
             .phi(null)
             .theta(Parameter.undefined())
-            .stheta(Parameter.make(2))
             .adjustToInt(false)
             .build();
 
@@ -88,7 +105,6 @@ public class ExtendedAirlineSpec {
             .differencingOrder(2)
             .phi(null)
             .theta(Parameter.undefined())
-            .stheta(Parameter.make(1))
             .adjustToInt(true)
             .build();
 
@@ -111,13 +127,36 @@ public class ExtendedAirlineSpec {
             .build();
 
     public int freeParametersCount() {
-        int np=0;
-        if (phi != null && phi.isFree())
+        int np = 0;
+        if (phi != null && phi.isFree()) {
             ++np;
-        if (theta != null && theta.isFree())
+        }
+        if (theta != null && theta.isFree()) {
             ++np;
-        np+=Parameter.freeParametersCount(stheta);
+        }
+        np += Parameter.freeParametersCount(stheta);
         return np;
     }
 
+    public ExtendedAirlineSpec withFreeParameters(DoubleSeq p) {
+        ExtendedAirlineSpec.Builder builder = toBuilder();
+        DoubleSeqCursor pcur = p.cursor();
+
+        if (phi != null && phi.isFree()) {
+            builder.phi(Parameter.estimated(pcur.getAndNext()));
+        } else if (theta != null && theta.isFree()) {
+            builder.theta(Parameter.estimated(pcur.getAndNext()));
+        }
+        int nth = periodicities.length;
+        Parameter[] th = new Parameter[nth];
+        for (int i = 0; i < nth; ++i) {
+            if (stheta[i].isFree()) {
+                th[i] = Parameter.estimated(pcur.getAndNext());
+            } else {
+                th[i] = stheta[i];
+            }
+        }
+        builder.stheta(th);
+        return builder.build();
+    }
 }

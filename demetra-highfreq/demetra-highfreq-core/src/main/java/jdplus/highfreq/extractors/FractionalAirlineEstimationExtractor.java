@@ -5,7 +5,7 @@
  */
 package jdplus.highfreq.extractors;
 
-import jdplus.highfreq.ExtendedAirlineEstimation;
+import jdplus.highfreq.extendedairline.ExtendedAirlineEstimation;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import jdplus.stats.likelihood.LikelihoodStatistics;

@@ -94,7 +94,13 @@ public class PredictionErrorDecomposition implements
         }
         if (bres) {
             double sd = pe.getStandardDeviation();
-            res.set(t, sd == 0 ? Double.NaN : e / sd);
+            if (e == 0) {
+                res.set(t, 0);
+            } else if (sd == 0) {
+                res.set(t, Double.NaN);
+            } else {
+                res.set(t, e / sd);
+            }
         }
     }
 

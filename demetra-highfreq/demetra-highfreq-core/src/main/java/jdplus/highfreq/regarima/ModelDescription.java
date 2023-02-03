@@ -14,15 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.regarima;
 
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
 import demetra.modelling.highfreq.CleanedData;
 import demetra.modelling.highfreq.DataCleaning;
-import demetra.highfreq.ExtendedAirline;
-import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsException;
@@ -47,6 +44,8 @@ import jdplus.regarima.RegArimaModel;
 import demetra.timeseries.regression.ModellingUtility;
 import java.util.Arrays;
 import jdplus.arima.ArimaModel;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.timeseries.simplets.Transformations;
 import nbbrd.design.Development;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -54,21 +53,25 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  *
  * @author Jean Palate
+ * @param <S>
+ * @param <M>
  */
 @Development(status = Development.Status.Preliminary)
-public final class ModelDescription {
+public final class ModelDescription<S extends IArimaModel, M extends ArimaDescription<S>> {
 
     /**
      * Original series
      */
     private final TsData series;
-    
+
     private final TsDomain estimationDomain;
-    
+
     private final CleanedData cleanedData;
+
     /**
-     * Interpolated data (before transformation) and transformed data. Their
-     * domain correspond to the domain of the series
+     * Interpolated data (before transformation) and transformed data. They
+     * correspond to the cleaned data. So, to retrieve a time series
+     * corresponding to the original series, you should use
      */
     private double[] interpolatedData, transformedData;
     private double llCorrection;
@@ -76,46 +79,48 @@ public final class ModelDescription {
      * Positions of the missing values (if interpolated) in the cleaned data
      */
     private int[] missing = IntList.EMPTY;
-    
+
     private boolean logTransformation;
     /**
      * Regression variables
      */
+    private boolean mean;
     private final List<Variable> variables = new ArrayList<>();
 
     /**
      * Arima component
      */
-    private ExtendedAirlineSpec arima = ExtendedAirlineSpec.DEFAULT_W;
-    
+    private M model;
+
     private boolean sortedVariables; //optimization
 
     public static ModelDescription dummyModel() {
         return new ModelDescription();
     }
-    
+
     public static ModelDescription copyOf(@NonNull ModelDescription model) {
         return copyOf(model, null);
     }
-    
+
     public static ModelDescription copyOf(@NonNull ModelDescription model, TsDomain estimationDomain) {
         ModelDescription nmodel = new ModelDescription(model.series, estimationDomain, model.cleanedData.getCleaning());
-        nmodel.arima = model.arima;
+        nmodel.model = model.model;
         nmodel.logTransformation = model.logTransformation;
         nmodel.interpolatedData = model.interpolatedData;
         nmodel.transformedData = model.transformedData;
         nmodel.missing = model.missing;
         nmodel.llCorrection = model.llCorrection;
+        nmodel.mean = model.mean;
         model.variables.forEach(nmodel.variables::add);
         return nmodel;
     }
-    
+
     private ModelDescription() {
         this.series = null;
         this.estimationDomain = null;
         this.cleanedData = null;
     }
-    
+
     public ModelDescription(@NonNull TsData series, TsDomain estimationDomain) {
         this(series, estimationDomain, DataCleaning.of(series));
     }
@@ -150,7 +155,7 @@ public final class ModelDescription {
             s = series;
         }
         cleanedData = CleanedData.of(s, cleaning);
-        
+
     }
 
     // the regression variables are organized as follows:
@@ -186,10 +191,10 @@ public final class ModelDescription {
         variables.addAll(vars);
         sortedVariables = true;
     }
-    
+
     private void buildTransformation() {
         if (transformedData == null) {
-            int diff = arima.getDifferencingOrder();
+            int diff = model.differencingOrders();
             LogJacobian lj;
             TsData tmp;
             lj = new LogJacobian(diff, series.length(), missing);
@@ -231,7 +236,7 @@ public final class ModelDescription {
     public TsDomain getEstimationDomain() {
         return estimationDomain == null ? series.getDomain() : estimationDomain;
     }
-    
+
     public int[] getMissingInEstimationDomain() {
         if (estimationDomain == null || missing.length == 0) {
             return missing;
@@ -252,7 +257,7 @@ public final class ModelDescription {
      *
      * @return
      */
-    public RegArimaModel<ArimaModel> regarima() {
+    public RegArimaModel<S> regarima() {
         buildTransformation();
         sortVariables();
         TsDomain domain = getEstimationDomain();
@@ -272,13 +277,11 @@ public final class ModelDescription {
         } else {
             yc = DoubleSeq.of(y);
         }
-        ExtendedAirlineMapping mapping = ExtendedAirlineMapping.of(arima);
-        ExtendedAirline ea = ExtendedAirline.of(arima);
         RegArimaModel.Builder builder = RegArimaModel.<ArimaModel>builder()
                 .y(yc)
                 .missing(missingc)
-                .meanCorrection(arima.isMean())
-                .arima(mapping.map(ea.getP()));
+                .meanCorrection(mean)
+                .arima(model.arima());
         List<Variable> excluded = new ArrayList<>();
         for (Variable v : variables) {
             if (!v.isPreadjustment()) {
@@ -302,26 +305,26 @@ public final class ModelDescription {
         }
         return builder.build();
     }
-    
+
     private void invalidateTransformation() {
         this.transformedData = null;
         this.llCorrection = 0;
     }
-    
+
     public Variable variable(String name) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getName().equals(name))
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
-    
+
     public Variable variable(ITsVariable v) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getCore() == v)
                 .findFirst();
         return search.isPresent() ? search.get() : null;
     }
-    
+
     public boolean remove(String name) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getName().equals(name))
@@ -333,7 +336,7 @@ public final class ModelDescription {
             return false;
         }
     }
-    
+
     public boolean remove(ITsVariable v) {
         Optional<Variable> search = variables.stream()
                 .filter(var -> var.getCore() == v)
@@ -345,7 +348,7 @@ public final class ModelDescription {
             return false;
         }
     }
-    
+
     public Variable addVariable(Variable var) {
         String name = var.getName();
         while (contains(name)) {
@@ -356,12 +359,12 @@ public final class ModelDescription {
         sortedVariables = false;
         return nvar;
     }
-    
+
     public boolean contains(String name) {
         return variables.stream()
                 .anyMatch(var -> var.getName().equals(name));
     }
-    
+
     public void setLogTransformation(boolean log) {
         if (this.logTransformation == log) {
             return;
@@ -369,7 +372,7 @@ public final class ModelDescription {
         this.logTransformation = log;
         invalidateTransformation();
     }
-    
+
     public boolean isLogTransformation() {
         return this.logTransformation;
     }
@@ -387,7 +390,7 @@ public final class ModelDescription {
     public TsDomain getDomain() {
         return series.getDomain();
     }
-    
+
     public TsData getTransformedSeries(boolean correctedForMissings) {
         buildTransformation();
         if (correctedForMissings || missing.length == 0) {
@@ -414,7 +417,7 @@ public final class ModelDescription {
         buildTransformation();
         return TsData.ofInternal(series.getStart(), transformedData);
     }
-    
+
     public TsData getInterpolatedSeries() {
         if (interpolatedData == null) {
             return series;
@@ -426,31 +429,29 @@ public final class ModelDescription {
     /**
      * @return the arima
      */
-    public ExtendedAirlineSpec getStochasticSpec() {
-        return arima;
+    public M getStochasticSpec() {
+        return model;
     }
-    
-    public void setStochasticSpec(ExtendedAirlineSpec spec) {
-        arima = spec;
+
+    public void setStochasticSpec(M spec) {
+        model = spec;
         if (transformedData != null) {
             transformedData = null;
             buildTransformation();
         }
     }
-    
-    public ArimaModel arima() {
-        ExtendedAirlineMapping mapping = ExtendedAirlineMapping.of(arima);
-        ExtendedAirline ea = ExtendedAirline.of(arima);
-        return mapping.map(ea.getP());
+
+    public IArimaModel arima() {
+        return model.arima();
     }
 
     /**
      * @return the mean_
      */
     public boolean isMean() {
-        return arima.isMean();
+        return mean;
     }
-    
+
     public boolean hasFixedEffects() {
         return variables.stream().anyMatch(v -> !v.isFree());
     }
@@ -500,11 +501,11 @@ public final class ModelDescription {
             missing = IntList.EMPTY;
         }
     }
-    
+
     public void setMean(boolean mean) {
-        arima = arima.toBuilder().mean(mean).build();
+        this.mean = mean;
     }
-    
+
     public boolean removeVariable(Predicate<Variable> pred) {
         if (variables.removeIf(pred.and(var -> ModellingUtility.isAutomaticallyIdentified(var)))) {
             return true;
@@ -512,7 +513,7 @@ public final class ModelDescription {
             return false;
         }
     }
-    
+
     public int getAnnualFrequency() {
         return series.getAnnualFrequency();
     }
@@ -543,47 +544,33 @@ public final class ModelDescription {
         if (!found) {
             return -1;
         }
-        return isMean() ? pos + 1 : pos;
+        return mean ? pos + 1 : pos;
     }
-    
-    public ExtendedAirlineMapping mapping() {
-        return ExtendedAirlineMapping.of(arima);
+
+    public IArimaMapping<S> mapping() {
+        return model.mapping();
     }
-    
-    public RegArimaEstimation<ArimaModel> estimate(ExtendedAirlineComputer processor) {
-        
-        RegArimaModel<ArimaModel> model = regarima();
-        RegArimaEstimation<ArimaModel> rslt = processor.process(model, mapping());
+
+    public RegArimaEstimation<S> estimate(ArimaComputer processor) {
+
+        RegArimaModel<S> regarima = regarima();
+        RegArimaEstimation<S> rslt = processor.process(regarima, mapping());
         // update current description
-        LogLikelihoodFunction.Point<RegArimaModel<ArimaModel>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
+        LogLikelihoodFunction.Point<RegArimaModel<S>, ConcentratedLikelihoodWithMissing> max = rslt.getMax();
         if (max != null) {
             setFreeParameters(max.getParameters());
         }
-        return RegArimaEstimation.<ArimaModel>builder()
+        return RegArimaEstimation.<S>builder()
                 .model(rslt.getModel())
                 .concentratedLikelihood(rslt.getConcentratedLikelihood())
                 .max(max)
                 .llAdjustment(llCorrection)
                 .build();
     }
-    
+
     public void setFreeParameters(DoubleSeq p) {
-        ExtendedAirlineSpec.Builder builder = arima.toBuilder();
-        DoubleSeqCursor pcur = p.cursor();
         
-        Parameter P = arima.getPhi();
-        if (P != null) {
-            builder.phi(Parameter.estimated(pcur.getAndNext()));
-        } else {
-            builder.theta(Parameter.estimated(pcur.getAndNext()));
-        }
-        int nth = arima.getPeriodicities().length;
-        Parameter[] th = new Parameter[nth];
-        for (int i = 0; i < nth; ++i) {
-            th[i] = Parameter.estimated(pcur.getAndNext());
-        }
-        builder.stheta(th);
-        arima = builder.build();
+        model=(M) model.withParameters(p);
     }
-    
+
 }

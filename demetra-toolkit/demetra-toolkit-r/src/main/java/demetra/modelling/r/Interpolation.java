@@ -18,17 +18,12 @@ package demetra.modelling.r;
 
 import demetra.arima.SarimaOrders;
 import demetra.data.DoubleSeq;
-import demetra.data.Doubles;
-import demetra.data.ParameterType;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsPeriod;
-import jdplus.data.DataBlock;
 import jdplus.data.DataBlockStorage;
 import jdplus.data.interpolation.AverageInterpolator;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.functions.ssq.SsqFunctionMinimizer;
-import jdplus.regsarima.regular.RegSarimaProcessor;
-import jdplus.sarima.SarimaModel;
 import jdplus.sarima.estimation.SarimaMapping;
 import jdplus.ssf.arima.SsfArima;
 import jdplus.ssf.dk.DkToolkit;
@@ -80,7 +75,4 @@ public class Interpolation {
         return TsData.ofInternal(input.getStart(), g);
     }
 
-    public TsData cleanExtremities(TsData s) {
-        return s.cleanExtremities();
-    }
 }

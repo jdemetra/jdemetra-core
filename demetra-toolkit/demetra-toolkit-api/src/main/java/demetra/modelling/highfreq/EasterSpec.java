@@ -31,33 +31,23 @@ import demetra.util.Validatable;
 public final class EasterSpec implements Validatable<EasterSpec> {
 
     public static enum Type {
-        Unused, Standard, IncludeEaster, IncludeEasterMonday;
-
-        public boolean containsEaster() {
-            return this == IncludeEaster || this == IncludeEasterMonday;
-        }
-
-        public boolean containsEasterMonday() {
-            return this == IncludeEasterMonday;
-        }
+        UNUSED, EASTER, JULIANEASTER;
     };
 
     public static final int DEF_IDUR = 6;
-    public static boolean DEF_JULIAN = false;
+    public static final Type DEF_TYPE = Type.UNUSED;
 
     boolean test;
     int duration;
     Type type;
-    boolean julian;
 
     // optional coefficient.
     Parameter coefficient;
 
     public static final EasterSpec DEFAULT_UNUSED = EasterSpec.builder().build();
     public static final EasterSpec DEFAULT_USED = new Builder()
-            .test(false)
-            .julian(false)
-            .type(Type.Standard)
+            .test(true)
+            .type(Type.EASTER)
             .duration(DEF_IDUR)
             .build();
 
@@ -65,8 +55,7 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     public static Builder builder() {
         return new Builder()
                 .test(false)
-                .julian(DEF_JULIAN)
-                .type(Type.Unused)
+                .type(Type.UNUSED)
                 .duration(DEF_IDUR);
     }
 
@@ -82,15 +71,19 @@ public final class EasterSpec implements Validatable<EasterSpec> {
     }
 
     public boolean isUsed() {
-        return type != Type.Unused;
-    }
-
-    public boolean isDefined() {
-        return type != Type.Unused && !test;
+        return type != Type.UNUSED;
     }
 
     public boolean isDefault() {
         return this.equals(DEFAULT_UNUSED);
+    }
+
+    public boolean isDefined() {
+        return type != Type.UNUSED && !test;
+    }
+
+    public boolean isJulian() {
+        return type == Type.JULIANEASTER;
     }
 
     public static EasterSpec none() {

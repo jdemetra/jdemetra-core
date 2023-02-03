@@ -153,7 +153,7 @@ public class AutomaticRegressionTest implements IRegressionModule {
         ModelDescription current = context.getDescription();
         RegArimaEstimation<SarimaModel>[] estimations = TradingDaysRegressionComparator.test(current, td, lp, precision);
         int best = aic ? TradingDaysRegressionComparator.bestModel(estimations, TradingDaysRegressionComparator.aiccComparator())
-                : TradingDaysRegressionComparator.bestModel(estimations, TradingDaysRegressionComparator.aiccComparator());
+                : TradingDaysRegressionComparator.bestModel(estimations, TradingDaysRegressionComparator.bicComparator());
 
         ITradingDaysVariable tdsel = best < 2 ? null : td[best - 2];
         ILengthOfPeriodVariable lpsel = best < 1 ? null : lp;

@@ -107,7 +107,7 @@ public class ModelBasedDentonProcessor {
 
         DefaultSmoothingResults srslts = DkToolkit.smooth(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
         TsData biratios = TsData.of(indicator.getStart(), srslts.getComponent(1).times(fx));
-        TsData ebiratios = TsData.of(indicator.getStart(), srslts.getComponentVariance(1).fn(q -> Math.sqrt(q) * fx));
+        TsData ebiratios = TsData.of(indicator.getStart(), srslts.getComponentVariance(1).fn(q -> q<0 ? 0 : Math.sqrt(q) * fx));
 
         // Not optimal
         DiffuseLikelihood ll = DkToolkit.likelihood(ssf, new SsfData(naggregatedSeries.getValues()), true, true);
@@ -188,7 +188,7 @@ public class ModelBasedDentonProcessor {
                 
         DefaultSmoothingResults srslts = DkToolkit.smooth(M2uAdapter.of(ssf), M2uAdapter.of(Q), true, true);
         TsData biratios = TsData.of(indicator.getStart(), srslts.getComponent(1).extract(0, n, 2).times(fx));
-        TsData ebiratios = TsData.of(indicator.getStart(), srslts.getComponentVariance(1).extract(0, n, 2).fn(q -> Math.sqrt(q) * fx));
+        TsData ebiratios = TsData.of(indicator.getStart(), srslts.getComponentVariance(1).extract(0, n, 2).fn(q -> q<0 ? 0 : Math.sqrt(q) * fx));
 
         // Not optimal
         DiffuseLikelihood ll = DkToolkit.likelihood(M2uAdapter.of(ssf), M2uAdapter.of(Q), true, true);

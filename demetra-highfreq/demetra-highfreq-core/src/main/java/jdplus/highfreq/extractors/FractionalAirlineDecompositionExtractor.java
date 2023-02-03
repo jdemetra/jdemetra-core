@@ -7,14 +7,14 @@ package jdplus.highfreq.extractors;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
-import jdplus.highfreq.LightExtendedAirlineDecomposition;
+import jdplus.highfreq.extendedairline.decomposiiton.LightExtendedAirlineDecomposition;
 import demetra.highfreq.SeriesComponent;
 import demetra.information.InformationExtractor;
 import demetra.information.InformationMapping;
 import jdplus.stats.likelihood.LikelihoodStatistics;
 import demetra.math.matrices.Matrix;
 import java.util.List;
-import jdplus.highfreq.ExtendedAirlineEstimation;
+import jdplus.highfreq.extendedairline.ExtendedAirlineEstimation;
 import jdplus.ucarima.UcarimaModel;
 import nbbrd.service.ServiceProvider;
 

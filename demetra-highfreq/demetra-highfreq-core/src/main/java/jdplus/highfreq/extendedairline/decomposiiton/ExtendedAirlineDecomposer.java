@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline.decomposiiton;
 
+import jdplus.highfreq.extendedairline.ExtendedAirlineMapping;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.highfreq.ExtendedAirline;

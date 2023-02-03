@@ -118,7 +118,7 @@ public class StlDecomposition {
         }
         MStlSpec spec = builder.build();
 
-        MStlKernel stl = new MStlKernel(spec);
+        MStlKernel stl = MStlKernel.of(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
         stl.process(y);
 

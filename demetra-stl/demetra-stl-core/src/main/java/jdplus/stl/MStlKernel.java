@@ -33,8 +33,12 @@ import demetra.stl.SeasonalSpec;
  */
 public class MStlKernel {
 
-    public MStlKernel(MStlSpec spec) {
+    private MStlKernel(MStlSpec spec) {
         this.spec = spec;
+    }
+
+    public static MStlKernel of(MStlSpec spec) {
+        return new MStlKernel(spec);
     }
 
     private final MStlSpec spec;

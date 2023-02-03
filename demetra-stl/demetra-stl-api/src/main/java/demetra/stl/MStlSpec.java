@@ -35,8 +35,10 @@ public class MStlSpec implements ProcSpecification {
     private List<SeasonalSpec> seasonalSpecs;
     private int innerLoopsCount, outerLoopsCount;
     private double robustWeightThreshold;
+    
 
     private WeightFunction robustWeightFunction;
+    
 
     public static final double RWTHRESHOLD = 0.001;
     public static final WeightFunction RWFUNCTION = WeightFunction.BIWEIGHT;
@@ -57,7 +59,7 @@ public class MStlSpec implements ProcSpecification {
                 .robustWeightThreshold(RWTHRESHOLD);
     }
 
-    public static final MStlSpec DEFAULT = createDefault(7, true);
+    public static final MStlSpec DEF_W = createDefault(7, true);
 
     /**
      * Creates a default specification for a series that has a given periodicity
@@ -67,7 +69,7 @@ public class MStlSpec implements ProcSpecification {
      * @return
      */
     public static MStlSpec createDefault(int period, boolean robust) {
-        return createDefault(period, 7, robust);
+        return createDefault(period, StlSpec.DEF_SWINDOW, robust);
     }
 
     /**
@@ -105,6 +107,6 @@ public class MStlSpec implements ProcSpecification {
 
     @Override
     public String display() {
-        return "Extended airline";
+        return "MSTL";
     }
 }

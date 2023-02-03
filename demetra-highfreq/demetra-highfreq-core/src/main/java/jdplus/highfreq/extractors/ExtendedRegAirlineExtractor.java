@@ -28,7 +28,7 @@ import demetra.timeseries.regression.UserVariable;
 import demetra.toolkit.dictionaries.Dictionary;
 import demetra.toolkit.dictionaries.RegArimaDictionaries;
 import demetra.toolkit.dictionaries.RegressionDictionaries;
-import jdplus.highfreq.ExtendedRegAirlineModel;
+import jdplus.highfreq.regarima.HighFreqRegArimaModel;
 import jdplus.modelling.GeneralLinearModel;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
@@ -39,7 +39,7 @@ import nbbrd.service.ServiceProvider;
  */
 @Development(status = Development.Status.Release)
 @ServiceProvider(InformationExtractor.class)
-public class ExtendedRegAirlineExtractor extends InformationMapping<ExtendedRegAirlineModel> {
+public class ExtendedRegAirlineExtractor extends InformationMapping<HighFreqRegArimaModel> {
 
     public final int NFCAST = 50, NBCAST = 0;
 
@@ -56,7 +56,7 @@ public class ExtendedRegAirlineExtractor extends InformationMapping<ExtendedRegA
 //            setArray(RegressionDictionaries.Y_EB, NBCAST, TsData.class, (source,i) -> source.backcasts(i).getForecastsStdev());
         set(RegressionDictionaries.YC, TsData.class, source -> source.interpolatedSeries(false));
         set(RegressionDictionaries.L, TsData.class, source -> source.linearizedSeries());
-        set(RegressionDictionaries.DET, TsData.class, (ExtendedRegAirlineModel source) -> {
+        set(RegressionDictionaries.DET, TsData.class, (HighFreqRegArimaModel source) -> {
             TsData det = source.deterministicEffect(null, v -> true);
             return source.backTransform(det, true);
         });
@@ -121,7 +121,7 @@ public class ExtendedRegAirlineExtractor extends InformationMapping<ExtendedRegA
     }
 
     @Override
-    public Class<ExtendedRegAirlineModel> getSourceClass() {
-        return ExtendedRegAirlineModel.class;
+    public Class<HighFreqRegArimaModel> getSourceClass() {
+        return HighFreqRegArimaModel.class;
     }
 }

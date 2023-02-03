@@ -14,8 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline.decomposition;
 
+import jdplus.highfreq.extendedairline.decomposiiton.ExtendedAirlineDecompositionKernel;
+import jdplus.highfreq.extendedairline.ExtendedAirlineResults;
+import jdplus.highfreq.extendedairline.ExtendedAirlineMapping;
 import demetra.data.MatrixSerializer;
 import demetra.highfreq.DecompositionSpec;
 import demetra.highfreq.ExtendedAirlineDecompositionSpec;
@@ -30,6 +33,7 @@ import demetra.modelling.ComponentInformation;
 import demetra.modelling.TransformationType;
 import demetra.sa.ComponentType;
 import demetra.timeseries.TsData;
+import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.Holiday;
@@ -40,7 +44,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import static jdplus.highfreq.ExtendedAirlineKernelTest.france;
+import static jdplus.highfreq.extendedairline.ExtendedAirlineKernelTest.france;
 
 /**
  *
@@ -81,10 +85,10 @@ public class ExtendedAirlineDecompositionKernelTest {
                 .stochastic(ExtendedAirlineSpec.DEFAULT_WD)
                 .outlier(OutlierSpec.builder()
                         .criticalValue(6)
-                        .outliers(new String[]{"AO"})
+                        .ao(true)
                         .build())
                 .regression(RegressionSpec.builder()
-                        .calendar(HolidaysSpec.builder()
+                        .holidays(HolidaysSpec.builder()
                                         .holidays("FR")
                                         .holidaysOption(HolidaysOption.Skip)
                                         .single(false)
@@ -107,7 +111,7 @@ public class ExtendedAirlineDecompositionKernelTest {
         main.add(rslts.getFinals().getSeries(ComponentType.Trend, ComponentInformation.Value));
         main.add(rslts.getFinals().getSeries(ComponentType.Seasonal, ComponentInformation.Value));
         main.add(rslts.getFinals().getSeries(ComponentType.Irregular, ComponentInformation.Value));
- //       System.out.println(TsDataTable.of(main));
+        System.out.println(TsDataTable.of(main));
        Map<String, Class> dictionary = rslts.getDictionary();
         dictionary.keySet().forEach(v->System.out.println(v));
     }

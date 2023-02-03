@@ -14,14 +14,13 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.regarima;
 
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Doubles;
 import demetra.data.Parameter;
 import demetra.data.ParametersEstimation;
-import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.information.GenericExplorable;
 import demetra.processing.ProcessingLog;
 import demetra.stats.ProbabilityType;
@@ -37,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import jdplus.arima.ArimaModel;
+import jdplus.arima.IArimaModel;
 import jdplus.dstats.T;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.GeneralLinearModel;
@@ -54,18 +53,20 @@ import jdplus.stats.tests.NiidTests;
 /**
  *
  * @author PALATEJ
+ * @param <S>
+ * @param <M>
  */
 @lombok.Value
 @lombok.Builder
-public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirlineSpec>, GenericExplorable {
+public class HighFreqRegArimaModel<S extends IArimaModel, M extends ArimaDescription<S>>  implements GeneralLinearModel<M>, GenericExplorable {
 
     private static final MissingValueEstimation[] NOMISSING = new MissingValueEstimation[0];
 
-    public static ExtendedRegAirlineModel of(ModelDescription description, RegArimaEstimation<ArimaModel> estimation, ProcessingLog log) {
+    public static <S extends IArimaModel, M extends ArimaDescription<S>> HighFreqRegArimaModel of(ModelDescription<S, M> description, RegArimaEstimation<S> estimation, ProcessingLog log) {
 
-        ExtendedAirlineSpec stochasticSpec = description.getStochasticSpec();
+        M stochasticSpec = description.getStochasticSpec();
         int free = stochasticSpec.freeParametersCount();
-        RegArimaModel<ArimaModel> model = estimation.getModel();
+        RegArimaModel<S> model = estimation.getModel();
         ConcentratedLikelihoodWithMissing ll = estimation.getConcentratedLikelihood();
 
         List<Variable> vars = description.variables().sequential().collect(Collectors.toList());
@@ -116,7 +117,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
             }
         }
 
-        LightweightLinearModel.Description desc = LightweightLinearModel.Description.<ExtendedAirlineSpec>builder()
+        LightweightLinearModel.Description desc = LightweightLinearModel.Description.<M>builder()
                 .series(description.getSeries())
                 .logTransformation(description.isLogTransformation())
                 .lengthOfPeriodTransformation(LengthOfPeriodType.None)
@@ -124,7 +125,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                 .stochasticComponent(stochasticSpec)
                 .build();
 
-        LogLikelihoodFunction.Point<RegArimaModel<ArimaModel>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
+        LogLikelihoodFunction.Point<RegArimaModel<S>, ConcentratedLikelihoodWithMissing> max = estimation.getMax();
         ParametersEstimation pestim;
         if (max == null) {
             pestim = new ParametersEstimation(Doubles.EMPTY, FastMatrix.EMPTY, Doubles.EMPTY, null);
@@ -181,7 +182,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                 .test(ResidualsDictionaries.LUDRUNS, niid.upAndDownRunsLength())
                 .build();
 
-        return ExtendedRegAirlineModel.builder()
+        return HighFreqRegArimaModel.builder()
                 .description(desc)
                 .estimation(est)
                 .residuals(residuals)
@@ -189,7 +190,7 @@ public class ExtendedRegAirlineModel implements GeneralLinearModel<ExtendedAirli
                 .independentResiduals(ll.e())
                 .build();
     }
-    Description<ExtendedAirlineSpec> description;
+    Description<M> description;
 
     Estimation estimation;
 
