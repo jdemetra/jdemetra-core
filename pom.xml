@@ -43,7 +43,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <!-- JD+ dependency versions -->
         <demetra.version>3.0.0-SNAPSHOT</demetra.version>
-        <jd2.version>2.2.4-RC2</jd2.version>
+        <jd2.version>2.2.4</jd2.version>
     </properties>
 
     <modules>
