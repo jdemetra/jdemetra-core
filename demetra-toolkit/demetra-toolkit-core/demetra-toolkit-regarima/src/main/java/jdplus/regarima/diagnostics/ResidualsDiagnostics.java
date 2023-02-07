@@ -44,6 +44,8 @@ public class ResidualsDiagnostics implements Diagnostics {
 
     static ResidualsDiagnostics create(ResidualsDiagnosticsConfiguration config, RegSarimaModel regarima) {
         try {
+            if (regarima == null)
+                return null;
             return new ResidualsDiagnostics(config, regarima);
         } catch (Exception ex) {
             return null;

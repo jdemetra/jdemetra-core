@@ -75,8 +75,8 @@ public final class CoherenceDiagnostics implements Diagnostics {
         this.config = config;
         test(rslts, mode);
     }
-    
-    private String decompositionItem(String key){
+
+    private String decompositionItem(String key) {
         return Dictionary.concatenate(SaDictionaries.DECOMPOSITION, key);
     }
 
@@ -87,6 +87,9 @@ public final class CoherenceDiagnostics implements Diagnostics {
         }
         multiplicative = mode != DecompositionMode.Additive;
         TsData y = rslts.getData(RegressionDictionaries.YC, TsData.class);
+        if (y == null) {
+            y = rslts.getData(RegressionDictionaries.Y, TsData.class);
+        }
         DescriptiveStatistics ds = DescriptiveStatistics.of(y.getValues());
         scale = ds.getRmse();
         TsData yc = y;

@@ -27,23 +27,23 @@ import jdplus.stl.StlResults;
 @lombok.Value
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class StlPlusDiagnostics {
-
+    
     private StationaryVarianceDecomposition varianceDecomposition;
     private GenericSaTests genericDiagnostics;
-
+    
     public static StlPlusDiagnostics of(RegSarimaModel preprocessing, StlResults srslts, SeriesDecomposition finals) {
         boolean mul = finals.getMode().isMultiplicative();
-        TsData y=srslts.getSeries();
+        TsData y = srslts.getSeries();
         TsData sa = srslts.getTrend();
         TsData i = srslts.getIrregular();
         TsData s = srslts.seasonal();
         TsData si = mul ? TsData.multiply(s, i) : TsData.add(s, i);
-        GenericSaTests gsadiags = null;
+        GenericSaTests gsadiags;
+        TsData lsa = mul ? sa.log() : sa;
+        TsData li = mul ? i.log() : i;
         if (preprocessing != null) {
             TsData lin = preprocessing.linearizedSeries();
-             TsData lsa = mul ? sa.log() : sa;
-            TsData li = mul ? i.log() : i;
-
+            
             gsadiags = GenericSaTests.builder()
                     .mul(mul)
                     .regarima(preprocessing)
@@ -56,20 +56,24 @@ public class StlPlusDiagnostics {
                     .lsa(lsa)
                     .lirr(li)
                     .build();
-        }else{
+        } else {
             gsadiags = GenericSaTests.builder()
                     .mul(mul)
                     .regarima(preprocessing)
+                    .res(null)
+                    .lin(y)
                     .y(y)
                     .sa(sa)
                     .irr(i)
                     .si(si)
+                    .lsa(lsa)
+                    .lirr(li)
                     .build();
             
         }
         return new StlPlusDiagnostics(varDecomposition(preprocessing, srslts), gsadiags);
     }
-
+    
     private static StationaryVarianceDecomposition varDecomposition(RegSarimaModel preprocessing, StlResults srslts) {
         StationaryVarianceComputer var = new StationaryVarianceComputer(StationaryVarianceComputer.HP);
         boolean mul = srslts.isMultiplicative();
@@ -79,7 +83,7 @@ public class StlPlusDiagnostics {
                     seas = srslts.seasonal(),
                     irr = srslts.getIrregular(),
                     cal = preprocessing.getCalendarEffect(y.getDomain());
-
+            
             TsData others;
             if (mul) {
                 TsData all = TsData.multiply(t, seas, irr, cal);
