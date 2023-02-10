@@ -33,8 +33,12 @@ import demetra.stl.SeasonalSpec;
  */
 public class MStlKernel {
 
-    public MStlKernel(MStlSpec spec) {
+    private MStlKernel(MStlSpec spec) {
         this.spec = spec;
+    }
+
+    public static MStlKernel of(MStlSpec spec) {
+        return new MStlKernel(spec);
     }
 
     private final MStlSpec spec;
@@ -80,7 +84,7 @@ public class MStlKernel {
                 .irregular(DoubleSeq.of(irr))
                 .fit(DoubleSeq.of(fit));
         for (int i = 0; i < season.length; ++i) {
-            builder.season(DoubleSeq.of(season[i]));
+            builder.season(spec.getSeasonalSpecs().get(i).getPeriod(), DoubleSeq.of(season[i]));
         }
         if (weights != null) {
             builder.weights(DoubleSeq.of(weights));

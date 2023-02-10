@@ -22,7 +22,6 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
-import java.util.Arrays;
 
 /**
  *
@@ -37,7 +36,8 @@ public enum DataCleaning {
     public static DataCleaning of(TsData data) {
         TsPeriod start = data.getStart();
         if (!start.getUnit().equals(TsUnit.DAY)) {
-            throw new java.lang.UnsupportedOperationException();
+            return DataCleaning.NONE;
+//            throw new java.lang.UnsupportedOperationException();
         }
         int pos = start.start().getDayOfWeek().getValue();
         int n = data.length();
@@ -76,6 +76,17 @@ public enum DataCleaning {
             np[i] = updatePeriodicity(p[i]);
         }
         return np;
+    }
+
+    public TsData expand(TsDomain domain, DoubleSeq data) {
+        return switch (this) {
+            case SUNDAYS ->
+                withMissingSundays(domain, data);
+            case WEEKENDS ->
+                withMissingWeekEnds(domain, data);
+            default ->
+                TsData.of(domain.getStartPeriod(), data);
+        };
     }
 
     public static TsData withMissingSundays(TsDomain domain, DoubleSeq data) {
@@ -197,7 +208,6 @@ public enum DataCleaning {
             pos = 1;
             i = 1;
         }
-        int cur = 0;
         while (i < nin) {
             if (pos != 6) {
                 ocursor.setAndNext(cursor.getAndNext());

@@ -18,6 +18,7 @@ package demetra.modelling.highfreq;
 
 import demetra.timeseries.TimeSelector;
 import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
@@ -27,49 +28,67 @@ import nbbrd.design.Development;
 @lombok.Value
 @lombok.Builder(toBuilder = true)
 public class OutlierSpec {
-    
 
-    public static final int DEF_MAXOUTLIERS = 100, DEF_MAXROUND=100;
-    
+    public static final int DEF_MAXOUTLIERS = 100, DEF_MAXROUND = 100;
+
     // automatic outliers detection
+    public static final OutlierSpec DEFAULT_DISABLED = OutlierSpec.builder().build();
+    public static final OutlierSpec DEFAULT_ENABLED = OutlierSpec.builder().ao(true).ls(true).build();
+
+    private boolean ao, ls, wo;
+    private double criticalValue;
     @lombok.NonNull
     private TimeSelector span;
-    private String[] outliers;
-    private double criticalValue;
-    private int maxOutliers;
-    private int maxRound;
-    
-    public static Builder builder(){
+
+    private int maxOutliers, maxRound;
+
+    @LombokWorkaround
+    public static Builder builder() {
         return new Builder()
-                .span(TimeSelector.all())
-                .outliers(ALL_OUTLIERS)
-                .maxOutliers(DEF_MAXOUTLIERS)
-                .maxRound(DEF_MAXROUND)
-                .criticalValue(0);
-    }
-    
-    public static final String[] NO_OUTLIER=new String[0];
-    public static final String[] ALL_OUTLIERS=new String[]{"AO", "LS", "WO"};
-    public static final String[] DEF_OUTLIERS=new String[]{"AO", "LS"};
-               
-    public boolean isUsed(){
-        return outliers.length>0;
-    }
-    
-    public static final OutlierSpec DEFAULT_ENABLED=new Builder()
-            .span(TimeSelector.all())
-                .outliers(DEF_OUTLIERS)
-                .maxOutliers(DEF_MAXOUTLIERS)
-                .maxRound(DEF_MAXROUND)
                 .criticalValue(0)
-                .build();
-    
-    
-    public static final OutlierSpec DEFAULT_DISABLED=new Builder()
-            .span(TimeSelector.all())
-                .outliers(NO_OUTLIER)
                 .maxOutliers(DEF_MAXOUTLIERS)
                 .maxRound(DEF_MAXROUND)
-                .criticalValue(0)
-                .build();
+                .span(TimeSelector.all());
+    }
+
+    public boolean isDefault() {
+        return this.equals(DEFAULT_DISABLED);
+    }
+
+    public boolean isUsed() {
+        return ao || ls || wo;
+    }
+
+    private static final String[] NONE = new String[0];
+
+    public String[] allOutliers() {
+        int n = 0;
+        if (ao) {
+            ++n;
+        }
+        if (ls) {
+            ++n;
+        }
+        if (wo) {
+            ++n;
+        }
+
+        if (n == 0) {
+            return NONE;
+        }
+        String[] all = new String[n];
+        n = 0;
+        if (ao) {
+            all[n++] = "AO";
+        }
+        if (ls) {
+            all[n++] = "LS";
+        }
+        if (wo) {
+            all[n++] = "WO";
+        }
+
+        return all;
+    }
+
 }

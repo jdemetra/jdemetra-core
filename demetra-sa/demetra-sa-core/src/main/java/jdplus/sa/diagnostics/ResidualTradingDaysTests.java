@@ -103,6 +103,8 @@ public class ResidualTradingDaysTests {
     }
 
     public StatisticalTest residualsTest(boolean last) {
+        if (residuals == null)
+            return null;
         if (last && options.getFlast() > 0) {
             StatisticalTest test = residualsLastTest;
             if (test == null) {

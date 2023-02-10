@@ -118,7 +118,7 @@ public class StlDecomposition {
         }
         MStlSpec spec = builder.build();
 
-        MStlKernel stl = new MStlKernel(spec);
+        MStlKernel stl = MStlKernel.of(spec);
         DoubleSeq y = DoubleSeq.of(data).cleanExtremities();
         stl.process(y);
 
@@ -188,7 +188,7 @@ public class StlDecomposition {
         M.column(1).copy(M.column(0));
         M.column(2).copy(rslt.getTrend());
         int j = 2;
-        for (DoubleSeq seas : rslt.getSeasons()) {
+        for (DoubleSeq seas : rslt.getSeasons().values()) {
             M.column(++j).copy(seas);
             if (mul) {
                 M.column(1).div(M.column(j));

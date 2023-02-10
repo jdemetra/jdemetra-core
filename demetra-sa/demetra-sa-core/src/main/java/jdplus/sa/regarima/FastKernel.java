@@ -225,9 +225,6 @@ public class FastKernel implements RegSarimaProcessor {
         return rslt;
     }
   
-    private boolean isOutliersDetection() {
-        return outliers != null;
-    }
 
     private ProcessingResult checkMu(RegSarimaModelling modelling, double cv) {
         if (!options.checkMu) {

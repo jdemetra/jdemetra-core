@@ -40,14 +40,14 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
     public static final String FAMILY = "temporaldisaggregation";
     public static final String METHOD = "generic";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
-    
-    public static final SsfInitialization DEF_ALGORITHM=SsfInitialization.SqrtDiffuse;
-    public static final boolean DEF_FAST=true, DEF_RESCALE=true, DEF_LOG=false, DEF_DIFFUSE=false;
-    
-   public static final double DEF_EPS = 1e-5;
-    
-    public static final AggregationType DEF_AGGREGATION=AggregationType.Sum;
-    
+
+    public static final SsfInitialization DEF_ALGORITHM = SsfInitialization.SqrtDiffuse;
+    public static final boolean DEF_FAST = true, DEF_RESCALE = true, DEF_LOG = false, DEF_DIFFUSE = false;
+
+    public static final double DEF_EPS = 1e-5;
+
+    public static final AggregationType DEF_AGGREGATION = AggregationType.Sum;
+
     public static final TemporalDisaggregationSpec CHOWLIN = builder()
             .estimationSpan(TimeSelector.all())
             .aggregationType(AggregationType.Sum)
@@ -72,7 +72,6 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
             .algorithm(DEF_ALGORITHM)
             .defaultPeriod(4)
             .build();
-
 
     @Override
     public AlgorithmDescriptor getAlgorithmDescriptor() {
@@ -101,15 +100,19 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
 
         public int getDifferencingOrder() {
             return switch (this) {
-                case Rw, RwAr1 -> 1;
-                case I2 -> 2;
-                case I3 -> 3;
-                default -> 0;
+                case Rw, RwAr1 ->
+                    1;
+                case I2 ->
+                    2;
+                case I3 ->
+                    3;
+                default ->
+                    0;
             };
         }
     }
 
-     @lombok.NonNull
+    @lombok.NonNull
     private AggregationType aggregationType;
     private int observationPosition;
     private int defaultPeriod;
@@ -169,16 +172,30 @@ public final class TemporalDisaggregationSpec implements ProcSpecification, Vali
         }
         return this;
     }
-    
+
     @Override
-    public String toString(){
-        return switch (residualsModel) {
-            case Ar1 -> "Chow-Lin";
-            case Rw -> "Fernandez";
-            case RwAr1 -> "Litterman";
-            case Wn -> "Ols";
-            default -> "regression";
-        };
+    public String display() {
+        if (aggregationType == AggregationType.Average || aggregationType == AggregationType.Sum) {
+            return switch (residualsModel) {
+                case Ar1 ->
+                    "Chow-Lin";
+                case Rw ->
+                    "Fernandez";
+                case RwAr1 ->
+                    "Litterman";
+                case Wn ->
+                    "Ols";
+                default ->
+                    "regression";
+            };
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Interpolation [")
+                    .append(residualsModel.name())
+                    .append(']');
+            return builder.toString();
+        }
+
     }
 
 }

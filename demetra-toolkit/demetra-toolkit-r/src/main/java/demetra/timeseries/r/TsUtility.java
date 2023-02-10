@@ -120,4 +120,7 @@ public class TsUtility {
         return CalendarTimeSeries.of(entries);
     }
     
+    public TsData cleanExtremities(TsData s) {
+        return s.cleanExtremities();
+    }
 }

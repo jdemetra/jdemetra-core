@@ -8,15 +8,9 @@ package jdplus.stlplus.extractors;
 import demetra.information.InformationExtractor;
 import nbbrd.design.Development;
 import demetra.information.InformationMapping;
-import demetra.modelling.ComponentInformation;
-import demetra.modelling.ModellingDictionary;
-import demetra.modelling.SeriesInfo;
-import demetra.sa.ComponentType;
 import demetra.sa.SaDictionaries;
 import demetra.stl.StlDictionaries;
 import demetra.timeseries.TsData;
-import jdplus.arima.IArimaModel;
-import jdplus.sarima.SarimaModel;
 import jdplus.stl.StlResults;
 import nbbrd.service.ServiceProvider;
 

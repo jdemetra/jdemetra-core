@@ -16,7 +16,6 @@
  */
 package demetra.modelling.highfreq;
 
-import demetra.modelling.TransformationType;
 import demetra.timeseries.TimeSelector;
 import nbbrd.design.Development;
 

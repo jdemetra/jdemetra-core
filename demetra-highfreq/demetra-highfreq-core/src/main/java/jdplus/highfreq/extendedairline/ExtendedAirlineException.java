@@ -15,7 +15,7 @@
 * limitations under the Licence.
 */
 
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline;
 
 import nbbrd.design.Development;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 National Bank of Belgium
+ * Copyright 2023 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,45 +14,64 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package demetra.highfreq;
+package demetra.stl;
 
+import demetra.highfreq.ExtendedAirlineModellingSpec;
+import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.sa.SaSpecification;
+import static demetra.sa.SaSpecification.FAMILY;
+import demetra.sa.benchmarking.SaBenchmarkingSpec;
 import demetra.timeseries.TsUnit;
-import lombok.NonNull;
-import nbbrd.design.Development;
+import nbbrd.design.LombokWorkaround;
 
 /**
  *
- * @author PALATEJ
+ * @author palatej
  */
-@Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
-public class ExtendedAirlineDecompositionSpec implements SaSpecification {
-    @NonNull
+public class MStlPlusSpec implements SaSpecification {
+
+    public static final String METHOD = "mstlplus";
+    public static final String VERSION_V3 = "3.0.0";
+    public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
+
+    @Override
+    public AlgorithmDescriptor getAlgorithmDescriptor() {
+        return DESCRIPTOR;
+    }
+
+    @lombok.NonNull
     private ExtendedAirlineModellingSpec preprocessing;
 
-    private DecompositionSpec decomposition;
-    
-    
-    public static final ExtendedAirlineDecompositionSpec DEFAULT=builder()
-            .preprocessing(ExtendedAirlineModellingSpec.DEFAULT_ENABLED)
-            .decomposition(null)
-            .build();
-    
-    public static final String METHOD = "extendedairline";
-    public static final String VERSION = "0.1.0.0";
+    // We will use a default if null !
+    private MStlSpec stl;
 
-    public ExtendedAirlineDecompositionSpec withPeriod(TsUnit unit) {
+    @LombokWorkaround
+    public static Builder builder() {
+        return new Builder()
+                .preprocessing(ExtendedAirlineModellingSpec.DEFAULT_ENABLED)
+                .stl(null);
+    }
+
+    @Override
+    public String display() {
+        return SMETHOD;
+    }
+
+    private static final String SMETHOD = "MSTL+";
+
+    public static final MStlPlusSpec DEFAULT = MStlPlusSpec.builder().build();
+
+    public MStlPlusSpec withPeriod(TsUnit unit) {
         TsUnit period = preprocessing.getPeriod();
         if (unit.equals(period)) {
             return this;
         }
-        
         Builder builder = toBuilder();
         ExtendedAirlineModellingSpec nspec;
-        DecompositionSpec dspec;
+        MStlSpec dspec;
         if (unit.equals(TsUnit.UNDEFINED)) {
             nspec = preprocessing.toBuilder()
                     .period(unit)
@@ -64,22 +83,12 @@ public class ExtendedAirlineDecompositionSpec implements SaSpecification {
                     .period(unit)
                     .stochastic(ExtendedAirlineSpec.createDefault(unit))
                     .build();
-            dspec = DecompositionSpec.createDefault(unit);
+            dspec = MStlSpec.createDefault(unit, true);
         }
         return builder
                 .preprocessing(nspec)
-                .decomposition(dspec)
+                .stl(dspec)
                 .build();
     }
 
-    @Override
-    public AlgorithmDescriptor getAlgorithmDescriptor() {
-        return new AlgorithmDescriptor(FAMILY, METHOD, VERSION);
-    }
-    
-    @Override
-    public String display(){
-        return "Extended airline";
-    }
-    
 }

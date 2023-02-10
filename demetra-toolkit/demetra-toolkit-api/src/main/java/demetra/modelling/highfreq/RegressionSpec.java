@@ -16,7 +16,6 @@
  */
 package demetra.modelling.highfreq;
 
-import demetra.data.Parameter;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
@@ -36,7 +35,7 @@ import lombok.NonNull;
 public final class RegressionSpec {
 
     @NonNull
-    HolidaysSpec calendar;
+    HolidaysSpec holidays;
     @NonNull
     EasterSpec easter;
     
@@ -52,7 +51,7 @@ public final class RegressionSpec {
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .calendar(HolidaysSpec.DEFAULT_UNUSED)
+                .holidays(HolidaysSpec.DEFAULT_UNUSED)
                 .easter(EasterSpec.DEFAULT_UNUSED);
     }
     
@@ -61,14 +60,14 @@ public final class RegressionSpec {
     }
 
     public boolean isUsed() {
-        return calendar.isUsed() || easter.isUsed() || !outliers.isEmpty()
+        return holidays.isUsed() || easter.isUsed() || !outliers.isEmpty()
                 || ! interventionVariables.isEmpty() ||  !userDefinedVariables.isEmpty();
     }
     
     public boolean hasFixedCoefficients(){
         if (! isUsed())
             return false;
-        return calendar.hasFixedCoefficients()
+        return holidays.hasFixedCoefficients()
                 || outliers.stream().anyMatch(var->! var.isFree())
                 || interventionVariables.stream().anyMatch(var->! var.isFree())
                 || userDefinedVariables.stream().anyMatch(var->! var.isFree());

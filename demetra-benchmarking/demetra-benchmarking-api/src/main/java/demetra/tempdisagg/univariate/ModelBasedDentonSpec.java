@@ -69,5 +69,10 @@ public class ModelBasedDentonSpec implements ProcSpecification, Validatable<Mode
         
     }
     public static final ModelBasedDentonSpec DEFAULT = builder().build();
+    
+    @Override
+    public String display(){
+        return "Model-based Denton";
+    }
 
 }

@@ -14,8 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline.decomposition;
 
+import jdplus.highfreq.extendedairline.decomposiiton.ExtendedAirlineDecomposition;
+import jdplus.highfreq.extendedairline.decomposiiton.DecompositionKernel;
+import jdplus.highfreq.extendedairline.ExtendedAirlineMapping;
 import demetra.data.DoubleSeq;
 import demetra.data.MatrixSerializer;
 import demetra.highfreq.DecompositionSpec;

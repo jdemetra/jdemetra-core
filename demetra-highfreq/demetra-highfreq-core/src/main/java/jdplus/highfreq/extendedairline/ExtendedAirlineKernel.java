@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline;
 
 import demetra.data.DoubleSeq;
 import demetra.data.Parameter;
@@ -47,6 +47,7 @@ import demetra.timeseries.regression.ModellingUtility;
 import demetra.timeseries.regression.SwitchOutlier;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
+import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import jdplus.arima.ArimaModel;
 import jdplus.data.DataBlock;
+import jdplus.highfreq.regarima.HighFreqRegArimaModel;
+import jdplus.highfreq.regarima.ModelDescription;
 import jdplus.math.functions.levmar.LevenbergMarquardtMinimizer;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.modelling.regression.AdditiveOutlierFactory;
@@ -73,19 +76,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Jean Palate <jean.palate@nbb.be>
  */
 public class ExtendedAirlineKernel {
-
+    
     public static final String EA = "extended airline";
-
+    
     private final ExtendedAirlineModellingSpec spec;
     private final ModellingContext modellingContext;
-
-    public ExtendedAirlineKernel(ExtendedAirlineModellingSpec spec, ModellingContext context) {
+    
+    private ExtendedAirlineKernel(ExtendedAirlineModellingSpec spec, ModellingContext context) {
         this.spec = spec;
         this.modellingContext = context;
     }
-
-    public ExtendedRegAirlineModel process(TsData y, ProcessingLog log) {
-
+    
+    public static ExtendedAirlineKernel of(ExtendedAirlineModellingSpec spec, ModellingContext context) {
+            if (spec.isEnabled())
+                return new ExtendedAirlineKernel(spec, context);
+            else
+                return null;
+    }
+    
+    public HighFreqRegArimaModel process(TsData y, ProcessingLog log) {
+        
         if (log == null) {
             log = ProcessingLog.dummy();
         }
@@ -95,16 +105,16 @@ public class ExtendedAirlineKernel {
             throw new ExtendedAirlineException("Initialization failed");
         }
         ExtendedRegAirlineModelling modelling = ExtendedRegAirlineModelling.of(desc, log);
-        ExtendedRegAirlineModel rslt = exec(modelling, log);
+        HighFreqRegArimaModel rslt = exec(modelling, log);
         log.pop();
         // step 1. Build the model
 
         return rslt;
     }
-
-    private ModelDescription build(TsData originalTs, ProcessingLog log) {
+    
+    private ModelDescription<ArimaModel, ExtendedAirlineDescription> build(TsData originalTs, ProcessingLog log) {
         TsData y = originalTs.select(spec.getSeries().getSpan());
-        ModelDescription desc = new ModelDescription(y, y.getDomain().select(spec.getEstimate().getSpan()));
+        ModelDescription<ArimaModel, ExtendedAirlineDescription> desc = new ModelDescription(y, y.getDomain().select(spec.getEstimate().getSpan()));
         // regression variables
         desc.setMean(spec.getStochastic().isMean());
         // calendar
@@ -112,14 +122,14 @@ public class ExtendedAirlineKernel {
         buildOutliers(desc);
         buildInterventionVariables(desc);
         buildUsers(desc);
-
-        desc.setStochasticSpec(spec.getStochastic());
+        
+        desc.setStochasticSpec(new ExtendedAirlineDescription(spec.getStochastic()));
         return desc;
     }
-
+    
     private void buildCalendar(ModelDescription desc) {
         RegressionSpec regression = spec.getRegression();
-        HolidaysSpec calendar = regression.getCalendar();
+        HolidaysSpec calendar = regression.getHolidays();
         if (calendar.isUsed()) {
             HolidaysVariable hvar = HolidaysVariable.of(calendar.getHolidays(),
                     calendar.getHolidaysOption(), calendar.getNonWorkingDays(), calendar.isSingle(), modellingContext);
@@ -131,28 +141,17 @@ public class ExtendedAirlineKernel {
             if (easter.isJulian()) {
                 ev = new JulianEasterVariable(easter.getDuration(), true);
             } else {
-                int endpos;
-                switch (easter.getType()) {
-                    case IncludeEaster:
-                        endpos = 0;
-                        break;
-                    case IncludeEasterMonday:
-                        endpos = 1;
-                        break;
-                    default:
-                        endpos = -1;
-                }
                 ev = EasterVariable.builder()
                         .duration(easter.getDuration())
                         .meanCorrection(EasterVariable.Correction.Simple)
-                        .endPosition(endpos)
+                        .endPosition(-1)
                         .build();
             }
             Parameter ec = easter.getCoefficient();
             add(desc, ev, "easter", ComponentType.CalendarEffect, ec == null ? null : new Parameter[]{ec});
         }
     }
-
+    
     private void buildOutliers(ModelDescription desc) {
         RegressionSpec regression = spec.getRegression();
         List<Variable<IOutlier>> outliers = regression.getOutliers();
@@ -187,10 +186,10 @@ public class ExtendedAirlineKernel {
             }
         }
     }
-
+    
     private void addOutliers(ModelDescription desc, int[][] io) {
         OutlierSpec ospec = spec.getOutlier();
-        String[] outliers = ospec.getOutliers();
+        String[] outliers = ospec.allOutliers();
         TsDomain edom = desc.getEstimationDomain();
         for (int i = 0; i < io.length; ++i) {
             int[] cur = io[i];
@@ -199,13 +198,13 @@ public class ExtendedAirlineKernel {
             desc.addVariable(Variable.variable(IOutlier.defaultName(o.getCode(), pos), o, attributes(o)));
         }
     }
-
+    
     private void buildInterventionVariables(ModelDescription desc) {
         for (Variable<InterventionVariable> iv : spec.getRegression().getInterventionVariables()) {
             desc.addVariable(iv);
         }
     }
-
+    
     private void buildUsers(ModelDescription desc) {
         for (Variable<TsContextVariable> user : spec.getRegression().getUserDefinedVariables()) {
             String name = user.getName();
@@ -213,8 +212,8 @@ public class ExtendedAirlineKernel {
             desc.addVariable(user.withCore(var));
         }
     }
-
-    private ExtendedRegAirlineModel exec(ExtendedRegAirlineModelling modelling, ProcessingLog log) {
+    
+    private HighFreqRegArimaModel exec(ExtendedRegAirlineModelling modelling, ProcessingLog log) {
         // step 1: log/level
         execTransform(modelling, log);
         // step 2: outliers
@@ -223,14 +222,14 @@ public class ExtendedAirlineKernel {
                 modelling.estimate(1e-5);
             }
             execOutliers(modelling, log);
-
+            
         }
         // step 3: final estimation
         modelling.estimate(spec.getEstimate().getPrecision());
-
-        return ExtendedRegAirlineModel.of(modelling.getDescription(), modelling.getEstimation(), log);
+        
+        return HighFreqRegArimaModel.of(modelling.getDescription(), modelling.getEstimation(), log);
     }
-
+    
     private void add(@NonNull ModelDescription model, ITsVariable v, @NonNull String name, @NonNull ComponentType cmp, Parameter[] c) {
         if (v == null) {
             return;
@@ -243,7 +242,7 @@ public class ExtendedAirlineKernel {
                 .build();
         model.addVariable(var);
     }
-
+    
     public static ExtendedAirlineEstimation fastProcess(DoubleSeq y, Matrix X, boolean mean, String[] outliers, double cv, ExtendedAirlineSpec spec, double eps) {
         final ExtendedAirlineMapping mapping = ExtendedAirlineMapping.of(spec);
         //
@@ -263,10 +262,10 @@ public class ExtendedAirlineKernel {
                     .addFactories(factories)
                     .processor(processor)
                     .build();
-
+            
             cv = Math.max(cv, GenericOutliersDetection.criticalValue(y.length(), 0.01));
             od.setCriticalValue(cv);
-
+            
             RegArimaModel regarima = builder.build();
             od.prepare(regarima.getObservationsCount());
             od.process(regarima, mapping);
@@ -290,12 +289,12 @@ public class ExtendedAirlineKernel {
         RegArimaEstimation rslt = finalProcessor.process(regarima, mapping);
         LogLikelihoodFunction.Point max = rslt.getMax();
         DoubleSeq parameters = max.getParameters();
-
+        
         ExtendedAirline ea = ExtendedAirline.of(spec)
                 .toBuilder()
                 .p(parameters)
                 .build();
-
+        
         return ExtendedAirlineEstimation.builder()
                 .y(regarima.getY().toArray())
                 .x(regarima.variables())
@@ -310,7 +309,7 @@ public class ExtendedAirlineKernel {
                 .score(max.getScore())
                 .build();
     }
-
+    
     private void execTransform(ExtendedRegAirlineModelling modelling, ProcessingLog log) {
         log.push("log/level");
         switch (spec.getTransform().getFunction()) {
@@ -323,16 +322,18 @@ public class ExtendedAirlineKernel {
                     log.warning("non positive values; log disabled");
                 }
                 break;
-
+            
         }
         log.pop();
     }
-
+    
     private void execOutliers(ExtendedRegAirlineModelling modelling, ProcessingLog log) {
         log.push("outliers");
         OutlierSpec ospec = spec.getOutlier();
-        String[] outliers = ospec.getOutliers();
+        String[] outliers = ospec.allOutliers();
+        LevenbergMarquardtMinimizer.LmBuilder min = LevenbergMarquardtMinimizer.builder().maxIter(5);
         GlsArimaProcessor<ArimaModel> processor = GlsArimaProcessor.builder(ArimaModel.class)
+                .minimizer(min)
                 .precision(1e-5)
                 .build();
         IOutlierFactory[] factories = factories(outliers);
@@ -343,7 +344,7 @@ public class ExtendedAirlineKernel {
                 .processor(processor)
                 .build();
         double cv = ospec.getCriticalValue();
-
+        
         RegArimaModel<ArimaModel> regarima = modelling.getDescription().regarima();
         TsDomain edom = modelling.getDescription().getEstimationDomain();
         cv = Math.max(cv, GenericOutliersDetection.criticalValue(edom.getLength(), 0.01));
@@ -366,8 +367,9 @@ public class ExtendedAirlineKernel {
                 .filter(var -> var.getCore() instanceof IOutlier)
                 .map(var -> (IOutlier) var.getCore()).forEach(
                 o -> od.exclude(edom.indexOf(o.getPosition()), outlierType(outliers, o.getCode())));
-        ExtendedAirlineMapping mapping = modelling.getDescription().mapping();
-
+        
+        ExtendedAirlineMapping mapping = (ExtendedAirlineMapping) modelling.getDescription().mapping();
+        
         od.process(regarima, mapping);
         int[][] io = od.getOutliers();
         if (io.length > 0) {
@@ -376,7 +378,7 @@ public class ExtendedAirlineKernel {
         }
         log.pop();
     }
-
+    
     private static int outlierType(String[] all, String cur) {
         for (int i = 0; i < all.length; ++i) {
             if (cur.equals(all[i])) {
@@ -385,56 +387,47 @@ public class ExtendedAirlineKernel {
         }
         return -1;
     }
-
+    
     private static IOutlierFactory[] factories(String[] code) {
         List<IOutlierFactory> fac = new ArrayList<>();
         for (int i = 0; i < code.length; ++i) {
             switch (code[i]) {
-                case "ao":
-                case "AO":
+                case "ao", "AO" ->
                     fac.add(AdditiveOutlierFactory.FACTORY);
-                    break;
-                case "wo":
-                case "WO":
+                case "wo", "WO" ->
                     fac.add(SwitchOutlierFactory.FACTORY);
-                    break;
-                case "ls":
-                case "LS":
+                case "ls", "LS" ->
                     fac.add(LevelShiftFactory.FACTORY_ZEROENDED);
-                    break;
             }
         }
-
-        return fac.toArray(new IOutlierFactory[0]);
+        
+        return fac.toArray(IOutlierFactory[]::new);
     }
-
+    
     private static IOutlier outlier(String code, TsPeriod p) {
         LocalDateTime pos = p.start();
-        switch (code) {
-            case "ao":
-            case "AO":
-                return AdditiveOutlierFactory.FACTORY.make(pos);
-            case "wo":
-            case "WO":
-                return SwitchOutlierFactory.FACTORY.make(pos);
-            case "ls":
-            case "LS":
-                return LevelShiftFactory.FACTORY_ZEROENDED.make(pos);
-            default:
-                return null;
-        }
+        return switch (code) {
+            case "ao", "AO" ->
+                AdditiveOutlierFactory.FACTORY.make(pos);
+            case "wo", "WO" ->
+                SwitchOutlierFactory.FACTORY.make(pos);
+            case "ls", "LS" ->
+                LevelShiftFactory.FACTORY_ZEROENDED.make(pos);
+            default ->
+                null;
+        };
     }
-
+    
     private Map<String, String> attributes(IOutlier o) {
         HashMap<String, String> attributes = new HashMap<>();
         attributes.put(ModellingUtility.AMI, "tramo");
         attributes.put(SaVariable.REGEFFECT, SaVariable.defaultComponentTypeOf(o).name());
         return attributes;
     }
-
+    
     public static ArimaModel estimate(DoubleSeq s, double period) {
         ExtendedAirlineMapping mapping = new ExtendedAirlineMapping(new double[]{period});
-
+        
         GlsArimaProcessor.Builder<ArimaModel> builder = GlsArimaProcessor.builder(ArimaModel.class);
         builder.minimizer(LevenbergMarquardtMinimizer.builder())
                 .precision(1e-12)
@@ -451,5 +444,5 @@ public class ExtendedAirlineKernel {
         RegArimaEstimation<ArimaModel> rslt = monitor.process(regarima, mapping);
         return rslt.getModel().arima();
     }
-
+    
 }

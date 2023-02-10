@@ -65,12 +65,13 @@ public class Variables {
         DayClustering dc = DayClustering.of(groups);
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, DayOfWeek.SUNDAY);
         HolidaysCorrectedTradingDays htd = HolidaysCorrectedTradingDays.builder()
-                .clustering(DayClustering.TD2)
+                .clustering(dc)
                 .meanCorrection(true)
                 .contrast(contrasts)
                 .corrector(corrector)
                 .build();
-        FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+        int c=contrasts ? dc.getGroupsCount() - 1 : dc.getGroupsCount();
+        FastMatrix m = FastMatrix.make(domain.getLength(), c);
         HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
         return m.unmodifiable();
     }
@@ -79,13 +80,14 @@ public class Variables {
         DayClustering dc = DayClustering.of(groups);
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(calendar, DayOfWeek.SUNDAY);
         HolidaysCorrectedTradingDays htd = HolidaysCorrectedTradingDays.builder()
-                .clustering(DayClustering.TD2)
+                .clustering(dc)
                 .meanCorrection(true)
                 .contrast(contrasts)
                 .meanCorrection(meanCorrection)
                 .corrector(corrector)
                 .build();
-        FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+        int c=contrasts ? dc.getGroupsCount() - 1 : dc.getGroupsCount();
+        FastMatrix m = FastMatrix.make(domain.getLength(), c);
         HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
         return m.unmodifiable();
     }
@@ -94,13 +96,14 @@ public class Variables {
         DayClustering dc = DayClustering.of(groups);
         HolidaysCorrectedTradingDays.HolidaysCorrector corrector = HolidaysCorrectionFactory.corrector(name, ctxt.getCalendars(), DayOfWeek.of(dw));
         HolidaysCorrectedTradingDays htd = HolidaysCorrectedTradingDays.builder()
-                .clustering(DayClustering.TD2)
+                .clustering(dc)
                 .meanCorrection(true)
                 .contrast(contrasts)
                 .meanCorrection(meanCorrection)
                 .corrector(corrector)
                 .build();
-        FastMatrix m = FastMatrix.make(domain.getLength(), dc.getGroupsCount() - 1);
+        int c=contrasts ? dc.getGroupsCount() - 1 : dc.getGroupsCount();
+        FastMatrix m = FastMatrix.make(domain.getLength(), c);
         HolidaysCorrectionFactory.FACTORY.fill(htd, domain.getStartPeriod(), m);
         return m.unmodifiable();
     }

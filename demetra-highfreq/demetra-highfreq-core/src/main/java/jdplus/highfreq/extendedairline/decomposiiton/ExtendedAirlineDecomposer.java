@@ -14,12 +14,14 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline.decomposiiton;
 
+import jdplus.highfreq.extendedairline.ExtendedAirlineMapping;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.highfreq.ExtendedAirline;
 import demetra.highfreq.SeriesComponent;
+import demetra.sa.ComponentType;
 import java.util.Arrays;
 import jdplus.arima.ArimaModel;
 import jdplus.arima.IArimaModel;
@@ -118,8 +120,8 @@ public class ExtendedAirlineDecomposer {
                     }
                     return dbuilder
                             .y(yc)
-                            .component(new SeriesComponent("S", sc, sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
-                            .component(new SeriesComponent("N", nc, sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
+                            .component(new SeriesComponent("S", sc, sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), ComponentType.Seasonal))
+                            .component(new SeriesComponent("N", nc, sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), ComponentType.SeasonallyAdjusted))
                             .build();
                 } else {
                     DoubleSeq sc = sr.getComponent(pos[1]), tc = sr.getComponent(pos[0]), ic = sr.getComponent(pos[2]);
@@ -132,9 +134,9 @@ public class ExtendedAirlineDecomposer {
                     }
                     return dbuilder
                             .y(yc)
-                            .component(new SeriesComponent("T", tc.commit(), sr.getComponentVariance(pos[0]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
-                            .component(new SeriesComponent("S", sc.commit(), sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
-                            .component(new SeriesComponent("I", ic.commit(), sr.getComponentVariance(pos[2]).fn(a -> a <= 0 ? 0 : Math.sqrt(a))))
+                            .component(new SeriesComponent("T", tc.commit(), sr.getComponentVariance(pos[0]).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), ComponentType.Trend))
+                            .component(new SeriesComponent("S", sc.commit(), sr.getComponentVariance(pos[1]).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), ComponentType.Seasonal))
+                            .component(new SeriesComponent("I", ic.commit(), sr.getComponentVariance(pos[2]).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), ComponentType.Irregular))
                             .build();
                 }
             } catch (Exception err) {
@@ -152,8 +154,8 @@ public class ExtendedAirlineDecomposer {
             }
             return dbuilder
                     .y(yc)
-                    .component(new SeriesComponent("S", ds.item(pos[1]).commit(), DoubleSeq.empty()))
-                    .component(new SeriesComponent("N", ds.item(pos[0]).commit(), DoubleSeq.empty()))
+                    .component(new SeriesComponent("S", ds.item(pos[1]).commit(), DoubleSeq.empty(), ComponentType.Seasonal))
+                    .component(new SeriesComponent("N", ds.item(pos[0]).commit(), DoubleSeq.empty(), ComponentType.SeasonallyAdjusted))
                     .build();
         } else {
             DoubleSeq sc = ds.item(pos[1]), tc = ds.item(pos[0]), ic = ds.item(pos[2]);
@@ -166,9 +168,9 @@ public class ExtendedAirlineDecomposer {
             }
             return dbuilder
                     .y(yc)
-                    .component(new SeriesComponent("S", sc.commit(), DoubleSeq.empty()))
-                    .component(new SeriesComponent("T", tc.commit(), DoubleSeq.empty()))
-                    .component(new SeriesComponent("I", ic.commit(), DoubleSeq.empty()))
+                    .component(new SeriesComponent("S", sc.commit(), DoubleSeq.empty(), ComponentType.Seasonal))
+                    .component(new SeriesComponent("T", tc.commit(), DoubleSeq.empty(), ComponentType.Trend))
+                    .component(new SeriesComponent("I", ic.commit(), DoubleSeq.empty(), ComponentType.Irregular))
                     .build();
         }
     }
@@ -253,7 +255,7 @@ public class ExtendedAirlineDecomposer {
                 for (int i = 0; i < pos.length; ++i) {
                     dbuilder.component(new SeriesComponent("cmp" + (i + 1),
                             sr.getComponent(pos[i]).commit(),
-                            sr.getComponentVariance(i).fn(a -> a <= 0 ? 0 : Math.sqrt(a))));
+                            sr.getComponentVariance(i).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), ComponentType.Undefined));
                 }
                 return dbuilder
                         .y(sc)
@@ -271,7 +273,7 @@ public class ExtendedAirlineDecomposer {
         }
         for (int i = 0; i < pos.length; ++i) {
             dbuilder.component(new SeriesComponent("Cmp" + (i + 1),
-                    ds.item(pos[i]).commit(), DoubleSeq.empty()));
+                    ds.item(pos[i]).commit(), DoubleSeq.empty(), ComponentType.Undefined));
         }
         return dbuilder
                 .y(sc)

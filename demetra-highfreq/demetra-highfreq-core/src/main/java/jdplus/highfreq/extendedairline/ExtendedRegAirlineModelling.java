@@ -14,8 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline;
 
+import jdplus.highfreq.regarima.ArimaComputer;
+import jdplus.highfreq.regarima.ModelDescription;
+import jdplus.highfreq.regarima.HighFreqRegArimaModel;
 import nbbrd.design.Development;
 import demetra.processing.ProcessingLog;
 import jdplus.arima.ArimaModel;
@@ -30,7 +33,7 @@ import jdplus.regarima.RegArimaEstimation;
 @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ExtendedRegAirlineModelling {
 
-    private ModelDescription description;
+    private ModelDescription<ArimaModel, ExtendedAirlineDescription> description;
     private RegArimaEstimation<ArimaModel> estimation;
     private final ProcessingLog log;
 
@@ -49,12 +52,12 @@ public class ExtendedRegAirlineModelling {
 
     public void estimate(double precision) {
 
-        ExtendedAirlineComputer computer = new ExtendedAirlineComputer(precision, false);
+        ArimaComputer computer = new ArimaComputer(precision, false);
         estimation = description.estimate(computer);
     }
 
-    public ExtendedRegAirlineModel build() {
-        return ExtendedRegAirlineModel.of(description, estimation, log);
+    public HighFreqRegArimaModel build() {
+        return HighFreqRegArimaModel.of(description, estimation, log);
     }
 
     public boolean needEstimation() {

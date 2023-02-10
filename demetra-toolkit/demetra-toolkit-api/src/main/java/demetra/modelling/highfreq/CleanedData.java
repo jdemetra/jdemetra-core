@@ -57,7 +57,7 @@ public final class CleanedData {
      */
     private int[] positions;
     /**
-     * Reference start position
+     * Reference domain (domain of the original data)
      */
     @lombok.Getter
     private TsDomain domain;

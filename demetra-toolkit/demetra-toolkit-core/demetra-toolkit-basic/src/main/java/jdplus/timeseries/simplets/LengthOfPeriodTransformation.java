@@ -21,12 +21,10 @@ import jdplus.data.transformation.LogJacobian;
 import nbbrd.design.Development;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.TsException;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.TsUnit;
 import demetra.timeseries.calendars.CalendarUtility;
 import demetra.timeseries.calendars.LengthOfPeriodType;
-import demetra.data.Doubles;
 import java.util.Arrays;
 
 /**

@@ -14,9 +14,11 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.regarima;
 
 import jdplus.arima.ArimaModel;
+import jdplus.arima.IArimaModel;
+import jdplus.arima.estimation.IArimaMapping;
 import jdplus.regarima.GlsArimaProcessor;
 import jdplus.regarima.RegArimaEstimation;
 import jdplus.regarima.RegArimaModel;
@@ -25,19 +27,19 @@ import jdplus.regarima.RegArimaModel;
  *
  * @author PALATEJ
  */
-public class ExtendedAirlineComputer {
+public class ArimaComputer {
     
     private final double eps;
     private final boolean exactDerivatives;
     
-    public ExtendedAirlineComputer(double eps, boolean exactDerivatives){
+    public ArimaComputer(double eps, boolean exactDerivatives){
         this.eps=eps;
         this.exactDerivatives=exactDerivatives;
     }
     
-    public RegArimaEstimation<ArimaModel> process(final RegArimaModel<ArimaModel> regarima, ExtendedAirlineMapping mapping){
+    public <S extends IArimaModel> RegArimaEstimation<S> process(final RegArimaModel<S> regarima, IArimaMapping<S> mapping){
         
-        GlsArimaProcessor<ArimaModel> finalProcessor = GlsArimaProcessor.builder(ArimaModel.class)
+        GlsArimaProcessor finalProcessor = GlsArimaProcessor.builder(IArimaModel.class)
                 .precision(eps)
                 .computeExactFinalDerivatives(exactDerivatives)
                 .build();

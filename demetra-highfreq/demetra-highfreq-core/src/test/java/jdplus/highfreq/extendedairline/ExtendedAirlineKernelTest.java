@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline;
 
+import jdplus.highfreq.regarima.HighFreqRegArimaModel;
 import demetra.data.Data;
 import demetra.data.MatrixSerializer;
 import demetra.timeseries.calendars.EasterRelatedDay;
@@ -61,21 +62,21 @@ public class ExtendedAirlineKernelTest {
                 .stochastic(ExtendedAirlineSpec.DEFAULT_WD)
                 .outlier(OutlierSpec.builder()
                         .criticalValue(8)
-                        .outliers(new String[]{"AO"})
+                        .ao(true)
                         .build())
                 .regression(RegressionSpec.builder()
-                        .calendar(HolidaysSpec.builder()
+                        .holidays(HolidaysSpec.builder()
                                         .holidays("FR")
                                         .holidaysOption(HolidaysOption.Skip)
                                         .single(false)
                                         .build())
                         .build())
                 .build();
-        ExtendedAirlineKernel kernel=new ExtendedAirlineKernel(spec, context);
-        ExtendedRegAirlineModel rslt = kernel.process(EDF, ProcessingLog.dummy());
+        ExtendedAirlineKernel kernel=ExtendedAirlineKernel.of(spec, context);
+        HighFreqRegArimaModel rslt = kernel.process(EDF, ProcessingLog.dummy());
         assertTrue(rslt != null);
         Map<String, Class> dictionary = rslt.getDictionary();
-        dictionary.keySet().forEach(v->System.out.println(v));
+//        dictionary.keySet().forEach(v->System.out.println(v));
     }
 
     private static void addDefault(List<Holiday> holidays) {

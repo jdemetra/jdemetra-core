@@ -47,7 +47,7 @@ public class IStlKernel {
             RawStlKernel kernel = new RawStlKernel(curSpec);
             curRslt = kernel.process(data);
             DoubleSeq seas = curRslt.getSeasonal();
-            builder.season(seas);
+            builder.season(pspec.getSeasonalSpec().getPeriod(), seas);
             if (mul) {
                 seasonal = DoublesMath.multiply(seasonal, seas);
             } else {
@@ -65,7 +65,6 @@ public class IStlKernel {
                 .sa(data)
                 .fit(fit)
                 .irregular(curRslt.getIrregular())
-                .seasonal(seasonal)
                 .weights(curRslt.getWeights())
                 .build();
     }

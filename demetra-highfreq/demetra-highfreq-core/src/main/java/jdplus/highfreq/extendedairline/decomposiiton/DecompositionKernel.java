@@ -14,8 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.highfreq;
+package jdplus.highfreq.extendedairline.decomposiiton;
 
+import jdplus.highfreq.extendedairline.ExtendedAirlineKernel;
 import demetra.data.DoubleSeq;
 import demetra.data.DoublesMath;
 import demetra.highfreq.DecompositionSpec;
@@ -56,7 +57,7 @@ public class DecompositionKernel {
     public ExtendedAirlineDecomposition process(DoubleSeq lin, boolean mul, ProcessingLog log) {
         try {
             log.push(CD);
-            double[] periodicities = spec.getPeriodicities();
+            double[] periodicities = spec.getPeriodicities().clone();
             if (!spec.isIterative() && periodicities.length > 1) {
                 throw new java.lang.UnsupportedOperationException("Not implemented yet");
             }
@@ -97,7 +98,8 @@ public class DecompositionKernel {
                         for (int j = 0; j < pos.length; ++j) {
                             sbuilder.component(new SeriesComponent("cmp" + (j + 1),
                                     sr.getComponent(pos[j]).commit(),
-                                    sr.getComponentVariance(j).fn(a -> a <= 0 ? 0 : Math.sqrt(a))));
+                                    sr.getComponentVariance(j).fn(a -> a <= 0 ? 0 : Math.sqrt(a)), 
+                                    ComponentType.Undefined));
                         }
                         done = true;
                     } catch (OutOfMemoryError err) {
@@ -108,7 +110,7 @@ public class DecompositionKernel {
                     DataBlockStorage ds = DkToolkit.fastSmooth(ssf, data);
                     for (int j = 0; j < pos.length; ++j) {
                         sbuilder.component(new SeriesComponent("cmp" + (j + 1),
-                                ds.item(pos[j]).commit(), DoubleSeq.empty()));
+                                ds.item(pos[j]).commit(), DoubleSeq.empty(), ComponentType.Undefined));
                     }
                 }
                 ExtendedAirlineDecomposition.Step step = sbuilder.build();
@@ -144,12 +146,12 @@ public class DecompositionKernel {
                     s = DoublesMath.add(s, curs);
                 }
                 if (steps[i].getPeriod() == 7) {
-                    builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SW_CMP, curs));
+                    builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SW_CMP, curs, ComponentType.Seasonal));
                 } else {
-                    builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SY_CMP, curs));
+                    builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SY_CMP, curs, ComponentType.Seasonal));
                 }
             }
-            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.S_CMP, s));
+            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.S_CMP, s, ComponentType.Seasonal));
 
             SeriesComponent cmp = steps[steps.length - 1].getComponent(2);
             DoubleSeq irr = cmp == null ? null : cmp.getData();
@@ -162,19 +164,19 @@ public class DecompositionKernel {
                         bias *= ibias;
                     }
                 }
-                builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.I_CMP, irr));
+                builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.I_CMP, irr, ComponentType.Irregular));
             }
             if (bias != 1) {
                 double tbias = bias;
                 t = t.fn(z -> z * tbias);
             }
-            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.T_CMP, t));
+            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.T_CMP, t, ComponentType.Trend));
 
             DoubleSeq sa = mul ? DoublesMath.multiply(t, irr) : DoublesMath.add(t, irr);
             DoubleSeq y = mul ? DoublesMath.multiply(sa, s) : DoublesMath.add(sa, s);
 
-            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.Y_CMP, y))
-                    .finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SA_CMP, sa));
+            builder.finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.Y_CMP, y, ComponentType.Series))
+                    .finalComponent(new SeriesComponent(ExtendedAirlineDictionaries.SA_CMP, sa, ComponentType.SeasonallyAdjusted));
 
             return builder.build();
         } finally {

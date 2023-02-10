@@ -23,6 +23,8 @@ import demetra.modelling.highfreq.SeriesSpec;
 import demetra.modelling.highfreq.TransformSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
+import demetra.timeseries.TsUnit;
+import java.time.temporal.ChronoUnit;
 import lombok.NonNull;
 import nbbrd.design.Development;
 
@@ -33,33 +35,57 @@ import nbbrd.design.Development;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
-public class ExtendedAirlineModellingSpec implements ProcSpecification{
+public class ExtendedAirlineModellingSpec implements ProcSpecification {
+    
+    @NonNull
+    private TsUnit period;
 
     @NonNull
     private SeriesSpec series;
+
+    private boolean enabled;
+
     @NonNull
     private EstimateSpec estimate;
     @NonNull
     private TransformSpec transform;
     @NonNull
     private RegressionSpec regression;
-    @NonNull
+    // Will use a default if null
     private ExtendedAirlineSpec stochastic;
     @NonNull
     private OutlierSpec outlier;
 
     public static Builder builder() {
         return new Builder()
+                .period(TsUnit.UNDEFINED)
                 .series(SeriesSpec.DEFAULT)
+                .enabled(true)
                 .transform(TransformSpec.DEFAULT)
-                .stochastic(ExtendedAirlineSpec.DEFAULT_WD)
+                .stochastic(null)
                 .regression(RegressionSpec.DEFAULT)
                 .outlier(OutlierSpec.DEFAULT_DISABLED)
                 .estimate(EstimateSpec.DEFAULT);
-
+    }
+    
+    public ExtendedAirlineModellingSpec withPeriod(@NonNull TsUnit unit){
+        if (unit.equals(period))
+            return this;
+        Builder builder = toBuilder();
+        ExtendedAirlineSpec nspec;
+        if (unit.equals(TsUnit.UNDEFINED))
+            nspec=null;
+        else
+            nspec=ExtendedAirlineSpec.createDefault(unit);
+        return builder.period(unit)
+                .stochastic(nspec)
+                .build();
+                    
     }
 
-    public static final ExtendedAirlineModellingSpec DEFAULT = builder().build();
+ 
+    public static final ExtendedAirlineModellingSpec DEFAULT_ENABLED = builder().build();
+    public static final ExtendedAirlineModellingSpec DEFAULT_DISABLED = builder().enabled(false).build();
 
     public static final String METHOD = "extendedairline";
     public static final String FAMILY = "Modelling";
