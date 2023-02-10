@@ -68,7 +68,8 @@ public class MStlPlusExtractor extends InformationMapping<MStlPlusResults> {
             if (s == null) {
                 return null;
             } else {
-                return TsData.of(source.getPreprocessing().getDescription().getDomain().getStartPeriod(), s);
+                TsData series = source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value);
+                return TsData.of(series.getStart(), s);
             }
         });
 
@@ -78,17 +79,19 @@ public class MStlPlusExtractor extends InformationMapping<MStlPlusResults> {
             if (s == null) {
                 return null;
             } else {
-                return TsData.of(source.getPreprocessing().getDescription().getDomain().getStartPeriod(), s);
+                TsData series = source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value);
+                return TsData.of(series.getStart(), s);
             }
         });
 
         set(StlDictionaries.S, TsData.class, source
                 -> {
             Map<Integer, DoubleSeq> seasons = source.getDecomposition().getSeasons();
-            if (seasons.size() == 1){
+            if (seasons.size() == 1) {
                 Map.Entry<Integer, DoubleSeq> entry = seasons.entrySet().iterator().next();
-                 return TsData.of(source.getPreprocessing().getDescription().getDomain().getStartPeriod(), entry.getValue());
-            }else{
+                TsData series = source.getFinals().getSeries(ComponentType.Series, ComponentInformation.Value);
+                return TsData.of(series.getStart(), entry.getValue());
+            } else {
                 return null;
             }
         });
