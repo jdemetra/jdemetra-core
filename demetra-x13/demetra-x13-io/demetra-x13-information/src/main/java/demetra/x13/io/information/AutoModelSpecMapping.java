@@ -31,7 +31,6 @@ class AutoModelSpecMapping {
             ACCEPTDEFAULT = "acceptdefault",
             MIXED = "mixed",
             BALANCED = "balanced",
-            CHECKMU = "checkmu",
             HR = "hrinitial",
             LJUNGBOXLIMIT = "ljungboxlimit",
             REDUCECV = "reducecv",
@@ -56,7 +55,6 @@ class AutoModelSpecMapping {
         dic.put(InformationSet.item(prefix, ENABLED), Boolean.class);
         dic.put(InformationSet.item(prefix, ACCEPTDEFAULT), Boolean.class);
         dic.put(InformationSet.item(prefix, MIXED), Boolean.class);
-        dic.put(InformationSet.item(prefix, CHECKMU), Boolean.class);
         dic.put(InformationSet.item(prefix, BALANCED), Boolean.class);
         dic.put(InformationSet.item(prefix, HR), Boolean.class);
         OrderSpecMapping.fillDictionary(InformationSet.item(prefix, ARMA), dic);
@@ -82,9 +80,6 @@ class AutoModelSpecMapping {
         }
         if (verbose || spec.isHannanRissannen() != AutoModelSpec.DEF_HR) {
             info.add(HR, spec.isHannanRissannen());
-        }
-        if (verbose || spec.isCheckMu() != AutoModelSpec.DEF_CHECKMU) {
-            info.add(CHECKMU, spec.isCheckMu());
         }
         if (verbose || spec.getLjungBoxLimit() != AutoModelSpec.DEF_LJUNGBOX) {
             info.add(LJUNGBOXLIMIT, spec.getLjungBoxLimit());
@@ -145,7 +140,6 @@ class AutoModelSpecMapping {
         Boolean mixed = info.get(MIXED, Boolean.class);
         Boolean balanced = info.get(BALANCED, Boolean.class);
         Boolean hr = info.get(HR, Boolean.class);
-        Boolean mu = info.get(CHECKMU, Boolean.class);
         Double pcr = info.get(LJUNGBOXLIMIT, Double.class);
         Double pc = info.get(REDUCECV, Double.class);
         Double ub1 = info.get(UB1, Double.class);
@@ -159,7 +153,6 @@ class AutoModelSpecMapping {
                 .mixed(mixed == null ? AutoModelSpec.DEF_MIXED : mixed)
                 .balanced(balanced == null ? AutoModelSpec.DEF_BALANCED : balanced)
                 .hannanRissannen(hr == null ? AutoModelSpec.DEF_HR : hr)
-                .checkMu(mu == null ? AutoModelSpec.DEF_CHECKMU : mu)
                 .ljungBoxLimit(pcr == null ? AutoModelSpec.DEF_LJUNGBOX : pcr)
                 .predcv(pc == null ? AutoModelSpec.DEF_PREDCV : pc)
                 .ub1(ub1 == null ? AutoModelSpec.DEF_UB1 : ub1)

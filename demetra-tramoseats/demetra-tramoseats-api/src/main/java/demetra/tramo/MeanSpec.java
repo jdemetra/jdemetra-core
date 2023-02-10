@@ -16,6 +16,7 @@
  */
 package demetra.tramo;
 
+import demetra.data.Parameter;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.util.Validatable;
@@ -27,43 +28,50 @@ import demetra.util.Validatable;
 @Development(status = Development.Status.Beta)
 @lombok.Value
 @lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
-public final class CalendarSpec implements Validatable<CalendarSpec> {
-    
-    public final static CalendarSpec DEFAULT_UNUSED = CalendarSpec.builder().build();
-    
-    public static final String TD = "td", EASTER = "easter";
-    
-    @lombok.NonNull
-    private TradingDaysSpec tradingDays;
-    
-    @lombok.NonNull
-    private EasterSpec easter;
-    
-    @LombokWorkaround
-    public static Builder builder() {
-        return new Builder()
-                .tradingDays(TradingDaysSpec.none())
-                .easter(EasterSpec.DEFAULT_UNUSED);
+public final class MeanSpec implements Validatable<MeanSpec> {
+
+    boolean trendConstant;
+    boolean test;
+
+    // optional coefficient.
+    Parameter coefficient;
+
+    public static final MeanSpec DEFAULT_UNUSED = new Builder().test(false).trendConstant(false).build(),
+            DEFAULT_USED = new Builder().test(false).trendConstant(true).coefficient(Parameter.undefined()).build();
+
+
+    @Override
+    public MeanSpec validate() throws IllegalArgumentException {
+        if (test && Parameter.isFixed(coefficient)) {
+            throw new IllegalArgumentException("Fixed coefficient should not be used with testing");
+        }
+        return this;
     }
-    
+
     public boolean isUsed() {
-        return easter.isUsed() || tradingDays.isUsed();
+        return trendConstant;
     }
-    
+
+    public boolean isDefined() {
+        return trendConstant && !test;
+    }
+
     public boolean isDefault() {
         return this.equals(DEFAULT_UNUSED);
     }
-    
-    @Override
-    public CalendarSpec validate() throws IllegalArgumentException {
-        easter.validate();
-        return this;
+
+    public static MeanSpec none() {
+        return DEFAULT_UNUSED;
+    }
+
+    public static MeanSpec mean(Parameter p) {
+        return new MeanSpec(true, false, p);
+    }
+
+    public boolean hasFixedCoefficient() {
+        return Parameter.isFixed(coefficient);
     }
     
-    boolean hasFixedCoefficients() {
-        return easter.hasFixedCoefficient() || tradingDays.hasFixedCoefficients();
-    }
-    
-    public static class Builder implements Validatable.Builder<CalendarSpec> {
+    public static class Builder implements Validatable.Builder<MeanSpec> {
     }
 }

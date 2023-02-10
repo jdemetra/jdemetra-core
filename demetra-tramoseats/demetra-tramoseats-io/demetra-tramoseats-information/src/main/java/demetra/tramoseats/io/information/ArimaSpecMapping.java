@@ -19,6 +19,7 @@ package demetra.tramoseats.io.information;
 import demetra.arima.SarimaSpec;
 import demetra.data.Parameter;
 import demetra.information.InformationSet;
+import demetra.tramo.MeanSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.SarimaValidator;
 import java.util.Map;
@@ -122,11 +123,11 @@ class ArimaSpecMapping {
         // mean
         Boolean mean = info.get(MEAN, Boolean.class);
         if (mean != null) {
-            rb.mean(Parameter.undefined());
+            rb.mean(MeanSpec.DEFAULT_USED);
         }
         Parameter m = info.get(MU, Parameter.class);
         if (m != null) {
-            rb.mean(m);
+            rb.mean(MeanSpec.mean(m));
         }
     }
 
@@ -135,9 +136,9 @@ class ArimaSpecMapping {
         InformationSet info = new InformationSet();
 
         // mean
-        Parameter mu = rspec.getMean();
-        if (mu != null) {
-            info.set(MU, mu);
+        MeanSpec mu = rspec.getMean();
+        if (mu.isUsed()) {
+            info.set(MU, mu.getCoefficient());
         }
         writeProperties(info, aspec, verbose);
         return info;

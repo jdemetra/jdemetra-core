@@ -44,7 +44,8 @@ public final class TransformSpec implements Validatable<TransformSpec> {
     private TransformationType function;
     private LengthOfPeriodType adjust;
 
-    public static final TransformSpec DEFAULT = TransformSpec.builder().build();
+    public static final TransformSpec DEFAULT_UNUSED = TransformSpec.builder().build(),
+            DEFAULT_AUTO = TransformSpec.builder().function(TransformationType.Auto).build();
 
     @LombokWorkaround
     public static Builder builder() {
@@ -58,7 +59,7 @@ public final class TransformSpec implements Validatable<TransformSpec> {
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_UNUSED);
     }
 
     @Override

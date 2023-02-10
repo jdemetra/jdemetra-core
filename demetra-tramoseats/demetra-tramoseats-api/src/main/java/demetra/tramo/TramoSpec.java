@@ -128,17 +128,13 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
      */
     @LombokWorkaround
     public static Builder builder() {
-        SarimaSpec sarima = SarimaSpec.airline();
-        RegressionSpec regs = RegressionSpec.builder()
-                .mean(Parameter.undefined())
-                .build();
         return new Builder()
-                .transform(TransformSpec.builder().build())
-                .estimate(EstimateSpec.builder().build())
-                .autoModel(AutoModelSpec.builder().build())
-                .outliers(OutlierSpec.builder().build())
-                .arima(sarima)
-                .regression(regs);
+                .transform(TransformSpec.DEFAULT_UNUSED)
+                .estimate(EstimateSpec.DEFAULT)
+                .autoModel(AutoModelSpec.DEFAULT_DISABLED)
+                .outliers(OutlierSpec.DEFAULT_DISABLED)
+                .arima(SarimaSpec.airline())
+                .regression(RegressionSpec.DEFAULT_CONST);
     }
 
     @Override
@@ -211,10 +207,6 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
     static {
         TR0 = TramoSpec.DEFAULT;
 
-        TransformSpec tr = TransformSpec.builder()
-                .function(TransformationType.Auto)
-                .build();
-
         EasterSpec e = EasterSpec.builder()
                 .type(EasterSpec.Type.Standard)
                 .test(true)
@@ -238,9 +230,9 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
                 .easter(e)
                 .tradingDays(wd)
                 .build();
-        RegressionSpec rwd = RegressionSpec.builder()
-                .mean(Parameter.undefined())
-                .calendar(cwd)
+        CalendarSpec ctd = CalendarSpec.builder()
+                .easter(e)
+                .tradingDays(td)
                 .build();
 
         OutlierSpec o = OutlierSpec.builder()
@@ -249,42 +241,41 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
                 .ls(true).build();
 
         TR1 = TramoSpec.builder()
-                .transform(tr)
+                .transform(TransformSpec.DEFAULT_AUTO)
                 .outliers(o)
                 .build();
 
         TR2 = TramoSpec.builder()
-                .transform(tr)
+                .transform(TransformSpec.DEFAULT_AUTO)
                 .outliers(o)
-                .regression(rwd)
+                .regression(RegressionSpec.builder()
+                        .mean(MeanSpec.DEFAULT_USED)
+                        .calendar(cwd)
+                        .build())
                 .build();
 
         TR3 = TramoSpec.builder()
-                .transform(tr)
+                .transform(TransformSpec.DEFAULT_AUTO)
                 .outliers(o)
                 .usingAutoModel(true)
                 .build();
 
         TR4 = TramoSpec.builder()
-                .transform(tr)
+                .transform(TransformSpec.DEFAULT_AUTO)
                 .outliers(o)
-                .regression(rwd)
+                .regression(RegressionSpec.builder()
+                        .calendar(cwd)
+                        .build())
                 .usingAutoModel(true)
                 .build();
 
-        CalendarSpec ctd = CalendarSpec.builder()
-                .easter(e)
-                .tradingDays(td)
-                .build();
-
-        RegressionSpec rtd = RegressionSpec.builder()
-                .calendar(ctd)
-                .build();
 
         TR5 = TramoSpec.builder()
-                .transform(tr)
+                .transform(TransformSpec.DEFAULT_AUTO)
                 .outliers(o)
-                .regression(rtd)
+                .regression(RegressionSpec.builder()
+                        .calendar(ctd)
+                        .build())
                 .usingAutoModel(true)
                 .build();
 
@@ -296,7 +287,7 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
                 .calendar(cc)
                 .build();
         TRfull = TramoSpec.builder()
-                .transform(tr)
+                .transform(TransformSpec.DEFAULT_AUTO)
                 .outliers(o)
                 .regression(rc)
                 .usingAutoModel(true)
@@ -305,29 +296,28 @@ public final class TramoSpec implements Validatable<TramoSpec>, ProcSpecificatio
 
     public static TramoSpec fromString(String name) {
         switch (name) {
-            case "TR0":
-            case "tr0":
+            case "TR0", "tr0" -> {
                 return TR0;
-            case "TR1":
-            case "tr1":
+            }
+            case "TR1", "tr1" -> {
                 return TR1;
-            case "TR2":
-            case "tr2":
+            }
+            case "TR2", "tr2" -> {
                 return TR2;
-            case "TR3":
-            case "tr3":
+            }
+            case "TR3", "tr3" -> {
                 return TR3;
-            case "TR4":
-            case "tr4":
+            }
+            case "TR4", "tr4" -> {
                 return TR4;
-            case "TR5":
-            case "tr5":
+            }
+            case "TR5", "tr5" -> {
                 return TR5;
-            case "TRfull":
-            case "trfull":
+            }
+            case "TRfull", "trfull" -> {
                 return TRfull;
-            default:
-                throw new TramoException();
+            }
+            default -> throw new TramoException();
         }
     }
     //</editor-fold>

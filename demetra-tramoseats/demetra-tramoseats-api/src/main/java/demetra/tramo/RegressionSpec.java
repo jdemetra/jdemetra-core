@@ -33,39 +33,42 @@ import java.util.List;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class RegressionSpec implements Validatable<RegressionSpec> {
 
-    
-    Parameter mean;
-    
-    CalendarSpec calendar;
-    
-    @lombok.Singular
-    List< Variable<IOutlier> > outliers;
-    @lombok.Singular
-    List< Variable<Ramp> > ramps;
-    @lombok.Singular
-    List< Variable<InterventionVariable> > interventionVariables;
-    @lombok.Singular
-    List< Variable<TsContextVariable> > userDefinedVariables;
+    @lombok.NonNull
+    MeanSpec mean;
 
-    public static final RegressionSpec DEFAULT = RegressionSpec.builder().build();
+    @lombok.NonNull
+    CalendarSpec calendar;
+
+    @lombok.Singular
+    List< Variable<IOutlier>> outliers;
+    @lombok.Singular
+    List< Variable<Ramp>> ramps;
+    @lombok.Singular
+    List< Variable<InterventionVariable>> interventionVariables;
+    @lombok.Singular
+    List< Variable<TsContextVariable>> userDefinedVariables;
+
+    public static final RegressionSpec DEFAULT_UNUSED = RegressionSpec.builder().build(),
+            DEFAULT_CONST=new Builder().calendar(CalendarSpec.DEFAULT_UNUSED).mean(MeanSpec.DEFAULT_USED).build();
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .calendar(CalendarSpec.builder().build());
+                .mean(MeanSpec.DEFAULT_UNUSED)
+                .calendar(CalendarSpec.DEFAULT_UNUSED);
     }
 
     public boolean isUsed() {
-        return mean !=null || calendar.isUsed() || !outliers.isEmpty()
-                || !ramps.isEmpty() || !interventionVariables.isEmpty() 
+        return mean.isUsed() || calendar.isUsed() || !outliers.isEmpty()
+                || !ramps.isEmpty() || !interventionVariables.isEmpty()
                 || !userDefinedVariables.isEmpty();
     }
 
     public boolean isDefault() {
-        return this.equals(DEFAULT);
+        return this.equals(DEFAULT_UNUSED);
     }
 
     @Override
@@ -76,14 +79,15 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     public static class Builder implements Validatable.Builder<RegressionSpec> {
 
     }
-    
-    public boolean hasFixedCoefficients(){
-        if (! isUsed())
+
+    public boolean hasFixedCoefficients() {
+        if (!isUsed()) {
             return false;
-        return (mean != null && mean.isFixed()) || calendar.hasFixedCoefficients()
-                || outliers.stream().anyMatch(var->! var.isFree())
-                || ramps.stream().anyMatch(var->! var.isFree())
-                || interventionVariables.stream().anyMatch(var->! var.isFree())
-                || userDefinedVariables.stream().anyMatch(var->! var.isFree());
+        }
+        return mean.hasFixedCoefficient() || calendar.hasFixedCoefficients()
+                || outliers.stream().anyMatch(var -> !var.isFree())
+                || ramps.stream().anyMatch(var -> !var.isFree())
+                || interventionVariables.stream().anyMatch(var -> !var.isFree())
+                || userDefinedVariables.stream().anyMatch(var -> !var.isFree());
     }
 }

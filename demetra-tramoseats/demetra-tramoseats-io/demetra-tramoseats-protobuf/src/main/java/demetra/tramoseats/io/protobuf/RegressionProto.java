@@ -20,6 +20,7 @@ import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
 import demetra.toolkit.io.protobuf.ToolkitProtosUtility;
 import demetra.tramo.CalendarSpec;
+import demetra.tramo.MeanSpec;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,8 +39,19 @@ public class RegressionProto {
         if (spec.hasTd()) {
             cbuilder.tradingDays(TradingDaysProto.convert(spec.getTd()));
         }
+
+        MeanSpec mean = MeanSpec.none();
+        if (spec.hasMean()) {
+            boolean check = spec.getCheckMean();
+            mean=MeanSpec.builder()
+                    .trendConstant(true)
+                    .test(check)
+                    .coefficient(ToolkitProtosUtility.convert(spec.getMean()))
+                    .build();
+        }
+
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(ToolkitProtosUtility.convert(spec.getMean()))
+                .mean(mean)
                 .calendar(cbuilder.build());
         int n = spec.getOutliersCount();
         for (int i = 0; i < n; ++i) {
@@ -61,16 +73,21 @@ public class RegressionProto {
             ModellingProtos.Ramp var = spec.getRamps(i);
             builder.ramp(ModellingProtosUtility.convert(var));
         }
-        
+
         return builder.build();
     }
 
     public TramoSpec.RegressionSpec convert(RegressionSpec spec) {
         TramoSpec.RegressionSpec.Builder builder = TramoSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getCalendar().getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getCalendar().getTradingDays()));
-        
+        MeanSpec mean = spec.getMean();
+        if (mean.isUsed()) {
+            builder.setMean(ToolkitProtosUtility.convert(mean.getCoefficient()))
+                    .setCheckMean(mean.isTest());
+        }else
+            builder.clearMean();
+
         List<Variable<IOutlier>> outliers = spec.getOutliers();
         outliers.forEach(outlier -> {
             builder.addOutliers(convert(outlier));
@@ -87,7 +104,7 @@ public class RegressionProto {
         ramps.forEach(ramp -> {
             builder.addRamps(ModellingProtosUtility.convertRamp(ramp));
         });
-        
+
         return builder.build();
     }
 
@@ -97,19 +114,19 @@ public class RegressionProto {
         switch (outlier.getCode()) {
             case "ao":
             case "AO":
-                o= new AdditiveOutlier(ldt.atStartOfDay());
+                o = new AdditiveOutlier(ldt.atStartOfDay());
                 break;
             case "ls":
             case "LS":
-                o= new LevelShift(ldt.atStartOfDay(), false);
+                o = new LevelShift(ldt.atStartOfDay(), false);
                 break;
             case "tc":
             case "TC":
-                o= new TransitoryChange(ldt.atStartOfDay(), tc);
+                o = new TransitoryChange(ldt.atStartOfDay(), tc);
                 break;
             case "so":
             case "SO":
-                o=new PeriodicOutlier(ldt.atStartOfDay(), 0, false);
+                o = new PeriodicOutlier(ldt.atStartOfDay(), 0, false);
                 break;
 
             default:
@@ -121,10 +138,10 @@ public class RegressionProto {
                 .name(outlier.getName())
                 .coefficients(c == null ? null : new Parameter[]{c})
                 .attributes(outlier.getMetadataMap())
-                .build();        
+                .build();
     }
-    
-    public ModellingProtos.Outlier convert(Variable<IOutlier> v){
+
+    public ModellingProtos.Outlier convert(Variable<IOutlier> v) {
         IOutlier outlier = v.getCore();
         return ModellingProtos.Outlier.newBuilder()
                 .setName(v.getName())

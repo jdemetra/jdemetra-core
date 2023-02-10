@@ -131,7 +131,7 @@ public class XmlTransformationSpec {
 
     public static TransformSpec unmarshal(XmlTransformationSpec xml) {
         if (xml == null) {
-            return TransformSpec.DEFAULT;
+            return TransformSpec.DEFAULT_NONE;
         }
         TransformSpec.Builder builder = TransformSpec.builder();
         if (xml.log != null) {

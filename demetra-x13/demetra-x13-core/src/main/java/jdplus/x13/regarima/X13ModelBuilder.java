@@ -21,6 +21,7 @@ import demetra.modelling.TransformationType;
 import demetra.processing.ProcessingLog;
 import demetra.regarima.EasterSpec;
 import demetra.regarima.EasterSpec.Type;
+import demetra.regarima.MeanSpec;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.regarima.RegressionTestSpec;
@@ -156,12 +157,13 @@ class X13ModelBuilder implements IModelBuilder {
         model.setPreadjustment(fnSpec.getAdjust());
     }
 
-    private void initializeMean(ModelDescription model, Parameter mu) {
-        if (mu == null) {
+    private void initializeMean(ModelDescription model, MeanSpec mu) {
+        if (! mu.isUsed()) {
             model.setMean(false);
-        } else if (mu.isFixed()) {
+        } else if (Parameter.isFixed(mu.getCoefficient())) {
             int d = spec.getArima().getD(), bd = spec.getArima().getBd();
-            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu});
+            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu.getCoefficient()});
+            model.setMean(false);
         } else {
             model.setMean(true);
         }

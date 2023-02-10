@@ -29,7 +29,6 @@ public class AutoModelProto {
     public void fill(AutoModelSpec spec, RegArimaSpec.AutoModelSpec.Builder builder) {
         builder.setEnabled(spec.isEnabled())
                 .setBalanced(spec.isBalanced())
-                .setCheckmu(spec.isCheckMu())
                 .setAcceptdef(spec.isAcceptDefault())
                 .setMixed(spec.isMixed())
                 .setCancel(spec.getCancel())
@@ -52,7 +51,6 @@ public class AutoModelProto {
     public AutoModelSpec convert(RegArimaSpec.AutoModelSpec spec) {
         return AutoModelSpec.builder()
                 .enabled(spec.getEnabled())
-                .checkMu(spec.getCheckmu())
                 .acceptDefault(spec.getAcceptdef())
                 .balanced(spec.getBalanced())
                 .mixed(spec.getMixed())

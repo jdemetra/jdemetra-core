@@ -52,6 +52,7 @@ import demetra.timeseries.regression.UserTradingDays;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.CalendarSpec;
 import demetra.tramo.EasterSpec;
+import demetra.tramo.MeanSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramo.TradingDaysSpec;
 import demetra.tramo.TramoSpec;
@@ -151,12 +152,12 @@ class TramoModelBuilder implements IModelBuilder {
         model.setPreadjustment(fnSpec.getAdjust());
     }
 
-    private void initializeMean(ModelDescription model, Parameter mu) {
-        if (mu == null) {
+    private void initializeMean(ModelDescription model, MeanSpec mu) {
+        if (! mu.isUsed()) {
             model.setMean(false);
-        } else if (mu.isFixed()) {
+        } else if (Parameter.isFixed(mu.getCoefficient())) {
             int d = spec.getArima().getD(), bd = spec.getArima().getBd();
-            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu});
+            add(model, new TrendConstant(d, bd), "const", ComponentType.Undefined, new Parameter[]{mu.getCoefficient()});
             model.setMean(false);
         } else {
             model.setMean(true);

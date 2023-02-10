@@ -117,7 +117,7 @@ public final class TramoSeatsProtos {
       "s_boundary\030\005 \001(\001\022\033\n\023seas_boundary_at_pi\030" +
       "\006 \001(\001\022\027\n\017bias_correction\030\007 \001(\010\022\017\n\007nfcast" +
       "s\030\010 \001(\005\022\017\n\007nbcasts\030\t \001(\005\022-\n\talgorithm\030\n " +
-      "\001(\0162\032.tramoseats.SeatsAlgorithm\"\202\016\n\tTram" +
+      "\001(\0162\032.tramoseats.SeatsAlgorithm\"\226\016\n\tTram" +
       "oSpec\022.\n\005basic\030\001 \001(\0132\037.tramoseats.TramoS" +
       "pec.BasicSpec\0226\n\ttransform\030\002 \001(\0132#.tramo" +
       "seats.TramoSpec.TransformSpec\0222\n\007outlier" +
@@ -152,60 +152,61 @@ public final class TramoSeatsProtos {
       ".tramoseats.AutomaticTradingDays\022\r\n\005ptes" +
       "t\030\010 \001(\001\022\023\n\013auto_adjust\030\t \001(\010\022&\n\016tdcoeffi" +
       "cients\030\n \003(\0132\016.jd3.Parameter\022%\n\rlpcoeffi" +
-      "cient\030\013 \001(\0132\016.jd3.Parameter\032\267\002\n\016Regressi" +
-      "onSpec\022\034\n\004mean\030\001 \001(\0132\016.jd3.Parameter\0221\n\002" +
-      "td\030\002 \001(\0132%.tramoseats.TramoSpec.TradingD" +
-      "aysSpec\0220\n\006easter\030\003 \001(\0132 .tramoseats.Tra" +
-      "moSpec.EasterSpec\022$\n\010outliers\030\004 \003(\0132\022.mo" +
-      "delling.Outlier\022$\n\005users\030\005 \003(\0132\025.modelli" +
-      "ng.TsVariable\0226\n\rinterventions\030\006 \003(\0132\037.m" +
-      "odelling.InterventionVariable\022\036\n\005ramps\030\007" +
-      " \003(\0132\017.modelling.Ramp\032U\n\014EstimateSpec\022\037\n" +
-      "\004span\030\001 \001(\0132\021.jd3.TimeSelector\022\n\n\002ml\030\002 \001" +
-      "(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003ubp\030\004 \001(\001\"\347\001\n\014SeatsRe" +
-      "sults\022,\n\013seats_arima\030\001 \001(\0132\025.modelling.A" +
-      "rimaModelH\000\022.\n\014seats_sarima\030\002 \001(\0132\026.mode" +
-      "lling.SarimaModelH\000\022\014\n\004mean\030\003 \001(\010\0228\n\027can" +
-      "onical_decomposition\030\004 \001(\0132\027.modelling.U" +
-      "carimaModel\022(\n\013stochastics\030\005 \001(\0132\023.sa.Sa" +
-      "DecompositionB\007\n\005model\"\301\001\n\021TramoSeatsRes" +
-      "ults\022.\n\rpreprocessing\030\001 \001(\0132\027.regarima.R" +
-      "egArimaModel\022/\n\rdecomposition\030\002 \001(\0132\030.tr" +
-      "amoseats.SeatsResults\022\"\n\005final\030\003 \001(\0132\023.s" +
-      "a.SaDecomposition\022\'\n\016diagnostics_sa\030\005 \001(" +
-      "\0132\017.sa.Diagnostics\"\262\002\n\013TramoOutput\022\'\n\006re" +
-      "sult\030\001 \001(\0132\027.regarima.RegArimaModel\022.\n\017e" +
-      "stimation_spec\030\002 \001(\0132\025.tramoseats.TramoS" +
-      "pec\022*\n\013result_spec\030\003 \001(\0132\025.tramoseats.Tr" +
-      "amoSpec\022 \n\003log\030\004 \001(\0132\023.jd3.ProcessingLog" +
-      "s\0225\n\007details\030\005 \003(\0132$.tramoseats.TramoOut" +
-      "put.DetailsEntry\032E\n\014DetailsEntry\022\013\n\003key\030" +
-      "\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd3.ProcessingDet" +
-      "ail:\0028\001\"\270\002\n\020TramoSeatsOutput\022-\n\006result\030\001" +
-      " \001(\0132\035.tramoseats.TramoSeatsResults\022)\n\017e" +
-      "stimation_spec\030\002 \001(\0132\020.tramoseats.Spec\022%" +
-      "\n\013result_spec\030\003 \001(\0132\020.tramoseats.Spec\022 \n" +
-      "\003log\030\004 \001(\0132\023.jd3.ProcessingLogs\022:\n\007detai" +
-      "ls\030\005 \003(\0132).tramoseats.TramoSeatsOutput.D" +
-      "etailsEntry\032E\n\014DetailsEntry\022\013\n\003key\030\001 \001(\t" +
-      "\022$\n\005value\030\002 \001(\0132\025.jd3.ProcessingDetail:\002" +
-      "8\001\"\206\001\n\004Spec\022$\n\005tramo\030\001 \001(\0132\025.tramoseats." +
-      "TramoSpec\022,\n\005seats\030\002 \001(\0132\035.tramoseats.De" +
-      "compositionSpec\022*\n\014benchmarking\030\003 \001(\0132\024." +
-      "sa.BenchmarkingSpec*S\n\022SeatsApproximatio" +
-      "n\022\022\n\016SEATS_APP_NONE\020\000\022\024\n\020SEATS_APP_LEGAC" +
-      "Y\020\001\022\023\n\017SEATS_APP_NOISY\020\002*D\n\016SeatsAlgorit" +
-      "hm\022\024\n\020SEATS_ALG_BURMAN\020\000\022\034\n\030SEATS_ALG_KA" +
-      "LMANSMOOTHER\020\001*m\n\024AutomaticTradingDays\022\016" +
-      "\n\nTD_AUTO_NO\020\000\022\021\n\rTD_AUTO_FTEST\020\001\022\020\n\014TD_" +
-      "AUTO_WALD\020\002\022\017\n\013TD_AUTO_AIC\020\003\022\017\n\013TD_AUTO_" +
-      "BIC\020\004*N\n\017TradingDaysTest\022\016\n\nTD_TEST_NO\020\000" +
-      "\022\026\n\022TD_TEST_SEPARATE_T\020\001\022\023\n\017TD_TEST_JOIN" +
-      "T_F\020\002*n\n\nEasterType\022\021\n\rEASTER_UNUSED\020\000\022\023" +
-      "\n\017EASTER_STANDARD\020\001\022\030\n\024EASTER_INCLUDEEAS" +
-      "TER\020\002\022\036\n\032EASTER_INCLUDEEASTERMONDAY\020\003B4\n" +
-      "\036demetra.tramoseats.io.protobufB\020TramoSe" +
-      "atsProtosP\001P\000P\001P\002P\003b\006proto3"
+      "cient\030\013 \001(\0132\016.jd3.Parameter\032\313\002\n\016Regressi" +
+      "onSpec\022\034\n\004mean\030\001 \001(\0132\016.jd3.Parameter\022\022\n\n" +
+      "check_mean\030\002 \001(\010\0221\n\002td\030\003 \001(\0132%.tramoseat" +
+      "s.TramoSpec.TradingDaysSpec\0220\n\006easter\030\004 " +
+      "\001(\0132 .tramoseats.TramoSpec.EasterSpec\022$\n" +
+      "\010outliers\030\005 \003(\0132\022.modelling.Outlier\022$\n\005u" +
+      "sers\030\006 \003(\0132\025.modelling.TsVariable\0226\n\rint" +
+      "erventions\030\007 \003(\0132\037.modelling.Interventio" +
+      "nVariable\022\036\n\005ramps\030\010 \003(\0132\017.modelling.Ram" +
+      "p\032U\n\014EstimateSpec\022\037\n\004span\030\001 \001(\0132\021.jd3.Ti" +
+      "meSelector\022\n\n\002ml\030\002 \001(\010\022\013\n\003tol\030\003 \001(\001\022\013\n\003u" +
+      "bp\030\004 \001(\001\"\347\001\n\014SeatsResults\022,\n\013seats_arima" +
+      "\030\001 \001(\0132\025.modelling.ArimaModelH\000\022.\n\014seats" +
+      "_sarima\030\002 \001(\0132\026.modelling.SarimaModelH\000\022" +
+      "\014\n\004mean\030\003 \001(\010\0228\n\027canonical_decomposition" +
+      "\030\004 \001(\0132\027.modelling.UcarimaModel\022(\n\013stoch" +
+      "astics\030\005 \001(\0132\023.sa.SaDecompositionB\007\n\005mod" +
+      "el\"\301\001\n\021TramoSeatsResults\022.\n\rpreprocessin" +
+      "g\030\001 \001(\0132\027.regarima.RegArimaModel\022/\n\rdeco" +
+      "mposition\030\002 \001(\0132\030.tramoseats.SeatsResult" +
+      "s\022\"\n\005final\030\003 \001(\0132\023.sa.SaDecomposition\022\'\n" +
+      "\016diagnostics_sa\030\005 \001(\0132\017.sa.Diagnostics\"\262" +
+      "\002\n\013TramoOutput\022\'\n\006result\030\001 \001(\0132\027.regarim" +
+      "a.RegArimaModel\022.\n\017estimation_spec\030\002 \001(\013" +
+      "2\025.tramoseats.TramoSpec\022*\n\013result_spec\030\003" +
+      " \001(\0132\025.tramoseats.TramoSpec\022 \n\003log\030\004 \001(\013" +
+      "2\023.jd3.ProcessingLogs\0225\n\007details\030\005 \003(\0132$" +
+      ".tramoseats.TramoOutput.DetailsEntry\032E\n\014" +
+      "DetailsEntry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\013" +
+      "2\025.jd3.ProcessingDetail:\0028\001\"\270\002\n\020TramoSea" +
+      "tsOutput\022-\n\006result\030\001 \001(\0132\035.tramoseats.Tr" +
+      "amoSeatsResults\022)\n\017estimation_spec\030\002 \001(\013" +
+      "2\020.tramoseats.Spec\022%\n\013result_spec\030\003 \001(\0132" +
+      "\020.tramoseats.Spec\022 \n\003log\030\004 \001(\0132\023.jd3.Pro" +
+      "cessingLogs\022:\n\007details\030\005 \003(\0132).tramoseat" +
+      "s.TramoSeatsOutput.DetailsEntry\032E\n\014Detai" +
+      "lsEntry\022\013\n\003key\030\001 \001(\t\022$\n\005value\030\002 \001(\0132\025.jd" +
+      "3.ProcessingDetail:\0028\001\"\206\001\n\004Spec\022$\n\005tramo" +
+      "\030\001 \001(\0132\025.tramoseats.TramoSpec\022,\n\005seats\030\002" +
+      " \001(\0132\035.tramoseats.DecompositionSpec\022*\n\014b" +
+      "enchmarking\030\003 \001(\0132\024.sa.BenchmarkingSpec*" +
+      "S\n\022SeatsApproximation\022\022\n\016SEATS_APP_NONE\020" +
+      "\000\022\024\n\020SEATS_APP_LEGACY\020\001\022\023\n\017SEATS_APP_NOI" +
+      "SY\020\002*D\n\016SeatsAlgorithm\022\024\n\020SEATS_ALG_BURM" +
+      "AN\020\000\022\034\n\030SEATS_ALG_KALMANSMOOTHER\020\001*m\n\024Au" +
+      "tomaticTradingDays\022\016\n\nTD_AUTO_NO\020\000\022\021\n\rTD" +
+      "_AUTO_FTEST\020\001\022\020\n\014TD_AUTO_WALD\020\002\022\017\n\013TD_AU" +
+      "TO_AIC\020\003\022\017\n\013TD_AUTO_BIC\020\004*N\n\017TradingDays" +
+      "Test\022\016\n\nTD_TEST_NO\020\000\022\026\n\022TD_TEST_SEPARATE" +
+      "_T\020\001\022\023\n\017TD_TEST_JOINT_F\020\002*n\n\nEasterType\022" +
+      "\021\n\rEASTER_UNUSED\020\000\022\023\n\017EASTER_STANDARD\020\001\022" +
+      "\030\n\024EASTER_INCLUDEEASTER\020\002\022\036\n\032EASTER_INCL" +
+      "UDEEASTERMONDAY\020\003B4\n\036demetra.tramoseats." +
+      "io.protobufB\020TramoSeatsProtosP\001P\000P\001P\002P\003b" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -268,7 +269,7 @@ public final class TramoSeatsProtos {
     internal_static_tramoseats_TramoSpec_RegressionSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_tramoseats_TramoSpec_RegressionSpec_descriptor,
-        new java.lang.String[] { "Mean", "Td", "Easter", "Outliers", "Users", "Interventions", "Ramps", });
+        new java.lang.String[] { "Mean", "CheckMean", "Td", "Easter", "Outliers", "Users", "Interventions", "Ramps", });
     internal_static_tramoseats_TramoSpec_EstimateSpec_descriptor =
       internal_static_tramoseats_TramoSpec_descriptor.getNestedTypes().get(7);
     internal_static_tramoseats_TramoSpec_EstimateSpec_fieldAccessorTable = new

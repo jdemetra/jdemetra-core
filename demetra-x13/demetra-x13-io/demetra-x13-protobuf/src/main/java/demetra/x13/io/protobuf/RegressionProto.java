@@ -19,6 +19,7 @@ package demetra.x13.io.protobuf;
 import demetra.data.Parameter;
 import demetra.modelling.io.protobuf.ModellingProtos;
 import demetra.modelling.io.protobuf.ModellingProtosUtility;
+import demetra.regarima.MeanSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.timeseries.regression.AdditiveOutlier;
 import demetra.timeseries.regression.IOutlier;
@@ -40,8 +41,19 @@ import java.util.List;
 @lombok.experimental.UtilityClass
 public class RegressionProto {
     public RegressionSpec convert(RegArimaSpec.RegressionSpec spec, double tc) {
+
+        MeanSpec mean = MeanSpec.none();
+        if (spec.hasMean()) {
+            boolean check = spec.getCheckMean();
+            mean=MeanSpec.builder()
+                    .trendConstant(true)
+                    .test(check)
+                    .coefficient(ToolkitProtosUtility.convert(spec.getMean()))
+                    .build();
+        }
+
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(ToolkitProtosUtility.convert(spec.getMean()))
+                .mean(mean)
                 .easter(EasterProto.convert(spec.getEaster()))
                 .tradingDays(TradingDaysProto.convert(spec.getTd()));
         int n = spec.getOutliersCount();
@@ -70,9 +82,14 @@ public class RegressionProto {
 
     public RegArimaSpec.RegressionSpec convert(RegressionSpec spec) {
         RegArimaSpec.RegressionSpec.Builder builder = RegArimaSpec.RegressionSpec.newBuilder()
-                .setMean(ToolkitProtosUtility.convert(spec.getMean()))
                 .setEaster(EasterProto.convert(spec.getEaster()))
                 .setTd(TradingDaysProto.convert(spec.getTradingDays()));
+        MeanSpec mean = spec.getMean();
+        if (mean.isUsed()) {
+            builder.setMean(ToolkitProtosUtility.convert(mean.getCoefficient()))
+                    .setCheckMean(mean.isTest());
+        }else
+            builder.clearMean();
         
         List<Variable<IOutlier>> outliers = spec.getOutliers();
         for (Variable<IOutlier> outlier : outliers) {
