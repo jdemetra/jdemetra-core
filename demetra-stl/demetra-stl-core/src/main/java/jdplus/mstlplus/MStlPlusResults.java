@@ -20,11 +20,8 @@ import demetra.information.GenericExplorable;
 import demetra.processing.HasLog;
 import demetra.processing.ProcessingLog;
 import demetra.sa.SeriesDecomposition;
-import jdplus.regsarima.regular.RegSarimaModel;
-import jdplus.sa.SaBenchmarkingResults;
-import jdplus.sa.modelling.HasRegSarimaPreprocessing;
+import jdplus.highfreq.regarima.HighFreqRegArimaModel;
 import jdplus.stl.MStlResults;
-import jdplus.stl.StlResults;
 
 /**
  *
@@ -34,10 +31,9 @@ import jdplus.stl.StlResults;
 @lombok.Builder
 public class MStlPlusResults implements GenericExplorable, HasLog {
 
-    private RegSarimaModel preprocessing;
+    private HighFreqRegArimaModel preprocessing;
     private MStlResults decomposition;
     private SeriesDecomposition finals;
-    private SaBenchmarkingResults benchmarking;
     private MStlPlusDiagnostics diagnostics;
     private ProcessingLog log;
     

@@ -17,8 +17,17 @@
 package jdplus.stl;
 
 import demetra.data.DoubleSeq;
+import demetra.data.Doubles;
+import demetra.data.DoublesMath;
 import demetra.information.GenericExplorable;
-import java.util.List;
+import demetra.modelling.highfreq.DataCleaning;
+import demetra.sa.ComponentType;
+import demetra.sa.DecompositionMode;
+import demetra.sa.SeriesDecomposition;
+import demetra.timeseries.TsData;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
+import java.util.Map;
 
 /**
  *
@@ -28,13 +37,45 @@ import java.util.List;
 @lombok.Builder(builderClassName = "Builder")
 public class MStlResults implements GenericExplorable {
 
+    boolean multiplicative;
     DoubleSeq series;
     DoubleSeq sa;
     DoubleSeq trend;
-    DoubleSeq seasonal;
     @lombok.Singular
-    List<DoubleSeq> seasons;
+    Map<Integer, DoubleSeq> seasons;
     DoubleSeq irregular;
     DoubleSeq fit;
     DoubleSeq weights;
+    
+    public DoubleSeq seasonal(){
+        if (seasons.isEmpty())
+            return null;
+        DoubleSeq all=null;
+        for (DoubleSeq s :seasons.values()){
+            all=multiplicative ? DoublesMath.multiply(all, s) : DoublesMath.add(all, s);
+        }
+        return all;            
+    }
+    
+    public SeriesDecomposition asDecomposition(TsPeriod start){
+        return SeriesDecomposition.builder(multiplicative ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
+                .add(TsData.of(start, series), ComponentType.Series)
+                .add(TsData.of(start, trend), ComponentType.Trend)
+                .add(TsData.of(start, sa), ComponentType.SeasonallyAdjusted)
+                .add(TsData.of(start, irregular), ComponentType.Irregular)
+                .add(TsData.of(start, seasonal()), ComponentType.Seasonal)
+                .build();
+    }
+
+    public SeriesDecomposition asDecomposition(TsDomain domain, DataCleaning cleaning){
+        return SeriesDecomposition.builder(multiplicative ? DecompositionMode.Multiplicative : DecompositionMode.Additive)
+                .add(cleaning.expand(domain, series), ComponentType.Series)
+                .add(cleaning.expand(domain, trend), ComponentType.Trend)
+                .add(cleaning.expand(domain, sa), ComponentType.SeasonallyAdjusted)
+                .add(cleaning.expand(domain, irregular), ComponentType.Irregular)
+                .add(cleaning.expand(domain, seasonal()), ComponentType.Seasonal)
+                .build();
+    }
+    
+    
 }

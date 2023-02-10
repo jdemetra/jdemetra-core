@@ -55,4 +55,5 @@ public class StlDictionaries {
             .dictionary(new PrefixedDictionary(SaDictionaries.DIAGNOSTICS, SaDictionaries.GENERICTRADINGDAYS))
             .build();
     
+    public static final String S = "seas", SY="sy", SW="sw";
 }

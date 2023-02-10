@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>demetra-sa-core</artifactId>
+            <artifactId>demetra-highfreq-core</artifactId>
         </dependency>
 
         <!-- test only -->

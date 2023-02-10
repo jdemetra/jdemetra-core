@@ -16,28 +16,23 @@
  */
 package jdplus.mstlplus;
 
-import demetra.modelling.ComponentInformation;
-import demetra.modelling.regular.SeriesSpec;
+import demetra.modelling.highfreq.SeriesSpec;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.SeriesDecomposition;
 import demetra.stl.MStlPlusSpec;
 import demetra.stl.MStlSpec;
-import demetra.stl.StlPlusSpec;
-import demetra.stl.StlSpec;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 import demetra.timeseries.regression.ModellingUtility;
-import jdplus.regsarima.regular.RegSarimaModel;
+import jdplus.highfreq.extendedairline.ExtendedAirlineKernel;
+import jdplus.highfreq.regarima.HighFreqRegArimaModel;
 import jdplus.sa.CholetteProcessor;
 import jdplus.sa.PreliminaryChecks;
-import jdplus.sa.SaBenchmarkingResults;
 import jdplus.sa.modelling.RegArimaDecomposer;
 import jdplus.sa.modelling.TwoStepsDecomposition;
-import jdplus.sa.regarima.FastKernel;
 import jdplus.stl.MStlKernel;
-import jdplus.stl.StlKernel;
-import jdplus.stl.StlResults;
+import jdplus.stl.MStlResults;
 
 @lombok.Value
 public class MStlPlusKernel {
@@ -46,23 +41,22 @@ public class MStlPlusKernel {
 
         SeriesSpec series = spec.getPreprocessing().getSeries();
         return (s, logs) -> {
-            TsData sc = s.select(series.getSpan());
-            if (series.isPreliminaryCheck()) {
-                jdplus.sa.PreliminaryChecks.testSeries(sc);
+            if (!spec.getPreprocessing().isEnabled()) {
+                return s.select(series.getSpan());
+            } else {
+                return s;
             }
-            return s;
         };
     }
 
     private PreliminaryChecks.Tool preliminary;
-    private FastKernel preprocessor;
+    private ExtendedAirlineKernel preprocessor;
     private MStlSpec spec;
-    private CholetteProcessor cholette;
 
     public static MStlPlusKernel of(MStlPlusSpec spec, ModellingContext context) {
         PreliminaryChecks.Tool check = of(spec);
-        FastKernel preprocessor = FastKernel.of(spec.getPreprocessing(), context);
-        return new MStlPlusKernel(check, preprocessor, spec.getStl(), CholetteProcessor.of(spec.getBenchmarking()));
+        ExtendedAirlineKernel preprocessor = ExtendedAirlineKernel.of(spec.getPreprocessing(), context);
+        return new MStlPlusKernel(check, preprocessor, spec.getStl());
     }
 
     public MStlPlusResults process(TsData s, ProcessingLog log) {
@@ -74,50 +68,44 @@ public class MStlPlusKernel {
                 // Step 0. Preliminary checks
                 TsData sc = preliminary.check(s, log);
                 MStlKernel stl = MStlKernel.of(spec);
-//                MStlResults rslt = stl.process(sc);
-//                // Step 5. Benchmarking
-//                SaBenchmarkingResults bench = null;
+                MStlResults rslt = stl.process(sc.getValues());
+
 //                // Step 6. Diagnostics
 //                MStlPlusDiagnostics diagnostics = MStlPlusDiagnostics.of(null, rslt, rslt.asDecomposition());
 //
-//                return MStlPlusResults.builder()
-//                        .preprocessing(null)
-//                        .decomposition(rslt)
-//                        .finals(rslt.asDecomposition())
-//                        .benchmarking(bench)
-//                        .diagnostics(diagnostics)
-//                        .log(log)
-//                        .build();
-                return null;
+                return MStlPlusResults.builder()
+                        .preprocessing(null)
+                        .decomposition(rslt)
+                        .finals(rslt.asDecomposition(sc.getStart()))
+                        .log(log)
+                        .build();
             } else {
                 // Step 0. Preliminary checks
-//                TsData sc = preliminary.check(s, log);
+                TsData sc = preliminary.check(s, log);
 //                // Step 1. RegArima
-//                RegSarimaModel preprocessing = preprocessor.process(sc, log);
+                HighFreqRegArimaModel preprocessing = preprocessor.process(sc, log);
 //                // Step 2. Link between regarima and stl
-//                StlSpec cspec = spec;
-//                boolean mul = preprocessing.getDescription().isLogTransformation();
-//                if (cspec == null) {
-//                    cspec = StlSpec.createDefault(s.getAnnualFrequency(), mul, true);
-//                } else if (cspec.isMultiplicative() != mul) {
-//                    cspec = spec.toBuilder().multiplicative(mul).build();
-//                }
-//                StlKernel stl = StlKernel.of(cspec);
-//
-//                TsData det = preprocessing.deterministicEffect(s.getDomain());
-//                TsData user = RegArimaDecomposer.deterministicEffect(preprocessing, s.getDomain(), ComponentType.Series, true, v -> ModellingUtility.isUser(v));
-//                det = TsData.subtract(det, user);
-//                TsData cseries;
-//                if (mul) {
-//                    det = preprocessing.backTransform(det, true);
-//                    cseries = TsData.divide(s, det);
-//                } else {
-//                    cseries = TsData.subtract(s, det);
-//                }
+                MStlSpec cspec = spec;
+                boolean mul = preprocessing.getDescription().isLogTransformation();
+                if (cspec.isMultiplicative() != mul) {
+                    cspec = spec.toBuilder().multiplicative(mul).build();
+                }
+                MStlKernel stl = MStlKernel.of(cspec);
+                TsData det = preprocessing.deterministicEffect(s.getDomain());
+                TsData user = RegArimaDecomposer.deterministicEffect(preprocessing, s.getDomain(), ComponentType.Series, true, v -> ModellingUtility.isUser(v));
+                det = TsData.subtract(det, user);
+                TsData cseries;
+                if (mul) {
+                    det = preprocessing.backTransform(det, true);
+                    cseries = TsData.divide(s, det);
+                } else {
+                    cseries = TsData.subtract(s, det);
+                }
+                MStlResults rslt = stl.process(cseries.getValues());
 //
 //                StlResults rslt = stl.process(cseries);
 //                // Step 4. Final decomposition
-//                SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, rslt.asDecomposition());
+                SeriesDecomposition finals = TwoStepsDecomposition.merge(preprocessing, rslt.asDecomposition(sc.getStart()));
 //                // Step 5. Benchmarking
 //                SaBenchmarkingResults bench = null;
 //                if (cholette != null) {
@@ -127,15 +115,12 @@ public class MStlPlusKernel {
 //                // Step 6. Diagnostics
 //                MStlPlusDiagnostics diagnostics = MStlPlusDiagnostics.of(preprocessing, rslt, finals);
 //
-//                return MStlPlusResults.builder()
-//                        .preprocessing(preprocessing)
-//                        .decomposition(rslt)
-//                        .finals(finals)
-//                        .benchmarking(bench)
-//                        .diagnostics(diagnostics)
-//                        .log(log)
-//                        .build();
-                return null;
+                return MStlPlusResults.builder()
+                        .preprocessing(preprocessing)
+                        .decomposition(rslt)
+                        .finals(finals)
+                        .log(log)
+                        .build();
             }
         } catch (Exception err) {
             log.error(err);

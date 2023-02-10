@@ -36,7 +36,8 @@ public enum DataCleaning {
     public static DataCleaning of(TsData data) {
         TsPeriod start = data.getStart();
         if (!start.getUnit().equals(TsUnit.DAY)) {
-            throw new java.lang.UnsupportedOperationException();
+            return DataCleaning.NONE;
+//            throw new java.lang.UnsupportedOperationException();
         }
         int pos = start.start().getDayOfWeek().getValue();
         int n = data.length();

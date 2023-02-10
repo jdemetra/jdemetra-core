@@ -19,6 +19,8 @@ package demetra.stl;
 import demetra.data.WeightFunction;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
+import demetra.timeseries.TsUnit;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -35,10 +37,8 @@ public class MStlSpec implements ProcSpecification {
     private List<SeasonalSpec> seasonalSpecs;
     private int innerLoopsCount, outerLoopsCount;
     private double robustWeightThreshold;
-    
 
     private WeightFunction robustWeightFunction;
-    
 
     public static final double RWTHRESHOLD = 0.001;
     public static final WeightFunction RWFUNCTION = WeightFunction.BIWEIGHT;
@@ -70,6 +70,31 @@ public class MStlSpec implements ProcSpecification {
      */
     public static MStlSpec createDefault(int period, boolean robust) {
         return createDefault(period, StlSpec.DEF_SWINDOW, robust);
+    }
+
+    public static MStlSpec createDefault(int[] periods, boolean robust) {
+        Builder builder = robust ? robustBuilder() : builder();
+        for (int i = 0; i < periods.length; ++i) {
+            builder.seasonalSpec(SeasonalSpec.createDefault(periods[i], true));
+        }
+        int p = periods[periods.length - 1];
+        if (p % 2 == 0) {
+            ++p;
+        }
+        return builder.trendSpec(LoessSpec.defaultTrend(p, true)).build();
+    }
+
+    public static MStlSpec createDefault(TsUnit unit, boolean robust) {
+        int freq = unit.getAnnualFrequency();
+        if (freq > 0) {
+            return MStlSpec.createDefault(freq, true);
+        } else if (unit.equals(TsUnit.WEEK)) {
+            return MStlSpec.createDefault(52, true);
+        } else if (unit.equals(TsUnit.DAY)) {
+            return MStlSpec.createDefault(new int[]{7, 365}, true);
+        } else {
+            throw new UnsupportedOperationException("Not supported yet."); 
+        }
     }
 
     /**

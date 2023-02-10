@@ -19,6 +19,7 @@ package jdplus.mstlplus;
 import demetra.processing.ProcessingLog;
 import demetra.stl.MStlPlusSpec;
 import demetra.timeseries.AbstractTsDocument;
+import demetra.timeseries.Ts;
 import demetra.timeseries.TsData;
 import demetra.timeseries.regression.ModellingContext;
 
@@ -27,22 +28,52 @@ import demetra.timeseries.regression.ModellingContext;
  * @author palatej
  */
 public class MStlPlusDocument extends AbstractTsDocument<MStlPlusSpec, MStlPlusResults> {
-
+    
     private final ModellingContext context;
-
+    
     public MStlPlusDocument() {
-        super(MStlPlusSpec.FULL);
+        super(MStlPlusSpec.DEFAULT);
         context = ModellingContext.getActiveContext();
     }
-
+    
     public MStlPlusDocument(ModellingContext context) {
-        super(MStlPlusSpec.FULL);
+        super(MStlPlusSpec.DEFAULT);
         this.context = context;
+    }
+    
+     @Override
+    public void set(MStlPlusSpec spec, Ts s) {
+        if (s != null) {
+            super.set(spec.withPeriod(s.getData().getTsUnit()), s);
+        } else {
+            super.set(spec, s);
+        }
+    }
+
+    @Override
+    public void set(MStlPlusSpec spec) {
+        Ts s = getInput();
+        if (s != null) {
+            super.set(spec.withPeriod(s.getData().getTsUnit()));
+        } else {
+            super.set(spec);
+        }
+    }
+
+    @Override
+    public void set(Ts s) {
+        if (s == null) {
+            set(s);
+        } else {
+            MStlPlusSpec spec = getSpecification();
+            super.set(spec.withPeriod(s.getData().getTsUnit()), s);
+        }
     }
 
     @Override
     protected MStlPlusResults internalProcess(MStlPlusSpec spec, TsData data) {
+        // modify the spec and prepare data according to the time series
         return MStlPlusKernel.of(spec, context).process(data, ProcessingLog.dummy());
     }
-
+    
 }

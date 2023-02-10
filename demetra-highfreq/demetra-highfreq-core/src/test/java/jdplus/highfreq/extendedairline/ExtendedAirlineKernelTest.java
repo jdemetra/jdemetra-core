@@ -72,7 +72,7 @@ public class ExtendedAirlineKernelTest {
                                         .build())
                         .build())
                 .build();
-        ExtendedAirlineKernel kernel=new ExtendedAirlineKernel(spec, context);
+        ExtendedAirlineKernel kernel=ExtendedAirlineKernel.of(spec, context);
         HighFreqRegArimaModel rslt = kernel.process(EDF, ProcessingLog.dummy());
         assertTrue(rslt != null);
         Map<String, Class> dictionary = rslt.getDictionary();

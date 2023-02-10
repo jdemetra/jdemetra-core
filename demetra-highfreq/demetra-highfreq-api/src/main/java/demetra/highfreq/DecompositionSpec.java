@@ -16,6 +16,7 @@
  */
 package demetra.highfreq;
 
+import demetra.timeseries.TsUnit;
 import nbbrd.design.Development;
 
 /**
@@ -24,11 +25,11 @@ import nbbrd.design.Development;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  builderClassName = "Builder")
+@lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class DecompositionSpec {
-    
-    public static final boolean DEF_ITERATIVE=true, DEF_NOISY=true, DEF_STDEV=false, DEF_BIAS=true;
-    
+
+    public static final boolean DEF_ITERATIVE = true, DEF_NOISY = true, DEF_STDEV = false, DEF_BIAS = true;
+
     @lombok.NonNull
     private double[] periodicities;
     private boolean iterative;
@@ -37,18 +38,41 @@ public class DecompositionSpec {
     private int backcastsCount, forecastsCount;
     private boolean biasCorrection;
     private boolean adjustToInt;
-    
-    public static Builder builder(){
+
+    public static Builder builder() {
         return new Builder()
                 .iterative(DEF_ITERATIVE)
                 .noisy(DEF_NOISY)
                 .stdev(DEF_STDEV)
                 .biasCorrection(DEF_BIAS);
-        
+
     }
-    
-    public static final DecompositionSpec DEFAULT=builder().periodicities(new double[]{7}).build();
-    
-    
-    
+
+    public static DecompositionSpec createDefault(TsUnit unit) {
+        if (unit.equals(TsUnit.UNDEFINED)) {
+            return null;
+        }
+        Builder builder = builder();
+        int freq = unit.getAnnualFrequency();
+        if (freq > 0) {
+            return builder
+                    .periodicities(new double[]{freq})
+                    .adjustToInt(true)
+                    .build();
+        } else if (unit.equals(TsUnit.WEEK)) {
+            return builder
+                    .periodicities(new double[]{365.25 / 7})
+                    .adjustToInt(false)
+                    .build();
+        } else if (unit.equals(TsUnit.DAY)) {
+            return builder
+                    .periodicities(new double[]{7, 365.25})
+                    .adjustToInt(true)
+                    .build();
+        } else {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
 }

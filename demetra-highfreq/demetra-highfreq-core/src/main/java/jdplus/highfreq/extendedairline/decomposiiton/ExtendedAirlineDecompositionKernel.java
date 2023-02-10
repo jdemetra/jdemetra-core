@@ -23,6 +23,7 @@ import demetra.data.DoubleSeq;
 import demetra.highfreq.ExtendedAirlineDecompositionSpec;
 import demetra.highfreq.ExtendedAirlineDictionaries;
 import demetra.modelling.ComponentInformation;
+import demetra.modelling.highfreq.SeriesSpec;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
 import demetra.sa.DecompositionMode;
@@ -31,6 +32,7 @@ import demetra.timeseries.TsData;
 import demetra.timeseries.TsDomain;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.ModellingContext;
+import jdplus.sa.PreliminaryChecks;
 import jdplus.sa.modelling.TwoStepsDecomposition;
 
 /**
@@ -41,11 +43,24 @@ public class ExtendedAirlineDecompositionKernel {
 
     public static final String EA = "extended airline";
 
+    private static PreliminaryChecks.Tool of(ExtendedAirlineDecompositionSpec spec) {
+
+        SeriesSpec series = spec.getPreprocessing().getSeries();
+        return (s, logs) -> {
+            // TODO
+            //TsData sc = s.select(series.getSpan());
+            //
+            return s;
+        };
+    }
+
+    PreliminaryChecks.Tool check;
     private final ExtendedAirlineKernel preprocessor;
     private final DecompositionKernel decomposer;
 
     public ExtendedAirlineDecompositionKernel(ExtendedAirlineDecompositionSpec spec, ModellingContext context) {
-        this.preprocessor = new ExtendedAirlineKernel(spec.getPreprocessing(), context);
+        check = of(spec);
+        this.preprocessor = ExtendedAirlineKernel.of(spec.getPreprocessing(), context);
         this.decomposer = new DecompositionKernel(spec.getDecomposition());
     }
 

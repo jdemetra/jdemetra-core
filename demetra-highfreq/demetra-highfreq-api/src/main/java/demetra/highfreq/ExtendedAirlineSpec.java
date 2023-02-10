@@ -19,6 +19,7 @@ package demetra.highfreq;
 import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
 import demetra.data.Parameter;
+import demetra.timeseries.TsUnit;
 import nbbrd.design.Development;
 
 /**
@@ -37,24 +38,25 @@ public class ExtendedAirlineSpec {
     private Parameter phi, theta;
     private Parameter[] stheta;
     private boolean adjustToInt;
-    
-    public static class Builder{
-        
-        public Builder periodicities(double[] p){
-            this.periodicities=p;
-            this.stheta=Parameter.make(p.length);
+
+    public static class Builder {
+
+        public Builder periodicities(double[] p) {
+            this.periodicities = p;
+            this.stheta = Parameter.make(p.length);
             return this;
         }
-        
-        public Builder stheta(Parameter[] p){
-            if (periodicities == null || p.length != periodicities.length)
+
+        public Builder stheta(Parameter[] p) {
+            if (periodicities == null || p.length != periodicities.length) {
                 throw new IllegalArgumentException();
-            this.stheta=p;
+            }
+            this.stheta = p;
             return this;
         }
-        
+
     }
-    
+
     public boolean isValid() {
         if (phi != null && theta != null) {
             return false;
@@ -136,6 +138,23 @@ public class ExtendedAirlineSpec {
         }
         np += Parameter.freeParametersCount(stheta);
         return np;
+    }
+
+    public static ExtendedAirlineSpec createDefault(TsUnit unit) {
+        int freq = unit.getAnnualFrequency();
+        if (freq > 0) {
+            return ExtendedAirlineSpec
+                    .builder()
+                    .periodicities(new double[]{freq})
+                    .adjustToInt(true)
+                    .build();
+        } else if (unit.equals(TsUnit.WEEK)) {
+            return ExtendedAirlineSpec.DEFAULT_W;
+        } else if (unit.equals(TsUnit.DAY)) {
+            return ExtendedAirlineSpec.DEFAULT_WD;
+        } else {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
     public ExtendedAirlineSpec withFreeParameters(DoubleSeq p) {

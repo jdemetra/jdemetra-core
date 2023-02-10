@@ -63,7 +63,7 @@ public class TwoStepsDecomposition {
         int n0 = 0, n1 = nb, n2 = nb + domain.getLength(), n3 = n2 + nf;
 
         TsDomain cdomain = domain.extend(nb, nf);
-        TsPeriod start = domain.getStartPeriod(), bstart = cdomain.getStartPeriod(), fstart = domain.getEndPeriod();
+//        TsPeriod start = domain.getStartPeriod(), bstart = cdomain.getStartPeriod(), fstart = domain.getEndPeriod();
 
         TsData detT = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.Trend, false);
         TsData detS = RegArimaDecomposer.deterministicEffect(model, cdomain, ComponentType.Seasonal, false);

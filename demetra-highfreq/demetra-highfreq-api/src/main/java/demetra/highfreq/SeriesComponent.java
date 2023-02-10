@@ -17,6 +17,7 @@
 package demetra.highfreq;
 
 import demetra.data.DoubleSeq;
+import demetra.sa.ComponentType;
 
 /**
  *
@@ -28,10 +29,12 @@ public class SeriesComponent {
     String name;
     DoubleSeq data;
     DoubleSeq stde;
+    ComponentType type;
     
-    public SeriesComponent(String name, DoubleSeq data){
+    public SeriesComponent(String name, DoubleSeq data, ComponentType type){
         this.name=name;
         this.data=data;
         this.stde=DoubleSeq.empty();
+        this.type=type;
     }
 }

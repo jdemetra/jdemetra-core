@@ -20,6 +20,7 @@ import demetra.modelling.ComponentInformation;
 import demetra.modelling.regular.SeriesSpec;
 import demetra.processing.ProcessingLog;
 import demetra.sa.ComponentType;
+import demetra.sa.SaVariable;
 import demetra.sa.SeriesDecomposition;
 import demetra.stl.StlPlusSpec;
 import demetra.stl.StlSpec;
@@ -47,7 +48,11 @@ public class StlPlusKernel {
             if (series.isPreliminaryCheck()) {
                 jdplus.sa.PreliminaryChecks.testSeries(sc);
             }
-            return s;
+            if (!spec.getPreprocessing().isEnabled()) {
+                return s.select(series.getSpan());
+            } else {
+                return s;
+            }
         };
     }
 
@@ -101,7 +106,7 @@ public class StlPlusKernel {
                 }
                 StlKernel stl = StlKernel.of(cspec);
 
-                TsData det = preprocessing.deterministicEffect(s.getDomain());
+                TsData det = preprocessing.deterministicEffect(s.getDomain(), v -> !SaVariable.isRegressionEffect(v, ComponentType.Undefined));
                 TsData user = RegArimaDecomposer.deterministicEffect(preprocessing, s.getDomain(), ComponentType.Series, true, v -> ModellingUtility.isUser(v));
                 det = TsData.subtract(det, user);
                 TsData cseries;

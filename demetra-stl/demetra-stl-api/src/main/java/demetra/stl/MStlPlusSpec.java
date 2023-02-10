@@ -1,13 +1,13 @@
 /*
  * Copyright 2023 National Bank of Belgium
- * 
+ *
  * Licensed under the EUPL, Version 1.2 or – as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * https://joinup.ec.europa.eu/software/page/eupl
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,11 +16,13 @@
  */
 package demetra.stl;
 
-import demetra.modelling.regular.ModellingSpec;
+import demetra.highfreq.ExtendedAirlineModellingSpec;
+import demetra.highfreq.ExtendedAirlineSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.sa.SaSpecification;
 import static demetra.sa.SaSpecification.FAMILY;
 import demetra.sa.benchmarking.SaBenchmarkingSpec;
+import demetra.timeseries.TsUnit;
 import nbbrd.design.LombokWorkaround;
 
 /**
@@ -29,7 +31,8 @@ import nbbrd.design.LombokWorkaround;
  */
 @lombok.Value
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
-public class MStlPlusSpec implements SaSpecification{
+public class MStlPlusSpec implements SaSpecification {
+
     public static final String METHOD = "mstlplus";
     public static final String VERSION_V3 = "3.0.0";
     public static final AlgorithmDescriptor DESCRIPTOR = new AlgorithmDescriptor(FAMILY, METHOD, VERSION_V3);
@@ -40,39 +43,52 @@ public class MStlPlusSpec implements SaSpecification{
     }
 
     @lombok.NonNull
-    private ModellingSpec preprocessing;
-    
+    private ExtendedAirlineModellingSpec preprocessing;
+
+    // We will use a default if null !
     private MStlSpec stl;
-    
-    @lombok.NonNull
-    private SaBenchmarkingSpec benchmarking;
 
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
-                .preprocessing(ModellingSpec.FULL)
-                .stl(null)
-                .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED);
+                .preprocessing(ExtendedAirlineModellingSpec.DEFAULT_ENABLED)
+                .stl(null);
     }
-
 
     @Override
-    public String display(){
+    public String display() {
         return SMETHOD;
     }
-    
+
     private static final String SMETHOD = "MSTL+";
-    
-    public static final MStlPlusSpec FULL=MStlPlusSpec.builder()
-            .preprocessing(ModellingSpec.FULL)
-            .stl(MStlSpec.DEF_W)
-            .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED)
-            .build();
-    
-    public static final MStlPlusSpec DEFAULT=MStlPlusSpec.builder()
-            .preprocessing(ModellingSpec.DEFAULT)
-            .stl(MStlSpec.DEF_W)
-            .benchmarking(SaBenchmarkingSpec.DEFAULT_DISABLED)
-            .build();
-    
+
+    public static final MStlPlusSpec DEFAULT = MStlPlusSpec.builder().build();
+
+    public MStlPlusSpec withPeriod(TsUnit unit) {
+        TsUnit period = preprocessing.getPeriod();
+        if (unit.equals(period)) {
+            return this;
+        }
+        Builder builder = toBuilder();
+        ExtendedAirlineModellingSpec nspec;
+        MStlSpec dspec;
+        if (unit.equals(TsUnit.UNDEFINED)) {
+            nspec = preprocessing.toBuilder()
+                    .period(unit)
+                    .stochastic(null)
+                    .build();
+            dspec = null;
+        } else {
+            nspec = preprocessing.toBuilder()
+                    .period(unit)
+                    .stochastic(ExtendedAirlineSpec.createDefault(unit))
+                    .build();
+            dspec = MStlSpec.createDefault(unit, true);
+        }
+        return builder
+                .preprocessing(nspec)
+                .stl(dspec)
+                .build();
+    }
+
 }

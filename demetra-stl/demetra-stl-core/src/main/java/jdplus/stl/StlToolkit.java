@@ -76,7 +76,7 @@ public class StlToolkit {
                 .fit(fit)
                 .weights(weights);
         
-        Iterator<DoubleSeq> seasons = decomp.getSeasons().iterator();
+        Iterator<DoubleSeq> seasons = decomp.getSeasons().values().iterator();
         List<SeasonalSpec> seasonalSpecs = spec.getSeasonalSpecs();
         for (SeasonalSpec sspec : seasonalSpecs){
             builder.seasonal(sspec.getPeriod(), TsData.of(start, seasons.next()));
@@ -103,7 +103,7 @@ public class StlToolkit {
                 .fit(fit)
                 .weights(weights);
         
-        Iterator<DoubleSeq> seasons = decomp.getSeasons().iterator();
+        Iterator<DoubleSeq> seasons = decomp.getSeasons().values().iterator();
         List<IStlSpec.PeriodSpec> perodSpec = spec.getPeriodSpecs();
         for (IStlSpec.PeriodSpec sspec : perodSpec){
             builder.seasonal(sspec.getSeasonalSpec().getPeriod(), TsData.of(start, seasons.next()));

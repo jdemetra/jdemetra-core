@@ -33,7 +33,6 @@ import jdplus.modelling.regression.PeriodicOutlierFactory;
 import jdplus.modelling.regression.TransitoryChangeFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import jdplus.arima.estimation.IArimaMapping;
@@ -126,7 +125,7 @@ public class OutliersDetectionModule<T extends IArimaModel>
         }
 
         public OutliersDetectionModule build() {
-            sod.setOutlierFactories(factories.toArray(new IOutlierFactory[factories.size()]));
+            sod.setOutlierFactories(factories.toArray(IOutlierFactory[]::new));
             return new OutliersDetectionModule(sod, processor, maxOutliers, maxRound);
         }
     }

@@ -39,7 +39,7 @@ import nbbrd.service.ServiceProvider;
  */
 @Development(status = Development.Status.Release)
 @ServiceProvider(InformationExtractor.class)
-public class ExtendedRegAirlineExtractor extends InformationMapping<HighFreqRegArimaModel> {
+public class HighFreqRegArimaExtractor extends InformationMapping<HighFreqRegArimaModel> {
 
     public final int NFCAST = 50, NBCAST = 0;
 
@@ -47,7 +47,7 @@ public class ExtendedRegAirlineExtractor extends InformationMapping<HighFreqRegA
         return Dictionary.concatenate(RegArimaDictionaries.REGRESSION, key);
     }
 
-    public ExtendedRegAirlineExtractor() {
+    public HighFreqRegArimaExtractor() {
         delegate(null, GeneralLinearModel.class, source -> source);
 
 //            setArray(RegressionDictionaries.Y_F, NFCAST, TsData.class, (source, i) -> source.forecasts(i).getForecasts());

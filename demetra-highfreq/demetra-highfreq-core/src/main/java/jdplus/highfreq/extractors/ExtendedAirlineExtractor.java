@@ -22,7 +22,6 @@ import java.util.Optional;
 import jdplus.highfreq.extendedairline.decomposiiton.ExtendedAirlineDecomposition;
 import jdplus.highfreq.extendedairline.ExtendedAirlineResults;
 import jdplus.highfreq.regarima.HighFreqRegArimaModel;
-import jdplus.modelling.GeneralLinearModel;
 import static jdplus.regarima.extractors.RegSarimaModelExtractors.NBCAST;
 import nbbrd.design.Development;
 import nbbrd.service.ServiceProvider;
