@@ -3801,19 +3801,13 @@ private static final long serialVersionUID = 0L;
     boolean getAcceptdef();
 
     /**
-     * <code>bool checkmu = 11;</code>
-     * @return The checkmu.
-     */
-    boolean getCheckmu();
-
-    /**
-     * <code>bool mixed = 12;</code>
+     * <code>bool mixed = 11;</code>
      * @return The mixed.
      */
     boolean getMixed();
 
     /**
-     * <code>bool balanced = 13;</code>
+     * <code>bool balanced = 12;</code>
      * @return The balanced.
      */
     boolean getBalanced();
@@ -3915,15 +3909,10 @@ private static final long serialVersionUID = 0L;
             }
             case 88: {
 
-              checkmu_ = input.readBool();
-              break;
-            }
-            case 96: {
-
               mixed_ = input.readBool();
               break;
             }
-            case 104: {
+            case 96: {
 
               balanced_ = input.readBool();
               break;
@@ -4070,21 +4059,10 @@ private static final long serialVersionUID = 0L;
       return acceptdef_;
     }
 
-    public static final int CHECKMU_FIELD_NUMBER = 11;
-    private boolean checkmu_;
-    /**
-     * <code>bool checkmu = 11;</code>
-     * @return The checkmu.
-     */
-    @java.lang.Override
-    public boolean getCheckmu() {
-      return checkmu_;
-    }
-
-    public static final int MIXED_FIELD_NUMBER = 12;
+    public static final int MIXED_FIELD_NUMBER = 11;
     private boolean mixed_;
     /**
-     * <code>bool mixed = 12;</code>
+     * <code>bool mixed = 11;</code>
      * @return The mixed.
      */
     @java.lang.Override
@@ -4092,10 +4070,10 @@ private static final long serialVersionUID = 0L;
       return mixed_;
     }
 
-    public static final int BALANCED_FIELD_NUMBER = 13;
+    public static final int BALANCED_FIELD_NUMBER = 12;
     private boolean balanced_;
     /**
-     * <code>bool balanced = 13;</code>
+     * <code>bool balanced = 12;</code>
      * @return The balanced.
      */
     @java.lang.Override
@@ -4147,14 +4125,11 @@ private static final long serialVersionUID = 0L;
       if (acceptdef_ != false) {
         output.writeBool(10, acceptdef_);
       }
-      if (checkmu_ != false) {
-        output.writeBool(11, checkmu_);
-      }
       if (mixed_ != false) {
-        output.writeBool(12, mixed_);
+        output.writeBool(11, mixed_);
       }
       if (balanced_ != false) {
-        output.writeBool(13, balanced_);
+        output.writeBool(12, balanced_);
       }
       unknownFields.writeTo(output);
     }
@@ -4205,17 +4180,13 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(10, acceptdef_);
       }
-      if (checkmu_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(11, checkmu_);
-      }
       if (mixed_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(12, mixed_);
+          .computeBoolSize(11, mixed_);
       }
       if (balanced_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(13, balanced_);
+          .computeBoolSize(12, balanced_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4260,8 +4231,6 @@ private static final long serialVersionUID = 0L;
               other.getFct())) return false;
       if (getAcceptdef()
           != other.getAcceptdef()) return false;
-      if (getCheckmu()
-          != other.getCheckmu()) return false;
       if (getMixed()
           != other.getMixed()) return false;
       if (getBalanced()
@@ -4307,9 +4276,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ACCEPTDEF_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getAcceptdef());
-      hash = (37 * hash) + CHECKMU_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCheckmu());
       hash = (37 * hash) + MIXED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getMixed());
@@ -4469,8 +4435,6 @@ private static final long serialVersionUID = 0L;
 
         acceptdef_ = false;
 
-        checkmu_ = false;
-
         mixed_ = false;
 
         balanced_ = false;
@@ -4511,7 +4475,6 @@ private static final long serialVersionUID = 0L;
         result.cancel_ = cancel_;
         result.fct_ = fct_;
         result.acceptdef_ = acceptdef_;
-        result.checkmu_ = checkmu_;
         result.mixed_ = mixed_;
         result.balanced_ = balanced_;
         onBuilt();
@@ -4591,9 +4554,6 @@ private static final long serialVersionUID = 0L;
         }
         if (other.getAcceptdef() != false) {
           setAcceptdef(other.getAcceptdef());
-        }
-        if (other.getCheckmu() != false) {
-          setCheckmu(other.getCheckmu());
         }
         if (other.getMixed() != false) {
           setMixed(other.getMixed());
@@ -4940,40 +4900,9 @@ private static final long serialVersionUID = 0L;
         return this;
       }
 
-      private boolean checkmu_ ;
-      /**
-       * <code>bool checkmu = 11;</code>
-       * @return The checkmu.
-       */
-      @java.lang.Override
-      public boolean getCheckmu() {
-        return checkmu_;
-      }
-      /**
-       * <code>bool checkmu = 11;</code>
-       * @param value The checkmu to set.
-       * @return This builder for chaining.
-       */
-      public Builder setCheckmu(boolean value) {
-        
-        checkmu_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bool checkmu = 11;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearCheckmu() {
-        
-        checkmu_ = false;
-        onChanged();
-        return this;
-      }
-
       private boolean mixed_ ;
       /**
-       * <code>bool mixed = 12;</code>
+       * <code>bool mixed = 11;</code>
        * @return The mixed.
        */
       @java.lang.Override
@@ -4981,7 +4910,7 @@ private static final long serialVersionUID = 0L;
         return mixed_;
       }
       /**
-       * <code>bool mixed = 12;</code>
+       * <code>bool mixed = 11;</code>
        * @param value The mixed to set.
        * @return This builder for chaining.
        */
@@ -4992,7 +4921,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>bool mixed = 12;</code>
+       * <code>bool mixed = 11;</code>
        * @return This builder for chaining.
        */
       public Builder clearMixed() {
@@ -5004,7 +4933,7 @@ private static final long serialVersionUID = 0L;
 
       private boolean balanced_ ;
       /**
-       * <code>bool balanced = 13;</code>
+       * <code>bool balanced = 12;</code>
        * @return The balanced.
        */
       @java.lang.Override
@@ -5012,7 +4941,7 @@ private static final long serialVersionUID = 0L;
         return balanced_;
       }
       /**
-       * <code>bool balanced = 13;</code>
+       * <code>bool balanced = 12;</code>
        * @param value The balanced to set.
        * @return This builder for chaining.
        */
@@ -5023,7 +4952,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>bool balanced = 13;</code>
+       * <code>bool balanced = 12;</code>
        * @return This builder for chaining.
        */
       public Builder clearBalanced() {
@@ -8086,127 +8015,133 @@ private static final long serialVersionUID = 0L;
     demetra.toolkit.io.protobuf.ToolkitProtos.ParameterOrBuilder getMeanOrBuilder();
 
     /**
-     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+     * <code>bool check_mean = 2;</code>
+     * @return The checkMean.
+     */
+    boolean getCheckMean();
+
+    /**
+     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
      * @return Whether the td field is set.
      */
     boolean hasTd();
     /**
-     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
      * @return The td.
      */
     demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec getTd();
     /**
-     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
      */
     demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpecOrBuilder getTdOrBuilder();
 
     /**
-     * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+     * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
      * @return Whether the easter field is set.
      */
     boolean hasEaster();
     /**
-     * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+     * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
      * @return The easter.
      */
     demetra.x13.io.protobuf.RegArimaSpec.EasterSpec getEaster();
     /**
-     * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+     * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
      */
     demetra.x13.io.protobuf.RegArimaSpec.EasterSpecOrBuilder getEasterOrBuilder();
 
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Outlier> 
         getOutliersList();
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.Outlier getOutliers(int index);
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     int getOutliersCount();
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder> 
         getOutliersOrBuilderList();
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder getOutliersOrBuilder(
         int index);
 
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     java.util.List<demetra.modelling.io.protobuf.ModellingProtos.TsVariable> 
         getUsersList();
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.TsVariable getUsers(int index);
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     int getUsersCount();
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder> 
         getUsersOrBuilderList();
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder getUsersOrBuilder(
         int index);
 
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     java.util.List<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable> 
         getInterventionsList();
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable getInterventions(int index);
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     int getInterventionsCount();
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder> 
         getInterventionsOrBuilderList();
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder getInterventionsOrBuilder(
         int index);
 
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Ramp> 
         getRampsList();
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.Ramp getRamps(int index);
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     int getRampsCount();
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder> 
         getRampsOrBuilderList();
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder getRampsOrBuilder(
         int index);
@@ -8274,7 +8209,12 @@ private static final long serialVersionUID = 0L;
 
               break;
             }
-            case 18: {
+            case 16: {
+
+              checkMean_ = input.readBool();
+              break;
+            }
+            case 26: {
               demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec.Builder subBuilder = null;
               if (td_ != null) {
                 subBuilder = td_.toBuilder();
@@ -8287,7 +8227,7 @@ private static final long serialVersionUID = 0L;
 
               break;
             }
-            case 26: {
+            case 34: {
               demetra.x13.io.protobuf.RegArimaSpec.EasterSpec.Builder subBuilder = null;
               if (easter_ != null) {
                 subBuilder = easter_.toBuilder();
@@ -8300,7 +8240,7 @@ private static final long serialVersionUID = 0L;
 
               break;
             }
-            case 34: {
+            case 42: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
                 outliers_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.Outlier>();
                 mutable_bitField0_ |= 0x00000001;
@@ -8309,7 +8249,7 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.Outlier.parser(), extensionRegistry));
               break;
             }
-            case 42: {
+            case 50: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
                 users_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.TsVariable>();
                 mutable_bitField0_ |= 0x00000002;
@@ -8318,7 +8258,7 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.TsVariable.parser(), extensionRegistry));
               break;
             }
-            case 50: {
+            case 58: {
               if (!((mutable_bitField0_ & 0x00000004) != 0)) {
                 interventions_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable>();
                 mutable_bitField0_ |= 0x00000004;
@@ -8327,7 +8267,7 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.parser(), extensionRegistry));
               break;
             }
-            case 58: {
+            case 66: {
               if (!((mutable_bitField0_ & 0x00000008) != 0)) {
                 ramps_ = new java.util.ArrayList<demetra.modelling.io.protobuf.ModellingProtos.Ramp>();
                 mutable_bitField0_ |= 0x00000008;
@@ -8406,10 +8346,21 @@ private static final long serialVersionUID = 0L;
       return getMean();
     }
 
-    public static final int TD_FIELD_NUMBER = 2;
+    public static final int CHECK_MEAN_FIELD_NUMBER = 2;
+    private boolean checkMean_;
+    /**
+     * <code>bool check_mean = 2;</code>
+     * @return The checkMean.
+     */
+    @java.lang.Override
+    public boolean getCheckMean() {
+      return checkMean_;
+    }
+
+    public static final int TD_FIELD_NUMBER = 3;
     private demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec td_;
     /**
-     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
      * @return Whether the td field is set.
      */
     @java.lang.Override
@@ -8417,7 +8368,7 @@ private static final long serialVersionUID = 0L;
       return td_ != null;
     }
     /**
-     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
      * @return The td.
      */
     @java.lang.Override
@@ -8425,17 +8376,17 @@ private static final long serialVersionUID = 0L;
       return td_ == null ? demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec.getDefaultInstance() : td_;
     }
     /**
-     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+     * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
      */
     @java.lang.Override
     public demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpecOrBuilder getTdOrBuilder() {
       return getTd();
     }
 
-    public static final int EASTER_FIELD_NUMBER = 3;
+    public static final int EASTER_FIELD_NUMBER = 4;
     private demetra.x13.io.protobuf.RegArimaSpec.EasterSpec easter_;
     /**
-     * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+     * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
      * @return Whether the easter field is set.
      */
     @java.lang.Override
@@ -8443,7 +8394,7 @@ private static final long serialVersionUID = 0L;
       return easter_ != null;
     }
     /**
-     * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+     * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
      * @return The easter.
      */
     @java.lang.Override
@@ -8451,24 +8402,24 @@ private static final long serialVersionUID = 0L;
       return easter_ == null ? demetra.x13.io.protobuf.RegArimaSpec.EasterSpec.getDefaultInstance() : easter_;
     }
     /**
-     * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+     * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
      */
     @java.lang.Override
     public demetra.x13.io.protobuf.RegArimaSpec.EasterSpecOrBuilder getEasterOrBuilder() {
       return getEaster();
     }
 
-    public static final int OUTLIERS_FIELD_NUMBER = 4;
+    public static final int OUTLIERS_FIELD_NUMBER = 5;
     private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Outlier> outliers_;
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Outlier> getOutliersList() {
       return outliers_;
     }
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder> 
@@ -8476,21 +8427,21 @@ private static final long serialVersionUID = 0L;
       return outliers_;
     }
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public int getOutliersCount() {
       return outliers_.size();
     }
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.Outlier getOutliers(int index) {
       return outliers_.get(index);
     }
     /**
-     * <code>repeated .modelling.Outlier outliers = 4;</code>
+     * <code>repeated .modelling.Outlier outliers = 5;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder getOutliersOrBuilder(
@@ -8498,17 +8449,17 @@ private static final long serialVersionUID = 0L;
       return outliers_.get(index);
     }
 
-    public static final int USERS_FIELD_NUMBER = 5;
+    public static final int USERS_FIELD_NUMBER = 6;
     private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.TsVariable> users_;
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.TsVariable> getUsersList() {
       return users_;
     }
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder> 
@@ -8516,21 +8467,21 @@ private static final long serialVersionUID = 0L;
       return users_;
     }
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     @java.lang.Override
     public int getUsersCount() {
       return users_.size();
     }
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.TsVariable getUsers(int index) {
       return users_.get(index);
     }
     /**
-     * <code>repeated .modelling.TsVariable users = 5;</code>
+     * <code>repeated .modelling.TsVariable users = 6;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder getUsersOrBuilder(
@@ -8538,17 +8489,17 @@ private static final long serialVersionUID = 0L;
       return users_.get(index);
     }
 
-    public static final int INTERVENTIONS_FIELD_NUMBER = 6;
+    public static final int INTERVENTIONS_FIELD_NUMBER = 7;
     private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable> interventions_;
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable> getInterventionsList() {
       return interventions_;
     }
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder> 
@@ -8556,21 +8507,21 @@ private static final long serialVersionUID = 0L;
       return interventions_;
     }
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     @java.lang.Override
     public int getInterventionsCount() {
       return interventions_.size();
     }
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable getInterventions(int index) {
       return interventions_.get(index);
     }
     /**
-     * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+     * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder getInterventionsOrBuilder(
@@ -8578,17 +8529,17 @@ private static final long serialVersionUID = 0L;
       return interventions_.get(index);
     }
 
-    public static final int RAMPS_FIELD_NUMBER = 7;
+    public static final int RAMPS_FIELD_NUMBER = 8;
     private java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Ramp> ramps_;
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     @java.lang.Override
     public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Ramp> getRampsList() {
       return ramps_;
     }
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     @java.lang.Override
     public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder> 
@@ -8596,21 +8547,21 @@ private static final long serialVersionUID = 0L;
       return ramps_;
     }
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     @java.lang.Override
     public int getRampsCount() {
       return ramps_.size();
     }
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.Ramp getRamps(int index) {
       return ramps_.get(index);
     }
     /**
-     * <code>repeated .modelling.Ramp ramps = 7;</code>
+     * <code>repeated .modelling.Ramp ramps = 8;</code>
      */
     @java.lang.Override
     public demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder getRampsOrBuilder(
@@ -8635,23 +8586,26 @@ private static final long serialVersionUID = 0L;
       if (mean_ != null) {
         output.writeMessage(1, getMean());
       }
+      if (checkMean_ != false) {
+        output.writeBool(2, checkMean_);
+      }
       if (td_ != null) {
-        output.writeMessage(2, getTd());
+        output.writeMessage(3, getTd());
       }
       if (easter_ != null) {
-        output.writeMessage(3, getEaster());
+        output.writeMessage(4, getEaster());
       }
       for (int i = 0; i < outliers_.size(); i++) {
-        output.writeMessage(4, outliers_.get(i));
+        output.writeMessage(5, outliers_.get(i));
       }
       for (int i = 0; i < users_.size(); i++) {
-        output.writeMessage(5, users_.get(i));
+        output.writeMessage(6, users_.get(i));
       }
       for (int i = 0; i < interventions_.size(); i++) {
-        output.writeMessage(6, interventions_.get(i));
+        output.writeMessage(7, interventions_.get(i));
       }
       for (int i = 0; i < ramps_.size(); i++) {
-        output.writeMessage(7, ramps_.get(i));
+        output.writeMessage(8, ramps_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -8666,29 +8620,33 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getMean());
       }
+      if (checkMean_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, checkMean_);
+      }
       if (td_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getTd());
+          .computeMessageSize(3, getTd());
       }
       if (easter_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getEaster());
+          .computeMessageSize(4, getEaster());
       }
       for (int i = 0; i < outliers_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, outliers_.get(i));
+          .computeMessageSize(5, outliers_.get(i));
       }
       for (int i = 0; i < users_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, users_.get(i));
+          .computeMessageSize(6, users_.get(i));
       }
       for (int i = 0; i < interventions_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, interventions_.get(i));
+          .computeMessageSize(7, interventions_.get(i));
       }
       for (int i = 0; i < ramps_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, ramps_.get(i));
+          .computeMessageSize(8, ramps_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8710,6 +8668,8 @@ private static final long serialVersionUID = 0L;
         if (!getMean()
             .equals(other.getMean())) return false;
       }
+      if (getCheckMean()
+          != other.getCheckMean()) return false;
       if (hasTd() != other.hasTd()) return false;
       if (hasTd()) {
         if (!getTd()
@@ -8743,6 +8703,9 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + MEAN_FIELD_NUMBER;
         hash = (53 * hash) + getMean().hashCode();
       }
+      hash = (37 * hash) + CHECK_MEAN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getCheckMean());
       if (hasTd()) {
         hash = (37 * hash) + TD_FIELD_NUMBER;
         hash = (53 * hash) + getTd().hashCode();
@@ -8910,6 +8873,8 @@ private static final long serialVersionUID = 0L;
           mean_ = null;
           meanBuilder_ = null;
         }
+        checkMean_ = false;
+
         if (tdBuilder_ == null) {
           td_ = null;
         } else {
@@ -8978,6 +8943,7 @@ private static final long serialVersionUID = 0L;
         } else {
           result.mean_ = meanBuilder_.build();
         }
+        result.checkMean_ = checkMean_;
         if (tdBuilder_ == null) {
           result.td_ = td_;
         } else {
@@ -9074,6 +9040,9 @@ private static final long serialVersionUID = 0L;
         if (other == demetra.x13.io.protobuf.RegArimaSpec.RegressionSpec.getDefaultInstance()) return this;
         if (other.hasMean()) {
           mergeMean(other.getMean());
+        }
+        if (other.getCheckMean() != false) {
+          setCheckMean(other.getCheckMean());
         }
         if (other.hasTd()) {
           mergeTd(other.getTd());
@@ -9334,18 +9303,49 @@ private static final long serialVersionUID = 0L;
         return meanBuilder_;
       }
 
+      private boolean checkMean_ ;
+      /**
+       * <code>bool check_mean = 2;</code>
+       * @return The checkMean.
+       */
+      @java.lang.Override
+      public boolean getCheckMean() {
+        return checkMean_;
+      }
+      /**
+       * <code>bool check_mean = 2;</code>
+       * @param value The checkMean to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCheckMean(boolean value) {
+        
+        checkMean_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool check_mean = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCheckMean() {
+        
+        checkMean_ = false;
+        onChanged();
+        return this;
+      }
+
       private demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec td_;
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec, demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec.Builder, demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpecOrBuilder> tdBuilder_;
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        * @return Whether the td field is set.
        */
       public boolean hasTd() {
         return tdBuilder_ != null || td_ != null;
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        * @return The td.
        */
       public demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec getTd() {
@@ -9356,7 +9356,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       public Builder setTd(demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec value) {
         if (tdBuilder_ == null) {
@@ -9372,7 +9372,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       public Builder setTd(
           demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec.Builder builderForValue) {
@@ -9386,7 +9386,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       public Builder mergeTd(demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec value) {
         if (tdBuilder_ == null) {
@@ -9404,7 +9404,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       public Builder clearTd() {
         if (tdBuilder_ == null) {
@@ -9418,7 +9418,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       public demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec.Builder getTdBuilder() {
         
@@ -9426,7 +9426,7 @@ private static final long serialVersionUID = 0L;
         return getTdFieldBuilder().getBuilder();
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       public demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpecOrBuilder getTdOrBuilder() {
         if (tdBuilder_ != null) {
@@ -9437,7 +9437,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 2;</code>
+       * <code>.x13.RegArimaSpec.TradingDaysSpec td = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec, demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpec.Builder, demetra.x13.io.protobuf.RegArimaSpec.TradingDaysSpecOrBuilder> 
@@ -9457,14 +9457,14 @@ private static final long serialVersionUID = 0L;
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.x13.io.protobuf.RegArimaSpec.EasterSpec, demetra.x13.io.protobuf.RegArimaSpec.EasterSpec.Builder, demetra.x13.io.protobuf.RegArimaSpec.EasterSpecOrBuilder> easterBuilder_;
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        * @return Whether the easter field is set.
        */
       public boolean hasEaster() {
         return easterBuilder_ != null || easter_ != null;
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        * @return The easter.
        */
       public demetra.x13.io.protobuf.RegArimaSpec.EasterSpec getEaster() {
@@ -9475,7 +9475,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       public Builder setEaster(demetra.x13.io.protobuf.RegArimaSpec.EasterSpec value) {
         if (easterBuilder_ == null) {
@@ -9491,7 +9491,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       public Builder setEaster(
           demetra.x13.io.protobuf.RegArimaSpec.EasterSpec.Builder builderForValue) {
@@ -9505,7 +9505,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       public Builder mergeEaster(demetra.x13.io.protobuf.RegArimaSpec.EasterSpec value) {
         if (easterBuilder_ == null) {
@@ -9523,7 +9523,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       public Builder clearEaster() {
         if (easterBuilder_ == null) {
@@ -9537,7 +9537,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       public demetra.x13.io.protobuf.RegArimaSpec.EasterSpec.Builder getEasterBuilder() {
         
@@ -9545,7 +9545,7 @@ private static final long serialVersionUID = 0L;
         return getEasterFieldBuilder().getBuilder();
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       public demetra.x13.io.protobuf.RegArimaSpec.EasterSpecOrBuilder getEasterOrBuilder() {
         if (easterBuilder_ != null) {
@@ -9556,7 +9556,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>.x13.RegArimaSpec.EasterSpec easter = 3;</code>
+       * <code>.x13.RegArimaSpec.EasterSpec easter = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           demetra.x13.io.protobuf.RegArimaSpec.EasterSpec, demetra.x13.io.protobuf.RegArimaSpec.EasterSpec.Builder, demetra.x13.io.protobuf.RegArimaSpec.EasterSpecOrBuilder> 
@@ -9585,7 +9585,7 @@ private static final long serialVersionUID = 0L;
           demetra.modelling.io.protobuf.ModellingProtos.Outlier, demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder, demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder> outliersBuilder_;
 
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Outlier> getOutliersList() {
         if (outliersBuilder_ == null) {
@@ -9595,7 +9595,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public int getOutliersCount() {
         if (outliersBuilder_ == null) {
@@ -9605,7 +9605,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Outlier getOutliers(int index) {
         if (outliersBuilder_ == null) {
@@ -9615,7 +9615,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder setOutliers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Outlier value) {
@@ -9632,7 +9632,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder setOutliers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder builderForValue) {
@@ -9646,7 +9646,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(demetra.modelling.io.protobuf.ModellingProtos.Outlier value) {
         if (outliersBuilder_ == null) {
@@ -9662,7 +9662,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Outlier value) {
@@ -9679,7 +9679,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(
           demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder builderForValue) {
@@ -9693,7 +9693,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder addOutliers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder builderForValue) {
@@ -9707,7 +9707,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder addAllOutliers(
           java.lang.Iterable<? extends demetra.modelling.io.protobuf.ModellingProtos.Outlier> values) {
@@ -9722,7 +9722,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder clearOutliers() {
         if (outliersBuilder_ == null) {
@@ -9735,7 +9735,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public Builder removeOutliers(int index) {
         if (outliersBuilder_ == null) {
@@ -9748,14 +9748,14 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder getOutliersBuilder(
           int index) {
         return getOutliersFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder getOutliersOrBuilder(
           int index) {
@@ -9765,7 +9765,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.OutlierOrBuilder> 
            getOutliersOrBuilderList() {
@@ -9776,14 +9776,14 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder addOutliersBuilder() {
         return getOutliersFieldBuilder().addBuilder(
             demetra.modelling.io.protobuf.ModellingProtos.Outlier.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder addOutliersBuilder(
           int index) {
@@ -9791,7 +9791,7 @@ private static final long serialVersionUID = 0L;
             index, demetra.modelling.io.protobuf.ModellingProtos.Outlier.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.Outlier outliers = 4;</code>
+       * <code>repeated .modelling.Outlier outliers = 5;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Outlier.Builder> 
            getOutliersBuilderList() {
@@ -9825,7 +9825,7 @@ private static final long serialVersionUID = 0L;
           demetra.modelling.io.protobuf.ModellingProtos.TsVariable, demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder, demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder> usersBuilder_;
 
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.TsVariable> getUsersList() {
         if (usersBuilder_ == null) {
@@ -9835,7 +9835,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public int getUsersCount() {
         if (usersBuilder_ == null) {
@@ -9845,7 +9845,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.TsVariable getUsers(int index) {
         if (usersBuilder_ == null) {
@@ -9855,7 +9855,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder setUsers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.TsVariable value) {
@@ -9872,7 +9872,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder setUsers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder builderForValue) {
@@ -9886,7 +9886,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder addUsers(demetra.modelling.io.protobuf.ModellingProtos.TsVariable value) {
         if (usersBuilder_ == null) {
@@ -9902,7 +9902,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder addUsers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.TsVariable value) {
@@ -9919,7 +9919,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder addUsers(
           demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder builderForValue) {
@@ -9933,7 +9933,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder addUsers(
           int index, demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder builderForValue) {
@@ -9947,7 +9947,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder addAllUsers(
           java.lang.Iterable<? extends demetra.modelling.io.protobuf.ModellingProtos.TsVariable> values) {
@@ -9962,7 +9962,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder clearUsers() {
         if (usersBuilder_ == null) {
@@ -9975,7 +9975,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public Builder removeUsers(int index) {
         if (usersBuilder_ == null) {
@@ -9988,14 +9988,14 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder getUsersBuilder(
           int index) {
         return getUsersFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder getUsersOrBuilder(
           int index) {
@@ -10005,7 +10005,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.TsVariableOrBuilder> 
            getUsersOrBuilderList() {
@@ -10016,14 +10016,14 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder addUsersBuilder() {
         return getUsersFieldBuilder().addBuilder(
             demetra.modelling.io.protobuf.ModellingProtos.TsVariable.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder addUsersBuilder(
           int index) {
@@ -10031,7 +10031,7 @@ private static final long serialVersionUID = 0L;
             index, demetra.modelling.io.protobuf.ModellingProtos.TsVariable.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.TsVariable users = 5;</code>
+       * <code>repeated .modelling.TsVariable users = 6;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.TsVariable.Builder> 
            getUsersBuilderList() {
@@ -10065,7 +10065,7 @@ private static final long serialVersionUID = 0L;
           demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder> interventionsBuilder_;
 
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable> getInterventionsList() {
         if (interventionsBuilder_ == null) {
@@ -10075,7 +10075,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public int getInterventionsCount() {
         if (interventionsBuilder_ == null) {
@@ -10085,7 +10085,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable getInterventions(int index) {
         if (interventionsBuilder_ == null) {
@@ -10095,7 +10095,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder setInterventions(
           int index, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable value) {
@@ -10112,7 +10112,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder setInterventions(
           int index, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder builderForValue) {
@@ -10126,7 +10126,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder addInterventions(demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable value) {
         if (interventionsBuilder_ == null) {
@@ -10142,7 +10142,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder addInterventions(
           int index, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable value) {
@@ -10159,7 +10159,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder addInterventions(
           demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder builderForValue) {
@@ -10173,7 +10173,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder addInterventions(
           int index, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder builderForValue) {
@@ -10187,7 +10187,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder addAllInterventions(
           java.lang.Iterable<? extends demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable> values) {
@@ -10202,7 +10202,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder clearInterventions() {
         if (interventionsBuilder_ == null) {
@@ -10215,7 +10215,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public Builder removeInterventions(int index) {
         if (interventionsBuilder_ == null) {
@@ -10228,14 +10228,14 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder getInterventionsBuilder(
           int index) {
         return getInterventionsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder getInterventionsOrBuilder(
           int index) {
@@ -10245,7 +10245,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.InterventionVariableOrBuilder> 
            getInterventionsOrBuilderList() {
@@ -10256,14 +10256,14 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder addInterventionsBuilder() {
         return getInterventionsFieldBuilder().addBuilder(
             demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder addInterventionsBuilder(
           int index) {
@@ -10271,7 +10271,7 @@ private static final long serialVersionUID = 0L;
             index, demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.InterventionVariable interventions = 6;</code>
+       * <code>repeated .modelling.InterventionVariable interventions = 7;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.InterventionVariable.Builder> 
            getInterventionsBuilderList() {
@@ -10305,7 +10305,7 @@ private static final long serialVersionUID = 0L;
           demetra.modelling.io.protobuf.ModellingProtos.Ramp, demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder, demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder> rampsBuilder_;
 
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Ramp> getRampsList() {
         if (rampsBuilder_ == null) {
@@ -10315,7 +10315,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public int getRampsCount() {
         if (rampsBuilder_ == null) {
@@ -10325,7 +10325,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Ramp getRamps(int index) {
         if (rampsBuilder_ == null) {
@@ -10335,7 +10335,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder setRamps(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Ramp value) {
@@ -10352,7 +10352,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder setRamps(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder builderForValue) {
@@ -10366,7 +10366,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder addRamps(demetra.modelling.io.protobuf.ModellingProtos.Ramp value) {
         if (rampsBuilder_ == null) {
@@ -10382,7 +10382,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder addRamps(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Ramp value) {
@@ -10399,7 +10399,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder addRamps(
           demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder builderForValue) {
@@ -10413,7 +10413,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder addRamps(
           int index, demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder builderForValue) {
@@ -10427,7 +10427,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder addAllRamps(
           java.lang.Iterable<? extends demetra.modelling.io.protobuf.ModellingProtos.Ramp> values) {
@@ -10442,7 +10442,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder clearRamps() {
         if (rampsBuilder_ == null) {
@@ -10455,7 +10455,7 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public Builder removeRamps(int index) {
         if (rampsBuilder_ == null) {
@@ -10468,14 +10468,14 @@ private static final long serialVersionUID = 0L;
         return this;
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder getRampsBuilder(
           int index) {
         return getRampsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder getRampsOrBuilder(
           int index) {
@@ -10485,7 +10485,7 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public java.util.List<? extends demetra.modelling.io.protobuf.ModellingProtos.RampOrBuilder> 
            getRampsOrBuilderList() {
@@ -10496,14 +10496,14 @@ private static final long serialVersionUID = 0L;
         }
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder addRampsBuilder() {
         return getRampsFieldBuilder().addBuilder(
             demetra.modelling.io.protobuf.ModellingProtos.Ramp.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder addRampsBuilder(
           int index) {
@@ -10511,7 +10511,7 @@ private static final long serialVersionUID = 0L;
             index, demetra.modelling.io.protobuf.ModellingProtos.Ramp.getDefaultInstance());
       }
       /**
-       * <code>repeated .modelling.Ramp ramps = 7;</code>
+       * <code>repeated .modelling.Ramp ramps = 8;</code>
        */
       public java.util.List<demetra.modelling.io.protobuf.ModellingProtos.Ramp.Builder> 
            getRampsBuilderList() {

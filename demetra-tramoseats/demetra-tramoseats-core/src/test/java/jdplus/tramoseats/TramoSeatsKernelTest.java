@@ -10,6 +10,7 @@ import demetra.processing.ProcessingLog;
 import demetra.timeseries.TsData;
 import demetra.timeseries.TsDataTable;
 import demetra.timeseries.TsPeriod;
+import demetra.tramo.MeanSpec;
 import demetra.tramo.RegressionSpec;
 import demetra.tramoseats.TramoSeatsSpec;
 import ec.satoolkit.tramoseats.TramoSeatsSpecification;
@@ -46,7 +47,7 @@ public class TramoSeatsKernelTest {
     @Test
     public void testProd0() {
         RegressionSpec.Builder rspec = TramoSeatsSpec.RSA0.getTramo().getRegression().toBuilder();
-        rspec.mean(null);
+        rspec.mean(MeanSpec.DEFAULT_UNUSED);
 
         TramoSeatsSpec nspec = TramoSeatsSpec.RSA0.toBuilder()
                 .tramo(TramoSeatsSpec.RSA0.getTramo().toBuilder()
@@ -86,7 +87,7 @@ public class TramoSeatsKernelTest {
         SaBenchmarkingResults benchmarking = rslt.getBenchmarking();
         assertTrue(benchmarking != null);
         TsDataTable table=TsDataTable.of(Arrays.asList(benchmarking.getSa(), benchmarking.getTarget(), benchmarking.getBenchmarkedSa()));
-        System.out.println(table);
+//        System.out.println(table);
     }
 
     @Test

@@ -33,6 +33,7 @@ import demetra.timeseries.regression.Ramp;
 import demetra.timeseries.regression.TsContextVariable;
 import demetra.timeseries.regression.Variable;
 import demetra.tramo.CalendarSpec;
+import demetra.tramo.MeanSpec;
 import demetra.tramo.RegressionSpec;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ class RegressionSpecMapping {
             USER = "user", USERS = "user*", RAMPS_LEGACY = "ramps", RAMP = "ramp", RAMPS = "ramp*",
             INTERVENTION = "intervention", INTERVENTIONS = "intervention*",
             COEFF = "coefficients", FCOEFF = "fixedcoefficients",
-            MU = "mu";
+            MU = "mu", CHECKMU = "checkmu";
 
 //    void fillDictionary(String prefix, Map<String, Class> dic) {
 //        dic.put(InformationSet.item(prefix, OUTLIERS_LEGACY), String[].class);
@@ -174,10 +175,21 @@ class RegressionSpecMapping {
 
     RegressionSpec read(InformationSet info) {
         if (info == null) {
-            return RegressionSpec.DEFAULT;
+            return RegressionSpec.DEFAULT_UNUSED;
         }
+        MeanSpec mean = MeanSpec.DEFAULT_UNUSED;
+        Parameter mu = info.get(MU, Parameter.class);
+        if (mu != null) {
+            Boolean tmu = info.get(CHECKMU, Boolean.class);
+            mean = MeanSpec.builder()
+                    .trendConstant(true)
+                    .test(tmu == null ? false : tmu)
+                    .coefficient(mu)
+                    .build();
+        }
+
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(info.get(MU, Parameter.class))
+                .mean(mean)
                 .calendar(CalendarSpecMapping.read(info.getSubSet(CALENDAR)));
         List<Information<InformationSet>> sel = info.select(OUTLIERS, InformationSet.class);
         if (!sel.isEmpty()) {
@@ -215,9 +227,12 @@ class RegressionSpecMapping {
             return null;
         }
         InformationSet info = new InformationSet();
-        Parameter mean = spec.getMean();
-        if (mean != null) {
-            info.set(MU, mean);
+        MeanSpec mean = spec.getMean();
+        if (mean.isUsed()) {
+            info.set(MU, mean.getCoefficient());
+            if (verbose || mean.isTest()) {
+                info.set(CHECKMU, mean.isTest());
+            }
         }
         InformationSet cinfo = CalendarSpecMapping.write(spec.getCalendar(), verbose);
         if (cinfo != null) {

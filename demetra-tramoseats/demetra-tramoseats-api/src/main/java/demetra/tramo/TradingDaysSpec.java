@@ -107,12 +107,6 @@ public class TradingDaysSpec {
     }
 
     public static TradingDaysSpec td(TradingDaysType type, LengthOfPeriodType lp, Parameter[] tdcoeff, Parameter lpcoeff) {
-//        if (type == TradingDaysType.NONE) {
-//            throw new IllegalArgumentException();
-//        }
-//        if (lp == LengthOfPeriodType.None && Parameter.isDefined(lpcoeff)) {
-//            throw new IllegalArgumentException();
-//        }
        if (type == TradingDaysType.NONE && lp == LengthOfPeriodType.None) {
             throw new IllegalArgumentException();
         }

@@ -17,7 +17,6 @@
 package demetra.regarima;
 
 import demetra.data.Parameter;
-import demetra.sa.SaVariable;
 import nbbrd.design.Development;
 import nbbrd.design.LombokWorkaround;
 import demetra.timeseries.regression.IOutlier;
@@ -34,7 +33,7 @@ import demetra.util.Validatable;
  */
 @Development(status = Development.Status.Beta)
 @lombok.Value
-@lombok.Builder(toBuilder = true,  buildMethodName = "buildWithoutValidation")
+@lombok.Builder(toBuilder = true, buildMethodName = "buildWithoutValidation")
 public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     public static final double DEF_AICCDIFF = 0;
@@ -43,7 +42,8 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     private double aicDiff;
 
-    private Parameter mean;
+    @lombok.NonNull
+    private MeanSpec mean;
     @lombok.NonNull
     private TradingDaysSpec tradingDays;
     @lombok.NonNull
@@ -57,16 +57,20 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
     @lombok.Singular
     private List<Variable<Ramp>> ramps;
 
+    public static final RegressionSpec DEFAULT_UNUSED = RegressionSpec.builder().build(),
+            DEFAULT_CONST = RegressionSpec.builder().mean(MeanSpec.DEFAULT_USED).build();
+
     @LombokWorkaround
     public static Builder builder() {
         return new Builder()
+                .mean(MeanSpec.DEFAULT_UNUSED)
                 .aicDiff(DEF_AICCDIFF)
-                .easter(EasterSpec.builder().build())
+                .easter(EasterSpec.DEFAULT_UNUSED)
                 .tradingDays(TradingDaysSpec.none());
     }
 
     public boolean isUsed() {
-        return tradingDays.isUsed() || easter.isUsed()
+        return mean.isUsed() || tradingDays.isUsed() || easter.isUsed()
                 || !outliers.isEmpty() || !userDefinedVariables.isEmpty()
                 || !ramps.isEmpty() || !interventionVariables.isEmpty();
     }
@@ -101,14 +105,15 @@ public final class RegressionSpec implements Validatable<RegressionSpec> {
 
     }
 
-    public boolean hasFixedCoefficients(){
-        if (! isUsed())
+    public boolean hasFixedCoefficients() {
+        if (!isUsed()) {
             return false;
-        return (mean != null && mean.isFixed()) || tradingDays.hasFixedCoefficients()
+        }
+        return mean.hasFixedCoefficient() || tradingDays.hasFixedCoefficients()
                 || easter.hasFixedCoefficient()
-                || outliers.stream().anyMatch(var->! var.isFree())
-                || ramps.stream().anyMatch(var->! var.isFree())
-                || interventionVariables.stream().anyMatch(var->! var.isFree())
-                || userDefinedVariables.stream().anyMatch(var->! var.isFree());
+                || outliers.stream().anyMatch(var -> !var.isFree())
+                || ramps.stream().anyMatch(var -> !var.isFree())
+                || interventionVariables.stream().anyMatch(var -> !var.isFree())
+                || userDefinedVariables.stream().anyMatch(var -> !var.isFree());
     }
 }

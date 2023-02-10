@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.modelling.GeneralLinearModel;
 import demetra.timeseries.regression.ModellingUtility;
+import demetra.tramo.MeanSpec;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -163,9 +164,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
         Optional<Variable> fc = Arrays.stream(vars)
                 .filter(v -> v.getName().equals(TrendConstant.NAME)).findFirst();
         if (fc.isPresent()) {
-            builder.mean(fc.get().getCoefficient(0));
+            builder.mean(MeanSpec.mean(fc.get().getCoefficient(0)));
         } else {
-            builder.mean(null);
+            builder.mean(MeanSpec.DEFAULT_UNUSED);
         }
     }
 
@@ -336,11 +337,10 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
     private void freeVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder) {
         RegressionSpec dreg = domainSpec.getRegression();
         RegressionSpec.Builder rbuilder = reg.toBuilder();
-        Parameter mean = reg.getMean();
-        if (mean != null && mean.isFixed()) {
-            Parameter dc = dreg.getMean();
-            if (dc == null || !dc.isFixed()) {
-                mean = Parameter.initial(mean.getValue());
+        MeanSpec mean = reg.getMean();
+        if (mean.hasFixedCoefficient()) {
+            if (! dreg.getMean().hasFixedCoefficient()){
+                mean = MeanSpec.mean(Parameter.initial(mean.getCoefficient().getValue()));
             }
         }
 
@@ -430,9 +430,9 @@ public class TramoFactory /*implements SaProcessingFactory<TramoSeatsSpec, Tramo
 
     private void fixVariables(RegressionSpec reg, TramoSpec domainSpec, TramoSpec.Builder builder, TsDomain frozenDomain) {
         RegressionSpec.Builder rbuilder = reg.toBuilder();
-        Parameter mean = reg.getMean();
-        if (mean != null && mean.isDefined()) {
-            mean = Parameter.fixed(mean.getValue());
+        MeanSpec mean = reg.getMean();
+        if (mean.isDefined()) {
+            mean = MeanSpec.mean(Parameter.fixed(mean.getCoefficient().getValue()));
         }
 
         List<Variable<InterventionVariable>> iv = reg.getInterventionVariables();

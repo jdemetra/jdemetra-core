@@ -135,7 +135,7 @@ public class TramoKernel implements RegSarimaProcessor {
                 .ur(spec.getEstimate().getUbp())
                 .va(spec.getOutliers().getCriticalValue())
                 .reduceVa(ami.getPc())
-                .checkMu(spec.isUsingAutoModel())
+                .checkMu(spec.isUsingAutoModel() || spec.getRegression().getMean().isTest())
                 .ljungBoxLimit(ami.getPcr())
                 .acceptAirline(ami.isAcceptDefault())
                 .build();
@@ -174,7 +174,7 @@ public class TramoKernel implements RegSarimaProcessor {
                             .adjust(tdspec.isAutoAdjust())
                             .tradingDays(TramoModelBuilder.td(spec, DayClustering.TD7, modellingContext))
                             .workingDays(TramoModelBuilder.td(spec, DayClustering.TD2, modellingContext))
-                            .testMean(spec.isUsingAutoModel())
+                            .testMean(options.isCheckMu())
                             .fPValue(tdspec.getProbabilityForFTest())
                             .estimationPrecision(options.intermediatePrecision)
                             .build();
@@ -183,7 +183,7 @@ public class TramoKernel implements RegSarimaProcessor {
                             .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                             .leapYear(lp)
                             .tradingDays(alltd())
-                            .testMean(spec.isUsingAutoModel())
+                            .testMean(options.isCheckMu())
                             .estimationPrecision(options.intermediatePrecision)
                             .adjust(tdspec.isAutoAdjust())
                             .aic()
@@ -195,7 +195,7 @@ public class TramoKernel implements RegSarimaProcessor {
                             .leapYear(lp)
                             .adjust(tdspec.isAutoAdjust())
                             .tradingDays(alltd())
-                            .testMean(spec.isUsingAutoModel())
+                            .testMean(options.isCheckMu())
                             .estimationPrecision(options.intermediatePrecision)
                             .bic()
                             .build();
@@ -205,7 +205,7 @@ public class TramoKernel implements RegSarimaProcessor {
                             .easter(espec.isTest() ? TramoModelBuilder.easter(spec) : null)
                             .leapYear(lp)
                             .tradingDays(nestedtd())
-                            .testMean(spec.isUsingAutoModel())
+                            .testMean(options.isCheckMu())
                             .estimationPrecision(options.intermediatePrecision)
                             .pconstraint(0.1)
                             .pmodel(tdspec.getProbabilityForFTest())
@@ -218,7 +218,7 @@ public class TramoKernel implements RegSarimaProcessor {
                     .leapYear(tdspec.isTest() ? lp : null)
                     .tradingDays(tdspec.isTest() ? TramoModelBuilder.tradingDays(spec, modellingContext) : null)
                     .useJoinTest(tdspec.getRegressionTestType() == RegressionTestType.Joint_F)
-                    .testMean(spec.isUsingAutoModel())
+                    .testMean(options.isCheckMu())
                     .estimationPrecision(options.intermediatePrecision)
                     .adjust(tdspec.isAutoAdjust())
                     .build();
@@ -292,6 +292,7 @@ public class TramoKernel implements RegSarimaProcessor {
         return !(this.spec.getTransform().getFunction() == TransformationType.Auto
                 || this.isAutoModelling()
                 || this.isOutliersDetection()
+                || this.spec.getRegression().getMean().isTest()
                 || this.spec.getRegression().getCalendar().getTradingDays().isTest()
                 || this.spec.getRegression().getCalendar().getTradingDays().isAutomatic()
                 || this.spec.getRegression().getCalendar().getEaster().isTest());
@@ -812,7 +813,7 @@ public class TramoKernel implements RegSarimaProcessor {
 
     private boolean testRegression(RegSarimaModelling context, double tmean) {
         FastRegressionTest regtest = FastRegressionTest.builder()
-                .testMean(isAutoModelling())
+                .testMean(options.checkMu)
                 .meanThreshold(tmean)
                 .build();
         return regtest.test(context) == ProcessingResult.Unchanged;

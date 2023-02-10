@@ -220,11 +220,11 @@ final class X13SpecDecoder {
         if (espec.getType() != EasterSpec.Type.Unused && espec.getTest() != RegressionTestSpec.None) {
             rbuilder.movingHolidaysTest(RegressionVariablesTest.CVAL);
         }
-        if (spec.isUsingAutoModel()) {
+        if ( spec.isUsingAutoModel() || spec.getRegression().getMean().isTest()) {
             rbuilder.meanTest(RegressionVariablesTest.CVAL);
         }
         builder.initialRegressionTest(rbuilder.build());
-        if (spec.isUsingAutoModel()) {
+        if (spec.isUsingAutoModel() || spec.getRegression().getMean().isTest()) {
             rbuilder.meanTest(RegressionVariablesTest.TSIG);
         }
         builder.finalRegressionTest(rbuilder.build());
@@ -239,7 +239,7 @@ final class X13SpecDecoder {
                         .va(spec.getOutliers().getDefaultCriticalValue())
                         .reduceVa(ami.getPredcv())
                         .ljungBoxLimit(ami.getLjungBoxLimit())
-                        .checkMu(spec.isUsingAutoModel())
+                        .checkMu(spec.isUsingAutoModel()|| spec.getRegression().getMean().isTest())
                         .mixedModel(ami.isMixed())
                         .build());
 

@@ -25,6 +25,7 @@ import demetra.modelling.io.information.OutlierMapping;
 import demetra.modelling.io.information.RampMapping;
 import demetra.modelling.io.information.TsContextVariableMapping;
 import demetra.modelling.io.information.VariableMapping;
+import demetra.regarima.MeanSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.sa.SaVariable;
 import demetra.timeseries.TsDomain;
@@ -45,7 +46,7 @@ import java.util.Map;
 class RegressionSpecMapping {
 
     final String AICDIFF = "aicdiff",
-            MU = "mu",
+            MU = "mu", CHECKMU = "checkmu",
             TD = "tradingdays", EASTER = "easter",
             MH = "mh", MHS = "mh*",
             OUTLIER = "outlier", OUTLIERS_LEGACY = "outliers", OUTLIERS = "outlier*",
@@ -63,7 +64,7 @@ class RegressionSpecMapping {
             Double coef = scoefs.get(name, Double.class);
             if (coef != null) {
                 return Parameter.estimated(coef);
-            } 
+            }
         }
         return fixedCoefficientOf(regInfo, name);
     }
@@ -177,9 +178,19 @@ class RegressionSpecMapping {
         if (info == null) {
             return RegressionSpec.DEFAULT;
         }
+        MeanSpec mean = MeanSpec.DEFAULT_UNUSED;
+        Parameter mu = info.get(MU, Parameter.class);
+        if (mu != null) {
+            Boolean tmu = info.get(CHECKMU, Boolean.class);
+            mean = MeanSpec.builder()
+                    .trendConstant(true)
+                    .test(tmu == null ? false : tmu)
+                    .coefficient(mu)
+                    .build();
+        }
 
         RegressionSpec.Builder builder = RegressionSpec.builder()
-                .mean(info.get(MU, Parameter.class))
+                .mean(mean)
                 .tradingDays(TradingDaysSpecMapping.read(info.getSubSet(TD)))
                 .easter(EasterSpecMapping.read(info.getSubSet(EASTER)));
         List<Information<InformationSet>> sel = info.select(OUTLIERS, InformationSet.class);
@@ -218,9 +229,12 @@ class RegressionSpecMapping {
             return null;
         }
         InformationSet info = new InformationSet();
-        Parameter mean = spec.getMean();
-        if (mean != null) {
-            info.set(MU, mean);
+        MeanSpec mean = spec.getMean();
+        if (mean.isUsed()) {
+            info.set(MU, mean.getCoefficient());
+            if (verbose || mean.isTest()) {
+                info.set(CHECKMU, mean.isTest());
+            }
         }
         InformationSet tdinfo = TradingDaysSpecMapping.write(spec.getTradingDays(), verbose);
         if (tdinfo != null) {

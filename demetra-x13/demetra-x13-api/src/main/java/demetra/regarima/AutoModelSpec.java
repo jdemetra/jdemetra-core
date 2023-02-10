@@ -34,12 +34,12 @@ public final class AutoModelSpec implements Validatable<AutoModelSpec> {
 
     public static final double DEF_LJUNGBOX = .95, DEF_TSIG = 1, DEF_PREDCV = .14286, DEF_UBFINAL = 1.05, DEF_UB1 = 1 / .97, DEF_UB2 = 1/.88,
             DEF_CANCEL = 0.1, DEF_FCT = 1 / .9875;
-    public static final boolean DEF_ACCEPTDEF = false, DEF_CHECKMU = true, DEF_MIXED = true,
+    public static final boolean DEF_ACCEPTDEF = false, DEF_MIXED = true,
             DEF_BALANCED = false, DEF_HR = false;
 
     private boolean enabled;
     private OrderSpec diff, order;
-    private boolean acceptDefault, checkMu, mixed, balanced, hannanRissannen;
+    private boolean acceptDefault, mixed, balanced, hannanRissannen;
     private double cancel, percentRSE, ljungBoxLimit, predcv, ub1, ub2, ubfinal;
 
     /**
@@ -52,7 +52,6 @@ public final class AutoModelSpec implements Validatable<AutoModelSpec> {
         return new Builder()
                 .enabled(false)
                 .acceptDefault(DEF_ACCEPTDEF)
-                .checkMu(DEF_CHECKMU)
                 .mixed(DEF_MIXED)
                 .balanced(DEF_BALANCED)
                 .hannanRissannen(DEF_HR)

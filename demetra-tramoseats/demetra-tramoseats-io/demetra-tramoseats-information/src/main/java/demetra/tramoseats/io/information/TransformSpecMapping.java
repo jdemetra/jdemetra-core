@@ -65,7 +65,7 @@ class TransformSpecMapping {
 
     TransformSpec read(InformationSet info) {
         if (info == null) {
-            return TransformSpec.DEFAULT;
+            return TransformSpec.DEFAULT_UNUSED;
         }
         TransformSpec.Builder builder = TransformSpec.builder();
         TimeSelector span = info.get(SPAN, TimeSelector.class);

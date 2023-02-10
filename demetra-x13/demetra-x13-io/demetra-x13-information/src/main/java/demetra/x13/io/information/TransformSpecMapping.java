@@ -69,7 +69,7 @@ class TransformSpecMapping {
 
     TransformSpec read(InformationSet info) {
         if (info == null) {
-            return TransformSpec.DEFAULT;
+            return TransformSpec.DEFAULT_NONE;
         }
         TransformSpec.Builder builder = TransformSpec.builder();
         String fn = info.get(FN, String.class);

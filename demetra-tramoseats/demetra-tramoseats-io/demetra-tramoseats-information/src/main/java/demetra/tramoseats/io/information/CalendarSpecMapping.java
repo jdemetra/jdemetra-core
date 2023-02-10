@@ -41,7 +41,7 @@ class CalendarSpecMapping {
     
     CalendarSpec readLegacy(InformationSet regInfo) {
         if (regInfo == null) {
-            return CalendarSpec.DEFAULT;
+            return CalendarSpec.DEFAULT_UNUSED;
         }
         CalendarSpec.Builder builder = CalendarSpec.builder();
         return builder
@@ -69,7 +69,7 @@ class CalendarSpecMapping {
     
     CalendarSpec read(InformationSet cInfo) {
         if (cInfo == null) {
-            return CalendarSpec.DEFAULT;
+            return CalendarSpec.DEFAULT_UNUSED;
         }
         CalendarSpec.Builder builder = CalendarSpec.builder();
         return builder
