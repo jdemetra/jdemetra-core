@@ -37,6 +37,11 @@
             <artifactId>demetra-tstoolkit</artifactId>
             <scope>test</scope>
         </dependency>
+       <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>demetra-sts-core</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sat</groupId>
             <artifactId>demetra-data-tests</artifactId>
