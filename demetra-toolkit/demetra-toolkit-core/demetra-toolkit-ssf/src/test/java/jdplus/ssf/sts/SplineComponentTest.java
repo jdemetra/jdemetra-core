@@ -35,22 +35,22 @@ public class SplineComponentTest {
 
     @Test
     public void testMonthly() {
-        SplineComponent.Data sd=SplineComponent.Data.of(new int[]{0,4,5,6,7,12});
+        RegularSplineComponent.Data sd=RegularSplineComponent.Data.of(new int[]{0,4,5,6,7,12});
         CompositeSsf ssf = CompositeSsf.builder()
                 .add(LocalLinearTrend.stateComponent(0.1, 0.1), LocalLinearTrend.defaultLoading())
                 .add(Noise.of(1), Noise.defaultLoading())
-                .add(SplineComponent.stateComponent(sd,1), SplineComponent.loading(sd, 0))
+                .add(RegularSplineComponent.stateComponent(sd,1), RegularSplineComponent.loading(sd, 0))
                 .build();
         
         SmoothingOutput rslt = AkfToolkit.robustSmooth(ssf, new SsfData(Data.PROD), true, true);
-        System.out.println(rslt.getSmoothing().getComponent(ssf.componentsPosition()[0]));
-        System.out.println(rslt.getSmoothing().getComponent(ssf.componentsPosition()[1]));
+//        System.out.println(rslt.getSmoothing().getComponent(ssf.componentsPosition()[0]));
+//        System.out.println(rslt.getSmoothing().getComponent(ssf.componentsPosition()[1]));
         
-        ISsfLoading loading = SplineComponent.loading(sd, 0);
+        ISsfLoading loading = RegularSplineComponent.loading(sd, 0);
         for (int i=0; i<rslt.getSmoothing().size(); ++i){
             double z=loading.ZX(i, rslt.getSmoothing().a(i).extract(ssf.componentsPosition()[2], ssf.componentsDimension()[2]));
-            System.out.print(z);
-            System.out.print('\t');
+//            System.out.print(z);
+//            System.out.print('\t');
         }
         
      }

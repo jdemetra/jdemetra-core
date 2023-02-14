@@ -24,7 +24,6 @@ import demetra.modelling.highfreq.TransformSpec;
 import demetra.processing.AlgorithmDescriptor;
 import demetra.processing.ProcSpecification;
 import demetra.timeseries.TsUnit;
-import java.time.temporal.ChronoUnit;
 import lombok.NonNull;
 import nbbrd.design.Development;
 

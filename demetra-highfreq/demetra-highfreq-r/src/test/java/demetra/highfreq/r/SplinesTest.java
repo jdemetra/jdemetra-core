@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import jdplus.highfreq.extendedairline.ExtendedAirlineMapping;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.modelling.regression.HolidaysFactory;
 import jdplus.msts.AtomicModels;
 import jdplus.msts.CompositeModel;
 import jdplus.msts.CompositeModelEstimation;
@@ -96,7 +95,7 @@ public class SplinesTest {
         CompositeModel model = new CompositeModel();
         StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
         StateItem sw = AtomicModels.seasonalComponent("sw", "Crude", 7, .01, false);
-        StateItem sy = AtomicModels.splineComponent("sy", pos, 0, .01, false);
+        StateItem sy = AtomicModels.regularSplineComponent("sy", pos, 0, .01, false);
         StateItem reg=AtomicModels.timeVaryingRegression("reg", X, 0.01, false);
         StateItem n = AtomicModels.noise("n", .01, false);
         ModelEquation eq = new ModelEquation("eq1", 0, true);
