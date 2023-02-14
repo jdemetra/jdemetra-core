@@ -65,7 +65,7 @@ public class QRSmoother {
 
         AugmentedSmoother smoother = new AugmentedSmoother();
         smoother.setCalcVariances(var);
-        DefaultSmoothingResults rslts = DefaultSmoothingResults.full();
+        DefaultSmoothingResults rslts = var ? DefaultSmoothingResults.full() : DefaultSmoothingResults.light();
         rslts.prepare(ssf.getStateDim(), 0, len);
         smoother.process(ssf, len, fr, psi, delta, rslts);
         if (rescale) {

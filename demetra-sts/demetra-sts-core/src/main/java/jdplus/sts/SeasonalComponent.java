@@ -491,7 +491,7 @@ public class SeasonalComponent {
         }
     }
 
-    static class HarrisonStevensData {
+    public static class HarrisonStevensData {
 
         private final int period;
         private final double[] var;
@@ -527,7 +527,7 @@ public class SeasonalComponent {
         }
     }
 
-    static class HarrisonStevensInitialization implements ISsfInitialization {
+    public static class HarrisonStevensInitialization implements ISsfInitialization {
 
         private final HarrisonStevensData data;
 

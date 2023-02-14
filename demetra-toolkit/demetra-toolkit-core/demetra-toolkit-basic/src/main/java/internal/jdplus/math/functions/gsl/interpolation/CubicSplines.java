@@ -46,23 +46,23 @@ public class CubicSplines {
 
     private static class NaturalSpline extends Spline {
 
-        private int find(double x) {
-            if (x < xa[0]) {
-                return -1;
-            } else {
-                int n = xa.length - 1;
-                if (x >= xa[xa.length - n]) {
-                    return n;
-                }
-                int pos = Arrays.binarySearch(xa, x);
-                if (pos >= 0) {
-                    return pos;
-                } else {
-                    return -pos - 2;
-                }
-            }
-        }
-
+//        private int find(double x) {
+//            if (x < xa[0]) {
+//                return -1;
+//            } else {
+//                int n = xa.length - 1;
+//                if (x >= xa[xa.length - n]) {
+//                    return n;
+//                }
+//                int pos = Arrays.binarySearch(xa, x);
+//                if (pos >= 0) {
+//                    return pos;
+//                } else {
+//                    return -pos - 2;
+//                }
+//            }
+//        }
+//
         @Override
         public double applyAsDouble(double x) {
             if (x < xa[0]) {
@@ -387,269 +387,18 @@ public class CubicSplines {
  *    if ( x > xN )            then  index == N-1
  *    if ( x < x0 )            then  index == 0 
      */
-    int bsearch(double[] x_array, double x, int index_lo, int index_hi) {
-        int ilo = index_lo;
-        int ihi = index_hi;
-        while (ihi > ilo + 1) {
-            int i = (ihi + ilo) / 2;
-            if (x_array[i] > x) {
-                ihi = i;
-            } else {
-                ilo = i;
-            }
-        }
-        return ilo;
-    }
-
-//
-///* natural spline calculation
-// * see [Engeln-Mullges + Uhlig, p. 254]
-// */
-//static int
-//
-//
-///* periodic spline calculation
-// * see [Engeln-Mullges + Uhlig, p. 256]
-// */
-//}
-//
-//
-///* function for common coefficient determination
-// */
-//static inline void
-//coeff_calc (const double c_array[], double dy, double dx, size_t index,  
-//            double * b, double * c, double * d)
-//{
-//  const double c_i = c_array[index];
-//  const double c_ip1 = c_array[index + 1];
-//  *b = (dy / dx) - dx * (c_ip1 + 2.0 * c_i) / 3.0;
-//  *c = c_i;
-//  *d = (c_ip1 - c_i) / (3.0 * dx);
-//}
-//
-//
-//static
-//int
-//cspline_eval (const void * vstate,
-//              const double x_array[], const double y_array[], size_t size,
-//              double x,
-//              gsl_interp_accel * a,
-//              double *y)
-//{
-//  const cspline_state_t *spline = (const cspline_state_t *) vstate;
-//
-//  double x_lo, x_hi;
-//  double dx;
-//  size_t index;
-//  
-//  if (a != 0)
-//    {
-//      index = gsl_interp_accel_find (a, x_array, size, x);
-//    }
-//  else
-//    {
-//      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
-//    }
-//  
-//  /* evaluate */
-//  x_hi = x_array[index + 1];
-//  x_lo = x_array[index];
-//  dx = x_hi - x_lo;
-//  if (dx > 0.0)
-//    {
-//      const double y_lo = y_array[index];
-//      const double y_hi = y_array[index + 1];
-//      const double dy = y_hi - y_lo;
-//      double delx = x - x_lo;
-//      double b_i, c_i, d_i; 
-//      coeff_calc(spline->c, dy, dx, index,  &b_i, &c_i, &d_i);
-//      *y = y_lo + delx * (b_i + delx * (c_i + delx * d_i));
-//      return GSL_SUCCESS;
-//    }
-//  else
-//    {
-//      *y = 0.0;
-//      return GSL_EINVAL;
-//    }
-//}
-//
-//
-//static
-//int
-//cspline_eval_deriv (const void * vstate,
-//                    const double x_array[], const double y_array[], size_t size,
-//                    double x,
-//                    gsl_interp_accel * a,
-//                    double *dydx)
-//{
-//  const cspline_state_t *spline = (const cspline_state_t *) vstate;
-//
-//  double x_lo, x_hi;
-//  double dx;
-//  size_t index;
-//  
-//  if (a != 0)
-//    {
-//      index = gsl_interp_accel_find (a, x_array, size, x);
-//    }
-//  else
-//    {
-//      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
-//    }
-//  
-//  /* evaluate */
-//  x_hi = x_array[index + 1];
-//  x_lo = x_array[index];
-//  dx = x_hi - x_lo;
-//  if (dx > 0.0)
-//    {
-//      const double y_lo = y_array[index];
-//      const double y_hi = y_array[index + 1];
-//      const double dy = y_hi - y_lo;
-//      double delx = x - x_lo;
-//      double b_i, c_i, d_i; 
-//      coeff_calc(spline->c, dy, dx, index,  &b_i, &c_i, &d_i);
-//      *dydx = b_i + delx * (2.0 * c_i + 3.0 * d_i * delx);
-//      return GSL_SUCCESS;
-//    }
-//  else
-//    {
-//      *dydx = 0.0;
-//      return GSL_EINVAL;
-//    }
-//}
-//
-//
-//static
-//int
-//cspline_eval_deriv2 (const void * vstate,
-//                     const double x_array[], const double y_array[], size_t size,
-//                     double x,
-//                     gsl_interp_accel * a,
-//                     double * y_pp)
-//{
-//  const cspline_state_t *spline = (const cspline_state_t *) vstate;
-//
-//  double x_lo, x_hi;
-//  double dx;
-//  size_t index;
-//  
-//  if (a != 0)
-//    {
-//      index = gsl_interp_accel_find (a, x_array, size, x);
-//    }
-//  else
-//    {
-//      index = gsl_interp_bsearch (x_array, x, 0, size - 1);
-//    }
-//  
-//  /* evaluate */
-//  x_hi = x_array[index + 1];
-//  x_lo = x_array[index];
-//  dx = x_hi - x_lo;
-//  if (dx > 0.0)
-//    {
-//      const double y_lo = y_array[index];
-//      const double y_hi = y_array[index + 1];
-//      const double dy = y_hi - y_lo;
-//      double delx = x - x_lo;
-//      double b_i, c_i, d_i;
-//      coeff_calc(spline->c, dy, dx, index,  &b_i, &c_i, &d_i);
-//      *y_pp = 2.0 * c_i + 6.0 * d_i * delx;
-//      return GSL_SUCCESS;
-//    }
-//  else
-//    {
-//      *y_pp = 0.0;
-//      return GSL_EINVAL;
-//    }
-//}
-//
-//
-//static
-//int
-//cspline_eval_integ (const void * vstate,
-//                    const double x_array[], const double y_array[], size_t size,
-//                    gsl_interp_accel * acc,
-//                    double a, double b,
-//                    double * result)
-//{
-//  const cspline_state_t *spline = (const cspline_state_t *) vstate;
-//
-//  size_t ilast, index_a, index_b;
-//  
-//  if (acc != 0)
-//    {
-//      index_a = gsl_interp_accel_find (acc, x_array, size, a);
-//      index_b = gsl_interp_accel_find (acc, x_array, size, b);
-//    }
-//  else
-//    {
-//      index_a = gsl_interp_bsearch (x_array, a, 0, size - 1);
-//      index_b = gsl_interp_bsearch (x_array, b, 0, size - 1);
-//    }
-//
-//  *result = 0.0;
-//  
-//  /* interior intervals */
-//  for(ilast=index_a; ilast<=index_b; ilast++) {
-//    const double x_hi = x_array[ilast + 1];
-//    const double x_lo = x_array[ilast];
-//    const double y_lo = y_array[ilast];
-//    const double y_hi = y_array[ilast + 1];
-//    const double dx = x_hi - x_lo;
-//    const double dy = y_hi - y_lo;
-//    if(dx != 0.0) {
-//      double b_i, c_i, d_i; 
-//      coeff_calc(spline->c, dy, dx, ilast,  &b_i, &c_i, &d_i);
-//      
-//      if (ilast == index_a || ilast == index_b)
-//        {
-//          double x1 = (ilast == index_a) ? a : x_lo;
-//          double x2 = (ilast == index_b) ? b : x_hi;
-//          *result += integ_eval(y_lo, b_i, c_i, d_i, x_lo, x1, x2);
+//    int bsearch(double[] x_array, double x, int index_lo, int index_hi) {
+//        int ilo = index_lo;
+//        int ihi = index_hi;
+//        while (ihi > ilo + 1) {
+//            int i = (ihi + ilo) / 2;
+//            if (x_array[i] > x) {
+//                ihi = i;
+//            } else {
+//                ilo = i;
+//            }
 //        }
-//      else
-//        {
-//          *result += dx * (y_lo + dx*(0.5*b_i + dx*(c_i/3.0 + 0.25*d_i*dx)));
-//        }
+//        return ilo;
 //    }
-//    else {
-//      *result = 0.0;
-//      return GSL_EINVAL;
-//    }
-//  }
-//  
-//  return GSL_SUCCESS;
-//}
 //
-//static const gsl_interp_type cspline_type = 
-//{
-//  "cspline", 
-//  3,
-//  &cspline_alloc,
-//  &cspline_init,
-//  &cspline_eval,
-//  &cspline_eval_deriv,
-//  &cspline_eval_deriv2,
-//  &cspline_eval_integ,
-//  &cspline_free
-//};
-//
-//const gsl_interp_type * gsl_interp_cspline = &cspline_type;
-//
-//static const gsl_interp_type cspline_periodic_type = 
-//{
-//  "cspline-periodic", 
-//  2,
-//  &cspline_alloc,
-//  &cspline_init_periodic,
-//  &cspline_eval,
-//  &cspline_eval_deriv,
-//  &cspline_eval_deriv2,
-//  &cspline_eval_integ,
-//  &cspline_free
-//};
-//
-//const gsl_interp_type * gsl_interp_cspline_periodic = &cspline_periodic_type;
 }

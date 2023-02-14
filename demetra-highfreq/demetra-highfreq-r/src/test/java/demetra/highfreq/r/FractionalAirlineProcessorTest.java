@@ -6,14 +6,10 @@
 package demetra.highfreq.r;
 
 import demetra.data.DoubleSeq;
-import demetra.data.MatrixSerializer;
 import demetra.data.WeeklyData;
 import jdplus.highfreq.extendedairline.decomposiiton.LightExtendedAirlineDecomposition;
 import jdplus.highfreq.extendedairline.ExtendedAirlineEstimation;
 import demetra.math.matrices.Matrix;
-import java.io.IOException;
-import java.io.InputStream;
-import jdplus.highfreq.extendedairline.ExtendedAirlineMapping;
 import jdplus.ssf.extractors.SsfUcarimaEstimation;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;

@@ -29,6 +29,7 @@ import jdplus.msts.internal.VarLocalLinearTrendItem;
 import jdplus.msts.internal.VarSeasonalComponentItem;
 import jdplus.msts.internal.VarNoiseItem;
 import demetra.math.matrices.Matrix;
+import jdplus.msts.internal.SplineItem;
 import jdplus.msts.internal.VarRegressionItem;
 
 /**
@@ -134,4 +135,7 @@ public class AtomicModels {
         return new PeriodicItem(name, period, k, cvar, fixedvar);
     }
 
+    public StateItem splineComponent(String name, int[] pos, int startpos, double cvar, boolean fixedvar) {
+        return new SplineItem(name, pos, startpos, cvar, fixedvar);
+    }
 }
