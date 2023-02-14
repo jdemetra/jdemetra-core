@@ -14,27 +14,26 @@ import java.util.List;
 import jdplus.msts.ParameterInterpreter;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
-import jdplus.ssf.sts.PeriodicComponent;
-import jdplus.ssf.sts.SplineComponent;
+import jdplus.ssf.sts.RegularSplineComponent;
 
 /**
  *
  * @author palatej
  */
-public class SplineItem extends StateItem {
+public class RegularSplineItem extends StateItem {
 
     private final VarianceInterpreter v;
     private final int startpos;
-    private final SplineComponent.Data data;
+    private final RegularSplineComponent.Data data;
 
-    public SplineItem(String name, int[] pos, int startpos, double cvar, boolean fixedvar) {
+    public RegularSplineItem(String name, int[] pos, int startpos, double cvar, boolean fixedvar) {
         super(name);
         v = new VarianceInterpreter(name + ".var", cvar, fixedvar, true);
-        this.data = SplineComponent.Data.of(pos);
+        this.data = RegularSplineComponent.Data.of(pos);
         this.startpos = startpos;
     }
 
-    private SplineItem(SplineItem item) {
+    private RegularSplineItem(RegularSplineItem item) {
         super(item.name);
         this.data = item.data;
         this.startpos = item.startpos;
@@ -42,8 +41,8 @@ public class SplineItem extends StateItem {
     }
 
     @Override
-    public SplineItem duplicate() {
-        return new SplineItem(this);
+    public RegularSplineItem duplicate() {
+        return new RegularSplineItem(this);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class SplineItem extends StateItem {
         mapping.add(v);
         mapping.add((p, builder) -> {
             double var = p.get(0);
-            builder.add(name, SplineComponent.stateComponent(data, var), SplineComponent.loading(data, startpos));
+            builder.add(name, RegularSplineComponent.stateComponent(data, var), RegularSplineComponent.loading(data, startpos));
             return 1;
         });
     }
@@ -64,7 +63,7 @@ public class SplineItem extends StateItem {
     @Override
     public StateComponent build(DoubleSeq p) {
         double var = p.get(0);
-        return SplineComponent.stateComponent(data, var);
+        return RegularSplineComponent.stateComponent(data, var);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class SplineItem extends StateItem {
         if (m > 0) {
             return null;
         }
-        return SplineComponent.loading(data, startpos);
+        return RegularSplineComponent.loading(data, startpos);
     }
 
     @Override

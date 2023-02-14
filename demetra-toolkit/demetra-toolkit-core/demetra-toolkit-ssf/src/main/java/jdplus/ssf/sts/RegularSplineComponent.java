@@ -29,11 +29,11 @@ import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateComponent;
 
 /**
- *
+ * Integer period, regular knots on integer "periods"
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-public class SplineComponent {
+public class RegularSplineComponent {
 
     @lombok.Value
     @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
