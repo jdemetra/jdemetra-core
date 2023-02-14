@@ -30,6 +30,7 @@ import sdmxdl.*;
 import sdmxdl.ext.SdmxCubeUtil;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -228,16 +229,30 @@ public final class SdmxCubeConnection implements CubeConnection {
             case 0:
                 return TsData.empty("No data");
             case 1:
+                Obs singleObs = series.getObs().first();
                 return TsDataBuilder
-                        .byDateTime(SINGLE_GATHERING)
-                        .addAll(series.getObs().stream(), Obs::getPeriod, Obs::getValue)
+                        .byDateTime(getSingleGathering(singleObs))
+                        .addAll(series.getObs().stream(), SdmxCubeConnection::toLocalDateTime, Obs::getValue)
                         .build();
             default:
                 return TsDataBuilder
                         .byDateTime(DEFAULT_GATHERING)
-                        .addAll(series.getObs().stream(), Obs::getPeriod, Obs::getValue)
+                        .addAll(series.getObs().stream(), SdmxCubeConnection::toLocalDateTime, Obs::getValue)
                         .build();
         }
+    }
+
+    private static LocalDateTime toLocalDateTime(Obs obs) {
+        return obs.getPeriod().getStart();
+    }
+
+    private static ObsGathering getSingleGathering(Obs singleObs) {
+        return ObsGathering
+                .builder()
+                .includeMissingValues(true)
+                .unit(getTsUnit(singleObs))
+                .aggregationType(AggregationType.None)
+                .build();
     }
 
     private static final ObsGathering DEFAULT_GATHERING = ObsGathering
@@ -247,12 +262,13 @@ public final class SdmxCubeConnection implements CubeConnection {
             .aggregationType(AggregationType.None)
             .build();
 
-    private static final ObsGathering SINGLE_GATHERING = ObsGathering
-            .builder()
-            .includeMissingValues(true)
-            .unit(TsUnit.YEAR)
-            .aggregationType(AggregationType.None)
-            .build();
+    private static TsUnit getTsUnit(Obs obs) {
+        try {
+            return TsUnit.parse(obs.getPeriod().getDuration().toString());
+        } catch (Exception ex) {
+            return TsUnit.YEAR;
+        }
+    }
 
     private static CubeId getOrLoadRoot(List<String> dimensions, DataStructure dsd) {
         return dimensions.isEmpty()
