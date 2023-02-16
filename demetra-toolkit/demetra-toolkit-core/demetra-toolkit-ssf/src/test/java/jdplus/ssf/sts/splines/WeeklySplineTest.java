@@ -14,12 +14,9 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.ssf.sts;
+package jdplus.ssf.sts.splines;
 
-import jdplus.ssf.sts.splines.SplineComponent;
 import demetra.data.DoubleSeq;
-import jdplus.ssf.sts.splines.SplineData;
-import jdplus.ssf.sts.splines.WeeklySpline;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -27,29 +24,22 @@ import static org.junit.Assert.*;
  *
  * @author palatej
  */
-public class SplineComponentTest {
+public class WeeklySplineTest {
 
-    public SplineComponentTest() {
+    public WeeklySplineTest() {
     }
 
     @Test
-    public void testWeekly() {
-        int[] xi = new int[]{50, 100, 150, 200, 300, 350};
-        WeeklySpline ws = new WeeklySpline(1980, 0, xi);
-        SplineData data = SplineData.of(ws, 20);
+    public void testLp() {
 
-        assertTrue(data != null);
-    }
-
-    public static void main(String[] args) {
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 10000; ++i) {
-            int[] xi = new int[]{50, 100, 150, 200, 300, 350};
-            WeeklySpline ws = new WeeklySpline(1980, 0, xi);
-            SplineData data = SplineData.of(ws, 20);
+        WeeklySpline ds = new WeeklySpline(2003, 3, new int[]{100, 200, 300});
+        for (int i = 0; i < 29; ++i) {
+            DoubleSeq obs = ds.observations(1);
+            assertTrue(obs.length() <= 53);
+            double last=obs.get(obs.length() - 1);
+            assertTrue(last < ds.getPeriod());
+            assertTrue(last + 1 > ds.getPeriod());
         }
-        long t1 = System.currentTimeMillis();
-        System.out.println(t1 - t0);
     }
 
 }

@@ -14,16 +14,12 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package jdplus.ssf.sts;
+package jdplus.ssf.sts.splines;
 
-import demetra.data.DoubleSeq;
 import demetra.data.DoubleSeqCursor;
-import internal.jdplus.math.functions.gsl.interpolation.CubicSplines;
 import jdplus.data.DataBlock;
 import jdplus.data.DataBlockIterator;
 import jdplus.math.matrices.FastMatrix;
-import jdplus.math.matrices.LowerTriangularMatrix;
-import jdplus.math.matrices.SymmetricMatrix;
 import jdplus.ssf.ISsfDynamics;
 import jdplus.ssf.ISsfInitialization;
 import jdplus.ssf.ISsfLoading;
@@ -31,73 +27,44 @@ import jdplus.ssf.StateComponent;
 
 /**
  * Integer period, regular knots on integer "periods"
+ *
  * @author palatej
  */
 @lombok.experimental.UtilityClass
-public class RegularSplineComponent {
+public class SplineComponent {
 
-    @lombok.Value
-    @lombok.AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-    public static class Data {
 
-        public static Data of(int[] xi) {
-            DoubleSeq X = DoubleSeq.onMapping(xi.length, k -> xi[k]);
-            int dim = xi.length - 1;
-            int period = xi[dim];
-            double[] wstar = new double[dim];
-            FastMatrix Z = FastMatrix.make(period, dim);
-            for (int i = 0; i < dim; ++i) {
-                double[] f = new double[dim + 1];
-                if (i == 0) {
-                    f[0] = 1;
-                    f[dim] = 1;
-                } else {
-                    f[i] = 1;
-                }
-                CubicSplines.Spline node=CubicSplines.periodic(X, DoubleSeq.of(f));
-                DoubleSeqCursor.OnMutable cursor = Z.column(i).cursor();
-                double s = 0;
-                for (int j = 0; j < period; ++j) {
-                    double w = node.applyAsDouble(j);
-                    cursor.setAndNext(w);
-                    s += w;
-                }
-                wstar[i] = s;
-            }
-            DataBlock zh = Z.column(dim - 1);
-            double wh = wstar[dim - 1];
-            for (int i = 0; i < dim - 1; ++i) {
-                Z.column(i).addAY(-wstar[i] / wh, zh);
-            }
+    public ISsfLoading loading(SplineData data, int startPos) {
 
-            DataBlock W = DataBlock.of(wstar, 0, dim);
-            FastMatrix Q = FastMatrix.identity(dim - 1);
-            Q.addXaXt(-1 / W.ssq(), W.drop(0, 1));
-            return new Data(Q, Z.dropBottomRight(0, 1), period, dim - 1);
-        }
-
-        private FastMatrix Q, Z;
-        private int period, dim;
-    }
-
-    public ISsfLoading loading(Data data, int startPos) {
-
-        return new Loading(data.getZ(), data.getPeriod(), startPos);
+        return new Loading(data, startPos);
     }
 
     public class Loading implements ISsfLoading {
 
-        private final int startpos, period;
-        private final FastMatrix Z;
+        private final SplineData data;
+        private final int[] cdim;
 
-        public Loading(FastMatrix Z, int period, int startpos) {
-            this.Z = Z;
-            this.period = period;
-            this.startpos = startpos;
+        public Loading(SplineData data, int startpos) {
+            this.data = data;
+            cdim = new int[data.getInfos().size()];
+            int i = 0, j = -startpos;
+            for (SplineData.PeriodInformation info : data.getInfos()) {
+                j += info.getZ().getRowsCount();
+                cdim[i++] = j;
+            }
         }
 
         private DataBlock z(int pos) {
-            return Z.row((pos + startpos) % period);
+            int cur = 0;
+            for (; cur < cdim.length; ++cur) {
+                if (pos < cdim[cur]) {
+                    break;
+                }
+            }
+            FastMatrix z = data.getInfos().get(cur).getZ();
+            int row = z.getRowsCount() - cdim[cur] + pos;
+
+            return z.row(row);
         }
 
         @Override
@@ -161,18 +128,9 @@ public class RegularSplineComponent {
         }
     }
 
-    public StateComponent stateComponent(int[] xi, double var) {
-        Data data = Data.of(xi);
+    public StateComponent stateComponent(SplineData data, double var, int startpos) {
 
-        Dynamics dynamics = new Dynamics(data.getQ(), var);
-        Initialization initialization = new Initialization(data.getDim());
-
-        return new StateComponent(initialization, dynamics);
-    }
-
-    public StateComponent stateComponent(Data data, double var) {
-
-        Dynamics dynamics = new Dynamics(data.getQ(), var);
+        Dynamics dynamics = new Dynamics(data, var, startpos);
         Initialization initialization = new Initialization(data.getDim());
 
         return new StateComponent(initialization, dynamics);
@@ -223,13 +181,40 @@ public class RegularSplineComponent {
 
     static class Dynamics implements ISsfDynamics {
 
-        private final FastMatrix var, s;
+        private final SplineData data;
+        private final double var, svar;
+        private final int[] cdim;
 
-        Dynamics(final FastMatrix Q, double var) {
-            this.var = Q.times(var);
-            s = this.var.deepClone();
-            SymmetricMatrix.lcholesky(s, 1e-9);
-            LowerTriangularMatrix.toLower(s);
+        Dynamics(final SplineData data, double var, int startpos) {
+            this.var = var;
+            this.svar = Math.sqrt(var);
+            this.data = data;
+            cdim = new int[data.getInfos().size()];
+            int i = 0, j = -startpos;
+            for (SplineData.PeriodInformation info : data.getInfos()) {
+                j += info.getZ().getRowsCount();
+                cdim[i++] = j;
+            }
+        }
+
+        private FastMatrix q(int pos) {
+            int cur = 0;
+            for (; cur < cdim.length; ++cur) {
+                if (pos < cdim[cur]) {
+                    break;
+                }
+            }
+            return data.getInfos().get(cur).getQ().times(var);
+        }
+
+        private FastMatrix s(int pos) {
+            int cur = 0;
+            for (; cur < cdim.length; ++cur) {
+                if (pos < cdim[cur]) {
+                    break;
+                }
+            }
+            return data.getInfos().get(cur).getS().times(svar);
         }
 
         @Override
@@ -244,12 +229,12 @@ public class RegularSplineComponent {
 
         @Override
         public int getInnovationsDim() {
-            return var.getColumnsCount();
+            return data.getDim();
         }
 
         @Override
         public void V(int pos, FastMatrix qm) {
-            qm.copy(var);
+            qm.copy(q(pos));
         }
 
         @Override
@@ -259,17 +244,17 @@ public class RegularSplineComponent {
 
         @Override
         public void S(int pos, FastMatrix sm) {
-            sm.copy(s);
+            sm.copy(s(pos));
         }
 
         @Override
         public void addSU(int pos, DataBlock x, DataBlock u) {
-            x.addProduct(s.rowsIterator(), u);
+            x.addProduct(s(pos).rowsIterator(), u);
         }
 
         @Override
         public void XS(int pos, DataBlock x, DataBlock xs) {
-            xs.product(x, s.columnsIterator());
+            xs.product(x, s(pos).columnsIterator());
         }
 
         @Override
@@ -291,7 +276,7 @@ public class RegularSplineComponent {
 
         @Override
         public void addV(int pos, FastMatrix p) {
-            p.add(var);
+            p.add(q(pos));
         }
     }
 

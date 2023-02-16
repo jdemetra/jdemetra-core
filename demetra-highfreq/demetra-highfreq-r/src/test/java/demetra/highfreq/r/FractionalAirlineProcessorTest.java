@@ -26,10 +26,10 @@ public class FractionalAirlineProcessorTest {
     @Test
     public void testWeeklyDecomp() {
         DoubleSeq y = DoubleSeq.of(WeeklyData.US_CLAIMS2).log();
-        LightExtendedAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(y.toArray(), 52, false, true, 10, 53);
-//        System.out.println(rslt.component("t").getData());
-//        System.out.println(rslt.component("s").getData());
-//        System.out.println(rslt.component("i").getData());
+        LightExtendedAirlineDecomposition rslt = FractionalAirlineProcessor.decompose(y.toArray(), 365.25/7, false, true, 0,0);
+        System.out.println(rslt.component("t").getData());
+        System.out.println(rslt.component("s").getData());
+        System.out.println(rslt.component("i").getData());
 //        System.out.println(rslt.component("t").getStde());
 //        System.out.println(rslt.component("s").getStde());
 //        System.out.println(rslt.component("i").getStde());

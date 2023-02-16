@@ -33,6 +33,8 @@ public class CubicSplinesTest {
             double f2 = periodic.applyAsDouble(i);
             assertEquals(f0, f1, 1e-6);
         }
+        System.out.println(periodic.applyAsDouble(0));
+        System.out.println(periodic.applyAsDouble(125));
     }
 
     @Test

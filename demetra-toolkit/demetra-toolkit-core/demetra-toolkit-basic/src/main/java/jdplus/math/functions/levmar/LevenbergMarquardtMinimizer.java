@@ -106,13 +106,12 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
     private DataBlock currentE;
     private double currentObjective, tentativeObjective;
     /**
-     * Approximate hessian of the function at the current point
-     * V = 2*[de/dxi*de/dxj]
+     * Approximate hessian of the function at the current point V =
+     * 2*[de/dxi*de/dxj]
      */
     private FastMatrix H;
     /**
-     * Gradient of the function at the current point
-     * G = 2*[de/dxi*e]
+     * Gradient of the function at the current point G = 2*[de/dxi*e]
      */
     private DoubleSeq G;
     private double scale, scale2;
@@ -221,86 +220,89 @@ public class LevenbergMarquardtMinimizer implements SsqFunctionMinimizer {
                 double smu = Math.sqrt(mu);
                 JC.subDiagonal(-n).set(smu);
             }
-            QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(DoubleSeq.of(e), JC);
-            if (ls.rank() == m) {
-                V = ls.RtR();
-                DoubleSeq dp = ls.getB().times(-1);
-                if (!Double.isFinite(dp.ssq())) {
-                    stop = 7;
-                    return false;
-                }
-                DataBlock np = DataBlock.of(currentPoint.getParameters());
-                double dpl2 = dp.ssq(), pl2 = np.ssq();
-                if (dpl2 <= eps2 * (pl2 + eps2)) {
-                    /*
+            try {
+                QRLeastSquaresSolution ls = QRLeastSquaresSolver.fastLeastSquares(DoubleSeq.of(e), JC);
+                if (ls.rank() == m) {
+                    V = ls.RtR();
+                    DoubleSeq dp = ls.getB().times(-1);
+                    if (!Double.isFinite(dp.ssq())) {
+                        stop = 7;
+                        return false;
+                    }
+                    DataBlock np = DataBlock.of(currentPoint.getParameters());
+                    double dpl2 = dp.ssq(), pl2 = np.ssq();
+                    if (dpl2 <= eps2 * (pl2 + eps2)) {
+                        /*
                      * relative change in p is small, stop
-                     */
-                    stop = 2;
-                    return false;
-                }
-                if (dpl2 >= (pl2 + eps2) / (EPSILON * EPSILON)) {
-                    /*
+                         */
+                        stop = 2;
+                        return false;
+                    }
+                    if (dpl2 >= (pl2 + eps2) / (EPSILON * EPSILON)) {
+                        /*
                      * almost singular
-                     */
-                    stop = 4;
-                    return false;
-                }
-                //if (fn_.getDomain().checkBoundaries(np)) {
-                np.add(dp);
-                ParamValidation status = function.getDomain().validate(np);
-                if (status != ParamValidation.Invalid) {
-                    try {
-                        tentativePoint = function.ssqEvaluate(np);
-                        tentativeObjective = tentativePoint.getSsqE();
-                        double dF = currentObjective - tentativeObjective;
-                        if (dF > 0.0) {
-                            if (status == ParamValidation.Changed) {
-                                // we have a new starting point (better than the current point).
-                                // restart the processing. Undefined score and hessian
-                                currentPoint = tentativePoint;
-                                currentObjective = tentativeObjective;
-                                currentE = DataBlock.of(currentPoint.getE());
-                                H = null;
-                                G = null;
+                         */
+                        stop = 4;
+                        return false;
+                    }
+                    //if (fn_.getDomain().checkBoundaries(np)) {
+                    np.add(dp);
+                    ParamValidation status = function.getDomain().validate(np);
+                    if (status != ParamValidation.Invalid) {
+                        try {
+                            tentativePoint = function.ssqEvaluate(np);
+                            tentativeObjective = tentativePoint.getSsqE();
+                            double dF = currentObjective - tentativeObjective;
+                            if (dF > 0.0) {
+                                if (status == ParamValidation.Changed) {
+                                    // we have a new starting point (better than the current point).
+                                    // restart the processing. Undefined score and hessian
+                                    currentPoint = tentativePoint;
+                                    currentObjective = tentativeObjective;
+                                    currentE = DataBlock.of(currentPoint.getE());
+                                    H = null;
+                                    G = null;
 //                        mu = 0;
 //                        nu = 4;
-                                return true;
-                            }
-                            DataBlock dl = DataBlock.of(G);
-                            dl.addAY(-2 * mu, dp);
-                            double dL = -dl.dot(dp) / 2;
-                            double ratio = dF / dL;
-                            if (ratio > 0.0001) {
-                                /*
-                                 * reduction in error, increment is accepted
-                                 */
-
-                                double tmp = 2.0 * ratio - 1.0;
-                                tmp = 1.0 - tmp * tmp * tmp;
-                                if (mu != 0) {
-                                    mu *= tmp >= ONE_THIRD ? tmp : ONE_THIRD;
-                                }
-                                nu = 4;
-                                // accept the solution
-                                boolean end = dF <= eps3 * scale2;
-                                currentPoint = tentativePoint;
-                                currentObjective = tentativeObjective;
-                                currentE = DataBlock.of(currentPoint.getE());
-                                // H = 2* J'J =2*(R'Q'QR) 
-                                V.mul(2);
-                                H = V;
-                                if (end) {
-                                    stop = 2;
-                                    return false;
-                                } else {
                                     return true;
                                 }
+                                DataBlock dl = DataBlock.of(G);
+                                dl.addAY(-2 * mu, dp);
+                                double dL = -dl.dot(dp) / 2;
+                                double ratio = dF / dL;
+                                if (ratio > 0.0001) {
+                                    /*
+                                 * reduction in error, increment is accepted
+                                     */
 
+                                    double tmp = 2.0 * ratio - 1.0;
+                                    tmp = 1.0 - tmp * tmp * tmp;
+                                    if (mu != 0) {
+                                        mu *= tmp >= ONE_THIRD ? tmp : ONE_THIRD;
+                                    }
+                                    nu = 4;
+                                    // accept the solution
+                                    boolean end = dF <= eps3 * scale2;
+                                    currentPoint = tentativePoint;
+                                    currentObjective = tentativeObjective;
+                                    currentE = DataBlock.of(currentPoint.getE());
+                                    // H = 2* J'J =2*(R'Q'QR) 
+                                    V.mul(2);
+                                    H = V;
+                                    if (end) {
+                                        stop = 2;
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+
+                                }
                             }
+                        } catch (Exception err) {
                         }
-                    } catch (Exception err) {
                     }
                 }
+            } catch (Exception err) {
             }
             /*
              * if this point is reached, either the linear system could not be
