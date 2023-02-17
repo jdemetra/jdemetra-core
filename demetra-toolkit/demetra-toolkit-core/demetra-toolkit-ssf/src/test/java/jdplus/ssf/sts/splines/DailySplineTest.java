@@ -35,7 +35,7 @@ public class DailySplineTest {
         DailySpline ds=new DailySpline(2003, new int[]{100,200,300});
         DoubleSeq obs = ds.observations(1);
         assertTrue(obs.length() == 366);
-        assertTrue(obs.get(365)==365);
+        assertTrue(obs.get(365)==364);
         assertTrue(obs.get(58)==58);
         assertTrue(obs.get(59)==58);
     }
