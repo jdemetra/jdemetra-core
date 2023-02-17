@@ -42,9 +42,6 @@ import jdplus.msts.ModelEquation;
 import jdplus.msts.StateItem;
 import jdplus.ssf.ISsfLoading;
 import jdplus.ssf.StateStorage;
-import jdplus.ssf.sts.splines.SplineComponent;
-import jdplus.ssf.sts.splines.SplineData;
-import jdplus.ssf.sts.splines.WeeklySpline;
 import jdplus.timeseries.calendars.HolidaysUtility;
 
 /**
@@ -95,7 +92,7 @@ public class SplinesTest {
 
         long t0 = System.currentTimeMillis();
 
-        int[] pos = new int[]{0, 30, 300, 350, 358};
+        int[] pos = new int[]{0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 340, 350, 358};
 
         CompositeModel model = new CompositeModel();
         StateItem l = AtomicModels.localLevel("l", .01, false, Double.NaN);
@@ -198,8 +195,8 @@ public class SplinesTest {
             System.out.print(z);
             System.out.print('\t');
         }
-         System.out.println();
-       System.out.println(smoothedStates.getComponent(cmpPos[2]));
-         System.out.println("");
+        System.out.println();
+        System.out.println(smoothedStates.getComponent(cmpPos[2]));
+        System.out.println("");
     }
 }

@@ -27,7 +27,6 @@ import demetra.timeseries.calendars.DayClustering;
 import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.timeseries.regression.GenericTradingDaysVariable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import jdplus.data.DataBlock;
@@ -115,15 +114,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
 
     public boolean fill(GenericTradingDays var, TsPeriod start, FastMatrix buffer) {
         switch (var.getType()) {
-            case CONTRAST:
-                dataContrast(var.getClustering(), start, buffer);
-                break;
-            case RAW:
-                dataNoContrast(var.getClustering(), false, start, buffer);
-                break;
-            case MEANCORRECTED:
-                dataNoContrast(var.getClustering(), true, start, buffer);
-                break;
+            case CONTRAST -> dataContrast(var.getClustering(), start, buffer);
+            case RAW -> dataNoContrast(var.getClustering(), false, start, buffer);
+            case MEANCORRECTED -> dataNoContrast(var.getClustering(), true, start, buffer);
         }
         return true;
     }
@@ -131,15 +124,9 @@ public class GenericTradingDaysFactory implements RegressionVariableFactory<Gene
     @Override
     public boolean fill(GenericTradingDaysVariable var, TsPeriod start, FastMatrix buffer) {
         switch (var.getVariableType()) {
-            case CONTRAST:
-                dataContrast(var.getClustering(), start, buffer);
-                break;
-            case RAW:
-                dataNoContrast(var.getClustering(), false, start, buffer);
-                break;
-            case MEANCORRECTED:
-                dataNoContrast(var.getClustering(), true, start, buffer);
-                break;
+            case CONTRAST -> dataContrast(var.getClustering(), start, buffer);
+            case RAW -> dataNoContrast(var.getClustering(), false, start, buffer);
+            case MEANCORRECTED -> dataNoContrast(var.getClustering(), true, start, buffer);
         }
         return true;
     }

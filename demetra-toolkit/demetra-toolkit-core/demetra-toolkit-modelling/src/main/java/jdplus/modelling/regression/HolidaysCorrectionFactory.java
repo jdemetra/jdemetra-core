@@ -24,7 +24,6 @@ import jdplus.math.matrices.MatrixFactory;
 import jdplus.math.matrices.FastMatrix;
 import jdplus.timeseries.calendars.HolidaysUtility;
 import demetra.timeseries.TimeSeriesInterval;
-import demetra.timeseries.calendars.GenericTradingDays;
 import demetra.math.matrices.Matrix;
 import java.time.DayOfWeek;
 import jdplus.data.DataBlockIterator;
@@ -47,8 +46,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
      * 
      * @param name Name of the calendar
      * @param mgr 
-     * @param hol The day to which the holidays correspond (holidays are considered as a "hol")
-     * @param meanCorrection Long term mean corrections are applied on the calendar 
+     * @param hol The day to which the holidays correspond (holidays are considered as a "hol") 
      * @return 
      */
     public static HolidaysCorrector corrector(String name, CalendarManager mgr, DayOfWeek hol) {
@@ -85,7 +83,6 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
                     for (int i = 0; i < freq; ++i) {
                         Mean[i] = mean[i] == null ? null : DataBlock.of(mean[i]);
                     }
-                    int n = Cc.getRowsCount();
                     DataBlockIterator rows = Cc.rowsIterator();
                     while (rows.hasNext()){
                         DataBlock row = rows.next();
@@ -245,7 +242,7 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
     private HolidaysCorrectionFactory() {
     }
 
-    private double AVG = 1.0 / 7.0;
+    private final double AVG = 1.0 / 7.0;
 
     @Override
     public boolean fill(HolidaysCorrectedTradingDays var, TsPeriod start, FastMatrix buffer) {
@@ -278,21 +275,4 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * Computes the long term weights to compute contrasts with holidays The
-     * weights are defined as (Di+Hi)(Dk+Hk) where Di is the average number of
-     * days for period i, Hi is the average number of holidays for period i (+
-     * for the contrast group, - for the other groups), k is the contrasting
-     * group
-     *
-     * @param calendar
-     * @return
-     */
-    /**
-     *
-     * @param calendar
-     * @param freq
-     * @param contrast
-     * @return
-     */
 }
