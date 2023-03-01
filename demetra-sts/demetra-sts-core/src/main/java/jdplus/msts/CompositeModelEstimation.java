@@ -112,12 +112,11 @@ public class CompositeModelEstimation {
 
             } catch (Exception err) {
                 StateStorage ss = AkfToolkit.smooth(getSsf(), new SsfMatrix(getData()), false, false, false);
-//            StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
+//                StateStorage ss = DkToolkit.smooth(getSsf(), new SsfMatrix(getData()), true, false);
                 if (likelihood.isScalingFactor()) {
                     ss.rescaleVariances(likelihood.sigma2());
                 }
                 smoothedStates = ss;
-
             }
         }
         return smoothedStates;
@@ -297,10 +296,10 @@ public class CompositeModelEstimation {
     public DoubleSeq stdevSignal(FastMatrix L, int[] pos) {
         if (pos.length == 1) {
             StateStorage ss = getSmoothedStates();
-            double[] v=ss.getComponentVariance(pos[0]).toArray();
-            DoubleSeqCursor cursor=L.column(0).cursor();
-            for (int i=0; i<v.length; ++i){
-                v[i]=Math.sqrt(v[i])*Math.abs(cursor.getAndNext());
+            double[] v = ss.getComponentVariance(pos[0]).toArray();
+            DoubleSeqCursor cursor = L.column(0).cursor();
+            for (int i = 0; i < v.length; ++i) {
+                v[i] = Math.sqrt(v[i]) * Math.abs(cursor.getAndNext());
             }
             return DoubleSeq.of(v);
         } else {

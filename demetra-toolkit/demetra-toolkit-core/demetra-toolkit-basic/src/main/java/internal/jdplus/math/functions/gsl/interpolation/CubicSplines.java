@@ -46,23 +46,6 @@ public class CubicSplines {
 
     private static class NaturalSpline extends Spline {
 
-//        private int find(double x) {
-//            if (x < xa[0]) {
-//                return -1;
-//            } else {
-//                int n = xa.length - 1;
-//                if (x >= xa[xa.length - n]) {
-//                    return n;
-//                }
-//                int pos = Arrays.binarySearch(xa, x);
-//                if (pos >= 0) {
-//                    return pos;
-//                } else {
-//                    return -pos - 2;
-//                }
-//            }
-//        }
-//
         @Override
         public double applyAsDouble(double x) {
             if (x < xa[0]) {
@@ -103,10 +86,8 @@ public class CubicSplines {
         NaturalSpline spline = new NaturalSpline(X, Y);
 
         int psize = spline.size() - 1;
-        /* Engeln-Mullges + Uhlig "n" */
         int sys_size = psize - 1;
         /* linear system is sys_size x sys_size */
-
         double[] xa = spline.xa, ya = spline.ya;
         double[] g = new double[psize];
         double[] diag = new double[psize];

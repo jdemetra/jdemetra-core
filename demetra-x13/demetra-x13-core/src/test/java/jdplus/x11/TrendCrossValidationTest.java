@@ -29,9 +29,9 @@ public class TrendCrossValidationTest {
 //        }
 //        long t1 = System.currentTimeMillis();
 //        System.out.println(t1 - t0);
-        for (int i = 0; i < cv.length; ++i) {
-            System.out.println(cv[i]);
-        }
+//        for (int i = 0; i < cv.length; ++i) {
+//            System.out.println(cv[i]);
+//        }
         assertTrue(cv != null);
 
     }

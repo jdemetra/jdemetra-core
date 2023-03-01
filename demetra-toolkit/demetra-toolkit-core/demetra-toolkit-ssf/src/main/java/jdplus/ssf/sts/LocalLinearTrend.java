@@ -89,12 +89,12 @@ public class LocalLinearTrend {
 
         @Override
         public void Pf0(FastMatrix pf0) {
-//            if (data.lv > 0) {
-//                pf0.set(0, 0, data.lv);
-//            }
-//            if (data.sv > 0) {
-//                pf0.set(1, 1, data.sv);
-//            }
+            if (data.lv > 0) {
+                pf0.set(0, 0, data.lv);
+            }
+            if (data.sv > 0) {
+                pf0.set(1, 1, data.sv);
+            }
         }
 
         @Override

@@ -19,11 +19,9 @@ package jdplus.math.linearfilters;
 import nbbrd.design.Development;
 import demetra.math.Complex;
 import jdplus.math.polynomials.Polynomial;
-import demetra.util.Ref;
 import java.util.function.IntToDoubleFunction;
 import jdplus.math.ComplexComputer;
 import demetra.data.DoubleSeq;
-import demetra.data.DoubleSeqCursor;
 import jdplus.data.DataBlock;
 
 /**

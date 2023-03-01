@@ -103,7 +103,7 @@ public class AkfToolkit {
         DefaultSmoothingResults sresults = all ? DefaultSmoothingResults.full()
                 : DefaultSmoothingResults.light();
         sresults.prepare(ssf.getStateDim(), 0, data.length());
-        DefaultQFilteringResults fresults = filter(ssf, data, all, collapsing);
+        DefaultQFilteringResults fresults = filter(ssf, data, true, collapsing);
         if (smoother.process(ssf, data.length(), fresults, sresults)) {
             if (rescaleVariance) {
                 sresults.rescaleVariances(var(data.length(), fresults));

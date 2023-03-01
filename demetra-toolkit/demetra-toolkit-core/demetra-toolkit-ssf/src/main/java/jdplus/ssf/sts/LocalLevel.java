@@ -94,9 +94,9 @@ public class LocalLevel {
 
         @Override
         public void Pf0(FastMatrix pf0) {
-            if (Double.isFinite(initialValue)) {
+//            if (Double.isFinite(initialValue)) {
                 pf0.set(0, 0, var);
-            }
+//            }
         }
 
         @Override

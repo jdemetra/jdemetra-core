@@ -5,6 +5,7 @@
 package internal.jdplus.math.functions.gsl.interpolation;
 
 import demetra.data.DoubleSeq;
+import internal.jdplus.math.functions.gsl.interpolation.CubicSplines;
 import java.util.function.DoubleUnaryOperator;
 import jdplus.math.functions.CubicSpline;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,6 @@ public class CubicSplinesTest {
             double f2 = periodic.applyAsDouble(i);
             assertEquals(f0, f1, 1e-6);
         }
-        System.out.println(periodic.applyAsDouble(0));
-        System.out.println(periodic.applyAsDouble(125));
     }
 
     @Test
@@ -67,6 +66,10 @@ public class CubicSplinesTest {
             System.out.println(f);
 
         }
+    }
+
+    @Test
+    public void testPeriodic() {
     }
 
     public static void main(String[] args) {

@@ -215,7 +215,7 @@ public class AugmentedSmoother {
         rnacolumns.reset();
         while (vcolumns.hasNext() && rnacolumns.hasNext()) {
             vcolumns.next().product(state.P().rowsIterator(), rnacolumns.next());
-        };
+        }
 
     }
 
@@ -328,7 +328,7 @@ public class AugmentedSmoother {
             U.addAY(1 / errVariance, E);
             uc = u + U.dot(delta);
             if (calcvar) {
-                FastMatrix A = frslts.B(pos + 1);
+                FastMatrix A = frslts.B(pos);
                 // N*A
                 FastMatrix NA = GeneralMatrix.AB(N, A);
                 NA.add(Rd);

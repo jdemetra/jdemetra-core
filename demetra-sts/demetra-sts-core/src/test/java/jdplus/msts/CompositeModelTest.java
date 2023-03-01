@@ -32,6 +32,29 @@ public class CompositeModelTest {
 
     public static final TsData ts_Prod_B_C = TsData.ofInternal(TsPeriod.monthly(1967, 1), Prod_B_C);
     public static final FastMatrix x = new FastMatrix(UZ4712z_k, UZ4712z_k.length, 1);
+
+    public static final double[] VAT_NOBUG = {21804985.89, 22193601.78, 26132768.99, 25206017.95,
+        25027534.22, 25870970.49, 27647196.72, 28858112.64, 30480010.84, 31896026.49, 34879925.52,
+        27702329.85, 33810824, 38009675.38, 38741018.79, 38245658.17, 35784299.78, 35968995.94,
+        33006932.98, 35711215.88, 36775861.52, 35028569.79, 31543863.68, 41909595.47
+    };
+
+    public static final double[] VAT_BUG = {
+        22830540.42, 21909886.26, 15058317.62, 20031413.08, 25034508.99,
+        23482494.03, 19745396.05, 18903509.46, 17550702.09,
+        17083621.18, 20794598.55, 22682937.81, 21810175.87,
+        20515484.99, 27539123.57, 33149104.52};
+
+    public static final double[] P1_ELEC = {
+        30884.26355, 28594.97608, 31644.16303, 32102.69667, 34075.36353, 31154.55262, 31308.86096,
+        32188.79435, 30186.30084, 29573.94209, 29976.11846, 30136.54255, 30828.9756, 26422.70207,
+        25795.5814, 24891.58232, 28237.13938, 23942.23079, 26739.03672, 30939.69856, 28979.04035,
+        22098.465, 21467.22112, 22596.69327, 25958.84704, 21133.43611, 19802.53558, 25250.43291,
+        22457.7347, 18184.11073, 19094.33926, 20082.63639, 21350.5376, 17607.10696, 20315.21791,
+        21018.35091, 21127.73198, 15956.43517, 15299.17478, 16829.00384, 20933.5, 19832.44,
+        22831.97767, 23245.3578, 22632.281, 19629.547, 20003.03149, 21974.49569, 25493.47178,
+        22928.17088, 21652.59044, 24061.36553, Double.NaN, Double.NaN, Double.NaN, Double.NaN
+    };
 //zweiter Regressor fehlt
     //wie kürzt man die Länge von einem Regres
 
@@ -80,5 +103,88 @@ public class CompositeModelTest {
 //
 //        System.out.println(rslt.getSmoothedStates().getComponentVariance(0));
 //        System.out.println(rslt.getLikelihood().logLikelihood());
+    }
+
+    @Test
+    public void testVAT_NOBUG() {
+        CompositeModel model = new CompositeModel();
+        StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
+        StateItem n = AtomicModels.noise("n", .01, false);
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add(l);
+        eq.add(n);
+        model.add(l);
+        model.add(n);
+        model.add(eq);
+        int len = VAT_NOBUG.length;
+        FastMatrix M = FastMatrix.make(len, 1);
+        M.column(0).copyFrom(VAT_NOBUG, 0);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.SqrtDiffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        StateStorage states = rslt.getSmoothedStates();
+//        System.out.println(states.getComponent(0));
+//        System.out.println(states.getComponent(2));
+    }
+
+    @Test
+    public void testVAT() {
+        CompositeModel model = new CompositeModel();
+        StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
+        StateItem n = AtomicModels.noise("n", .01, false);
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add(l);
+        eq.add(n);
+        model.add(l);
+        model.add(n);
+        model.add(eq);
+        int len = VAT_BUG.length;
+        FastMatrix M = FastMatrix.make(len, 1);
+        M.column(0).copyFrom(VAT_BUG, 0);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.SqrtDiffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        StateStorage states = rslt.getSmoothedStates();
+//        System.out.println(states.getComponent(0));
+//        System.out.println(states.getComponent(2));
+    }
+
+    @Test
+    public void testELEC() {
+        CompositeModel model = new CompositeModel();
+        StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
+        StateItem s = AtomicModels.seasonalComponent("s", "HarrisonStevens", 4, .01, false);
+        StateItem n = AtomicModels.noise("n", .01, false);
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add(l);
+        eq.add(s);
+        eq.add(n);
+        model.add(l);
+        model.add(s);
+        model.add(n);
+        model.add(eq);
+        int len = P1_ELEC.length;
+        FastMatrix M = FastMatrix.make(len, 1);
+        M.column(0).copyFrom(P1_ELEC, 0);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.SqrtDiffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        StateStorage states = rslt.getSmoothedStates();
+//        System.out.println(states.getComponent(0));
+//        System.out.println(states.getComponent(2));
+//        System.out.println(states.getComponent(5));
+    }
+
+    @Test
+    public void testVAT2() {
+        CompositeModel model = new CompositeModel();
+        StateItem l = AtomicModels.sarima("l", 1, new int[]{0, 1, 1}, null, new double[]{-.6}, false, 1, true);
+//        StateItem n = AtomicModels.noise("n", .01, false);
+        ModelEquation eq = new ModelEquation("eq1", 0, true);
+        eq.add(l);
+//        eq.add(n);
+        model.add(l);
+//        model.add(n);
+        model.add(eq);
+        int len = VAT_BUG.length;
+        FastMatrix M = FastMatrix.make(len, 1);
+        M.column(0).copyFrom(VAT_BUG, 0);
+        CompositeModelEstimation rslt = model.estimate(M, false, true, SsfInitialization.SqrtDiffuse, Optimizer.LevenbergMarquardt, 1e-15, null);
+        StateStorage states = rslt.getSmoothedStates();
+//        System.out.println(states.getComponent(0));
     }
 }

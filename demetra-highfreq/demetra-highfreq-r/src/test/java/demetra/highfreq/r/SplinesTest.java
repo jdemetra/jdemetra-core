@@ -50,7 +50,7 @@ import jdplus.timeseries.calendars.HolidaysUtility;
  */
 public class SplinesTest {
 
-    final static DoubleSeq EDF;
+    final static DoubleSeq SERIES;
 
     static {
         DoubleSeq y;
@@ -61,7 +61,7 @@ public class SplinesTest {
         } catch (IOException ex) {
             y = null;
         }
-        EDF = y;
+        SERIES = y;
     }
 
     private static void addDefault(List<Holiday> holidays) {
@@ -84,21 +84,24 @@ public class SplinesTest {
         return holidays.stream().toArray(i -> new Holiday[i]);
     }
 
-    public static void main2(String[] args) {
-        DoubleSeq y = EDF.log();
+    public static void main(String[] args) {
+        DoubleSeq y = SERIES.log();
 
         TsPeriod start = TsPeriod.daily(1996, 1, 1);
         FastMatrix X = HolidaysUtility.regressionVariables(france(), TsDomain.of(start, y.length()), HolidaysOption.Skip, new int[]{6, 7}, false);
 
         long t0 = System.currentTimeMillis();
 
-        int[] pos = new int[]{0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 340, 350, 358};
+        int[] pos = new int[60];
+        for (int i=0; i<pos.length; ++i){
+            pos[i]=6*i;
+        }
 
         CompositeModel model = new CompositeModel();
-        StateItem l = AtomicModels.localLevel("l", .01, false, Double.NaN);
-        //       StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
+        //StateItem l = AtomicModels.localLevel("l", .01, false, Double.NaN);
+        StateItem l = AtomicModels.localLinearTrend("l", .01, .01, false, false);
         StateItem sw = AtomicModels.seasonalComponent("sw", "HarrisonStevens", 7, .01, false);
-        StateItem sy = AtomicModels.dailySplineComponent("sy", 1996, 2024, pos, 0, .01, false);
+        StateItem sy = AtomicModels.dailySplineComponent("sy", 1968, 2024, pos, 0, .01, false);
         StateItem reg = AtomicModels.timeVaryingRegression("reg", X, 0.01, false);
         StateItem n = AtomicModels.noise("n", .01, false);
         ModelEquation eq = new ModelEquation("eq1", 0, true);
@@ -143,7 +146,7 @@ public class SplinesTest {
         Arrays.stream(mrslt.getParametersName()).forEach(s -> System.out.println(s));
     }
 
-    public static void main(String[] args) {
+    public static void main2(String[] args) {
         DoubleSeq y;
         try {
             InputStream stream = ExtendedAirlineMapping.class.getResourceAsStream("/usclaims.txt");
@@ -159,7 +162,7 @@ public class SplinesTest {
         long t0 = System.currentTimeMillis();
         System.out.println(y);
 
-        int[] pos = new int[]{15, 30, 45, 58, 89, 119, 140, 171, 202, 232, 263, 293, 324, 355, 364};
+        int[] pos = new int[]{1,15, 30, 89, 119, 125, 135, 140, 171, 202, 293, 355, 364};
 
         CompositeModel model = new CompositeModel();
 //        StateItem l = AtomicModels.localLevel("l", .01, false, Double.NaN);

@@ -58,8 +58,8 @@ public final class EasterSpec implements Validatable<EasterSpec> {
 
     @Override
     public EasterSpec validate() throws IllegalArgumentException {
-        if (duration <= 0 || duration > 25) {
-            throw new IllegalArgumentException("Should be in [1,25]");
+        if (duration <= 0 || duration > 20) {
+            throw new IllegalArgumentException("Should be in [1,20]");
         }
         if (test != RegressionTestSpec.None && Parameter.isFixed(coefficient)) {
             throw new IllegalArgumentException("Fixed coefficient should not be used with testing");
