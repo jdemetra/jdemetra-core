@@ -105,19 +105,18 @@ public class X13Factory implements SaProcessingFactory<X13Spec, X13Results> {
 
     @Override
     public X13Spec generateSpec(X13Spec spec, X13Results estimation) {
-
-        RegArimaSpec nrspec = RegArimaFactory.getInstance().generateSpec(spec.getRegArima(), estimation.getPreprocessing().getDescription());
         X11Spec nxspec = update(spec.getX11(), estimation.getDecomposition());
-
-        return spec.toBuilder()
-                .regArima(nrspec)
-                .x11(nxspec)
-                .build();
+        X13Spec.Builder builder = spec.toBuilder().x11(nxspec);
+        if (estimation.getPreprocessing() != null) {
+            RegArimaSpec nrspec = RegArimaFactory.getInstance().generateSpec(spec.getRegArima(), estimation.getPreprocessing().getDescription());
+            builder.regArima(nrspec);
+        }
+        return builder.build();
     }
 
     @Override
     public X13Spec refreshSpec(X13Spec currentSpec, X13Spec domainSpec, EstimationPolicyType policy, TsDomain frozen) {
-        if (policy == policy.None) {
+        if (policy == policy.None || ! currentSpec.getRegArima().getBasic().isPreprocessing()) {
             return currentSpec;
         }
         RegArimaSpec nrspec = RegArimaFactory.getInstance().refreshSpec(currentSpec.getRegArima(), domainSpec.getRegArima(), policy, frozen);

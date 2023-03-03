@@ -72,10 +72,10 @@ public class X13Kernel {
 
     public static X13Kernel of(X13Spec spec, ModellingContext context) {
         PreliminaryChecks.Tool check = of(spec);
+        boolean blPreprop = spec.getRegArima().getBasic().isPreprocessing();
         RegArimaKernel regarima = RegArimaKernel.of(spec.getRegArima(), context);
         SaVariablesMapping mapping = new SaVariablesMapping();
         // TO DO: fill maping with existing information in TramoSpec (section Regression)
-        boolean blPreprop = spec.getRegArima().getBasic().isPreprocessing();
         return new X13Kernel(check, regarima, mapping, spec.getX11(), blPreprop, CholetteProcessor.of(spec.getBenchmarking()));
     }
 
@@ -87,19 +87,28 @@ public class X13Kernel {
             // Step 0. Preliminary checks
             TsData sc = preliminary.check(s, log);
             // Step 1. Preprocessing
-            RegSarimaModel preprocessing = regarima.process(sc, log);
-            // Step 2. Link between regarima and x11
-            int nb = spec.getBackcastHorizon();
-            if (nb < 0) {
-                nb = -nb * s.getAnnualFrequency();
+            RegSarimaModel preprocessing;
+            X13Preadjustment preadjustment;
+            TsData alin;
+            if (regarima != null) {
+                preprocessing = regarima.process(sc, log);
+                // Step 2. Link between regarima and x11
+                int nb = spec.getBackcastHorizon();
+                if (nb < 0) {
+                    nb = -nb * s.getAnnualFrequency();
+                }
+                int nf = spec.getForecastHorizon();
+                if (nf < 0) {
+                    nf = -nf * s.getAnnualFrequency();
+                }
+                X13Preadjustment.Builder builder = X13Preadjustment.builder();
+                alin = initialStep(preprocessing, nb, nf, builder);
+                preadjustment = builder.build();
+            }else{
+                preprocessing = null;
+                preadjustment=X13Preadjustment.builder().a1(sc).build();
+                alin=sc;
             }
-            int nf = spec.getForecastHorizon();
-            if (nf < 0) {
-                nf = -nf * s.getAnnualFrequency();
-            }
-            X13Preadjustment.Builder builder = X13Preadjustment.builder();
-            TsData alin = initialStep(preprocessing, nb, nf, builder);
-            X13Preadjustment preadjustment = builder.build();
             // Step 3. X11
             X11Kernel x11 = new X11Kernel();
             X11Spec nspec = updateSpec(spec, preprocessing);
@@ -205,6 +214,8 @@ public class X13Kernel {
     }
 
     private X11Spec updateSpec(X11Spec spec, RegSarimaModel model) {
+        if (model == null)
+            return spec;
         int nb = spec.getBackcastHorizon(), nf = spec.getForecastHorizon();
         int period = model.getAnnualFrequency();
         X11Spec.Builder builder = spec.toBuilder()

@@ -42,5 +42,20 @@ public class X13KernelTest {
 //        System.out.println(table);
    }
     
+    @Test
+    public void testX11Prod() {
+        X13Kernel x13=X13Kernel.of(X13Spec.RSAX11, null);
+        ProcessingLog log=ProcessingLog.dummy();
+        X13Results rslt = x13.process(Data.TS_PROD, log);
+        
+        List<TsData> all=new ArrayList<>();
+        
+        all.add(rslt.getData("decomposition.b1", TsData.class));
+        all.add(rslt.getData("preadjust.a1", TsData.class));
+        all.removeIf(s->s == null);
+        TsDataTable table=TsDataTable.of(all);
+        
+        System.out.println(table);
+   }
     
 }

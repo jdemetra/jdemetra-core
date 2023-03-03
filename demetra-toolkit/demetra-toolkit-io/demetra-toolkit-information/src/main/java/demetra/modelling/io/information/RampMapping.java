@@ -18,6 +18,8 @@ package demetra.modelling.io.information;
 
 import demetra.data.Range;
 import demetra.information.InformationSet;
+import demetra.timeseries.TsDomain;
+import demetra.timeseries.TsPeriod;
 import demetra.timeseries.regression.Ramp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,9 +44,22 @@ public class RampMapping {
         return new Ramp(range.start(), range.end());
     }
 
+    public Ramp parseLegacy(String sr, TsDomain context) {
+        Range<LocalDate> range = VariableMapping.rangeFromLegacyString(sr);
+        LocalDate d0 = range.start();
+        if (context == null) {
+            d0 = d0.minusDays(1);
+            return new Ramp(d0.atStartOfDay(), range.end().atStartOfDay());
+        } else {
+            TsPeriod p0 = TsPeriod.of(context.getTsUnit(), d0).previous();
+            return new Ramp(p0.start(), range.end().atStartOfDay());
+        }
+    }
+
+    @Deprecated
     public Ramp parseLegacy(String sr) {
         Range<LocalDate> range = VariableMapping.rangeFromLegacyString(sr);
-        return new Ramp(range.start().atStartOfDay(), range.end().atStartOfDay());
+        return new Ramp(range.start().minusDays(1).atStartOfDay(), range.end().atStartOfDay());
     }
 
     public InformationSet write(Ramp ramp) {

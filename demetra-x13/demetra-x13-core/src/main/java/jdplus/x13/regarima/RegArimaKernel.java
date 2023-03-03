@@ -157,6 +157,8 @@ public class RegArimaKernel implements RegSarimaProcessor {
     }
 
     public static RegArimaKernel of(RegArimaSpec spec, ModellingContext context) {
+        if (!spec.getBasic().isPreprocessing())
+            return null;
         X13SpecDecoder helper = new X13SpecDecoder(spec, context);
         return helper.buildProcessor();
     }

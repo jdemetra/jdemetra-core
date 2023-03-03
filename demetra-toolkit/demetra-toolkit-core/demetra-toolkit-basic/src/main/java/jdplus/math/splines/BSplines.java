@@ -142,7 +142,13 @@ public class BSplines {
             }
         }
 
-        int find(final double x) {
+        /**
+         * Position of x in the knots.
+         * Its position in the breaks is find(x)-k+1 (start ?)
+         * @param x
+         * @return 
+         */
+        private int find(final double x) {
             if (x < knots[0] - EPS) {
                 return -1;
             }

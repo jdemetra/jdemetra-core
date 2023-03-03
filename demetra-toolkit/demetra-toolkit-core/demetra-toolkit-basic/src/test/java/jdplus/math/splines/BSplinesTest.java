@@ -64,13 +64,13 @@ public class BSplinesTest {
     @Test
     public void testPeriodic() {
 
-        double[] knots = new double[]{0.0, 0.5, 1.0, 1.1, 1.2, 2.0, 2.5, 3, 3.5, 4.0};
-        BSplines.BSpline bs = BSplines.periodic(3, knots, 5);
+        double[] knots = new double[]{0, 0.1, 0.2, 1.0, 1.1, 1.2, 2.0, 2.5, 3, 3.5, 4.0};
+        BSplines.BSpline bs = BSplines.periodic(4, knots, 5);
 
-        FastMatrix M = FastMatrix.make(500, knots.length);
-        for (int i = 0; i < 500; ++i) {
+        FastMatrix M = FastMatrix.make(100, knots.length);
+        for (int i = 0; i < 100; ++i) {
             double[] B = new double[bs.getOrder()];
-            int pos = bs.eval(i / 100.0, B);
+            int pos = bs.eval(i / 20.0, B);
             if (pos < 0) {
                 pos += knots.length;
             }
@@ -78,9 +78,9 @@ public class BSplinesTest {
                 M.set(i, (pos + j) % knots.length, B[j]);
             }
         }
-        FastMatrix N = BSplines.splines(bs, DoubleSeq.onMapping(500, i -> i / 100.0));
+        FastMatrix N = BSplines.splines(bs, DoubleSeq.onMapping(100, i -> i / 20.0));
         assertTrue(M.minus(N).ssq() < 1e-9);
-        System.out.println(M);
+        System.out.println(N);
     }
 
     public static void main(String[] arg) {

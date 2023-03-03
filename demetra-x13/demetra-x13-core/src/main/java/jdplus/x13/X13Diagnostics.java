@@ -36,7 +36,7 @@ public class X13Diagnostics {
 
     public static X13Diagnostics of(RegSarimaModel preprocessing, X13Preadjustment preadj, X11Results xrslts, X13Finals finals) {
         Mstatistics mstats = Mstatistics.of(preadj, xrslts, finals);
-        boolean mul = preprocessing.getDescription().isLogTransformation();
+        boolean mul = xrslts.getMode().isMultiplicative();
         TsData sa = xrslts.getD11();
         TsData i = xrslts.getD13();
         TsData t = xrslts.getD12();
@@ -44,13 +44,13 @@ public class X13Diagnostics {
         TsData y = xrslts.getB1();
         TsData lsa = mul ? sa.log() : sa;
         TsData li = mul ? i.log() : i;
-        TsData lin = preprocessing.linearizedSeries();
+        TsData lin = preprocessing != null ? preprocessing.linearizedSeries() : mul ? preadj.getA1().log() : preadj.getA1();
 
         GenericSaTests gsadiags = GenericSaTests.builder()
                 .mul(mul)
                 .regarima(preprocessing)
                 .lin(lin)
-                .res(preprocessing.fullResiduals())
+                .res(preprocessing == null ? null : preprocessing.fullResiduals())
                 .y(y)
                 .sa(sa)
                 .irr(i)

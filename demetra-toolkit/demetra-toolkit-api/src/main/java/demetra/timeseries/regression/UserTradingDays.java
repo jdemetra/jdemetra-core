@@ -32,7 +32,7 @@ public class UserTradingDays extends TsVariables implements ITradingDaysVariable
         if (data == null) {
             return null;
         } else {
-            return new UserTradingDays(id, data, desc);
+            return new UserTradingDays(id, data, desc == null ? id : desc);
         }
     }
 

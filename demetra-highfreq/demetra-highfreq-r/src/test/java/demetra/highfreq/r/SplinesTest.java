@@ -55,7 +55,7 @@ public class SplinesTest {
     static {
         DoubleSeq y;
         try {
-            InputStream stream = ExtendedAirlineMapping.class.getResourceAsStream("/edf.txt");
+            InputStream stream = ExtendedAirlineMapping.class.getResourceAsStream("/births.txt");
             Matrix edf = MatrixSerializer.read(stream);
             y = edf.column(0);
         } catch (IOException ex) {
@@ -87,14 +87,14 @@ public class SplinesTest {
     public static void main(String[] args) {
         DoubleSeq y = SERIES.log();
 
-        TsPeriod start = TsPeriod.daily(1996, 1, 1);
+        TsPeriod start = TsPeriod.daily(1968, 1, 1);
         FastMatrix X = HolidaysUtility.regressionVariables(france(), TsDomain.of(start, y.length()), HolidaysOption.Skip, new int[]{6, 7}, false);
 
         long t0 = System.currentTimeMillis();
 
-        int[] pos = new int[60];
+        int[] pos = new int[40];
         for (int i=0; i<pos.length; ++i){
-            pos[i]=6*i;
+            pos[i]=9*i;
         }
 
         CompositeModel model = new CompositeModel();

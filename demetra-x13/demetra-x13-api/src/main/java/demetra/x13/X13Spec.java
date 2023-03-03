@@ -147,6 +147,9 @@ public class X13Spec implements Validatable<X13Spec>, SaSpecification {
     //</editor-fold>
     @Override
     public String display() {
+        if (this == RSAX11) {
+            return "X11";
+        }
         if (this == RSA0) {
             return "RSA0";
         }
