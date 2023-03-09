@@ -66,11 +66,11 @@ public class FixedDay implements Holiday {
 
     @Override
     public FixedDay forPeriod(LocalDate start, LocalDate end) {
-        if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
-            return new FixedDay(month, day, weight, ValidityPeriod.between(start, end));
-        } else {
+        if (validityPeriod.getStart().equals(start) && validityPeriod.getEnd().equals(end)) {
             return this;
-        }
+        } else {
+            return new FixedDay(month, day, weight, ValidityPeriod.between(start, end));
+        } 
     }
 
     public static final FixedDay CHRISTMAS = new FixedDay(12, 25), NEWYEAR = new FixedDay(1, 1),

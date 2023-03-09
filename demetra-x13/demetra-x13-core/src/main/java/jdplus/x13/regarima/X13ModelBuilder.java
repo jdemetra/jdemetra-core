@@ -205,7 +205,7 @@ class X13ModelBuilder implements IModelBuilder {
     private void initializeOutliers(ModelDescription model, List<Variable<IOutlier>> outliers) {
         int freq = model.getAnnualFrequency();
         TransitoryChangeFactory tc = new TransitoryChangeFactory(TransitoryChangeFactory.rate(freq, spec.getOutliers().getMonthlyTCRate()));
-        PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, false);
+        PeriodicOutlierFactory so = new PeriodicOutlierFactory(freq, true);
         for (Variable<IOutlier> outlier : outliers) {
             IOutlier cur = outlier.getCore();
             String code = cur.getCode();

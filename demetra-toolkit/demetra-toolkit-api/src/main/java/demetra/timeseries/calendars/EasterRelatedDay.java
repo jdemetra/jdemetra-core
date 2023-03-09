@@ -70,10 +70,10 @@ public class EasterRelatedDay implements Holiday {
 
     @Override
     public EasterRelatedDay forPeriod(LocalDate start, LocalDate end) {
-        if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
-            return new EasterRelatedDay(offset, weight, ValidityPeriod.between(start, end), julian);
-        } else {
+        if (validityPeriod.getStart().equals(start) && validityPeriod.getEnd().equals(end)) {
             return this;
+        } else {
+            return new EasterRelatedDay(offset, weight, ValidityPeriod.between(start, end), julian);
         }
     }
 

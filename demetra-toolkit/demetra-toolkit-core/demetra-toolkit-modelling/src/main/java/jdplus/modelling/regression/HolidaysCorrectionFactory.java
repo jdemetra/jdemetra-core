@@ -74,26 +74,8 @@ public class HolidaysCorrectionFactory implements RegressionVariableFactory<Holi
             Matrix C = HolidaysUtility.holidays(calendar.getHolidays(), domain);
             FastMatrix Cc = FastMatrix.of(C);
             if (meanCorrection) {
-                TsPeriod start = domain.getStartPeriod();
-                int freq = domain.getAnnualFrequency();
-                double[][] mean = HolidaysUtility.longTermMean(calendar.getHolidays(), freq);
-                if (mean != null) {
-                    int pos = start.annualPosition();
-                    DataBlock[] Mean = new DataBlock[freq];
-                    for (int i = 0; i < freq; ++i) {
-                        Mean[i] = mean[i] == null ? null : DataBlock.of(mean[i]);
-                    }
-                    DataBlockIterator rows = Cc.rowsIterator();
-                    while (rows.hasNext()){
-                        DataBlock row = rows.next();
-                        DataBlock m = Mean[pos++];
-                        if (m != null) {
-                             row.sub(m);
-                        }
-                        if (pos == freq)
-                            pos=0;
-                    }
-                }
+                FastMatrix ltm = HolidaysUtility.longTermMean(calendar.getHolidays(), domain);
+                Cc.sub(ltm);
             }
             // we put in the hpos column the sum of all the other days
             // and we change the sign of the other days

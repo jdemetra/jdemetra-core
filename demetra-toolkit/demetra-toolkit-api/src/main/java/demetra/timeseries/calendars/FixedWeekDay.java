@@ -72,11 +72,11 @@ public class FixedWeekDay implements Holiday {
 
     @Override
     public FixedWeekDay forPeriod(LocalDate start, LocalDate end) {
-        if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
-            return new FixedWeekDay(month, place, dayOfWeek, weight, ValidityPeriod.between(start, end));
-        } else {
+        if (validityPeriod.getStart().equals(start) && validityPeriod.getEnd().equals(end)) {
             return this;
-        }
+        } else {
+            return new FixedWeekDay(month, place, dayOfWeek, weight, ValidityPeriod.between(start, end));
+        } 
     }
 
     /**

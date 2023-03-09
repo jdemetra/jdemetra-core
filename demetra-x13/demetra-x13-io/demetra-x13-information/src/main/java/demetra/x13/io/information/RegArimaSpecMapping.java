@@ -18,7 +18,6 @@ package demetra.x13.io.information;
 
 import demetra.DemetraVersion;
 import demetra.information.InformationSet;
-import demetra.information.InformationSetSerializer;
 import demetra.arima.SarimaSpec;
 import demetra.information.InformationSetSerializerEx;
 import demetra.processing.AlgorithmDescriptor;
@@ -26,7 +25,6 @@ import demetra.processing.ProcSpecification;
 import demetra.regarima.RegArimaSpec;
 import demetra.regarima.RegressionSpec;
 import demetra.timeseries.TsDomain;
-import java.util.Map;
 
 /**
  *
@@ -80,16 +78,6 @@ public class RegArimaSpecMapping {
     public static final String BASIC = "basic", TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
             REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
-
-    public static void fillDictionary(String prefix, Map<String, Class> dic) {
-        EstimateSpecMapping.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);
-        TransformSpecMapping.fillDictionary(InformationSet.item(prefix, TRANSFORM), dic);
-        BasicSpecMapping.fillDictionary(InformationSet.item(prefix, BASIC), dic);
-        AutoModelSpecMapping.fillDictionary(InformationSet.item(prefix, AUTOMDL), dic);
-        ArimaSpecMapping.fillDictionary(InformationSet.item(prefix, ARIMA), dic);
-        OutlierSpecMapping.fillDictionary(InformationSet.item(prefix, OUTLIER), dic);
-        RegressionSpecMapping.fillDictionary(InformationSet.item(prefix, REGRESSION), dic);
-    }
 
     public RegArimaSpec read(InformationSet info, TsDomain context) {
         if (info == null) {

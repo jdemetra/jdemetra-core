@@ -121,7 +121,7 @@ public class RegressionProto {
                 break;
             case "ls":
             case "LS":
-                o= new LevelShift(ldt.atStartOfDay(), false);
+                o= new LevelShift(ldt.atStartOfDay(), true);
                 break;
             case "tc":
             case "TC":
@@ -129,7 +129,7 @@ public class RegressionProto {
                 break;
             case "so":
             case "SO":
-                o=new PeriodicOutlier(ldt.atStartOfDay(), 0, false);
+                o=new PeriodicOutlier(ldt.atStartOfDay(), 0, true);
                 break;
 
             default:

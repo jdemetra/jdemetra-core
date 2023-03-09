@@ -37,4 +37,11 @@ public interface Holiday {
     
     String display();
     
+    default LocalDate start(){
+        return getValidityPeriod().getStart();
+    }
+    
+    default LocalDate end(){
+        return getValidityPeriod().getEnd();
+    }
 }

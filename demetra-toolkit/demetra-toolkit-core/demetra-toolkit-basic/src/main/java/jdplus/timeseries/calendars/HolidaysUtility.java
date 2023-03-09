@@ -18,11 +18,7 @@ package jdplus.timeseries.calendars;
 
 import nbbrd.design.Development;
 import demetra.timeseries.TsDomain;
-import demetra.timeseries.calendars.Easter;
-import demetra.timeseries.calendars.EasterRelatedDay;
-import demetra.timeseries.calendars.FixedDay;
 import demetra.timeseries.calendars.Holiday;
-import demetra.timeseries.calendars.PrespecifiedHoliday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -34,7 +30,6 @@ import demetra.math.matrices.Matrix;
 import demetra.timeseries.TsPeriod;
 import demetra.timeseries.calendars.Calendar;
 import demetra.timeseries.calendars.DayClustering;
-import demetra.timeseries.calendars.FixedWeekDay;
 import demetra.timeseries.calendars.HolidaysOption;
 import java.time.temporal.ChronoUnit;
 import jdplus.data.DataBlock;
@@ -210,118 +205,6 @@ public class HolidaysUtility {
         }
     }
 
-    private double probEaster(int del, boolean julian) {
-        return julian ? Easter.probJulianEaster(del)
-                : Easter.probEaster(del);
-    }
-
-    static final int START = 80, JSTART = 90, DEL = 35, JDEL = 43;
-    // 31+28+21=80, 31+28+31=90
-
-    /*
-     * Raw estimation of the probability to get Easter at a specific date is defined below:
-     * 22/3 (1/7)*1/LUNARY
-     * 23/3 (2/7)*1/LUNARY
-     * ...
-     * 27/3 (6/7)*1/LUNARY
-     * 28/3 1/LUNARY
-     * ...
-     * 18/4 1/LUNARY
-     * 19/4 1/LUNARY + (1/7) * DEC_LUNARY/LUNARY = (7 + 1 * DEC_LUNARY)/(7 * LUNARY)
-     * 20/4 (6/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY= (6 + 1 * DEC_LUNARY)/(7 * LUNARY)
-     * 21/4 (5/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 22/4 (4/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 23/4 (3/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 24/4 (2/7)*1/LUNARY + (1/7) * DEC_LUNARY/LUNARY
-     * 25/4 (1/7)*1/LUNARY + (1/7) *DEC_LUNARY/LUNARY
-     */
-    public double[][] longTermMean(EasterRelatedDay eday, int freq) {
-        // week day
-
-        int w = eday.getOffset() % 7;
-        if (w == 0) {
-            w = 7; // Sunday
-        }
-        if (w < 0) {
-            w += 7;
-        }
-        // monday must be 0...
-        --w;
-
-        // Easter always falls between March, 22 and April, 25 (inclusive). The probability to get a specific day is defined by probEaster.
-        // We don't take into account leap year. So, the solution is slightly wrong for offset
-        // <= -50.
-        // The considered day falls between ...
-        int d0, d1;
-        if (eday.isJulian()) {
-            d0 = JSTART + eday.getOffset();
-            d1 = d0 + JDEL;
-        } else {
-            d0 = START + eday.getOffset();
-            d1 = d0 + DEL;
-        }
-        // d1 excluded
-
-        int ifreq = (int) freq;
-        int c = 12 / ifreq;
-
-        int c0 = 0, c1 = 0;
-        for (int i = 0; i < c; ++i) {
-            c1 += MDAYS[i];
-        }
-
-        double[][] rslt = new double[ifreq][];
-        for (int i = 0; i < ifreq;) {
-            if (d0 < c1 && d1 > c0) {
-                double[] m = new double[7];
-                double x = 0;
-                for (int j = Math.max(d0, c0); j < Math.min(d1, c1); ++j) {
-                    x += probEaster(j - d0, eday.isJulian());
-                }
-                m[w] = x * eday.getWeight();
-                rslt[i] = m;
-            }
-            // update c0, c1;
-            c0 = c1;
-            if (++i < ifreq) {
-                for (int j = 0; j < c; ++j) {
-                    c1 += MDAYS[i * c + j];
-                }
-            }
-        }
-        return rslt;
-    }
-
-    public double[][] longTermMean(FixedDay fday, int freq) {
-        int c = 12 / freq;
-        int p = (fday.getMonth() - 1) / c;
-        double[] m = new double[7];
-
-        for (int i = 0; i < 7; ++i) {
-            m[i] = fday.getWeight() / 7;
-        }
-
-        double[][] rslt = new double[freq][];
-        rslt[p] = m;
-        return rslt;
-    }
-
-    public double[][] longTermMean(FixedWeekDay fday, int freq) {
-        int c = 12 / freq;
-        int p = (fday.getMonth() - 1) / c;
-        double[] m = new double[7];
-
-        for (int i = 0; i < 7; ++i) {
-            m[i] = fday.getWeight() / 7;
-        }
-
-        double[][] rslt = new double[freq][];
-        rslt[p] = m;
-        return rslt;
-    }
-
-    private final int[] MDAYS = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
     /**
      * Gets the number of days corresponding to the holidays
      *
@@ -366,18 +249,9 @@ public class HolidaysUtility {
     }
 
     public static double[][] longTermMean(Holiday holiday, int freq) {
-        if (holiday instanceof FixedDay) {
-            return HolidaysUtility.longTermMean((FixedDay) holiday, freq);
-        } else if (holiday instanceof FixedWeekDay) {
-            return HolidaysUtility.longTermMean((FixedWeekDay) holiday, freq);
-        } else if (holiday instanceof EasterRelatedDay) {
-            return HolidaysUtility.longTermMean((EasterRelatedDay) holiday, freq);
-        } else if (holiday instanceof PrespecifiedHoliday) {
-            PrespecifiedHoliday ph = (PrespecifiedHoliday) holiday;
-            return longTermMean(ph.rawHoliday(), freq);
-        }
-        return null;
 
+        HolidayImpl impl = HolidayImpl.implementationOf(holiday);
+        return impl == null ? null : impl.getLongTermMeanEffect(freq);
     }
 
     /**
@@ -418,15 +292,52 @@ public class HolidaysUtility {
         return rslt != null ? rslt : new double[freq][];
     }
 
+    public FastMatrix longTermMean(Holiday[] holidays, TsDomain domain) {
+        int n = domain.length();
+        FastMatrix ltm = FastMatrix.make(n, 7);
+        int ifreq = domain.getAnnualFrequency();
+        LocalDate start = domain.start().toLocalDate(), end = domain.end().toLocalDate();
+        for (int k = 0; k < holidays.length; ++k) {
+            Holiday hcur = holidays[k];
+            HolidayImpl helper = HolidayImpl.implementationOf(hcur);
+            TsDomain xdomain = helper.getSignificantDomain(ifreq, start, end);
+            if (!xdomain.isEmpty()) {
+                double[][] cur = helper.getLongTermMeanEffect(ifreq);
+                if (cur != null) {
+                    int del = domain.getStartPeriod().until(xdomain.getStartPeriod());
+                    for (int p = 0; p < ifreq; ++p) {
+                        if (cur[p] != null) {
+                            DataBlock mean = DataBlock.of(cur[p]);
+                            int i = p - xdomain.getStartPeriod().annualPosition();
+                            if (i < 0) {
+                                i += ifreq;
+                            }
+                            while (i < xdomain.getLength()) {
+                                DataBlock row = ltm.row(i + del);
+                                row.add(mean);
+                                i += ifreq;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return ltm;
+    }
+
     private static final double[] NDAYS = new double[]{31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     /**
-     * Computes the number of days for each period of the given periodicity, corrected for holidays.
-     * The holidays are considered as a day of type "hol"
+     * Computes the number of days for each period of the given periodicity,
+     * corrected for holidays. The holidays are considered as a day of type
+     * "hol"
+     *
      * @param calendar
      * @param freq
      * @param hol
-     * @return A freq x 7 matrix. The first column corresponds to the number of (corrected) Mondays...
+     * @return A freq x 7 matrix. The first column corresponds to the number of
+     * (corrected) Mondays...
      */
     public static FastMatrix days(final Calendar calendar, int freq, DayOfWeek hol) {
 
@@ -436,7 +347,7 @@ public class HolidaysUtility {
         for (int i = 0; i < freq; ++i) {
             if (mean[i] != null) {
                 Mean[i] = DataBlock.of(mean[i]);
-                mean[i][hol.getValue()-1] -= Mean[i].sum();
+                mean[i][hol.getValue() - 1] -= Mean[i].sum();
             }
         }
         int c = 12 / freq;
@@ -454,12 +365,13 @@ public class HolidaysUtility {
         }
         return M;
     }
-    
+
     public static FastMatrix clustering(final FastMatrix days, DayClustering clustering) {
-        if (days.getColumnsCount() != 7)
+        if (days.getColumnsCount() != 7) {
             throw new IllegalArgumentException();
-        FastMatrix M=FastMatrix.make(days.getRowsCount(), clustering.getGroupsCount());
-        for (int i=0; i<7; ++i){
+        }
+        FastMatrix M = FastMatrix.make(days.getRowsCount(), clustering.getGroupsCount());
+        for (int i = 0; i < 7; ++i) {
             M.column(clustering.groupOf(i)).add(days.column(i));
         }
         return M;

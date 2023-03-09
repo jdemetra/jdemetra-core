@@ -116,10 +116,10 @@ public class PrespecifiedHoliday implements Holiday {
     
     @Override
     public PrespecifiedHoliday forPeriod(LocalDate start, LocalDate end) {
-        if (validityPeriod.getStart() != start && validityPeriod.getEnd() != end) {
-            return new PrespecifiedHoliday(event, offset, weight, ValidityPeriod.between(start, end), julian);
-        } else {
+        if (validityPeriod.getStart().equals(start) && validityPeriod.getEnd().equals(end)) {
             return this;
+        } else {
+            return new PrespecifiedHoliday(event, offset, weight, ValidityPeriod.between(start, end), julian);
         }
     }
 

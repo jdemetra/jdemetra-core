@@ -49,11 +49,6 @@ public class InterventionVariableMapping {
         return info;
     }
 
-    public Variable<InterventionVariable> readLegacy( InformationSet info){
-        InterventionVariable iv = read(info);
-        return Variable.variable(info.get(NAME_LEGACY, String.class), iv);
-    }
-
     public InformationSet write(InterventionVariable var, boolean verbose) {
         InformationSet info = new InformationSet();
         if (verbose || var.getDelta() != 0) {
