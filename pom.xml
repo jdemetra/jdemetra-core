@@ -267,7 +267,7 @@
             </activation>
             <properties>
                 <lombok.version>1.18.26</lombok.version>
-                <java-service.version>1.6.0</java-service.version>
+                <java-service.version>1.6.1</java-service.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
