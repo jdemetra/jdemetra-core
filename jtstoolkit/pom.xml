@@ -26,55 +26,55 @@
     </dependencies>
 
     <profiles>
+        <!-- Release binaries on GitHub -->
+        <!-- Note that all plugins are run on 'install' phase -->
         <profile>
             <id>full-release</id>
             <build>
                 <plugins>
+                    <!-- Release assets -->
                     <plugin>
                         <groupId>org.jreleaser</groupId>
                         <artifactId>jreleaser-maven-plugin</artifactId>
                         <version>1.5.1</version>
                         <executions>
                             <execution>
+                                <id>release-assets</id>
                                 <phase>install</phase>
                                 <goals>
                                     <goal>full-release</goal>
                                 </goals>
+                                <configuration>
+                                    <jreleaser>
+                                        <release>
+                                            <github>
+                                                <skipTag>true</skipTag>
+                                                <!-- Fix default value -->
+                                                <branch>master</branch>
+                                            </github>
+                                        </release>
+                                        <signing>
+                                            <active>ALWAYS</active>
+                                            <!-- Fix default value -->
+                                            <armored>true</armored>
+                                        </signing>
+                                        <distributions>
+                                            <!-- Name is here ! -->
+                                            <jtstoolkit>
+                                                <type>SINGLE_JAR</type>
+                                                <artifacts>
+                                                    <artifact>
+                                                        <path>
+                                                            ${project.build.directory}/${project.build.finalName}.jar
+                                                        </path>
+                                                    </artifact>
+                                                </artifacts>
+                                            </jtstoolkit>
+                                        </distributions>
+                                    </jreleaser>
+                                </configuration>
                             </execution>
                         </executions>
-                        <configuration>
-                            <jreleaser>
-                                <release>
-                                    <github>
-                                        <skipTag>true</skipTag>
-                                        <draft>true</draft>
-                                        <!-- Fix default value -->
-                                        <branch>master</branch>
-                                    </github>
-                                </release>
-                                <checksum>
-                                    <individual>true</individual>
-                                </checksum>
-                                <signing>
-                                    <active>ALWAYS</active>
-                                    <!-- Fix default value -->
-                                    <armored>true</armored>
-                                </signing>
-                                <distributions>
-                                    <!-- Name is here ! -->
-                                    <jtstoolkit>
-                                        <type>SINGLE_JAR</type>
-                                        <artifacts>
-                                            <artifact>
-                                                <path>
-                                                    ${project.build.directory}/${project.build.finalName}.jar
-                                                </path>
-                                            </artifact>
-                                        </artifacts>
-                                    </jtstoolkit>
-                                </distributions>
-                            </jreleaser>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
