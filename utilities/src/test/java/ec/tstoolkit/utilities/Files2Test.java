@@ -17,9 +17,12 @@
 package ec.tstoolkit.utilities;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.StandardSystemProperty;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
+
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -42,7 +45,8 @@ public class Files2Test {
 
     @BeforeClass
     public static void beforeClass() throws IOException {
-        PATH = Files.createTempDir();
+        PATH = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), UUID.randomUUID().toString());
+        PATH.mkdir();
         ABSOLUTE_INSIDE = new File(PATH, "test.xml");
         Files.touch(ABSOLUTE_INSIDE);
         ABSOLUTE_DIR_INSIDE = new File(PATH, "folder");
