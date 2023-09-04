@@ -63,6 +63,10 @@
             <artifactId>spreadsheet-xmlss</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
+            <artifactId>spreadsheet-xl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>demetra-tss</artifactId>
         </dependency>
