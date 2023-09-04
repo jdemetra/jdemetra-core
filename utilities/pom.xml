@@ -17,7 +17,7 @@
     <url>https://github.com/jdemetra/jdemetra-core</url>
 
     <properties>
-        <slf4j.version>2.0.7</slf4j.version>
+        <slf4j.version>2.0.9</slf4j.version>
     </properties>
 
     <dependencyManagement>
