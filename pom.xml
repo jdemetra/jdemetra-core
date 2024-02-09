@@ -36,6 +36,10 @@
         <url>http://github.com/jdemetra/jdemetra-core/tree/master</url>
     </scm>
 
+    <properties>
+        <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <!-- annotations & processors -->
