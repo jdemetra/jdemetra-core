@@ -11,7 +11,7 @@
 
     <name>JDemetra+</name>
     <description>Seasonal Adjustment Toolkit</description>
-    <url>https://github.com/jdemetra/jdemetra-core</url>
+    <url>https://github.com/${x.github.user}/${x.github.repo}</url>
     <inceptionYear>2013</inceptionYear>
 
     <licenses>
@@ -31,13 +31,21 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/jdemetra/jdemetra-core.git</connection>
-        <developerConnection>scm:git:ssh://github.com:jdemetra/jdemetra-core.git</developerConnection>
-        <url>http://github.com/jdemetra/jdemetra-core/tree/master</url>
+        <connection>scm:git:git://github.com/${x.github.user}/${x.github.repo}.git</connection>
+        <developerConnection>scm:git:ssh://github.com:${x.github.user}/${x.github.repo}.git</developerConnection>
+        <url>http://github.com/${x.github.user}/${x.github.repo}/tree/master</url>
     </scm>
 
     <properties>
+        <!-- Java 8+ config -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2024-01-01T00:00:00Z</project.build.outputTimestamp>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+
+        <!-- GitHub hosting -->
+        <x.github.user>jdemetra</x.github.user>
+        <x.github.repo>jdemetra-core</x.github.repo>
     </properties>
 
     <dependencyManagement>
@@ -214,6 +222,61 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.6.1</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.gaul</groupId>
+                    <artifactId>modernizer-maven-plugin</artifactId>
+                    <version>2.7.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>de.thetaphi</groupId>
+                    <artifactId>forbiddenapis</artifactId>
+                    <version>3.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.nbbrd.heylogs</groupId>
+                    <artifactId>heylogs-maven-plugin</artifactId>
+                    <version>0.7.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.amashchenko.maven.plugin</groupId>
+                    <artifactId>gitflow-maven-plugin</artifactId>
+                    <version>1.21.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.6.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.simplify4u.plugins</groupId>
+                    <artifactId>sign-maven-plugin</artifactId>
+                    <version>1.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.13</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.11</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jreleaser</groupId>
+                    <artifactId>jreleaser-maven-plugin</artifactId>
+                    <version>1.10.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -256,11 +319,6 @@
                     <name>!skipBaseJava8</name>
                 </property>
             </activation>
-            <properties>
-                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-                <maven.compiler.target>1.8</maven.compiler.target>
-                <maven.compiler.source>1.8</maven.compiler.source>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -353,7 +411,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>3.4.1</version>
                         <dependencies>
                             <dependency>
                                 <groupId>org.kordamp.maven</groupId>
@@ -436,7 +493,6 @@
                     <plugin>
                         <groupId>org.gaul</groupId>
                         <artifactId>modernizer-maven-plugin</artifactId>
-                        <version>2.7.0</version>
                         <configuration>
                             <javaVersion>1.8</javaVersion>
                             <exclusionPatterns>
@@ -466,7 +522,6 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.11</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -499,7 +554,6 @@
                     <plugin>
                         <groupId>com.amashchenko.maven.plugin</groupId>
                         <artifactId>gitflow-maven-plugin</artifactId>
-                        <version>1.21.0</version>
                         <configuration>
                             <gitFlowConfig>
                                 <versionTagPrefix>v</versionTagPrefix>
@@ -518,7 +572,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -531,7 +584,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.6.3</version>
                         <executions>
                             <execution>
                                 <id>attach-empty-javadocs</id>
@@ -548,7 +600,6 @@
                     <plugin>
                         <groupId>org.simplify4u.plugins</groupId>
                         <artifactId>sign-maven-plugin</artifactId>
-                        <version>1.0.1</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -575,7 +626,6 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
@@ -601,7 +651,6 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
