@@ -1,5 +1,5 @@
-ec.tstoolkit.polynomial.MullerNewtonSolver
-ec.tstoolkit.polynomial.GrantHitchinsSolver
-ec.tstoolkit.polynomial.LaguerreSolver
-ec.tstoolkit.polynomial.Laguerre2Solver
-ec.tstoolkit.polynomial.UnitRootsSolver
+ec.tstoolkit.maths.polynomials.MullerNewtonSolver
+ec.tstoolkit.maths.polynomials.GrantHitchinsSolver
+ec.tstoolkit.maths.polynomials.LaguerreSolver
+ec.tstoolkit.maths.polynomials.Laguerre2Solver
+ec.tstoolkit.maths.polynomials.UnitRootsSolver
