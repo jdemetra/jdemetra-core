@@ -341,7 +341,7 @@
                 </property>
             </activation>
             <properties>
-                <lombok.version>1.18.30</lombok.version>
+                <lombok.version>1.18.32</lombok.version>
                 <java-service.version>1.9.0</java-service.version>
             </properties>
             <dependencyManagement>
