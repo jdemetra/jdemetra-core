@@ -87,7 +87,7 @@
             <dependency>
                 <groupId>com.github.nbbrd.java-sql-util</groupId>
                 <artifactId>java-sql-bom</artifactId>
-                <version>1.0.4</version>
+                <version>1.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
