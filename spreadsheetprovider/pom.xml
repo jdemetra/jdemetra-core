@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.4</version>
+        <version>2.2.5</version>
     </parent>
 
     <artifactId>demetra-spreadsheet</artifactId>
@@ -21,7 +21,7 @@
             <dependency>
                 <groupId>com.github.nbbrd.spreadsheet4j</groupId>
                 <artifactId>spreadsheet-bom</artifactId>
-                <version>2.5.2</version>
+                <version>2.5.9</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -48,19 +48,11 @@
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
-            <artifactId>spreadsheet-html</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
-            <artifactId>spreadsheet-od</artifactId>
+            <artifactId>spreadsheet-standalone</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.spreadsheet4j</groupId>
             <artifactId>spreadsheet-poi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nbbrd.spreadsheet4j</groupId>
-            <artifactId>spreadsheet-xmlss</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
