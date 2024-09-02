@@ -48,6 +48,9 @@
                                         <release>
                                             <github>
                                                 <skipTag>true</skipTag>
+                                                <changelog>
+                                                    <enabled>false</enabled>
+                                                </changelog>
                                                 <!-- Fix default value -->
                                                 <branch>master</branch>
                                             </github>
