@@ -31,9 +31,9 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +53,7 @@ public class SpreadSheetProviderTest {
         String legacy = "<<Insee.xlsx>><<'FRANCE Alim# et tabac$'>><<Industries alimentaires 001563038>>";
 
         SpreadSheetBean bean = new SpreadSheetBean();
-        bean.setFile(new File("Insee.xlsx"));
+        bean.setFile(Paths.get("Insee.xlsx").toFile());
 
         DataSet expected = DataSet.builder(bean.toDataSource("XCLPRVDR", "20111201"), DataSet.Kind.SERIES)
                 .put("seriesName", "Industries alimentaires 001563038")
@@ -73,7 +73,7 @@ public class SpreadSheetProviderTest {
         bean.setAggregationType(TsAggregationType.Last);
         bean.setCleanMissing(false);
         bean.setDataFormat(DataFormat.of(Locale.FRENCH, "dd/MM/yyyy", "#.#"));
-        bean.setFile(new File("Insee.xlsx"));
+        bean.setFile(Paths.get("Insee.xlsx").toFile());
         bean.setFrequency(TsFrequency.Monthly);
 
         DataSet expected = DataSet.builder(bean.toDataSource("XCLPRVDR", "20111201"), DataSet.Kind.SERIES)

@@ -23,25 +23,23 @@ import ec.tss.sa.SaItem;
 import ec.tss.sa.SaManager;
 import ec.tss.sa.processors.X13Processor;
 import ec.tstoolkit.modelling.arima.x13.RegArimaSpecification;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+import xml.Schemas;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Validator;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.xml.sax.SAXException;
-import xml.Schemas;
-import xml.TestErrorHandler;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -72,8 +70,7 @@ public class XmlRegArimaSpecificationTest {
         XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
         XmlRegArimaSpecification.MARSHALLER.marshal(spec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
-        FileOutputStream ostream = new FileOutputStream(FILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xspec, writer);
@@ -81,8 +78,7 @@ public class XmlRegArimaSpecificationTest {
         }
 
         XmlRegArimaSpecification rslt = null;
-        FileInputStream istream = new FileInputStream(FILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlRegArimaSpecification) unmarshaller.unmarshal(reader);
             RegArimaSpecification nspec = new RegArimaSpecification();
@@ -112,8 +108,7 @@ public class XmlRegArimaSpecificationTest {
         XmlRegArimaSpecification xspec = new XmlRegArimaSpecification();
         XmlRegArimaSpecification.MARSHALLER.marshal(pspec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
-        FileOutputStream ostream = new FileOutputStream(PFILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(PFILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xspec, writer);
@@ -121,8 +116,7 @@ public class XmlRegArimaSpecificationTest {
         }
 
         XmlRegArimaSpecification rslt = null;
-        FileInputStream istream = new FileInputStream(PFILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(PFILE), StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlRegArimaSpecification) unmarshaller.unmarshal(reader);
             RegArimaSpecification nspec = new RegArimaSpecification();

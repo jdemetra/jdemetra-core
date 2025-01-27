@@ -38,6 +38,7 @@ import ec.tstoolkit.utilities.Files2;
 import ec.tstoolkit.utilities.GuavaCaches;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -69,7 +70,7 @@ public class UscbProvider implements IDataSourceProvider {
     }
 
     final void openAll() {
-        File folder = new File(this.getFolder());
+        File folder = Paths.get(this.getFolder()).toFile();
         String[] files = folder.list();
         if (files != null) {
             for (String file : files) {
@@ -108,7 +109,7 @@ public class UscbProvider implements IDataSourceProvider {
     @Override
     public String getDisplayName(DataSource dataSource) {
         support.check(dataSource);
-        return new File(dataSource.get(X_FILE)).getName();
+        return Paths.get(dataSource.get(X_FILE)).toFile().getName();
     }
 
     @Override
@@ -206,16 +207,16 @@ public class UscbProvider implements IDataSourceProvider {
         String identifier = tsci.moniker.getId();
         String fullpath = getFolder() + identifier;
         tsci.name = tsci.moniker.getId();
-        String[] files = new File(fullpath).list();
+        String[] files = Paths.get(fullpath).toFile().list();
         if (files != null) {
             for (int i = 0; i < files.length; ++i) {
-                String cur = new File(files[i]).getName();
+                String cur = Paths.get(files[i]).toFile().getName();
                 String id = "";
                 if (identifier == null) {
                     id = cur;
                 } else {
-                    File file1 = new File(identifier);
-                    File file2 = new File(file1, cur);
+                    File file1 = Paths.get(identifier).toFile();
+                    File file2 = file1.toPath().resolve(cur).toFile();
                     id = file2.getPath();
                 }
                 TsMoniker moniker = new TsMoniker(getSource(), id);
@@ -239,7 +240,7 @@ public class UscbProvider implements IDataSourceProvider {
     public boolean get(TsInformation tsi) {
         try {
             FromUscbId id = new FromUscbId(tsi.moniker.getId());
-            FileDataSourceId sourceId = FileDataSourceId.from(new File(id.getFileName()));
+            FileDataSourceId sourceId = FileDataSourceId.from(Paths.get(id.getFileName()).toFile());
             UscbAccessor acc = getAccessor(sourceId);
 
             if (tsi.type.intValue() >= TsInformationType.Data.intValue()) {

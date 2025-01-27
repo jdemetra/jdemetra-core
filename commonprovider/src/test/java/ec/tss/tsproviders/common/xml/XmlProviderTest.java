@@ -28,6 +28,8 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -47,7 +49,7 @@ public class XmlProviderTest {
         String legacy = "Insee@0@0";
 
         XmlBean bean = new XmlBean();
-        bean.setFile(new File("Insee.xml"));
+        bean.setFile(Paths.get("Insee.xml").toFile());
 
         DataSet expected = DataSet.builder(bean.toDataSource("Xml", "20111201"), DataSet.Kind.SERIES)
                 .put("collectionIndex", 0)
@@ -64,7 +66,7 @@ public class XmlProviderTest {
         String uri = "demetra://tsprovider/Xml/20111201/SERIES?file=Insee.xml#collectionIndex=0&seriesIndex=0";
 
         XmlBean bean = new XmlBean();
-        bean.setFile(new File("Insee.xml"));
+        bean.setFile(Paths.get("Insee.xml").toFile());
 
         DataSet expected = DataSet.builder(bean.toDataSource("Xml", "20111201"), DataSet.Kind.SERIES)
                 .put("collectionIndex", 0)

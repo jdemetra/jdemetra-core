@@ -19,20 +19,21 @@ package ec.demetra.xml.calendars;
 import ec.demetra.xml.core.XmlWeightedItem;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.Month;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+import xml.Schemas;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Validator;
-import org.junit.Test;
-import org.junit.Ignore;
-import org.xml.sax.SAXException;
-import xml.Schemas;
-import xml.TestErrorHandler;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  *
@@ -122,8 +123,7 @@ public class XmlCalendarsTest {
         xcals.getCalendars().add(xcomposite);
 
         JAXBContext jaxb = JAXBContext.newInstance(xcals.getClass());
-        FileOutputStream ostream = new FileOutputStream(FILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xcals, writer);

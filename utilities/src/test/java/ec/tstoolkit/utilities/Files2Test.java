@@ -21,6 +21,7 @@ import com.google.common.base.StandardSystemProperty;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -45,16 +46,16 @@ public class Files2Test {
 
     @BeforeClass
     public static void beforeClass() throws IOException {
-        PATH = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), UUID.randomUUID().toString());
+        PATH = Paths.get(StandardSystemProperty.JAVA_IO_TMPDIR.value(), UUID.randomUUID().toString()).toFile();
         PATH.mkdir();
-        ABSOLUTE_INSIDE = new File(PATH, "test.xml");
+        ABSOLUTE_INSIDE = PATH.toPath().resolve("test.xml").toFile();
         Files.touch(ABSOLUTE_INSIDE);
-        ABSOLUTE_DIR_INSIDE = new File(PATH, "folder");
+        ABSOLUTE_DIR_INSIDE = PATH.toPath().resolve("folder").toFile();
         Preconditions.checkState(ABSOLUTE_DIR_INSIDE.mkdir());
-        RELATIVE_INSIDE = new File(ABSOLUTE_INSIDE.getName());
-        RELATIVE_DIR_INSIDE = new File(ABSOLUTE_DIR_INSIDE.getName());
+        RELATIVE_INSIDE = Paths.get(ABSOLUTE_INSIDE.getName()).toFile();
+        RELATIVE_DIR_INSIDE = Paths.get(ABSOLUTE_DIR_INSIDE.getName()).toFile();
         ABSOLUTE_OUTSIDE = java.nio.file.Files.createTempFile("boom", "xml").toFile();
-        RELATIVE_OUTSIDE = new File(ABSOLUTE_OUTSIDE.getName());
+        RELATIVE_OUTSIDE = Paths.get(ABSOLUTE_OUTSIDE.getName()).toFile();
         PATHS = new File[]{PATH};
     }
 
@@ -140,10 +141,10 @@ public class Files2Test {
 
     @Test
     public void testAcceptByExtension() {
-        assertTrue(Files2.acceptByLowerCaseExtension(new File("hello.xml"), "xml"));
-        assertTrue(Files2.acceptByLowerCaseExtension(new File("hello.xml"), "jpg", "xml"));
-        assertTrue(Files2.acceptByLowerCaseExtension(new File("hello.xMl"), "xml"));
-        assertFalse(Files2.acceptByLowerCaseExtension(new File("hello.xml"), "jpg"));
-        assertFalse(Files2.acceptByLowerCaseExtension(new File("hello.xml")));
+        assertTrue(Files2.acceptByLowerCaseExtension(Paths.get("hello.xml").toFile(), "xml"));
+        assertTrue(Files2.acceptByLowerCaseExtension(Paths.get("hello.xml").toFile(), "jpg", "xml"));
+        assertTrue(Files2.acceptByLowerCaseExtension(Paths.get("hello.xMl").toFile(), "xml"));
+        assertFalse(Files2.acceptByLowerCaseExtension(Paths.get("hello.xml").toFile(), "jpg"));
+        assertFalse(Files2.acceptByLowerCaseExtension(Paths.get("hello.xml").toFile()));
     }
 }

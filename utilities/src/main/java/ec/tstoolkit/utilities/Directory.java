@@ -17,6 +17,8 @@
 
 package ec.tstoolkit.utilities;
 
+import org.gaul.modernizer_maven_annotations.SuppressModernizer;
+
 import java.io.File;
 
 /**
@@ -28,6 +30,7 @@ public class Directory extends File {
 
     private static final long serialVersionUID = 301077366599181567L;
 
+    @SuppressModernizer
     public Directory(String pathname) {
         super(pathname);
     }

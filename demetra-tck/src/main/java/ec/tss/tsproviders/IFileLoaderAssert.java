@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -476,7 +477,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
 
     public static File urlAsFile(URL url) {
         try {
-            return new File(url.toURI());
+            return Paths.get(url.toURI()).toFile();
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
@@ -521,7 +522,7 @@ public class IFileLoaderAssert extends AbstractAssert<IFileLoaderAssert, IFileLo
 
     private static <P extends IFileLoader> void checkPath(SoftAssertions s, Supplier<P> factory, Sampler<P> sampler) {
         try (P p = factory.get()) {
-            File[] files = new File[]{new File("hello"), new File("world")};
+            File[] files = new File[]{Paths.get("hello").toFile(), Paths.get("world").toFile()};
             p.setPaths(files);
             s.assertThat(p.getPaths()).containsExactly(files);
             p.setPaths(null);

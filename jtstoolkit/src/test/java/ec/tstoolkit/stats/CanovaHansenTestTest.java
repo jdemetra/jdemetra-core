@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -93,7 +94,7 @@ public class CanovaHansenTestTest {
     @Test
     public void testW_trig() throws IOException, URISyntaxException {
         URL resource = CanovaHansenTest.class.getResource("/uspetroleum.txt");
-        Matrix pet = MatrixReader.read(new File(resource.toURI()));
+        Matrix pet = MatrixReader.read(Paths.get(resource.toURI()).toFile());
         for (int c = 0; c < pet.getColumnsCount(); ++c) {
 //            System.out.println("week trig" + (c + 1));
             DataBlock y = pet.column(c).deepClone();

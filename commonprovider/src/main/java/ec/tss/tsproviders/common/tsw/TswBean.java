@@ -22,13 +22,14 @@ import ec.tss.tsproviders.IFileBean;
 import ec.tss.tsproviders.utils.IParam;
 import static ec.tss.tsproviders.utils.Params.onFile;
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  *
  * @author Mats Maggi
  */
 public class TswBean implements IFileBean, IDataSourceBean {
-    static final IParam<DataSource, File> FOLDER = onFile(new File(""), "file");
+    static final IParam<DataSource, File> FOLDER = onFile(Paths.get("").toFile(), "file");
     
     File folder;
     

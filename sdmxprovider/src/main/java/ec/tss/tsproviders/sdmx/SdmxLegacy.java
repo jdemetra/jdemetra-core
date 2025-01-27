@@ -21,6 +21,7 @@ import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.utils.Parsers;
 import ec.tss.tsproviders.utils.Parsers.Parser;
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  *
@@ -35,7 +36,7 @@ final class SdmxLegacy {
     static DataSource newDataSource(SdmxDataSourceId id) {
         SdmxBean bean = new SdmxBean();
         bean.setFactory(id.getFactory());
-        bean.setFile(new File(id.getUrl()));
+        bean.setFile(Paths.get(id.getUrl()).toFile());
         return bean.toDataSource(SdmxProvider.SOURCE, SdmxProvider.VERSION);
     }
 

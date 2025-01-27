@@ -23,13 +23,15 @@ import ec.tstoolkit.algorithm.IOutput;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Jdk6;
 import ec.tstoolkit.utilities.Paths;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  *
@@ -63,7 +65,7 @@ public class CsvOutput implements IOutput<SaDocument<ISaSpecification>> {
             String nfile = config_.getFilePrefix();
             nfile += "_" + StringFormatter.cleanup(item.replace('.', '_'));
             nfile = Paths.changeExtension(nfile, "csv");
-            write(new File(BasicConfiguration.folder(folder_), nfile), summary_.getNames(), summary_.getSeries(item));
+            write(BasicConfiguration.folder(folder_).toPath().resolve(nfile), summary_.getNames(), summary_.getSeries(item));
         }
         summary_ = null;
     }
@@ -78,14 +80,12 @@ public class CsvOutput implements IOutput<SaDocument<ISaSpecification>> {
         return true;
     }
 
-    private void write(File file, List<String> names, List<TsData> s) throws Exception {
-        try (FileOutputStream matrix = new FileOutputStream(file)) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1)) {
-                TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
-                fmt.setFullName(config_.isFullName());
-                fmt.setPresentation(config_.getPresentation());
-                fmt.write(s, names, writer);
-            }
+    private void write(Path file, List<String> names, List<TsData> s) throws Exception {
+        try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.ISO_8859_1)) {
+            TsCollectionCsvFormatter fmt = new TsCollectionCsvFormatter();
+            fmt.setFullName(config_.isFullName());
+            fmt.setPresentation(config_.getPresentation());
+            fmt.write(s, names, writer);
         }
     }
 }

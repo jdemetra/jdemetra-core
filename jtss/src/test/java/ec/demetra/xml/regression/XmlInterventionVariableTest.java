@@ -5,39 +5,23 @@
  */
 package ec.demetra.xml.regression;
 
-import data.Data;
-import ec.demetra.xml.core.XmlTs;
-import ec.demetra.xml.core.XmlTsCollection;
-import ec.tss.Ts;
-import ec.tss.TsFactory;
-import ec.tstoolkit.MetaData;
 import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.Month;
 import ec.tstoolkit.timeseries.regression.InterventionVariable;
-import ec.tstoolkit.timeseries.simplets.TsData;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.util.JAXBSource;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Validator;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.xml.sax.SAXException;
-import xml.Schemas;
-import xml.TestErrorHandler;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  *
@@ -63,8 +47,7 @@ public class XmlInterventionVariableTest {
         ivar.add(d1, d1.plus(90));
         XmlInterventionVariable xvar = XmlInterventionVariable.getAdapter().marshal(ivar);
 
-        FileOutputStream ostream = new FileOutputStream(FILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 //            marshaller.marshal(xvar, writer);
@@ -73,8 +56,7 @@ public class XmlInterventionVariableTest {
         }
 
         XmlInterventionVariable rslt = null;
-        FileInputStream istream = new FileInputStream(FILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Source source = new StreamSource(reader);
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
 //            rslt = (XmlInterventionVariable) unmarshaller.unmarshal(reader);

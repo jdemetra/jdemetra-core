@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class MatrixReader {
     
     public static Matrix read(File file, Locale locale) throws FileNotFoundException, IOException {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
             List<double[]> data = new ArrayList<>();
             String curline;
             int nc = 0;

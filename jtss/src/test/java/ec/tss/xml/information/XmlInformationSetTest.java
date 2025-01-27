@@ -33,12 +33,11 @@ import ec.tstoolkit.timeseries.Day;
 import ec.tstoolkit.timeseries.Month;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -96,8 +95,7 @@ public class XmlInformationSetTest {
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("d:\\test.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("d:\\test.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -114,8 +112,7 @@ public class XmlInformationSetTest {
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("C:\\LocalData\\test.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("C:\\LocalData\\test.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -131,8 +128,7 @@ public class XmlInformationSetTest {
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("d:\\testj.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("d:\\testj.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -149,8 +145,7 @@ public class XmlInformationSetTest {
         XmlInformationSet xmlinfo = new XmlInformationSet();
         xmlinfo.copy(info);
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("d:\\testj.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("d:\\testj.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -169,8 +164,7 @@ public class XmlInformationSetTest {
         xmlinfo.copy(info);
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("C:\\LocalData\\test.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("C:\\LocalData\\test.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -189,8 +183,7 @@ public class XmlInformationSetTest {
         xmlinfo.copy(info);
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("C:\\LocalData\\testTramoSeats.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("C:\\LocalData\\testTramoSeats.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -209,8 +202,7 @@ public class XmlInformationSetTest {
         xmlinfo.copy(info);
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("d:\\test.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("d:\\test.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -240,8 +232,7 @@ public class XmlInformationSetTest {
         xmlinfo.copy(info);
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("C:\\LocalData\\test.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("C:\\LocalData\\test.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -253,8 +244,10 @@ public class XmlInformationSetTest {
     public void testCalendarizationUnSerialization() throws JAXBException, FileNotFoundException, IOException {
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileInputStream stream = new FileInputStream("C:\\LocalData\\test.xml");
-        XmlInformationSet xmlinfo = (XmlInformationSet) jaxb.createUnmarshaller().unmarshal(stream);
+        XmlInformationSet xmlinfo;
+        try (InputStream stream = Files.newInputStream(Paths.get("C:\\LocalData\\test.xml"))) {
+            xmlinfo = (XmlInformationSet) jaxb.createUnmarshaller().unmarshal(stream);
+        }
         InformationSet set = xmlinfo.create();
         set = set.get("calendarization", InformationSet.class);
         CalendarizationDocument doc = new CalendarizationDocument();
@@ -273,8 +266,7 @@ public class XmlInformationSetTest {
         xmlinfo.copy(info);
 
         JAXBContext jaxb = JAXBContext.newInstance(XmlInformationSet.class);
-        FileOutputStream stream = new FileOutputStream("C:\\LocalData\\testx13.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("C:\\LocalData\\testx13.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfo, writer);
@@ -288,8 +280,7 @@ public class XmlInformationSetTest {
         XmlInformationSet xmlinfop = new XmlInformationSet();
         xmlinfop.copy(infop);
 
-        stream = new FileOutputStream("C:\\LocalData\\testx13p.xml");
-        try (OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get("C:\\LocalData\\testx13p.xml"), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xmlinfop, writer);

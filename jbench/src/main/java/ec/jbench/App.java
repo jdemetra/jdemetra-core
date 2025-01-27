@@ -22,7 +22,10 @@ import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.utilities.NamedObject;
 import ec.tstoolkit.utilities.WeightedItem;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -55,7 +58,7 @@ public class App {
     static ArrayList<NamedObject<TsData>> read(String file) {
         try {
             ArrayList<NamedObject<TsData>> ts = new ArrayList<>();
-            FileInputStream stream = new FileInputStream(file);
+            InputStream stream = Files.newInputStream(Paths.get(file));
             DataInputStream in = new DataInputStream(stream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
@@ -96,7 +99,7 @@ public class App {
         }
         try {
 
-            FileInputStream stream = new FileInputStream(cFile_);
+            InputStream stream = Files.newInputStream(Paths.get(cFile_));
             DataInputStream in = new DataInputStream(stream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             NumberFormat fmt = DecimalFormat.getInstance();
@@ -148,7 +151,7 @@ public class App {
             return true;
         }
         try {
-            FileInputStream stream = new FileInputStream(tFile_);
+            InputStream stream = Files.newInputStream(Paths.get(tFile_));
             DataInputStream in = new DataInputStream(stream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
@@ -194,7 +197,7 @@ public class App {
     static void write() throws IOException {
         BufferedWriter bw = null;
         try {
-            bw = new BufferedWriter(new FileWriter(oFile_));
+            bw = Files.newBufferedWriter(Paths.get(oFile_));
             NumberFormat fmt = DecimalFormat.getInstance();
             fmt.setMaximumFractionDigits(9);
             fmt.setMaximumIntegerDigits(50);

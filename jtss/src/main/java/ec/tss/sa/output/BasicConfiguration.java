@@ -248,7 +248,7 @@ public class BasicConfiguration {
                 nfolder = Paths.concatenate(nfolder, parent.get(i));
             }
         }
-        File Folder = new File(nfolder);
+        File Folder = java.nio.file.Paths.get(nfolder).toFile();
         if (!Folder.exists()) {
             Folder.mkdirs();
         }
@@ -260,7 +260,7 @@ public class BasicConfiguration {
         if (context != null && context instanceof Id) {
             Id parent = (Id) context;
             for (int i = 0; i < parent.getCount(); ++i) {
-                nfolder = new File(nfolder, parent.get(i));
+                nfolder = nfolder.toPath().resolve(parent.get(i)).toFile();
             }
         }
         if (!nfolder.exists()) {
@@ -279,7 +279,7 @@ public class BasicConfiguration {
 
     public static File folder(File folder) {
         if (folder == null || !folder.isDirectory()) {
-            return new File(defaultFolder);
+            return java.nio.file.Paths.get(defaultFolder).toFile();
         } else {
             return folder;
         }

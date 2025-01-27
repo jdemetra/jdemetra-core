@@ -82,6 +82,11 @@
             <artifactId>checker-qual</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.gaul</groupId>
+            <artifactId>modernizer-maven-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- compile and runtime -->
         <dependency>

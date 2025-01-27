@@ -17,12 +17,8 @@
 package ec.tss.tsproviders.jdbc.dsm.identification.aes;
 
 import com.google.common.base.StandardSystemProperty;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -117,8 +113,8 @@ public final class KeyGen {
      */
     public static SecretKeySpec retrieveKeySpec(final String path) {
         try {
-            File input = new File(path);
-            try (FileInputStream fis = new FileInputStream(input)) {
+            Path input = Paths.get(path);
+            try (InputStream fis = Files.newInputStream(input)) {
                 try (ObjectInputStream ois = new ObjectInputStream(fis)) {
                     byte[] raw = (byte[]) ois.readObject();
                     return new SecretKeySpec(raw, "AES");
