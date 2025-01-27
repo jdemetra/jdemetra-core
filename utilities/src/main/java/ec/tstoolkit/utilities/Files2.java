@@ -19,6 +19,7 @@ package ec.tstoolkit.utilities;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Locale;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -36,7 +37,7 @@ public final class Files2 {
     }
 
     public static File fromPath(String parent, String... path) {
-        return new File(parent, Joiner.on(File.separatorChar).join(path));
+        return Paths.get(parent, Joiner.on(File.separatorChar).join(path)).toFile();
     }
 
     /**
@@ -61,7 +62,7 @@ public final class Files2 {
             return file;
         }
         for (File parent : paths) {
-            File result = new File(parent, file.getPath());
+            File result = parent.toPath().resolve(file.getPath()).toFile();
             if (result.exists()) {
                 return result;
             }
@@ -79,7 +80,7 @@ public final class Files2 {
         for (File parent : paths) {
             String parentPath = parent.getAbsolutePath() + File.separator;
             if (path.startsWith(parentPath)) {
-                return new File(path.substring(parentPath.length()));
+                return Paths.get(path.substring(parentPath.length())).toFile();
             }
         }
         // absolute file outside paths
@@ -104,7 +105,7 @@ public final class Files2 {
      */
     @Nullable
     public static File extractFile(@NonNull String path) {
-        File file = new File(path);
+        File file = Paths.get(path).toFile();
         if (file.isFile()) {
             return file;
         }

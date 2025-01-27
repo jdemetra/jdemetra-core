@@ -22,12 +22,14 @@ import ec.tss.tsproviders.utils.MultiLineNameUtil;
 import ec.tstoolkit.algorithm.IOutput;
 import ec.tstoolkit.timeseries.simplets.TsData;
 import ec.tstoolkit.utilities.Paths;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
@@ -89,8 +91,8 @@ public class TxtOutput extends BasicConfiguration implements IOutput<SaDocument<
             sname = MultiLineNameUtil.last(sname);
         }
         
-        File file = new File(folder, Paths.changeExtension(name, "dta"));
-        try (OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.ISO_8859_1)) {
+        Path file = folder.toPath().resolve(Paths.changeExtension(name, "dta"));
+        try (Writer w = Files.newBufferedWriter(file, StandardCharsets.ISO_8859_1)) {
             w.write(sname);
             w.write(System.lineSeparator());
             w.write(Integer.toString(s.getLength()));

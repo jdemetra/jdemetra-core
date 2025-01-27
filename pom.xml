@@ -46,6 +46,9 @@
         <!-- GitHub hosting -->
         <x.github.user>jdemetra</x.github.user>
         <x.github.repo>jdemetra-core</x.github.repo>
+
+        <!-- annotations & processors -->
+        <modernizer.version>3.1.0</modernizer.version>
     </properties>
 
     <dependencyManagement>
@@ -60,6 +63,11 @@
                 <groupId>com.github.stephenc.jcip</groupId>
                 <artifactId>jcip-annotations</artifactId>
                 <version>1.0-1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.gaul</groupId>
+                <artifactId>modernizer-maven-annotations</artifactId>
+                <version>${modernizer.version}</version>
             </dependency>
 
             <!-- test libraries -->
@@ -230,7 +238,7 @@
                 <plugin>
                     <groupId>org.gaul</groupId>
                     <artifactId>modernizer-maven-plugin</artifactId>
-                    <version>2.9.0</version>
+                    <version>${modernizer.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>de.thetaphi</groupId>

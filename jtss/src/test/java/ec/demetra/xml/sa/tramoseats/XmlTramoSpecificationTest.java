@@ -22,29 +22,24 @@ import ec.tss.TsFactory;
 import ec.tss.sa.SaItem;
 import ec.tss.sa.SaManager;
 import ec.tss.sa.processors.TramoSeatsProcessor;
-import ec.tstoolkit.algorithm.implementation.TramoProcessingFactory;
-import ec.tstoolkit.modelling.DefaultTransformationType;
 import ec.tstoolkit.modelling.arima.tramo.TramoSpecification;
-import ec.tstoolkit.modelling.arima.tramo.TransformSpec;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+import xml.Schemas;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Validator;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.xml.sax.SAXException;
-import xml.Schemas;
-import xml.TestErrorHandler;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -75,8 +70,7 @@ public class XmlTramoSpecificationTest {
         XmlTramoSpecification xspec = new XmlTramoSpecification();
         XmlTramoSpecification.MARSHALLER.marshal(spec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
-        FileOutputStream ostream = new FileOutputStream(FILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xspec, writer);
@@ -84,8 +78,7 @@ public class XmlTramoSpecificationTest {
         }
 
         XmlTramoSpecification rslt = null;
-        FileInputStream istream = new FileInputStream(FILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlTramoSpecification) unmarshaller.unmarshal(reader);
             TramoSpecification nspec = new TramoSpecification();
@@ -114,8 +107,7 @@ public class XmlTramoSpecificationTest {
         XmlTramoSpecification xspec = new XmlTramoSpecification();
         XmlTramoSpecification.MARSHALLER.marshal(pspec, xspec);
         JAXBContext jaxb = JAXBContext.newInstance(xspec.getClass());
-        FileOutputStream ostream = new FileOutputStream(PFILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(PFILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xspec, writer);
@@ -123,8 +115,7 @@ public class XmlTramoSpecificationTest {
         }
 
         XmlTramoSpecification rslt = null;
-        FileInputStream istream = new FileInputStream(PFILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(PFILE), StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlTramoSpecification) unmarshaller.unmarshal(reader);
             TramoSpecification nspec = new TramoSpecification();

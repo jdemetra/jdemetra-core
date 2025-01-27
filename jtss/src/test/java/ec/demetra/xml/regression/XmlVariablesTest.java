@@ -21,13 +21,11 @@ import ec.tstoolkit.timeseries.DayClustering;
 import ec.tstoolkit.timeseries.regression.TsVariables;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.timeseries.simplets.TsPeriod;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -71,9 +69,8 @@ public class XmlVariablesTest {
         xwnd.From=new TsPeriod(TsFrequency.Yearly, 2000, 0).firstday();
         xwnd.To=new TsPeriod(TsFrequency.Yearly, 2010, 0).lastday();
         xtd.getModifiers().add(xwnd);
-        
-        FileOutputStream ostream = new FileOutputStream(FILE);
-        try (OutputStreamWriter writer = new OutputStreamWriter(ostream, StandardCharsets.UTF_8)) {
+
+        try (Writer writer = Files.newBufferedWriter(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Marshaller marshaller = jaxb.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(xvar, writer);
@@ -81,8 +78,7 @@ public class XmlVariablesTest {
         }
 
         XmlVariables rslt = null;
-        FileInputStream istream = new FileInputStream(FILE);
-        try (InputStreamReader reader = new InputStreamReader(istream, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(FILE), StandardCharsets.UTF_8)) {
             Unmarshaller unmarshaller = jaxb.createUnmarshaller();
             rslt = (XmlVariables) unmarshaller.unmarshal(reader);
         }

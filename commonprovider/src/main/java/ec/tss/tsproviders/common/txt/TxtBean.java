@@ -27,6 +27,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 /**
@@ -45,7 +46,7 @@ public class TxtBean implements IFileBean, IDataSourceBean {
         NONE, QUOTE, DOUBLE_QUOTE
     }
     //
-    static final IParam<DataSource, File> FILE = onFile(new File(""), "file");
+    static final IParam<DataSource, File> FILE = onFile(Paths.get("").toFile(), "file");
     static final IParam<DataSource, DataFormat> DATAFORMAT = onDataFormat(DataFormat.of(Locale.ENGLISH, "yyyy-MM-DD", null), "locale", "datePattern", "numberPattern");
     static final IParam<DataSource, Charset> CHARSET = onCharset(StandardCharsets.UTF_8, "charset");
     static final IParam<DataSource, Delimiter> DELIMITER = onEnum(Delimiter.TAB, "delimiter");

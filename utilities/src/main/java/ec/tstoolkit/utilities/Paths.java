@@ -111,7 +111,7 @@ public final class Paths {
 
     public static String getFullPath(String file) {
         try {
-            File tmp = new File(file);
+            File tmp = java.nio.file.Paths.get(file).toFile();
             return splitFile(tmp.getCanonicalPath())[0];
         } catch (IOException ex) {
             return null;

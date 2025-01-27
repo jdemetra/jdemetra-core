@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Locale;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class TxtProviderTest {
         String legacy = "Insee1.txt@S854655";
 
         TxtBean bean = new TxtBean();
-        bean.setFile(new File("Insee1.txt"));
+        bean.setFile(Paths.get("Insee1.txt").toFile());
 
         // FIXME: series index or name?
         DataSet expected = DataSet.builder(bean.toDataSource("Txt", "20111201"), DataSet.Kind.SERIES)
@@ -71,7 +72,7 @@ public class TxtProviderTest {
         bean.setCleanMissing(true);
         bean.setDataFormat(DataFormat.of(Locale.FRENCH, "dd/MM/yyyy", "#.#"));
         bean.setDelimiter(TxtBean.Delimiter.SEMICOLON);
-        bean.setFile(new File("Insee1.txt"));
+        bean.setFile(Paths.get("Insee1.txt").toFile());
         bean.setFrequency(TsFrequency.Monthly);
         bean.setAggregationType(TsAggregationType.Last);
         bean.setHeaders(false);
