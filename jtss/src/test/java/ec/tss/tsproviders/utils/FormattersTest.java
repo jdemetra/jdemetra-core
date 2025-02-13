@@ -21,6 +21,8 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
@@ -82,7 +84,7 @@ public class FormattersTest {
     public void testFileFormatter() {
         Formatter<File> f = Formatters.fileFormatter();
         assertCompliance(f);
-        assertThat(f.format(new File("test.xml"))).isEqualTo("test.xml");
+        assertThat(f.format(Paths.get("test.xml").toFile())).isEqualTo("test.xml");
     }
 
     @Test

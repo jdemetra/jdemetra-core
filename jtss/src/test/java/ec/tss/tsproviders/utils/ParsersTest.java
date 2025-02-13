@@ -21,6 +21,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -83,7 +84,7 @@ public class ParsersTest {
     public void testFileParser() {
         Parser<File> p = Parsers.fileParser();
         assertCompliance(p);
-        assertThat(p.parse("test.xml")).isEqualTo(new File("test.xml"));
+        assertThat(p.parse("test.xml")).isEqualTo(Paths.get("test.xml").toFile());
     }
 
     @Test

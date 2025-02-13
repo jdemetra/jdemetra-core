@@ -18,6 +18,7 @@
 package ec.tstoolkit.utilities;
 
 import java.io.File;
+import java.nio.file.Paths;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
@@ -33,6 +34,6 @@ public class FileXmlAdapter extends XmlAdapter<File, String> {
 
     @Override
     public File marshal(String v) throws Exception {
-        return new File(v);
+        return Paths.get(v).toFile();
     }
 }

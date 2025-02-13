@@ -22,6 +22,7 @@ import ec.tss.tsproviders.utils.Parsers.Parser;
 import ec.tstoolkit.design.Immutable;
 import ec.tstoolkit.utilities.Files2;
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  *
@@ -41,7 +42,7 @@ public final class FileDataSourceId implements CharSequence {
     public static FileDataSourceId parse(String input) {
         if (!isDemetraUri(input)) {
             LinearIdBuilder id = LinearIdBuilder.parse(SH, input);
-            if (id != null && id.getCount() == 1 && Files2.isValidPath(new File(id.get(0)))) {
+            if (id != null && id.getCount() == 1 && Files2.isValidPath(Paths.get(id.get(0)).toFile())) {
                 return new FileDataSourceId(id);
             }
         }
@@ -63,7 +64,7 @@ public final class FileDataSourceId implements CharSequence {
     }
 
     public <T extends IFileBean> T fill(T bean) {
-        bean.setFile(new File(getFile()));
+        bean.setFile(Paths.get(getFile()).toFile());
         return bean;
     }
 
@@ -72,7 +73,7 @@ public final class FileDataSourceId implements CharSequence {
     }
 
     public String getFileName() {
-        File f = new File(getFile());
+        File f = Paths.get(getFile()).toFile();
         return f.getName();
     }
 

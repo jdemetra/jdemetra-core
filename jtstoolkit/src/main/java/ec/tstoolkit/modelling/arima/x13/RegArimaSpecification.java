@@ -51,7 +51,7 @@ public class RegArimaSpecification implements IRegArimaSpecification, Cloneable 
     public static final RegArimaSpecification RGDISABLED, RG0, RG1, RG2, RG3, RG4, RG5;
     public static final String BASIC = "basic", TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
-            REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
+            REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "estimate";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         EstimateSpec.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);

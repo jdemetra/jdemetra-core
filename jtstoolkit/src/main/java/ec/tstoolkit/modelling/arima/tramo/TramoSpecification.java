@@ -58,7 +58,7 @@ public class TramoSpecification implements Cloneable, IRegArimaSpecification {
     private static final String SMETHOD = "TR";
     public static final String TRANSFORM = "transform",
             AUTOMDL = "automdl", ARIMA = "arima",
-            REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "esimate";
+            REGRESSION = "regression", OUTLIER = "outlier", ESTIMATE = "estimate";
 
     public static void fillDictionary(String prefix, Map<String, Class> dic) {
         EstimateSpec.fillDictionary(InformationSet.item(prefix, ESTIMATE), dic);

@@ -18,18 +18,14 @@ package ec.tss.tsproviders.spreadsheet.facade;
 
 import com.google.common.io.InputSupplier;
 import com.google.common.io.OutputSupplier;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.AbstractList;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Facade that represents <b>a book in a spreadsheet</b>. It is created by a
@@ -143,7 +139,7 @@ public abstract class Book implements Closeable {
          */
         @NonNull
         public Book load(@NonNull File file) throws IOException {
-            try (InputStream stream = new FileInputStream(file)) {
+            try (InputStream stream = Files.newInputStream(file.toPath())) {
                 return load(stream);
             }
         }
@@ -208,7 +204,7 @@ public abstract class Book implements Closeable {
          * @throws IOException if something goes wrong during the storing.
          */
         public void store(@NonNull File file, @NonNull Book book) throws IOException {
-            try (OutputStream stream = new FileOutputStream(file, false)) {
+            try (OutputStream stream = Files.newOutputStream(file.toPath(), StandardOpenOption.CREATE)) {
                 store(stream, book);
             }
         }

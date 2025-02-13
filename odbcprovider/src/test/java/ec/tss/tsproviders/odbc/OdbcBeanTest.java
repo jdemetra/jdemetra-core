@@ -18,6 +18,8 @@ package ec.tss.tsproviders.odbc;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.nio.file.Paths;
+
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,9 +32,9 @@ public class OdbcBeanTest {
 
     @Test
     public void testFileConnectionString() {
-        File mdb = new File("hello.mdb");
-        File accdb = new File("hello.accdb");
-        File txt = new File("hello.txt");
+        File mdb = Paths.get("hello.mdb").toFile();
+        File accdb = Paths.get("hello.accdb").toFile();
+        File txt = Paths.get("hello.txt").toFile();
 
         FileFilter ff = OdbcBean.AccessFileFilter.INSTANCE;
         Assert.assertTrue(ff.accept(mdb));

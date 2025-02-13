@@ -25,6 +25,7 @@ import ec.tss.tsproviders.utils.Params;
 import ec.tstoolkit.timeseries.TsAggregationType;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  *
@@ -32,7 +33,7 @@ import java.io.File;
  */
 public class SpreadSheetBean implements IFileBean, IDataSourceBean {
 
-    static final IParam<DataSource, File> X_FILE = Params.onFile(new File(""), "file");
+    static final IParam<DataSource, File> X_FILE = Params.onFile(Paths.get("").toFile(), "file");
     static final IParam<DataSource, DataFormat> X_DATAFORMAT = Params.onDataFormat(DataFormat.DEFAULT, "locale", "datePattern", "numberPattern");
     static final IParam<DataSource, TsFrequency> X_FREQUENCY = Params.onEnum(TsFrequency.Undefined, "frequency");
     static final IParam<DataSource, TsAggregationType> X_AGGREGATION_TYPE = Params.onEnum(TsAggregationType.None, "aggregationType");

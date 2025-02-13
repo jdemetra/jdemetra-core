@@ -26,7 +26,9 @@ import ec.tstoolkit.utilities.Paths;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +70,9 @@ public class CsvMatrixOutput implements IOutput<SaDocument<ISaSpecification>> {
         fmt.setFullName(fullName);
         String file = Paths.concatenate(folder_.getAbsolutePath(), config_.getFileName());
         file = Paths.changeExtension(file, "csv");
-        FileOutputStream matrix = new FileOutputStream(file);
-        OutputStreamWriter writer = new OutputStreamWriter(matrix, StandardCharsets.ISO_8859_1);
-        fmt.formatResults(writer, infos_, config_.getItems(), true);
+        try (Writer writer = Files.newBufferedWriter(java.nio.file.Paths.get(file), StandardCharsets.ISO_8859_1)) {
+            fmt.formatResults(writer, infos_, config_.getItems(), true);
+        }
         infos_ = null;
     }
 

@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sat</groupId>
         <artifactId>demetra-parent</artifactId>
-        <version>2.2.5</version>
+        <version>2.2.6</version>
     </parent>
 
     <artifactId>demetra-tstoolkit</artifactId>
@@ -48,6 +48,9 @@
                                         <release>
                                             <github>
                                                 <skipTag>true</skipTag>
+                                                <changelog>
+                                                    <enabled>false</enabled>
+                                                </changelog>
                                                 <!-- Fix default value -->
                                                 <branch>master</branch>
                                             </github>

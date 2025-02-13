@@ -26,6 +26,7 @@ import ec.tss.tsproviders.utils.Parsers;
 import ec.tstoolkit.design.VisibleForTesting;
 import java.io.File;
 import java.io.FileFilter;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +51,7 @@ public class OdbcBean extends JdbcBean implements IFileBean {
 
     @Override
     public File getFile() {
-        return FILE_PARSERS.parseValue(getDbName()).orElse(new File(""));
+        return FILE_PARSERS.parseValue(getDbName()).orElse(Paths.get("").toFile());
     }
 
     @Override
@@ -87,7 +88,7 @@ public class OdbcBean extends JdbcBean implements IFileBean {
         protected File doParse(CharSequence input) throws Exception {
             String file = CONNECTION_STRING_SPLITTER.split(input).get("DBQ");
             if (file != null) {
-                File result = new File(file);
+                File result = Paths.get(file).toFile();
                 return AccessFileFilter.INSTANCE.accept(result) ? result : null;
             }
             return null;

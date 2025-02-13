@@ -23,6 +23,7 @@ import ec.tss.tsproviders.sdmx.engine.CunningPlanFactory;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.Params;
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  *
@@ -30,7 +31,7 @@ import java.io.File;
  */
 public class SdmxBean implements IFileBean, IDataSourceBean {
 
-    static final IParam<DataSource, File> X_FILE = Params.onFile(new File(""), "url");
+    static final IParam<DataSource, File> X_FILE = Params.onFile(Paths.get("").toFile(), "url");
     static final IParam<DataSource, String> X_FACTORY = Params.onString(CunningPlanFactory.NAME, "factory");
     static final IParam<DataSource, String> X_TITLE_ATTRIBUTE = Params.onString("", "titleAttribute");
 

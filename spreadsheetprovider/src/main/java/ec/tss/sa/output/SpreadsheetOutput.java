@@ -26,6 +26,8 @@ import ec.tstoolkit.utilities.NamedObject;
 import ec.tstoolkit.utilities.Paths;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,13 +70,13 @@ public class SpreadsheetOutput implements IOutput<SaDocument<ISaSpecification>> 
 
     @Override
     public void end(Object context) throws Exception {
-        String file = new File(folder_, config_.getFileName()).getAbsolutePath();
+        String file = folder_.toPath().resolve(config_.getFileName()).toFile().getAbsolutePath();
         file = Paths.changeExtension(file, "xlsx");
-        File ssfile = new File(file);
+        File ssfile = java.nio.file.Paths.get(file).toFile();
         //File ssfile = new File("C:\\test.xls");
         SXSSFWorkbook workbook = new SXSSFWorkbook(null, 100, false, true);
 
-        try (FileOutputStream stream = new FileOutputStream(ssfile)) {
+        try (OutputStream stream = Files.newOutputStream(ssfile.toPath())) {
             switch (config_.getLayout()) {
                 case ByComponent: {
                     HashMap<String, List<NamedObject<TsData>>> allData = new HashMap<>();

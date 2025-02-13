@@ -12,6 +12,7 @@ import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,8 +72,8 @@ public class ParamsTest {
 
     @Test
     public void testOnFile() {
-        File d = new File("d");
-        File n = new File("x");
+        File d = Paths.get("d").toFile();
+        File n = Paths.get("x").toFile();
         assertBehavior(Params.onFile(d, "k"), d, n, ImmutableMap.of("k", n.getPath()));
     }
 

@@ -17,6 +17,8 @@
 package ec.tss.tsproviders;
 
 import java.io.File;
+import java.nio.file.Paths;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +42,7 @@ public class HasFilePathsTest {
         assertThat(support.getPaths())
                 .isNotSameAs(support.getPaths())
                 .isEmpty();
-        File[] files = new File[]{new File("hello"), new File("world")};
+        File[] files = new File[]{Paths.get("hello").toFile(), Paths.get("world").toFile()};
         support.setPaths(files);
         assertThat(support.getPaths())
                 .containsExactly(files)

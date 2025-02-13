@@ -63,7 +63,7 @@ public enum DataSourceManager {
         m_dataSources = new HashMap<>();
         m_registered = ArrayListMultimap.create();
         File defaultFolder = Files2.fromPath(StandardSystemProperty.USER_HOME.value(), ".jdemetra");
-        defaultFile = new File(defaultFolder, "datasources.xml");
+        defaultFile = defaultFolder.toPath().resolve("datasources.xml").toFile();
         AccountManager.INSTANCE.setManager(new AESContentManager(defaultFolder, KeyGen.retrieveKeySpec()));
 
         // Register known types of databases

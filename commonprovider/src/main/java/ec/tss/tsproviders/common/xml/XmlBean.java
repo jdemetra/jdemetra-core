@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class XmlBean implements IFileBean, IDataSourceBean {
 
-    static final IParam<DataSource, File> X_FILE = Params.onFile(new File(""), "file");
+    static final IParam<DataSource, File> X_FILE = Params.onFile(java.nio.file.Paths.get("").toFile(), "file");
     static final IParam<DataSource, Charset> X_CHARSET = Params.onCharset(StandardCharsets.UTF_8, "charset");
     static final String EXT = "xml";
     private File file;
@@ -58,7 +58,7 @@ public class XmlBean implements IFileBean, IDataSourceBean {
     @Override
     public void setFile(File file) {
         // ensure that we have the xml extension...
-        this.file = new File(Paths.changeExtension(file.getPath(), EXT));
+        this.file = java.nio.file.Paths.get(Paths.changeExtension(file.getPath(), EXT)).toFile();
     }
 
     public Charset getCharset() {

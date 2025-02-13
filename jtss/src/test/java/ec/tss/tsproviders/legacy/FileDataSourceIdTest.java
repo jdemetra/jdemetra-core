@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +46,7 @@ public class FileDataSourceIdTest {
 
         FileDataSourceId sourceId = FileDataSourceId.from(file);
         assertThat(sourceId).isNotNull();
-        assertThat(file).isEqualTo(new File(sourceId.getFile()));
+        assertThat(file).isEqualTo(Paths.get(sourceId.getFile()).toFile());
     }
 
     @Test
@@ -54,7 +55,7 @@ public class FileDataSourceIdTest {
 
         FileDataSourceId sourceId = FileDataSourceId.parse(file.getPath());
         assertThat(sourceId).isNotNull();
-        assertThat(file).isEqualTo(new File(sourceId.getFile()));
+        assertThat(file).isEqualTo(Paths.get(sourceId.getFile()).toFile());
     }
 
     @Test
@@ -63,7 +64,7 @@ public class FileDataSourceIdTest {
 
         FileDataSourceId sourceId = FileDataSourceId.parse((CharSequence) file.getPath());
         assertThat(sourceId).isNotNull();
-        assertThat(file).isEqualTo(new File(sourceId.getFile()));
+        assertThat(file).isEqualTo(Paths.get(sourceId.getFile()).toFile());
     }
 
     @Test
