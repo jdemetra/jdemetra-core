@@ -343,7 +343,7 @@
                 </property>
             </activation>
             <properties>
-                <lombok.version>1.18.42</lombok.version>
+                <lombok.version>1.18.44</lombok.version>
                 <java-service.version>1.9.0</java-service.version>
             </properties>
             <dependencyManagement>
