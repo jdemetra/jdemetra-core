@@ -55,7 +55,7 @@ public class TsVariableAdapters {
     }
 
     private void load() {
-        adapters.addAll(new TsVariableAdapterLoader().get());
+        adapters.addAll(TsVariableAdapterLoader.load());
     }
 
     public List<Class> getXmlClasses() {

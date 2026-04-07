@@ -83,7 +83,7 @@ public class FileWorkspaceImplTest {
 
     @Test
     public void testLoadLegacy() throws IOException {
-        try (FileWorkspace ws = FileWorkspaceImpl.open(LEGACY_INDEX, FileFormat.LEGACY, new FamilyHandlerLoader()::get)) {
+        try (FileWorkspace ws = FileWorkspaceImpl.open(LEGACY_INDEX, FileFormat.LEGACY, FamilyHandlerLoader::load)) {
             assertThat(ws.getFileFormat()).isEqualTo(FileFormat.LEGACY);
             assertThat(ws.getFile()).isEqualTo(LEGACY_INDEX);
             assertThat(ws.getRootFolder()).isEqualTo(LEGACY_ROOT);
@@ -242,7 +242,7 @@ public class FileWorkspaceImplTest {
     }
 
     private static FileWorkspaceImpl openGenericUsingServiceLoader(Path file) throws IOException {
-        return FileWorkspaceImpl.open(file, FileFormat.GENERIC, new FamilyHandlerLoader()::get);
+        return FileWorkspaceImpl.open(file, FileFormat.GENERIC, FamilyHandlerLoader::load);
     }
 
     private static Path newGenericSample(Path temp) throws IOException {
