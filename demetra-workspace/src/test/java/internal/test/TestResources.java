@@ -45,7 +45,7 @@ public class TestResources {
 
     static {
         // FIXME: X13Document constructor needs ISaProcessingFactory
-        new ISaProcessingFactoryLoader().get().forEach(SaManager.instance::add);
+        ISaProcessingFactoryLoader.load().forEach(SaManager.instance::add);
     }
 
     public static final Path GENERIC_INDEX = PathUtil.get(TestResources.class.getResource("/generic_ws.xml"));

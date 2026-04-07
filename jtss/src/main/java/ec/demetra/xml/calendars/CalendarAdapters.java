@@ -55,7 +55,7 @@ public class CalendarAdapters {
     private final List<CalendarAdapter> adapters = new ArrayList<>();
 
     private void load() {
-        adapters.addAll(new CalendarAdapterLoader().get());
+        adapters.addAll(CalendarAdapterLoader.load());
     }
 
     public List<Class> getXmlClasses() {

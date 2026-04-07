@@ -47,7 +47,7 @@ public interface FileWorkspace extends Workspace {
 
     @NonNull
     static FileWorkspace create(@NonNull Path file, @NonNull FileFormat format) throws IOException {
-        return FileWorkspaceImpl.create(file, format, new FamilyHandlerLoader()::get);
+        return FileWorkspaceImpl.create(file, format, FamilyHandlerLoader::load);
     }
 
     @NonNull
@@ -57,7 +57,7 @@ public interface FileWorkspace extends Workspace {
 
     @NonNull
     static FileWorkspace open(@NonNull Path file, @NonNull FileFormat format) throws IOException {
-        return FileWorkspaceImpl.open(file, format, new FamilyHandlerLoader()::get);
+        return FileWorkspaceImpl.open(file, format, FamilyHandlerLoader::load);
     }
 
     @NonNull

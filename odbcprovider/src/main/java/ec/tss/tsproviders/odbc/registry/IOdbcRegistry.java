@@ -28,8 +28,7 @@ import nbbrd.service.ServiceDefinition;
  */
 @Deprecated
 @ServiceDefinition(
-        quantifier = Quantifier.OPTIONAL,
-        singleton = true
+        quantifier = Quantifier.OPTIONAL
 )
 public interface IOdbcRegistry {
 

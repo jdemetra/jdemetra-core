@@ -52,7 +52,7 @@ public class DayAdapters {
     private final List<DayAdapter> adapters = new ArrayList<>();
 
     public void load() {
-        adapters.addAll(new DayAdapterLoader().get());
+        adapters.addAll(DayAdapterLoader.load());
     }
 
     public List<Class> getXmlClasses() {

@@ -52,7 +52,7 @@ public class TsModifierAdapters {
     private final List<TsModifierAdapter> adapters = new ArrayList<>();
 
     public void load() {
-        adapters.addAll(new TsModifierAdapterLoader().get());
+        adapters.addAll(TsModifierAdapterLoader.load());
     }
 
     public List<Class> getXmlClasses() {
