@@ -40,7 +40,7 @@ public interface BookSupplier {
     }
 
     static Optional<Book.Factory> getLoaderByFile(File file) {
-        return BookFactoryLoader.get()
+        return BookFactoryLoader.load()
                 .stream()
                 .filter(Book.Factory::canLoad)
                 .filter(factory -> factory.accept(file))
