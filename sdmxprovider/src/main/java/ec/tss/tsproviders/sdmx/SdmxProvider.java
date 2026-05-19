@@ -16,18 +16,12 @@
  */
 package ec.tss.tsproviders.sdmx;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import ec.tss.ITsProvider;
-import ec.tss.TsAsyncMode;
-import ec.tss.TsCollectionInformation;
-import ec.tss.TsInformation;
-import ec.tss.TsInformationType;
-import ec.tss.TsMoniker;
-import ec.tss.tsproviders.*;
-import static ec.tss.tsproviders.sdmx.SdmxBean.X_TITLE_ATTRIBUTE;
+import ec.tss.*;
+import ec.tss.tsproviders.DataSet;
+import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.sdmx.engine.CunningPlanFactory;
 import ec.tss.tsproviders.sdmx.engine.ISdmxSourceFactory;
 import ec.tss.tsproviders.sdmx.model.SdmxGroup;
@@ -39,14 +33,17 @@ import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.IParser;
 import ec.tss.tsproviders.utils.Params;
 import ec.tstoolkit.MetaData;
+import nbbrd.service.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-import nbbrd.service.ServiceProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static ec.tss.tsproviders.sdmx.SdmxBean.X_TITLE_ATTRIBUTE;
 
 /**
  *
@@ -67,7 +64,6 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
     private final IParser<DataSource> legacyDataSourceParser;
     private final IParser<DataSet> legacyDataSetParser;
     private final Splitter.MapSplitter keyValueSplitter;
-    private final Joiner compactNamingJoiner;
     private boolean compactNaming;
     private boolean keysInMetaData;
 
@@ -77,7 +73,6 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         this.legacyDataSourceParser = SdmxLegacy.dataSourceParser();
         this.legacyDataSetParser = SdmxLegacy.dataSetParser();
         this.keyValueSplitter = Splitter.on(',').trimResults().withKeyValueSeparator('=');
-        this.compactNamingJoiner = Joiner.on('.');
         this.compactNaming = false;
         this.keysInMetaData = false;
     }
@@ -316,7 +311,7 @@ public class SdmxProvider extends AbstractFileLoader<SdmxSource, SdmxBean> {
         }
         if (compactNaming) {
             try {
-                return compactNamingJoiner.join(keyValueSplitter.split(id).values());
+                return String.join(".", keyValueSplitter.split(id).values());
             } catch (IllegalArgumentException ex) {
             }
         }

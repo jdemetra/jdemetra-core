@@ -16,6 +16,8 @@
 */
 package ec.tss.tsproviders.legacy;
 
+import java.util.Base64;
+
 @Deprecated
 public enum StringHandlers implements IStringHandler {
 
@@ -53,7 +55,7 @@ public enum StringHandlers implements IStringHandler {
                 final StringBuilder sb = new StringBuilder(o[0]);
                 for (int i = 1; i < o.length; i++) {
                     sb.append(SEP);
-                    sb.append(javax.xml.bind.DatatypeConverter.printBase64Binary(o[i].getBytes()));
+                    sb.append(Base64.getEncoder().encodeToString((o[i].getBytes())));
                 }
                 return sb.toString();
             }
@@ -64,7 +66,7 @@ public enum StringHandlers implements IStringHandler {
             String[] splitResult = o.split(SEP);
             for (int i = 0; i < splitResult.length; i++) {
                 try {
-                    splitResult[i] = new String(javax.xml.bind.DatatypeConverter.parseBase64Binary(splitResult[i]));
+                    splitResult[i] = new String(Base64.getDecoder().decode(splitResult[i]));
                 }
                 catch(Exception e){
                 }
