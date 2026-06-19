@@ -50,6 +50,8 @@
 
         <!-- annotations & processors -->
         <modernizer.version>3.4.0</modernizer.version>
+
+        <heylogs.version>0.19.1</heylogs.version>
     </properties>
 
     <dependencyManagement>
@@ -242,7 +244,7 @@
                 <plugin>
                     <groupId>com.github.nbbrd.heylogs</groupId>
                     <artifactId>heylogs-maven-plugin</artifactId>
-                    <version>0.18.1</version>
+                    <version>${heylogs.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>com.amashchenko.maven.plugin</groupId>
@@ -435,6 +437,11 @@
                                 <artifactId>extra-enforcer-rules</artifactId>
                                 <version>1.12.0</version>
                             </dependency>
+                            <dependency>
+                                <groupId>com.github.nbbrd.heylogs</groupId>
+                                <artifactId>heylogs-enforcer-rules</artifactId>
+                                <version>${heylogs.version}</version>
+                            </dependency>
                         </dependencies>
                         <executions>
                             <execution>
@@ -484,6 +491,9 @@
                                                 <ignoreScope>test</ignoreScope>
                                             </ignoredScopes>
                                         </enforceBytecodeVersion>
+                                        <!-- heylogs-enforcer-rules -->
+                                        <checkChangelog/>
+                                        <formatChangelog/>
                                     </rules>
                                 </configuration>
                             </execution>
