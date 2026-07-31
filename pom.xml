@@ -520,6 +520,7 @@
                             <javaVersion>1.8</javaVersion>
                             <exclusionPatterns>
                                 <exclusionPattern>com/google/common/base/Optional.*</exclusionPattern>
+                                <exclusionPattern>com/google/common/base/Joiner.*</exclusionPattern>
                                 <exclusionPattern>java/util/.*</exclusionPattern>
                             </exclusionPatterns>
                         </configuration>

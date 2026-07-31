@@ -20,6 +20,7 @@ package ec.tstoolkit.design;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -114,7 +115,7 @@ public class InterfaceLoader {
 	if (urlString == null)
 	    return create(interfaceType, className);
 	try {
-	    URL url = new URL(null, urlString);
+	    URL url = URI.create(urlString).toURL();
 	    URLClassLoader loader = new URLClassLoader(new URL[] { url });
 	    // use the default class loader
 	    return create(loader, interfaceType, className);

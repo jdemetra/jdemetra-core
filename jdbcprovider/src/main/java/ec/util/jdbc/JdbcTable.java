@@ -19,16 +19,17 @@ package ec.util.jdbc;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Ordering;
 import ec.tstoolkit.design.Immutable;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import nbbrd.sql.jdbc.SqlTable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -201,8 +202,9 @@ public final class JdbcTable implements Comparable<JdbcTable> {
     public String getRefGeneration() {
         return refGeneration;
     }
+
     // we need an ordering that can handle null values
-    static final Ordering<String> ORDERING = Ordering.natural().nullsLast();
+    static final Comparator<String> ORDERING = Comparator.naturalOrder();
 
     @Override
     public int compareTo(JdbcTable that) {

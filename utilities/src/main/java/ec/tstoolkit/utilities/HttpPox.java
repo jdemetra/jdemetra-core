@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import javax.xml.bind.JAXBException;
 import nbbrd.io.xml.bind.Jaxb;
@@ -36,7 +37,7 @@ public class HttpPox<S, T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpPox.class);
 
     public HttpPox(String url, Class<S> sclass, Class<T> tclass) throws MalformedURLException {
-        m_url = new URL(url);
+        m_url = URI.create(url).toURL();
         try {
             scontext_ = javax.xml.bind.JAXBContext.newInstance(sclass);
             if (sclass != tclass) {

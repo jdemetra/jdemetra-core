@@ -16,13 +16,13 @@
  */
 package ec.tstoolkit.utilities;
 
-import com.google.common.base.Joiner;
 import com.google.common.io.Files;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Locale;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Provides utility methods for the {@link File} class;
@@ -37,7 +37,7 @@ public final class Files2 {
     }
 
     public static File fromPath(String parent, String... path) {
-        return Paths.get(parent, Joiner.on(File.separatorChar).join(path)).toFile();
+        return Paths.get(parent, String.join(File.separator, path)).toFile();
     }
 
     /**
