@@ -16,24 +16,25 @@
  */
 package ec.tss.tsproviders.db;
 
-import com.google.common.base.Joiner;
 import ec.tss.TsAsyncMode;
 import ec.tss.TsCollectionInformation;
 import ec.tss.TsInformation;
 import ec.tss.TsInformationType;
-import ec.tss.tsproviders.*;
+import ec.tss.tsproviders.DataSet;
+import ec.tss.tsproviders.DataSource;
 import ec.tss.tsproviders.utils.AbstractDataSourceLoader;
 import ec.tss.tsproviders.utils.IConfig.Builder;
 import ec.tss.tsproviders.utils.IParam;
 import ec.tss.tsproviders.utils.OptionalTsData;
 import ec.tstoolkit.timeseries.simplets.TsFrequency;
 import ec.tstoolkit.utilities.Arrays2;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
 
 /**
  * @author Demortier Jeremy
@@ -59,7 +60,7 @@ public abstract class DbProvider<BEAN extends DbBean> extends AbstractDataSource
     public String getDisplayName(DataSet dataSet) {
         support.check(dataSet);
         Dims dims = DIM_MAP.get(dataSet);
-        return dims.dimValues.length > 0 ? Joiner.on(", ").join(dims.dimValues) : "All";
+        return dims.dimValues.length > 0 ? String.join(", ", dims.dimValues) : "All";
     }
 
     @Override
