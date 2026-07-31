@@ -49,7 +49,7 @@
         <x.github.repo>jdemetra-core</x.github.repo>
 
         <!-- annotations & processors -->
-        <modernizer.version>3.4.0</modernizer.version>
+        <modernizer.version>3.5.0</modernizer.version>
 
         <heylogs.version>0.19.1</heylogs.version>
     </properties>
