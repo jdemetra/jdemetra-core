@@ -339,19 +339,6 @@
     </build>
 
     <profiles>
-        <!-- Non-deployable modules -->
-        <profile>
-            <id>non-deployable-modules</id>
-            <activation>
-                <property>
-                    <name>!nonDeployableModules</name>
-                </property>
-            </activation>
-            <modules>
-                <module>jbench</module>
-            </modules>
-        </profile>
-
         <!-- Base build java8 -->
         <profile>
             <id>base-java8</id>
