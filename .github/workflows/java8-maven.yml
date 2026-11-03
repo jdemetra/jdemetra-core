@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: ⚙️ Checkout and Setup Maven
-        uses: s4u/setup-maven-action@v1.21.0
+        uses: s4u/setup-maven-action@v1.22.0
         with:
           checkout-submodules: true
           checkout-fetch-depth: 0
@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: ⚙️ Checkout and Setup Maven
-        uses: s4u/setup-maven-action@v1.21.0
+        uses: s4u/setup-maven-action@v1.22.0
         with:
           checkout-submodules: true
           checkout-fetch-depth: 0
@@ -77,14 +77,14 @@ jobs:
 
     steps:
       - name: ⚙️ Checkout and Setup Maven
-        uses: s4u/setup-maven-action@v1.21.0
+        uses: s4u/setup-maven-action@v1.22.0
         with:
           checkout-submodules: true
           checkout-fetch-depth: 0
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: ☕ Deploy snapshot with Maven if settings defined
-        run: test ! -f ci.settings.xml || mvn deploy -DskipTests -s ci.settings.xml -P base-deploy,snapshot-deploy
+        run: test ! -f ci.settings.xml || mvn deploy -DskipTests -Dmaven.repository.credentialScope=id -s ci.settings.xml -P base-deploy,snapshot-deploy
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_TOKEN: ${{ secrets.CENTRAL_PORTAL_TOKEN }}
@@ -117,14 +117,14 @@ jobs:
 
     steps:
       - name: ⚙️ Checkout and Setup Maven
-        uses: s4u/setup-maven-action@v1.21.0
+        uses: s4u/setup-maven-action@v1.22.0
         with:
           checkout-submodules: true
           checkout-fetch-depth: 0
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: ☕ Deploy with Maven if settings defined
-        run: test ! -f ci.settings.xml || mvn deploy -DskipTests -s ci.settings.xml -P base-deploy,release-deploy
+        run: test ! -f ci.settings.xml || mvn deploy -DskipTests -Dmaven.repository.credentialScope=id -s ci.settings.xml -P base-deploy,release-deploy
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_TOKEN: ${{ secrets.CENTRAL_PORTAL_TOKEN }}
