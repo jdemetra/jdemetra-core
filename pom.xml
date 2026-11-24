@@ -266,7 +266,7 @@
                         <dependency>
                             <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
                             <artifactId>nbbrd-enforcer-rules</artifactId>
-                            <version>1.5.0</version>
+                            <version>1.6.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -330,9 +330,26 @@
                     <artifactId>jreleaser-maven-plugin</artifactId>
                     <version>1.27.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
+                    <artifactId>actionlint-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
+                <artifactId>actionlint-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>lint</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>tidy-maven-plugin</artifactId>
@@ -758,6 +775,7 @@
         <profile>
             <id>yolo</id>
             <properties>
+                <actionlint.skip>true</actionlint.skip>
                 <enforcer.skip>true</enforcer.skip>
                 <modernizer.skip>true</modernizer.skip>
                 <forbiddenapis.skip>true</forbiddenapis.skip>
